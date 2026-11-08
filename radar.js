@@ -27,7 +27,7 @@ window.RADAR={"quando":"sáb 07/11","notas":{
 }};
 
 window.RADAR.lesoes={"quando":"dom 08/11 19:20","sp":20,"fonte":"Underdog NBA, ESPN e RotoWire","itens":{
-"VJ Edgecombe":["Q","foi pro vestiário durante o jogo contra o CHI (Underdog, 19:20)"],
+"VJ Edgecombe":["IN","voltou pro jogo contra o CHI depois de ir ao vestiário"],
 "Luka Doncic":["OUT","costas · DESCARTADO contra o DET (Underdog, 15:10)"],
 "Joel Embiid":["PROV","provável contra o CHI"],
 "Norman Powell":["Q","ombro · entrou no relatório de última hora contra o PHI"],
@@ -52,5 +52,4 @@ window.RADAR.lesoes={"quando":"dom 08/11 19:20","sp":20,"fonte":"Underdog NBA, E
 
 /* alertas de status ao vivo (Underdog NBA): entram no noticiário com "hope he is ok" */
 window.RADAR.alertas=[
- {sp:20,quando:"19:20",nome:"VJ Edgecombe",txt:"foi pro vestiário no meio do jogo contra o CHI",fonte:"Underdog NBA"}
 ];
