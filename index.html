@@ -1556,6 +1556,7 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 .mk-o small{font-size:10px;color:var(--apagado);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mk-o b{font-family:var(--display);font-weight:400;font-size:15px;color:#9ff0b0}.mk-o em{display:none}
 .mk-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
 .mk-nota{font-size:11px;color:var(--apagado);margin:8px 0 2px}
+.mk-x{justify-content:center;color:var(--apagado);font-size:11px;font-style:italic}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1622,11 +1623,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794172407"></script>
-<script src="radar.js?v=1794172407"></script>
-<script src="midia.js?v=1794172407"></script>
+<script src="hist.js?v=1794172494"></script>
+<script src="radar.js?v=1794172494"></script>
+<script src="midia.js?v=1794172494"></script>
 <script>
-const VERSAO_PAINEL="20261108181327";
+const VERSAO_PAINEL="20261108181454";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1717,7 +1718,7 @@ function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];const M=momento(
 function maisMercados(a,b,s){const A=T(a),B=T(b);const M=momento(a,b);if(!M.rem)return "";const a3=A[3]||A[0],b3=B[3]||B[0];
   const R=Object.entries(s.res).map(([k,p])=>{const [w,l,t]=k.split("-").map(Number);return {w,l,t,p}});
   const soma=f=>R.filter(f).reduce((x,r)=>x+r.p,0);
-  const linha=(rot,ops)=>`<div class="mk-l"><span class="mk-r">${rot}</span>${ops.map(([n,o,pp])=>`<span class="mk-o"><small>${n}</small><b>${o}</b>${pp!=null?`<em>${pct(pp)}</em>`:""}</span>`).join("")}</div>`;
+  const linha=(rot,ops)=>{const fechado=ops.some(x=>x[2]!=null&&x[2]<0.006);return `<div class="mk-l ${fechado?"fech":""}"><span class="mk-r">${rot}</span>${fechado?'<span class="mk-o mk-x">mercado fechado · já está decidido</span>':ops.map(([n,o,pp])=>`<span class="mk-o"><small>${n}</small><b>${o}</b>${pp!=null?`<em>${pct(pp)}</em>`:""}</span>`).join("")}</div>`};
   // handicap de categorias (diferença no placar)
   const hc=[1.5,2.5].map(h=>{const pA=soma(r=>r.w-r.l>h);const o=precifica([pA,1-pA],M.margem-0.01,M.T,M.mx,M.mn);return linha(`${esc(a3)} −${h} cat.`,[["sim",o[0],pA],["não",o[1],1-pA]])}).join("");
   // total de categorias do time A
