@@ -925,6 +925,26 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .cab-secao .atalhos{order:2;flex:1 1 100%;margin-top:4px}
 @media (max-width:760px){.fj.mini em span:nth-child(n+4){display:none}.fj.mini em{font-size:10px}}
 
+/* ficha da quadra: só cara, nome e #; stats no toque */
+.fj em,.fj.mini em{display:none}
+.fj[data-fj]{cursor:pointer}
+.fj[data-fj]:active .ft{transform:scale(.94)}
+.pop-fundo{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.pop-jog{position:relative;width:min(380px,100%);background:#120c0c;border:3px solid #000;box-shadow:6px 6px 0 var(--amarelo);border-top:6px solid var(--cor);padding:14px}
+.pop-x{all:unset;cursor:pointer;position:absolute;top:6px;right:10px;font-size:20px;color:#fff;padding:4px}
+.pj-topo{display:flex;gap:12px;align-items:center;padding-right:24px}
+.pj-topo .ft{width:72px;height:72px;border:3px solid var(--cor)}
+.pj-topo b{display:block;font-family:var(--display);font-weight:400;font-size:24px;line-height:1.05;color:#fff;margin:3px 0}
+.pj-topo small{display:flex;align-items:center;gap:4px;flex-wrap:wrap;font-size:12px;color:var(--apagado)}
+.pj-topo small img{width:16px;height:16px;border-radius:50%;background:#fff}
+.pj-topo .slot-sel{position:static;font-size:11px;margin-right:6px}
+.pj-topo u{text-decoration:none;background:var(--vermelho);color:#fff;padding:0 4px;font-weight:700}
+.pj-grade{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-top:12px}
+.pj-grade div{background:#000;text-align:center;padding:6px 2px}
+.pj-grade small{display:block;font-size:10px;color:var(--apagado);letter-spacing:.06em}
+.pj-grade b{font-family:var(--display);font-weight:400;font-size:26px;color:var(--amarelo);line-height:1.1}
+.pj-grade b small{font-family:inherit;font-size:11px;color:#fff;letter-spacing:0}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -986,7 +1006,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108014944";
+const VERSAO_PAINEL="20261108015125";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1296,7 +1316,7 @@ function vConfrontos(){
   const mais=ordem.slice().sort((x,y)=>Math.abs(x.s.pa-x.s.pb)-Math.abs(y.s.pa-y.s.pb))[0];
   const dia=d.cur-d.s0+1;
   let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
-  <div class="atalhos"><button type="button" class="atalho" data-sel="sem">${ICS.sel} Seleção da semana</button><button type="button" class="atalho" data-ir="radar">${ICS.radar} Radar</button><label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
+  <div class="atalhos"><button type="button" class="atalho" data-sel="${d.last}">${ICS.sel} Seleção da noite</button><button type="button" class="atalho" data-ir="radar">${ICS.radar} Radar</button><label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
   ordem.forEach(({m,i,sc,s})=>{
     const [a,b]=m,A=T(a),B=T(b);
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
@@ -1577,9 +1597,10 @@ function escalaMelhor(rows){
 const POS_Q={0:[50,83],1:[16,60],2:[84,60],3:[25,26],4:[75,26]}; // PG SG SF PF C na quadra
 function fichaJog(r,k,RK,cls){
   if(!r)return `<div class="fj vazio ${cls||""}"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span><b>—</b></div>`;
+  window._SEL=window._SEL||[];window._SEL[k]={r,slot:SLOT[SLOTS_SEL[k]],rk:RK[r.p.id],n:RK._n};
   const p=r.p,st=r.s;const ext=[[st[3],"rb"],[st[4],"tc"],[st[5],"3pt"]].filter(x=>x[0]>=2).sort((a,b)=>b[0]-a[0]).slice(0,1);
   const sob=p.n.split(" ");const nm=sob.length>1?sob.slice(1).join(" "):p.n;
-  return `<div class="fj ${cls||""} ${r.slot>=12?"nobanco":""}" style="--cor:${T(r.t)[4]}">${face(p.id,p.n,"")}<span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>
+  return `<div class="fj ${cls||""} ${r.slot>=12?"nobanco":""}" style="--cor:${T(r.t)[4]}" data-fj="${k}" role="button" tabindex="0" aria-label="ver stats de ${esc(p.n)}">${face(p.id,p.n,"")}<span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>
    <b>${esc(nm)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt="${esc(T(r.t)[0])}">${RK[p.id]?"#"+RK[p.id]:""}</small>
    <em><span>${st[0]}<i>p</i></span><span>${st[1]}<i>r</i></span><span>${st[2]}<i>a</i></span>${ext.map(x=>`<span>${x[0]}<i>${x[1]}</i></span>`).join("")}</em>${r.slot>=12?'<u>banco</u>':""}</div>`}
 function quadraSelecao(dono,tot,sp){
@@ -1593,13 +1614,26 @@ function quadraSelecao(dono,tot,sp){
   <div class="q-banco"><span class="q-rot">SEGUNDA UNIDADE</span><div class="q-bl">${banco}</div></div>
   <div class="q-tot">${cats.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div></div>`;
 }
+function abrirFicha(k){
+  const x=window._SEL&&window._SEL[k];if(!x)return;const {r}=x;const p=r.p,st=r.s;const sp=UI.noiteDia??DADOS.cur;
+  const pc=(a,b)=>b?(100*a/b).toFixed(1)+"%":"–";
+  const cel=[["PTS",st[0]],["REB",st[1]],["AST",st[2]],["STL",st[3]],["BLK",st[4]],["3PM",st[5]],["TO",st[6]],["FG",`${st[7]}/${st[8]}<small>${pc(st[7],st[8])}</small>`],["FT",`${st[9]}/${st[10]}<small>${pc(st[9],st[10])}</small>`]];
+  fecharFicha();const el=document.createElement("div");el.className="pop-fundo";el.id="popFicha";
+  el.innerHTML=`<div class="pop-jog" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(r.t)[4]}"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button>
+   <div class="pj-topo">${face(p.id,p.n,"")}<div><span class="slot-sel">${x.slot}</span>${x.rk?`<span class="rk-n">#${x.rk} de ${x.n}</span>`:""}<b>${esc(p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${esc(T(r.t)[0])} · ${esc(T(r.t)[2])}${sp==="sem"?` · ${r.g} jogos`:""}${r.slot>=12?' · <u>estava no banco</u>':""}</small>${sp!=="sem"?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div>
+   <div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div></div>`;
+  el.addEventListener("click",e=>{if(e.target===el||e.target.closest("[data-fecha]"))fecharFicha()});
+  document.body.appendChild(el);
+}
+function fecharFicha(){const e=document.getElementById("popFicha");if(e)e.remove()}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")fecharFicha();if((e.key==="Enter"||e.key===" ")&&e.target.dataset&&e.target.dataset.fj!=null){e.preventDefault();abrirFicha(+e.target.dataset.fj)}});
 function vSelecao(rows,sp){
   const d=DADOS;const ord=rows.slice().sort((x,y)=>y.val-x.val);const dono=escalaMelhor(ord);
   const tot=zero();dono.forEach(r=>{if(r)r.s.forEach((x,i)=>tot[i]+=x)});
   const linha=(r,k)=>{if(!r)return `<tr><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span><div><b>—</b></div></div></td><td colspan="9" class="esp">ninguém</td></tr>`;const p=r.p,st=r.s;
     return `<tr style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>${face(p.id,p.n,"")}<div><b>${rkTag(rankLiga(sp),p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,r.slot>=12?'<span class="tag banco">NO BANCO</span>':"")}</small></div></div></td><td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td></tr>`};
   const nb=dono.filter(r=>r&&r.slot>=12).length;
-  let h=`<div class="cab-secao"><span class="sobre">SELEÇÃO · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">SELEÇÃO DA NOITE</h1><p class="linha-fina">A melhor escalação possível juntando os 12 elencos: PG, SG, SF, PF, C, G, F e 2 UTIL, nas posições da ESPN.${nb?` <b>${nb} ${nb>1?"estavam":"estava"} no banco.</b>`:""}</p></div>
+  let h=`<div class="cab-secao"><span class="sobre">SELEÇÃO · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">${sp==="sem"?"SELEÇÃO DA SEMANA":"SELEÇÃO DA NOITE"}</h1><p class="linha-fina">Toque na carinha para ver as stats. A melhor escalação possível ${sp==="sem"?"na semana":"com os jogos do dia"}, juntando os 12 elencos: PG, SG, SF, PF, C, G, F e 2 UTIL, nas posições da ESPN.${nb?` <b>${nb} ${nb>1?"estavam":"estava"} no banco.</b>`:""}</p></div>
   <div class="dias" role="group" aria-label="Dia"><button class="dia" type="button" data-nd="sem" aria-pressed="${sp==="sem"}">SEMANA<small>total</small></button>`;
   for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++){const r=spRot(x).split(" ");h+=`<button class="dia" type="button" data-nd="${x}" aria-pressed="${String(sp)===String(x)}">${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
   h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores">Melhores</button><button class="pil" type="button" data-nm="piores">Piores</button><button class="pil" type="button" data-nm="selecao" aria-pressed="true">Seleção</button></div>
@@ -2077,7 +2111,7 @@ function render(){
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
-  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel]");if(!t)return;
+  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
   if(ds.jogo!==undefined)ir("jogo-"+ds.jogo);
@@ -2100,6 +2134,7 @@ document.addEventListener("click",e=>{
   else if(ds.nm){UI.noiteModo=ds.nm;render()}
   else if(ds.sub){UI.subJogo=ds.sub;window.scrollTo(0,0);render()}
   else if(ds.prm){UI.prModo=ds.prm;render()}
+  else if(ds.fj!=null){abrirFicha(+ds.fj)}
   else if(ds.sel){UI.noiteModo="selecao";UI.noiteDia=ds.sel==="sem"?"sem":+ds.sel;ir("noite")}
   else if(ds.col!=null){const c=ds.col===""?null:(isNaN(+ds.col)?ds.col:+ds.col);const o=(UI.ljSort&&UI.ljSort.c!=null)?UI.ljSort:{c:"rk",asc:false};UI.ljSort=c==null?{c:null}:(String(o.c)===String(c)?{c,asc:!o.asc}:{c,asc:false});render()}
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
