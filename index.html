@@ -860,7 +860,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108010232";
+const VERSAO_PAINEL="20261108010320";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1724,7 +1724,7 @@ function cronometro(){ // próximo trancamento de escalação = primeiro jogo do
   if(ini==null||ini<n){for(let k=1;k<=3;k++){const x=primeiroJogo(sp+k);if(x!=null&&x>n){ini=x;rot=k===1?"amanhã":spRot(sp+k);break}}}
   if(ini==null||ini<n){el.textContent="";return}
   const ms=ini-n,h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4);const hm=new Date(ini).toLocaleTimeString("pt-BR",{timeZone:"America/Sao_Paulo",hour:"2-digit",minute:"2-digit"});
-  el.innerHTML=`<i>⏱</i> escalação tranca ${rot} às ${hm} · faltam <b>${h?h+"h":""}${dd(m)}min</b>`;
+  el.innerHTML=`<i>⏱</i> tranca ${rot} ${hm} · <b>${h?h+"h":""}${dd(m)}min</b>`;el.title="Primeiro jogo da NBA do dia: a escalação tranca jogador a jogador no horário de cada jogo";
 }
 setInterval(cronometro,30000);
 async function atualizarAoVivo(){
