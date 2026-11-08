@@ -751,6 +751,21 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .bet-odds .bq.fav{background:#fff;border-color:#000;box-shadow:inset 0 0 0 1px #000}
 .bet-odds .bq.fav b{color:#0a7a2e}
 
+/* letreiro de notícias */
+.ticker{position:sticky;top:calc(env(safe-area-inset-top,0px) + 58px);z-index:19;display:flex;align-items:center;background:#000;border-bottom:2px solid var(--amarelo);height:30px;overflow:hidden}
+.tk-tag{flex:none;display:flex;align-items:center;gap:6px;background:var(--vermelho);color:#fff;font-family:var(--display);font-size:13px;letter-spacing:.08em;padding:0 10px;height:100%;z-index:1}
+.tk-tag .ao-vivo::before{box-shadow:none;background:#fff}
+.tk-wrap{flex:1;overflow:hidden;height:100%;position:relative;mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+.tk-mov{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;animation:tk linear infinite;will-change:transform}
+.tk-wrap:hover .tk-mov{animation-play-state:paused}
+@keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tk-i{font-size:13px;color:#fff;cursor:pointer;padding:0 6px}
+.tk-i b{font-family:var(--display);font-weight:400;font-size:11px;letter-spacing:.06em;color:#000;background:var(--amarelo);padding:1px 5px;margin-right:6px}
+.tk-i b.r{background:var(--vermelho);color:#fff}
+.tk-sep{color:var(--ouro);font-size:9px;padding:0 6px}
+@media (max-width:760px){.ticker{top:calc(env(safe-area-inset-top,0px) + 44px);height:26px}.tk-i{font-size:12px}.tk-tag{font-size:11px;padding:0 8px}}
+@media (prefers-reduced-motion:reduce){.tk-mov{animation:none;position:static;overflow-x:auto}}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -797,6 +812,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
     <button class="btn-atualiza" id="btnAtualiza" type="button">Atualizar</button>
   </div>
 </header>
+<div id="ticker" class="ticker" hidden></div>
 
 <main><div class="wrap" id="app"></div></main>
 
@@ -811,6 +827,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
+const VERSAO_PAINEL="20261108004503";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1091,8 +1108,16 @@ function noticias(){
   });
   try{localStorage.setItem("painel.snap",JSON.stringify(agora))}catch(e){}
   it.sort((x,y)=>y.w-x.w);
-  if(!it.length)return "";
-  return `<div class="card news"><div class="bloco-tit">ACONTECENDO <small>${d.nba&&Object.values(d.nba).some(g=>g.live)?'<span class="ao-vivo">jogos rolando</span>':esc(spRot(sp))}</small></div><ul>${it.slice(0,7).map(x=>`<li ${x.j!=null?`data-jogo="${x.j}" class="link"`:""}><span class="ico ${x.k==="VIROU"||x.k==="VIROU O JOGO"||x.k==="BANCO"?"r":""}">${x.k}</span><span>${x.t}</span></li>`).join("")}</ul></div>`;
+  return it.slice(0,12);
+}
+function ticker(){
+  const el=$("#ticker");if(!el)return;if(!DADOS){el.hidden=true;return}
+  let it=[];try{it=noticias()}catch(e){console.error(e)}
+  if(!it.length){el.hidden=true;return}
+  const live=DADOS.nba&&Object.values(DADOS.nba).some(g=>g.live);
+  const html=it.map(x=>`<span class="tk-i" ${x.j!=null?`data-jogo="${x.j}"`:""}><b class="${x.k==="VIROU"||x.k==="VIROU O JOGO"||x.k==="BANCO"?"r":""}">${x.k}</b>${x.t.replace(/<\/?b>/g,"")}</span>`).join('<span class="tk-sep">◆</span>');
+  el.hidden=false;el.innerHTML=`<span class="tk-tag">${live?'<i class="ao-vivo"></i>AO VIVO':"HOJE"}</span><div class="tk-wrap"><div class="tk-mov">${html}<span class="tk-sep">◆</span>${html}</div></div>`;
+  const mov=el.querySelector(".tk-mov");const dur=Math.max(30,Math.round(mov.scrollWidth/2/60));mov.style.animationDuration=dur+"s";
 }
 function meuTime(){try{return +localStorage.getItem("painel.meu")||0}catch(e){return 0}}
 function vConfrontos(){
@@ -1104,7 +1129,7 @@ function vConfrontos(){
   const dia=d.cur-d.s0+1;
   let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
   <h1 class="manchete">${esc(T(mais.m[0])[0].toUpperCase())} x ${esc(T(mais.m[1])[0].toUpperCase())} TÁ NO CARA OU COROA</h1>
-  <p class="linha-fina">Amarelo = quem está na frente. Toque para abrir. <label class="meu">Meu time: <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></p></div>${noticias()}<div class="grade">`;
+  <p class="linha-fina">Amarelo = quem está na frente. Toque para abrir. <label class="meu">Meu time: <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></p></div><div class="grade">`;
   ordem.forEach(({m,i,sc,s})=>{
     const [a,b]=m,A=T(a),B=T(b);
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
@@ -1661,7 +1686,7 @@ function temJogoAgora(){const j=janelaDeJogos();const n=Date.now();return !!(j&&
 async function atualizarAoVivo(){
   if(AO.rodando)return;AO.rodando=true;const st=$("#status");
   st.innerHTML=`<span class="ao-vivo">buscando na ESPN…</span>`;
-  try{const d=await coletarAoVivo();AO.ultimo=Date.now();try{lsSet("painel.cache",JSON.stringify(d))}catch(e){}carrega(d);
+  try{const d=await coletarAoVivo();AO.ultimo=Date.now();try{lsSet("painel.cache",JSON.stringify(d))}catch(e){}carrega(d);ticker();checarVersao();
     const j=janelaDeJogos(),agora=temJogoAgora();const hm=ms=>{const x=new Date(ms);return dd(x.getHours())+":"+dd(x.getMinutes())};
     st.innerHTML=(agora?`<span class="ao-vivo">ao vivo</span> · atualiza a cada 5 min`:j&&Date.now()<j[0]?`sem jogo agora · volta às ${hm(j[0])}`:`sem jogo agora`)+` · ${quando(d.gerado).split(" ").slice(2).join(" ")}`;}
   catch(e){console.error(e);st.textContent=(DADOS?"sem conexão com a ESPN agora · mostrando "+quando(DADOS.gerado):"não consegui falar com a ESPN: "+e.message)}
@@ -1671,6 +1696,11 @@ const INTERVALO=300000;
 setInterval(()=>{if(document.visibilityState==="visible"&&temJogoAgora()&&Date.now()-AO.ultimo>INTERVALO-5000)atualizarAoVivo()},20000);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&Date.now()-AO.ultimo>(temJogoAgora()?60000:30*60000))atualizarAoVivo()});
 
+/* nova versão do site publicada? então recarrega com URL nova (fura o cache) */
+async function checarVersao(){
+  try{const t=await fetch(location.pathname+"?b="+Date.now(),{cache:"no-store"}).then(r=>r.text());const m=t.match(/VERSAO_PAINEL="([^"]+)"/);
+    if(m&&m[1]!==VERSAO_PAINEL&&!AO.recarregando){AO.recarregando=true;setTimeout(()=>location.replace(location.pathname+"?b="+m[1]+location.hash),1500)}}catch(e){}
+}
 /* ---------- roteador ---------- */
 function rota(){return (location.hash||"#confrontos").slice(1)}
 function render(){
@@ -1720,7 +1750,7 @@ $("#navTop").innerHTML=NAVS.map(([k,n])=>`<a href="#${k}" data-nav="${k}">${n}</
 
 document.addEventListener("click",e=>{const t=e.target.closest(".tip");document.querySelectorAll(".tip.aberta").forEach(x=>{if(x!==t)x.classList.remove("aberta")});if(t){e.preventDefault();e.stopPropagation();t.classList.toggle("aberta");t.classList.toggle("dir",t.getBoundingClientRect().left>window.innerWidth/2)}},true);
 /* ---------- partida ---------- */
-(function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===7)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}})();
+(function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===7)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}else ticker()})();
 atualizarAoVivo();
 </script>
 </body></html>
