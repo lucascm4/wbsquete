@@ -1772,11 +1772,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794176640"></script>
-<script src="radar.js?v=1794176640"></script>
-<script src="midia.js?v=1794176640"></script>
+<script src="hist.js?v=1794176841"></script>
+<script src="radar.js?v=1794176841"></script>
+<script src="midia.js?v=1794176841"></script>
 <script>
-const VERSAO_PAINEL="20261108192400";
+const VERSAO_PAINEL="20261108192721";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2159,7 +2159,7 @@ function noticias(){
   const ant=d.cur-1>=1?noticiasDe(d.cur-1):[];return a.concat(ant.slice(0,Math.max(0,10-a.length)).map(x=>Object.assign({},x,{t:"<i>Ontem:</i> "+x.t})))}
 /* alertas de status (Underdog NBA / ESPN) com o "hope he is ok" do Loydão */
 const HOPE=["Hope he is ok 🙏","Hope he is ok 🙏 (o {man} não)","Hope he is ok 🙏 — o {mop} já tá acendendo vela, mas pro outro lado","Hope he is ok 🙏 Sério. Mais ou menos.","Hope he is ok 🙏 e que o {man} tenha banco"];
-function alertasStatus(){const d=DADOS;const L=(window.RADAR&&RADAR.alertas)||[];const out=[];
+function alertasStatus(){const d=DADOS;const L=((window.RADAR&&RADAR.alertas)||[]).concat((typeof AO!=="undefined"&&AO.alertas)||[]);const out=[];
   L.filter(x=>x.sp===d.cur).forEach((x,i)=>{const p=d.P.find(q=>q.n===x.nome);const man=p?T(p.t)[2]:"o dono";const op=p?d.mt.find(m=>m.includes(p.t)):null;const mop=op?T(op[0]===p.t?op[1]:op[0])[2]:"o rival";
     out.push({w:999,k:"🚑 STATUS",t:`<b>${esc(x.nome)}</b>${p?` (${esc(T(p.t)[0])})`:""} ${esc(x.txt)}. ${HOPE[(i+d.cur)%HOPE.length].replace("{man}",esc(man)).replace("{mop}",esc(mop))}`})});
   return out}
@@ -3704,7 +3704,7 @@ setInterval(cronometro,30000);
 async function atualizarAoVivo(){
   if(AO.rodando)return;AO.rodando=true;const st=$("#status");
   st.innerHTML=`<span class="ao-vivo">buscando na ESPN…</span>`;
-  try{const d=await coletarAoVivo();AO.ultimo=Date.now();try{lsSet("painel.cache",JSON.stringify(d))}catch(e){}carrega(d);ticker();cronometro();checarVersao();
+  try{const d=await coletarAoVivo();AO.ultimo=Date.now();try{lsSet("painel.cache",JSON.stringify(d))}catch(e){}carrega(d);ticker();cronometro();checarVersao();buscarAlertasESPN().then(n=>{if(n)ticker()});
     const j=janelaDeJogos(),agora=temJogoAgora();const hm=ms=>{const x=new Date(ms);return dd(x.getHours())+":"+dd(x.getMinutes())};
     st.innerHTML=(agora?`<span class="ao-vivo">ao vivo</span> · atualiza a cada 5 min`:j&&Date.now()<j[0]?`sem jogo agora · volta às ${hm(j[0])}`:`sem jogo agora`)+` · ${quando(d.gerado).split(" ").slice(2).join(" ")}`;}
   catch(e){console.error(e);st.textContent=(DADOS?"sem conexão com a ESPN agora · mostrando "+quando(DADOS.gerado):"não consegui falar com a ESPN: "+e.message)}
@@ -4006,5 +4006,26 @@ function tarja(){try{if(_tarjas>=4||document.hidden||document.getElementById("po
 setTimeout(tarja,60*1000);setInterval(tarja,60*1000);
 
 new MutationObserver(()=>{const f=document.querySelector("#popFicha .pop-full");if(f&&!f.querySelector(".publi")&&typeof ofertasBet==="function"){try{const O=ofertasBet();if(O.length){const d=document.createElement("div");d.innerHTML=publiCard(O[0]);f.appendChild(d.firstElementChild)}}catch(e){}}}).observe(document.body,{childList:true});
+
+/* alertas de lesão automáticos (sem X): relatório de lesões e notícias da ESPN, filtrados pelos jogadores da liga */
+AO.alertas=(lerCache("wbs.lesAlert")||[]);
+const LES_RX=/injur|locker room|won't return|will not return|ruled out|questionable|doubtful|\bout\b|sprain|strain|ankle|knee|hamstring|calf|back|concussion|illness|limp|exit|left the game/i;
+async function buscarAlertasESPN(){if(!DADOS)return 0;const nomes={};DADOS.P.forEach(p=>{if(!p.fora)nomes[p.n.toLowerCase()]=p});
+  const ultimo=lerCache("wbs.lesESPN")||{};const novos=[];const agora=Date.now();
+  // 1) relatório oficial de lesões: status novo ou que mudou desde a última vez
+  try{const j=await ajson("https://site.api.espn.com/apis/site/v2/sports/basketball/nba/injuries");
+    (j.injuries||[]).forEach(tm=>(tm.injuries||[]).forEach(x=>{const nm=((x.athlete||{}).displayName||"").toLowerCase();const p=nomes[nm];if(!p)return;
+      const st=(x.status||"").trim(),cm=(x.shortComment||x.longComment||"").trim(),dt=Date.parse(x.date||"")||0;const key=p.n;
+      const antes=ultimo[key];if(antes&&antes.st===st&&antes.cm===cm)return;ultimo[key]={st,cm};
+      if(dt&&agora-dt<18*3600e3)novos.push({nome:p.n,txt:`${st?st.toUpperCase()+": ":""}${cm.slice(0,140)}`,fonte:"ESPN",t:dt})}))}catch(e){}
+  // 2) notícias da NBA na ESPN que falam de lesão de alguém da liga
+  try{const j=await ajson("https://site.api.espn.com/apis/site/v2/sports/basketball/nba/news?limit=50");
+    (j.articles||[]).forEach(a=>{const h=(a.headline||"")+" "+(a.description||"");const dt=Date.parse(a.published||"")||0;if(!dt||agora-dt>12*3600e3||!LES_RX.test(h))return;
+      const p=Object.values(nomes).find(q=>h.includes(q.n));if(!p)return;const key="n:"+(a.id||a.headline);if(ultimo[key])return;ultimo[key]=1;
+      novos.push({nome:p.n,txt:`“${(a.headline||"").slice(0,130)}”`,fonte:"ESPN",t:dt})})}catch(e){}
+  gravarCache("wbs.lesESPN",ultimo);
+  if(novos.length){const vistos=new Set(AO.alertas.map(x=>x.nome+x.txt));novos.forEach(x=>{if(!vistos.has(x.nome+x.txt))AO.alertas.unshift(Object.assign(x,{sp:DADOS.cur}))});AO.alertas=AO.alertas.filter(x=>x.sp===DADOS.cur).sort((a,b)=>(b.t||0)-(a.t||0)).slice(0,8);gravarCache("wbs.lesAlert",AO.alertas)}
+  return novos.length}
+setTimeout(()=>buscarAlertasESPN().then(n=>{if(n)ticker()}),8000);
 </script>
 </body></html>
