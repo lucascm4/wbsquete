@@ -880,6 +880,12 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .lj tr.fora .rk-n{color:var(--apagado)}
 @media (max-width:760px){.rk-n{font-size:10px;margin-right:3px}.lj .jg-in small .ev{display:none}}
 
+/* chips de prêmio da home: selo solto + nome, cabe sem rolar */
+.chips-pr{flex-wrap:wrap;overflow:visible;gap:4px 10px}
+.cp-i,.cp-i.ouro,.cp-i.ruim,.cp-i.bom{background:none;border:0;padding:0;gap:3px;font-size:12px}
+.cp-i .selo{width:16px;height:16px}
+@media (max-width:760px){.cp-i{font-size:11px}.cp-i .selo{width:15px;height:15px}}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -941,7 +947,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108014141";
+const VERSAO_PAINEL="20261108014351";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1285,9 +1291,9 @@ function valorJogo(v){return v[0]+1.2*v[1]+1.5*v[2]+3*v[3]+3*v[4]+v[5]-v[6]+(v[7
 /* ordenação das tabelas de jogadores (clique no cabeçalho, igual planilha) */
 const COLS=[["PTS",0],["REB",1],["AST",2],["STL",3],["BLK",4],["3PM",5],["TO",6],["FG","fg"],["FT","ft"]];
 function chaveCol(c,st){if(!st)return -1e9;if(c==="fg")return st[8]?st[7]/st[8]:-1;if(c==="ft")return st[10]?st[9]/st[10]:-1;return st[c]}
-function ordenaLj(rows){const o=UI.ljSort;if(!o||o.c==null)return rows;const k=r=>chaveCol(o.c,r.s);return rows.slice().sort((x,y)=>o.asc?k(x)-k(y):k(y)-k(x))}
+function ordenaLj(rows){const o=UI.ljSort;if(!o||o.c==null)return rows;const k=r=>o.c==="rk"?(r.val??-1e9):chaveCol(o.c,r.s);return rows.slice().sort((x,y)=>o.asc?k(x)-k(y):k(y)-k(x))}
 function cabLj(primeiro){const o=UI.ljSort||{};const seta=c=>String(o.c)===String(c)?(o.asc?" ▲":" ▼"):"";
-  return `<thead><tr><th data-col="" class="${o.c==null?"ord":""}" title="voltar à ordem por rendimento">${primeiro||"Jogador"}</th>${COLS.map(([n,c])=>`<th data-col="${c}" class="${String(o.c)===String(c)?"ord":""}${c==="fg"||c==="ft"?" fgft":""}" title="ordenar por ${n}">${n}${seta(c)}</th>`).join("")}</tr></thead>`}
+  return `<thead><tr><th data-col="rk" class="${o.c==null||o.c==="rk"?"ord":""}" title="ordenar pelo ranking"># ${primeiro||"Jogador"}${o.c==="rk"?(o.asc?" ▲":" ▼"):""}</th>${COLS.map(([n,c])=>`<th data-col="${c}" class="${String(o.c)===String(c)?"ord":""}${c==="fg"||c==="ft"?" fgft":""}" title="ordenar por ${n}">${n}${seta(c)}</th>`).join("")}</tr></thead>`}
 function subJog(t,st,extra){ // linha de baixo do jogador: time, fg e ft em evidência, mais o que vier
   return `<img src="img/l/${T(t)[1]}.webp" alt="${esc(T(t)[0])}"> <span>${esc(T(t)[0])}</span>${extra||""}`}
 const _RK={};
@@ -1446,7 +1452,7 @@ function cardPremios(a,b){
 function chipsPremios(a,b){
   const d=DADOS;const L=premios(a,b,d.last);if(!L)return "";
   const P=L.filter(w=>PRINCIPAIS.includes(w.k));if(!P.length)return "";
-  return `<div class="chips-pr"><small class="cp-rot">${esc(spRot(d.last).split(" ")[0].toUpperCase())}</small>${P.map(w=>`<span class="cp-i ${w.cls}" title="${esc(w.n)}: ${esc(w.d)}">${selo(w.k)}${face(w.x.p.id,w.x.p.n,"")}<span>${esc(w.x.p.n.split(" ").slice(-1)[0])}</span></span>`).join("")}</div>`;
+  return `<div class="chips-pr"><small class="cp-rot">${esc(spRot(d.last).split(" ")[0].toUpperCase())}</small>${P.map(w=>`<span class="cp-i ${w.cls}" title="${esc(w.n)}: ${esc(w.d)}">${selo(w.k)}<span>${esc(w.x.p.n.split(" ").slice(-1)[0])}</span></span>`).join("")}</div>`;
 }
 function destaques(a,b){
   const d=DADOS;const L=[];
@@ -2033,7 +2039,7 @@ document.addEventListener("click",e=>{
   else if(ds.nm){UI.noiteModo=ds.nm;render()}
   else if(ds.sub){UI.subJogo=ds.sub;window.scrollTo(0,0);render()}
   else if(ds.prm){UI.prModo=ds.prm;render()}
-  else if(ds.col!=null){const c=ds.col===""?null:(isNaN(+ds.col)?ds.col:+ds.col);const o=UI.ljSort||{};UI.ljSort=c==null?{c:null}:(String(o.c)===String(c)?{c,asc:!o.asc}:{c,asc:false});render()}
+  else if(ds.col!=null){const c=ds.col===""?null:(isNaN(+ds.col)?ds.col:+ds.col);const o=(UI.ljSort&&UI.ljSort.c!=null)?UI.ljSort:{c:"rk",asc:false};UI.ljSort=c==null?{c:null}:(String(o.c)===String(c)?{c,asc:!o.asc}:{c,asc:false});render()}
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
   else if(ds.drt){UI.drTemp=ds.drt;UI.drTime="todos";render()}
 });
