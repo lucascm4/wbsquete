@@ -1609,11 +1609,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794172011"></script>
-<script src="radar.js?v=1794172011"></script>
-<script src="midia.js?v=1794172011"></script>
+<script src="hist.js?v=1794172269"></script>
+<script src="radar.js?v=1794172269"></script>
+<script src="midia.js?v=1794172269"></script>
 <script>
-const VERSAO_PAINEL="20261108180651";
+const VERSAO_PAINEL="20261108181109";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1686,7 +1686,22 @@ function quando(ms){const d=new Date(ms);return `${DIAS[d.getDay()]} ${dd(d.getD
 const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 const odd=p=>p<=0.001?"—":Math.max(1.01,1/(p*MARGEM)).toFixed(2);
-let _ODM=null;function oddS(k,p){const v=odd(p);if(v==="—")return v;const dk="wbs.odds."+(DADOS?DADOS.cur:0);
+/* casa de apostas: como uma bet de verdade precifica (ver doc 39) */
+const ESCADA=[[2,0.01],[3,0.02],[4,0.05],[6,0.1],[10,0.2],[20,0.5],[30,1],[50,2],[1e9,5]];
+function degrau(o){for(const [ate,pas] of ESCADA)if(o<ate)return Math.round(o/pas)*pas;return o}
+function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];
+  const rem=(EST.rem[a]||[]).length+(EST.rem[b]||[]).length;
+  const P=[sm.pa,sm.pe,sm.pb];
+  if(!rem){return sm[k]=P.map(p=>p>0.5?"✓":"✗")} // acabou: mercado liquidado
+  // 1) risco de modelo: a casa nunca confia 100% no próprio modelo (encolhe os extremos, mais quanto mais jogo falta)
+  const T=rem>=20?0.8:rem>=8?0.85:0.9;let q=P.map(p=>Math.pow(Math.max(p,1e-4),T));let sq=q.reduce((x,y)=>x+y,0);q=q.map(x=>x/sq);
+  // 2) piso: ninguém paga mais que ~41 (chance mínima de 2,4%) enquanto tem jogo
+  const PISO=0.024;q=q.map(x=>Math.max(x,PISO));sq=q.reduce((x,y)=>x+y,0);q=q.map(x=>x/sq);
+  // 3) margem de 7% pelo método da potência: pesa mais na zebra (viés favorito-zebra, como as casas fazem)
+  let lo=0.5,hi=1;for(let it=0;it<40;it++){const c=(lo+hi)/2;const t=q.reduce((x,y)=>x+Math.pow(y,c),0);if(t>MARGEM)lo=c;else hi=c}
+  const c=(lo+hi)/2;const o=q.map(x=>{let v=1/Math.pow(x,c);v=Math.min(41,Math.max(1.03,v));return degrau(v)});
+  return sm[k]=o.map(v=>v.toFixed(v>=10?(v%1?1:0):2))}
+let _ODM=null;function oddS(k,p,pronto){const v=pronto!=null?pronto:odd(p);if(v==="—"||v==="✓"||v==="✗")return v;const dk="wbs.odds."+(DADOS?DADOS.cur:0);
   if(!_ODM||_ODM._k!==dk){_ODM=null;try{_ODM=JSON.parse(localStorage.getItem(dk)||"null")}catch(e){}_ODM=_ODM||{};_ODM._k=dk}
   let m=_ODM[k];if(!m){m=_ODM[k]={v,prev:v}}else if(m.v!==v){m.prev=m.v;m.v=v}try{localStorage.setItem(dk,JSON.stringify(_ODM))}catch(e){}
   const a=+m.v,b=+m.prev;return v+(a>b?'<i class="od-up">▲</i>':a<b?'<i class="od-dn">▼</i>':"")}
@@ -1705,7 +1720,7 @@ const GLOSS={
  vira:"VIRA: quem lidera a categoria agora deve perder até domingo, pela previsão.",
  pegado:"PEGADO: categoria em que cada lado tem entre 30% e 70% de chance. Decide no detalhe.",
  rk:"Rk 9cat: ranking próprio no formato da nossa liga (9 categorias, z-score, FG% e FT% pesados pelo volume, TO contra), no mesmo método do Basketball Monster. Rk 7d é o mesmo ranking só com os últimos 7 dias.",
- odd:"Odd: quanto você levaria por 1 real apostado. Vem da chance calculada pelo modelo do Loydão, com 7% de margem da casa, como numa bet de verdade.",
+ odd:"Odd: quanto você levaria por 1 real apostado. A casa parte da chance do modelo do Loydão e faz o que uma bet de verdade faz: desconfia do próprio modelo (encolhe os extremos), não paga mais que 41, cobra 7% de margem pesando mais na zebra e arredonda nos degraus de casa de aposta. A % ao lado é a chance pura do modelo. Quando não falta jogo, o mercado é liquidado (✓/✗).",
  chances:"Chances: 4.000 simulações do resto da semana. Em cada uma, cada jogador rende perto da média dele, com variação normal.",
  playoffs:"Playoffs: chance de terminar entre os 6 primeiros. 1.200 simulações do resto da temporada, com o modelo testado nas 4 temporadas anteriores da liga (acerta a classificação de playoffs com erro Brier 0,19 na semana 3 e 0,12 na semana 8).",
  titulo:"Título: chance de ganhar o mata-mata nas simulações (seeds 1 e 2 folgam na primeira semana).",
@@ -2034,7 +2049,7 @@ function miniTabela(a,b,sc){
 }
 function betFaixa(a,b,s){
   const A=T(a),B=T(b);const fav=s.pa>s.pb?1:s.pb>s.pa?2:0;
-  return `<div class="bf"><span class="bf-m"><b>BET</b>LOYDE</span><span class="bq ${fav===1?"fav":""}"><small>1</small><b>${oddS(a+"-"+b+"-1",s.pa)}</b></span><span class="bq ${fav===0?"fav":""}"><small>X</small><b>${oddS(a+"-"+b+"-x",s.pe)}</b></span><span class="bq ${fav===2?"fav":""}"><small>2</small><b>${oddS(a+"-"+b+"-2",s.pb)}</b></span></div>`;
+  return `<div class="bf"><span class="bf-m"><b>BET</b>LOYDE</span><span class="bq ${fav===1?"fav":""}"><small>1</small><b>${oddS(a+"-"+b+"-1",s.pa,casa(a,b,s)[0])}</b></span><span class="bq ${fav===0?"fav":""}"><small>X</small><b>${oddS(a+"-"+b+"-x",s.pe,casa(a,b,s)[1])}</b></span><span class="bq ${fav===2?"fav":""}"><small>2</small><b>${oddS(a+"-"+b+"-2",s.pb,casa(a,b,s)[2])}</b></span></div>`;
 }
 function jogoNBA(p,sp){ // "@OKC 55-84 · 2:28 3ºQ"
   const d=DADOS;if(sp!==d.cur||!d.nba)return "";const g=d.nba[p.pro];if(!g)return "";
@@ -2150,7 +2165,7 @@ function betLoyde(a,b,s){
   const A=T(a),B=T(b);const fav=s.pa>s.pb?1:s.pb>s.pa?2:0;
   return `<div class="bet"><div class="marca"><span class="logo"><b>BET</b>LOYDE<i>COMO FECHA</i></span><small>${tip("odd","o que é a odd")}</small></div>
   <div class="bet-jogo"><div class="bet-times"><span><img src="img/l/${A[1]}.webp" alt="">${esc(A[0])}</span><span><img src="img/l/${B[1]}.webp" alt="">${esc(B[0])}</span></div>
-  <div class="bet-odds"><span class="bq ${fav===1?"fav":""}"><small>1</small><b>${oddS(a+"-"+b+"-1",s.pa)}</b><em>${pct(s.pa)}</em></span><span class="bq ${fav===0?"fav":""}"><small>X</small><b>${oddS(a+"-"+b+"-x",s.pe)}</b><em>${pct(s.pe)}</em></span><span class="bq ${fav===2?"fav":""}"><small>2</small><b>${oddS(a+"-"+b+"-2",s.pb)}</b><em>${pct(s.pb)}</em></span></div></div>
+  <div class="bet-odds"><span class="bq ${fav===1?"fav":""}"><small>1</small><b>${oddS(a+"-"+b+"-1",s.pa,casa(a,b,s)[0])}</b><em>${pct(s.pa)}</em></span><span class="bq ${fav===0?"fav":""}"><small>X</small><b>${oddS(a+"-"+b+"-x",s.pe,casa(a,b,s)[1])}</b><em>${pct(s.pe)}</em></span><span class="bq ${fav===2?"fav":""}"><small>2</small><b>${oddS(a+"-"+b+"-2",s.pb,casa(a,b,s)[2])}</b><em>${pct(s.pb)}</em></span></div></div>
   <div class="pe">Palpite do Loydão: <b>${esc(fav===2?B[0]:A[0])} ${placarProvavel(s,fav===2?"b":"a")}</b> · odd = 1 ÷ (chance × 1,07)</div></div>`;
 }
 function placarProvavel(s,lado){const e=Object.entries(s.res).filter(([k])=>{const [w,l]=k.split("-").map(Number);return lado==="a"?w>l:l>w}).sort((x,y)=>y[1]-x[1])[0];if(!e)return "";const [w,l,t]=e[0].split("-").map(Number);return lado==="a"?rtxt(w,l,t):rtxt(l,w,t)}
