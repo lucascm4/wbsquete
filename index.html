@@ -1231,6 +1231,8 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
  .cab-secao{margin-bottom:6px}
  .placar-topo{padding:8px 6px}.placar-topo .rosto{width:42px;height:42px}.placar-topo .lado .nm{font-size:15px}.placar-topo .lado .mg{font-size:11px}.placar-topo .pl{font-size:32px}
 }
+.jn-mini>:not(small){opacity:0;transition:opacity .2s}body.rolou .jn-mini>:not(small){opacity:1}
+.jn-mini small{font-size:12px;color:#fff}body:not(.rolou) .jn-mini small:after{content:" · deslize pra trocar";color:var(--apagado);font-weight:500}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1297,10 +1299,10 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794163739"></script>
-<script src="radar.js?v=1794163739"></script>
+<script src="hist.js?v=1794163809"></script>
+<script src="radar.js?v=1794163809"></script>
 <script>
-const VERSAO_PAINEL="20261108154859";
+const VERSAO_PAINEL="20261108155009";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3031,5 +3033,7 @@ function instalarApp(){
   el.addEventListener("click",e=>{if(e.target===el||e.target.closest("[data-fecha]"))fecharFicha()});document.body.appendChild(el);
 }
 document.addEventListener("click",e=>{if(e.target.closest("[data-instalar]")){e.preventDefault();instalarApp()}});
+/* mostra o placar mini na barra do confronto só depois de rolar */
+window.addEventListener("scroll",()=>{document.body.classList.toggle("rolou",window.scrollY>230)},{passive:true});
 </script>
 </body></html>
