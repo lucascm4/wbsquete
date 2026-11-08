@@ -1134,7 +1134,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108023503";
+const VERSAO_PAINEL="20261108023611";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1706,7 +1706,7 @@ function premios(a,b,sp){ // sp="sem" (acumulado da semana) ou número do dia
     pos("PACOCA",top(r=>r.g>=2&&r.ruim>0.8&&!usado.has(r.p.id),r=>r.ruim));
     pos("TRAB",top(r=>r.g>=2,r=>r.g*10+r.val/100));
   }
-  const cb=banco.sort((x,y)=>y.z-x.z)[0];if(cb&&cb.z>=(dia?3:4))out.push({k:"CULPADO",...PREMIO.CULPADO,x:cb,W:null,l:`${linhaBanco(cb.B)} fora do time em ${cb.bg} j · culpa do ${T(cb.t)[2]}`});
+  const cb=banco.sort((x,y)=>y.z-x.z)[0];if(cb&&cb.z>=(dia?2.5:3))out.push({k:"CULPADO",...PREMIO.CULPADO,x:cb,W:null,l:`${linhaBanco(cb.B)} fora do time em ${cb.bg} j · culpa do ${T(cb.t)[2]}`});
   return out;
 }
 function cardPremios(a,b){
