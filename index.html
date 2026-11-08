@@ -1028,6 +1028,11 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .atalho.baixar{background:var(--amarelo);color:#000;border-color:#000}
 .lg-i>b{font-family:var(--display);font-weight:400;font-size:24px;color:var(--amarelo);width:28px;text-align:center;flex:none}
 
+.rk-sel{display:inline-flex;align-items:center;gap:5px;font-family:var(--display);font-size:15px;color:#fff;text-shadow:1px 1px 0 #000}
+.rk-sel select{background:#000;color:var(--amarelo);border:2px solid var(--amarelo);padding:4px 6px;font:600 13px system-ui,sans-serif}
+.rk-n.alt{color:#7fc8ff}.rk-n.ld{color:#fff;background:var(--vermelho);padding:0 3px;border:1px solid #000}
+.ros td.rkl{color:var(--amarelo);font-weight:700}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1089,7 +1094,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108021608";
+const VERSAO_PAINEL="20261108021834";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1207,7 +1212,15 @@ function prepara(d){
    const g7=Math.max(1,...todos.map(p=>p.l7?p.l7[11]:0)),gmin7=Math.max(2,Math.round(g7*0.5));
    const ord=k=>todos.filter(p=>p[k]!=null&&(k==="nota"?p.av&&p.av[11]>=gmin:p.l7&&p.l7[11]>=gmin7)).sort((x,y)=>y[k]-x[k]);
    const r0={},r1={};ord("nota").forEach((p,i)=>r0[p.id]=i+1);ord("nota7").forEach((p,i)=>r1[p.id]=i+1);
-   todos.forEach(p=>{p.rk=(r0[p.id]||r1[p.id])?[r0[p.id]||null,r1[p.id]||null]:null});}
+   todos.forEach(p=>{p.rk=(r0[p.id]||r1[p.id])?[r0[p.id]||null,r1[p.id]||null]:null});
+   // projetado: projeção da ESPN pro resto da temporada, avaliada no mesmo z 9-cat
+   if(nota){todos.forEach(p=>{const z=p.pj?nota(p.pj):null;p.notaP=z?z.n:null;const x=p.avx?nota(p.avx):null;p.notaX=x?x.n:null;
+     // LOYDÃO: média da temporada encolhida pra projeção (o que o modelo usa) + forma dos 7 dias + projeção; desconta lesão
+     if(p.notaX==null){p.notaL=null;return}
+     const g7=p.l7&&p.l7[11]>=2?p.nota7:null;let L=0.55*p.notaX+(g7!=null?0.25*g7:0.25*p.notaX)+(p.notaP!=null?0.20*p.notaP:0.20*p.notaX);
+     if(p.inj==="OUT")L-=1.5;else if(p.inj==="DAY_TO_DAY")L-=0.4;p.notaL=L});
+    const rr=k=>{const m={};todos.filter(p=>p[k]!=null).sort((x,y)=>y[k]-x[k]).forEach((p,i)=>m[p.id]=i+1);return m};
+    const rP=rr("notaP"),rL=rr("notaL");todos.forEach(p=>{p.rkP=rP[p.id]||null;p.rkL=rL[p.id]||null});}}
   d.teams.forEach(t=>{
     let a=zero();for(let sp=d.s0;sp<=ate;sp++){const v=d.D[t.id]&&d.D[t.id][sp];if(v)a=soma(a,v)}
     e.tot[t.id]=a;
@@ -1471,7 +1484,7 @@ function valorJogo(v){return v[0]+1.2*v[1]+1.5*v[2]+3*v[3]+3*v[4]+v[5]-v[6]+(v[7
 /* ordenação das tabelas de jogadores (clique no cabeçalho, igual planilha) */
 const COLS=[["PTS",0],["REB",1],["AST",2],["STL",3],["BLK",4],["3PM",5],["TO",6],["FG","fg"],["FT","ft"]];
 function chaveCol(c,st){if(!st)return -1e9;if(c==="fg")return st[8]?st[7]/st[8]:-1;if(c==="ft")return st[10]?st[9]/st[10]:-1;return st[c]}
-function ordenaLj(rows){const o=UI.ljSort;if(!o||o.c==null)return rows;const k=r=>o.c==="rk"?(r.val??-1e9):chaveCol(o.c,r.s);return rows.slice().sort((x,y)=>o.asc?k(x)-k(y):k(y)-k(x))}
+function ordenaLj(rows){const o=UI.ljSort;if(!o||o.c==null)return rows;const k=r=>o.c==="rk"?(UI._rkVer&&(UI.rkModo||"periodo")!=="periodo"?-(UI._rkVer[r.p.id]||99999):(r.val??-1e9)):chaveCol(o.c,r.s);return rows.slice().sort((x,y)=>o.asc?k(x)-k(y):k(y)-k(x))}
 function cabLj(primeiro){const o=UI.ljSort||{};const seta=c=>String(o.c)===String(c)?(o.asc?" ▲":" ▼"):"";
   return `<thead><tr><th data-col="rk" class="${o.c==null||o.c==="rk"?"ord":""}" title="ordenar pelo ranking"># ${primeiro||"Jogador"}${o.c==="rk"?(o.asc?" ▲":" ▼"):""}</th>${COLS.map(([n,c])=>`<th data-col="${c}" class="${String(o.c)===String(c)?"ord":""}${c==="fg"||c==="ft"?" fgft":""}" title="ordenar por ${n}">${n}${seta(c)}</th>`).join("")}</tr></thead>`}
 function subJog(t,st,extra){ // linha de baixo do jogador: time, fg e ft em evidência, mais o que vier
@@ -1485,7 +1498,16 @@ function rankLiga(sp){ // posição de cada jogador no rendimento da liga inteir
   if(f)L.forEach(x=>{const r=f(x.a);x.c=r.c;x.z=r.n-(r.c.TO>0?r.c.TO*0.65:0)});else L.forEach(x=>x.z=valorJogo(x.a));
   L.sort((x,y)=>y.z-x.z);L.forEach((x,i)=>{m[x.id]=i+1;v[x.id]=x.z;cz[x.id]=x.c});m._n=L.length;m.v=v;m.c=cz;return _RK[k]=m;
 }
-const rkTag=(m,id)=>m[id]?`<span class="rk-n">#${m[id]}</span>`:"";
+const rkTag=(m,id)=>m[id]?`<span class="rk-n ${m._cls||""}">#${m[id]}</span>`:"";
+const RK_MODOS=[["periodo","do período"],["semana","semana"],["season","temporada"],["l7","7 dias"],["proj","projetado"],["loydao","LOYDÃO ★"]];
+function rkVer(sp){ // mapa id -> posição, conforme o rank escolhido
+  const modo=UI.rkModo||"periodo";const d=DADOS;let m;
+  if(modo==="periodo")m=Object.assign({},rankLiga(sp));
+  else if(modo==="semana")m=Object.assign({},rankLiga("sem"));
+  else{const campo={season:p=>p.rk&&p.rk[0],l7:p=>p.rk&&p.rk[1],proj:p=>p.rkP,loydao:p=>p.rkL}[modo];m={};let n=0;d.P.concat(d.fa||[]).forEach(p=>{const v=campo(p);if(v){m[p.id]=v;n=Math.max(n,v)}});m._n=n}
+  m._cls=modo==="loydao"?"ld":modo==="periodo"?"":"alt";UI._rkVer=m;return m;
+}
+function rkSel(sp){const modo=UI.rkModo||"periodo";return `<label class="rk-sel"># <select id="rkModo" aria-label="Qual ranking mostrar">${RK_MODOS.map(([k,n])=>`<option value="${k}" ${k===modo?"selected":""}>${k==="periodo"?(sp==="sem"?"semana":sp>DADOS.cur?"projetado":"da noite"):n}</option>`).join("")}</select> ${tip("Escolha qual ranking aparece no #. Da noite / semana: o que o cara fez no período. Temporada: média por jogo no 9-cat. 7 dias: só a última semana. Projetado: projeção da ESPN pro resto do ano avaliada no nosso 9-cat. LOYDÃO: o que o Loydão mais confia — temporada (ajustada pela projeção quando tem poucos jogos) 55%, forma dos 7 dias 25%, projeção 20%, com desconto por lesão.","?")}</label>`}
 function listaJuntos(a,b,sp){
   const d=DADOS;const rows=[];const futuro=sp!=="sem"&&sp>d.cur;const ft=UI.filtroTime||0;
   [a,b].filter(t=>!ft||t===ft).forEach(t=>(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t)).forEach(p=>{
@@ -1495,13 +1517,13 @@ function listaJuntos(a,b,sp){
   }));
   const tit=ordenaLj(rows.filter(r=>r.slot<12).sort((x,y)=>y.val-x.val)),banco=rows.filter(r=>r.slot>=12).sort((x,y)=>(y.s?y.s[0]:0)-(x.s?x.s[0]:0));
   const n1=x=>futuro?(Math.round(x*10)/10).toFixed(1).replace(".0",""):x;
-  const RK=futuro?{}:rankLiga(sp);
+  const RK=futuro?{}:rankLiga(sp);const RKV=rkVer(sp);
   if(RK.v){rows.forEach(r=>{if(RK.v[r.p.id]!=null)r.val=RK.v[r.p.id]});tit.sort((x,y)=>y.val-x.val);if(UI.ljSort&&UI.ljSort.c!=null){const o=ordenaLj(tit);tit.length=0;tit.push(...o)}}
   const linha=r=>{const p=r.p;const st=r.s;const cor=T(r.t)[4];const g=!futuro&&sp!=="sem"?(d.nba&&d.nba[p.pro]):null;
-    return `<tr class="${r.pend?"pend":""}${r.proj?" proj":""}" style="--cor:${cor}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RK,p.id)}${esc(p.n)}</b><small>${subJog(r.t,futuro?null:st,`${r.g!=null&&sp==="sem"?`<span>${r.g} j</span>`:""}${r.slot>=12&&r.slot!==13?'<span class="tag banco">BANCO</span>':r.slot===13?'<span class="tag ir">IR</span>':""} ${tagInj(p)}${r.pend?'<span class="tag hoje">JOGA</span>':""}${r.proj?'<span class="tag ir">MÉDIA</span>':""}`)}</small>${g?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
+    return `<tr class="${r.pend?"pend":""}${r.proj?" proj":""}" style="--cor:${cor}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RKV,p.id)}${esc(p.n)}</b><small>${subJog(r.t,futuro?null:st,`${r.g!=null&&sp==="sem"?`<span>${r.g} j</span>`:""}${r.slot>=12&&r.slot!==13?'<span class="tag banco">BANCO</span>':r.slot===13?'<span class="tag ir">IR</span>':""} ${tagInj(p)}${r.pend?'<span class="tag hoje">JOGA</span>':""}${r.proj?'<span class="tag ir">MÉDIA</span>':""}`)}</small>${g?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
     ${st?`<td class="pts">${n1(st[0])}</td><td>${n1(st[1])}</td><td>${n1(st[2])}</td><td>${n1(st[3])}</td><td>${n1(st[4])}</td><td>${n1(st[5])}</td><td>${n1(st[6])}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td>`:`<td colspan="9" class="esp">${r.pend?"ainda não jogou":"sem média"}</td>`}</tr>`};
   const cab=cabLj();
-  const filtros=`<div class="pilulas mini" role="group" aria-label="Time">${[[0,"Os dois"],[a,T(a)[0]],[b,T(b)[0]]].map(([k,n])=>`<button class="pil" type="button" data-ft="${k}" aria-pressed="${ft===k}">${esc(n)}</button>`).join("")}</div>`;
+  const filtros=`<div class="pilulas mini" role="group" aria-label="Time">${[[0,"Os dois"],[a,T(a)[0]],[b,T(b)[0]]].map(([k,n])=>`<button class="pil" type="button" data-ft="${k}" aria-pressed="${ft===k}">${esc(n)}</button>`).join("")}${futuro?"":rkSel(sp)}</div>`;
   return `<div class="card lj-wrap"><div class="bloco-tit">JOGADORES <small>${sp==="sem"?"semana toda":futuro?spRot(sp)+" · média da temporada de quem joga":spRot(sp)} · do melhor pro pior</small></div>${filtros}
   <table class="lj">${cab}<tbody>${tit.map(linha).join("")||`<tr><td colspan="10" class="esp">${futuro?"Ninguém joga nesse dia.":"Ninguém em quadra nesse dia."}</td></tr>`}${banco.length?`<tr class="sepr"><td colspan="10">Banco e IR${sp==="sem"?" · pontos que ficaram fora":""}</td></tr>`+banco.map(r=>sp==="sem"?`<tr style="--cor:${T(r.t)[4]}" class="fora"><td class="jg"><div class="jg-in">${face(r.p.id,r.p.n,"")}<div><b>${esc(r.p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${r.bg} jogo${r.bg>1?"s":""} no banco</small></div></div></td><td class="pts">${r.bp}</td><td colspan="8" class="esp">no banco</td></tr>`:linha(r)).join(""):""}</tbody></table></div>`;
 }
@@ -1697,7 +1719,7 @@ function vJogo(i){
 /* ---------- jogadores da noite ---------- */
 function vDesempenhos(){
   const d=DADOS;if(!d)return vazio();
-  const sp=UI.desDia??d.last;const ft=UI.noiteTime||0;const RK=rankLiga(sp);
+  const sp=UI.desDia??d.last;const ft=UI.noiteTime||0;const RK=rankLiga(sp);const RKV=rkVer(sp);
   const rows=[];d.P.filter(p=>!p.fora&&(!ft||p.t===ft)).forEach(p=>{const v=sp==="sem"?(p.g?p.W:null):(p.dl&&p.dl[sp]);if(!v)return;
     rows.push({p,t:p.t,s:v.slice(0,11),slot:sp==="sem"?0:v[11],g:sp==="sem"?p.g:1,val:RK.v[p.id]??0,c:RK.c&&RK.c[p.id]})});
   rows.sort((x,y)=>y.val-x.val);
@@ -1709,13 +1731,13 @@ function vDesempenhos(){
     if(c["FT%"]>=1.8)L.push([`${st[9]}/${st[10]} FT`,"bom",c["FT%"]]);if(c["FT%"]<=-1.8)L.push([`${st[9]}/${st[10]} FT`,"ruim",-c["FT%"]]);
     return L.sort((a,b)=>b[2]-a[2]).slice(0,3).map(([t,k])=>`<span class="dz ${k}">${t}</span>`).join("")};
   const cel=(r,k,i,txt)=>`<td class="${nivel(k==="TO"?(r.c&&r.c.TO<0?r.c.TO:0):r.c&&r.c[k])}">${txt??r.s[i]}</td>`;
-  const linha=r=>{const p=r.p,st=r.s;return `<tr style="--cor:${T(r.t)[4]}" class="${r.slot>=12?"fora":""}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RK,p.id)}${esc(p.n)}</b><small>${subJog(r.t,null,`${sp==="sem"?`<span>${r.g} j</span>`:""}${r.slot>=12?'<span class="tag banco">BANCO</span>':""}`)}</small><small class="dzs">${destaque(r)}</small></div></div></td>
+  const linha=r=>{const p=r.p,st=r.s;return `<tr style="--cor:${T(r.t)[4]}" class="${r.slot>=12?"fora":""}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RKV,p.id)}${esc(p.n)}</b><small>${subJog(r.t,null,`${sp==="sem"?`<span>${r.g} j</span>`:""}${r.slot>=12?'<span class="tag banco">BANCO</span>':""}`)}</small><small class="dzs">${destaque(r)}</small></div></div></td>
    ${MAP.map(([k,i])=>cel(r,k,i)).join("")}${cel(r,"FG%",7,`${st[7]}/${st[8]}`).replace("<td class=\"","<td class=\"fgft ")}${cel(r,"FT%",9,`${st[9]}/${st[10]}`).replace("<td class=\"","<td class=\"fgft ")}</tr>`};
   const L=ordenaLj(rows.slice(0,60));
   let h=`<div class="cab-secao"><span class="sobre">DESEMPENHOS · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">${sp==="sem"?"DESEMPENHOS DA SEMANA":"DESEMPENHOS DA NOITE"}</h1><p class="linha-fina">Todas as categorias pesam igual: 6 roubos valem tanto quanto 40 pontos. Amarelo = categoria em que o cara foi muito acima do normal; vermelho = afundou. Zero TO quase não conta.</p></div>
   <div class="dias" role="group" aria-label="Dia"><button class="dia" type="button" data-dd="sem" aria-pressed="${sp==="sem"}">SEMANA<small>total</small></button>`;
   for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++){const r=spRot(x).split(" ");h+=`<button class="dia" type="button" data-dd="${x}" aria-pressed="${String(sp)===String(x)}">${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
-  h+=`</div><div class="pilulas"><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===ft?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
+  h+=`</div><div class="pilulas"><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===ft?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select>${rkSel(sp)}</div>
   <div class="card lj-wrap"><table class="lj des">${cabLj()}<tbody>${L.map(linha).join("")||`<tr><td colspan="10" class="esp">Ninguém jogou ainda.</td></tr>`}</tbody></table></div>`;
   return h;
 }
@@ -1734,14 +1756,14 @@ function vNoite(){
   if(modo==="piores"){const cand=rows.filter(r=>sp==="sem"?r.g>=2:(r.min||0)>=15).sort((x,y)=>x.val-y.val);const dono=escalaMelhor(cand);
     const tot=zero();dono.forEach(r=>{if(r)r.s.forEach((x,i)=>tot[i]+=x)});window._SEL=[];coco=quadraSelecao(dono,tot,sp,true);}
   const L=ordenaLj(rows.slice(0,40));
-  const RK=rankLiga(sp);
+  const RK=rankLiga(sp);const RKV=rkVer(sp);
   const linha=r=>{const p=r.p;const st=r.s;const banco=r.slot>=12;
-    return `<tr class="${banco?"fora":""}" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RK,p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,`${sp==="sem"?`<span>${r.g} j</span>`:""}${banco?'<span class="tag banco">BANCO</span>':""}`)}</small>${sp!=="sem"?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
+    return `<tr class="${banco?"fora":""}" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RKV,p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,`${sp==="sem"?`<span>${r.g} j</span>`:""}${banco?'<span class="tag banco">BANCO</span>':""}`)}</small>${sp!=="sem"?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
     <td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td></tr>`};
   let h=`<div class="cab-secao"><span class="sobre">JOGADORES · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">${modo==="piores"?"OS PIORES":"OS MELHORES"} ${sp==="sem"?"DA SEMANA":"DA NOITE"}</h1><p class="linha-fina">Todos os jogadores da liga, ordenados pelo valor nas 9 categorias da nossa liga (z-score, FG% e FT% pesados pelo volume, TO contra). O <b>#</b> é a posição do cara entre todos os ${rankLiga(sp)._n||0} que jogaram${ft?", mesmo filtrando por time":""}.</p></div>
   <div class="dias" role="group" aria-label="Dia"><button class="dia" type="button" data-nd="sem" aria-pressed="${sp==="sem"}">SEMANA<small>total</small></button>`;
   for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++){const r=spRot(x).split(" ");h+=`<button class="dia" type="button" data-nd="${x}" aria-pressed="${String(sp)===String(x)}">${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
-  h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores" aria-pressed="${modo==="melhores"}">Melhores</button><button class="pil" type="button" data-nm="piores" aria-pressed="${modo==="piores"}">Piores</button><button class="pil" type="button" data-nm="selecao" aria-pressed="${modo==="selecao"}">Seleção ${tip("A melhor escalação possível com todo mundo da liga naquele dia: PG, SG, SF, PF, C, G, F e 2 UTIL, respeitando as posições da ESPN.","da noite")}</button><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===ft?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
+  h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores" aria-pressed="${modo==="melhores"}">Melhores</button><button class="pil" type="button" data-nm="piores" aria-pressed="${modo==="piores"}">Piores</button>${rkSel(sp)}<button class="pil" type="button" data-nm="selecao" aria-pressed="${modo==="selecao"}">Seleção ${tip("A melhor escalação possível com todo mundo da liga naquele dia: PG, SG, SF, PF, C, G, F e 2 UTIL, respeitando as posições da ESPN.","da noite")}</button><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===ft?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
   ${coco}<div class="card lj-wrap"><table class="lj">${cabLj()}<tbody>${L.map(linha).join("")||`<tr><td colspan="10" class="esp">Ninguém jogou ainda.</td></tr>`}</tbody></table></div>`;
   return h;
 }
@@ -1767,7 +1789,7 @@ function fichaJog(r,k,RK,cls){
    <b>${esc(nm)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt="${esc(T(r.t)[0])}">${RK[p.id]?"#"+RK[p.id]:""}</small>
    <em><span>${st[0]}<i>p</i></span><span>${st[1]}<i>r</i></span><span>${st[2]}<i>a</i></span>${ext.map(x=>`<span>${x[0]}<i>${x[1]}</i></span>`).join("")}</em>${r.slot>=12?'<u>banco</u>':""}</div>`}
 function quadraSelecao(dono,tot,sp,coco){
-  const RK=rankLiga(sp);
+  const RK=rkVer(sp);
   const linhas='<svg class="q-linhas" viewBox="0 0 100 94" preserveAspectRatio="none" aria-hidden="true"><rect x="1" y="1" width="98" height="92"/><rect x="34" y="1" width="32" height="38"/><circle cx="50" cy="39" r="12"/><path d="M6 1v27A45 45 0 0 0 94 28V1"/><path d="M44 8h12"/><circle cx="50" cy="11" r="1.8"/><path d="M38 93a12 12 0 0 1 24 0"/></svg>';
   const quadra=[0,1,2,3,4].map(k=>`<div class="q-pos" style="left:${POS_Q[k][0]}%;top:${POS_Q[k][1]}%">${fichaJog(dono[k],k,RK)}</div>`).join("");
   const banco=[5,6,7,8].map(k=>fichaJog(dono[k],k,RK,"mini")).join("");
@@ -1802,12 +1824,12 @@ function vSelecao(rows,sp){
   const d=DADOS;const ord=rows.slice().sort((x,y)=>y.val-x.val);const dono=escalaMelhor(ord);
   const tot=zero();dono.forEach(r=>{if(r)r.s.forEach((x,i)=>tot[i]+=x)});
   const linha=(r,k)=>{if(!r)return `<tr><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span><div><b>—</b></div></div></td><td colspan="9" class="esp">ninguém</td></tr>`;const p=r.p,st=r.s;
-    return `<tr style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>${face(p.id,p.n,"")}<div><b>${rkTag(rankLiga(sp),p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,r.slot>=12?'<span class="tag banco">NO BANCO</span>':"")}</small></div></div></td><td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td></tr>`};
+    return `<tr style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>${face(p.id,p.n,"")}<div><b>${rkTag(rkVer(sp),p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,r.slot>=12?'<span class="tag banco">NO BANCO</span>':"")}</small></div></div></td><td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td></tr>`};
   const nb=dono.filter(r=>r&&r.slot>=12).length;
   let h=`<div class="cab-secao"><span class="sobre">SELEÇÃO · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">${sp==="sem"?"SELEÇÃO DA SEMANA":"SELEÇÃO DA NOITE"}</h1><p class="linha-fina">Toque na carinha para ver as stats. A melhor escalação possível ${sp==="sem"?"na semana":"com os jogos do dia"}, juntando os 12 elencos: PG, SG, SF, PF, C, G, F e 2 UTIL, nas posições da ESPN.${nb?` <b>${nb} ${nb>1?"estavam":"estava"} no banco.</b>`:""}</p></div>
   <div class="dias" role="group" aria-label="Dia"><button class="dia" type="button" data-nd="sem" aria-pressed="${sp==="sem"}">SEMANA<small>total</small></button>`;
   for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++){const r=spRot(x).split(" ");h+=`<button class="dia" type="button" data-nd="${x}" aria-pressed="${String(sp)===String(x)}">${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
-  h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores">Melhores</button><button class="pil" type="button" data-nm="piores">Piores</button><button class="pil" type="button" data-nm="selecao" aria-pressed="true">Seleção</button></div>
+  h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores">Melhores</button><button class="pil" type="button" data-nm="piores">Piores</button><button class="pil" type="button" data-nm="selecao" aria-pressed="true">Seleção</button>${rkSel(sp)}</div>
   ${quadraSelecao(dono,tot,sp)}
   <div class="card lj-wrap"><table class="lj"><thead><tr><th>Escalação</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th class="fgft">FG</th><th class="fgft">FT</th></tr></thead><tbody>${dono.map(linha).join("")}
   <tr class="total"><td class="jg"><div class="jg-in"><div><b>TOTAL</b><small>${sp==="sem"?"na semana":"na noite"}</small></div></div></td><td class="pts">${tot[0]}</td><td>${tot[1]}</td><td>${tot[2]}</td><td>${tot[3]}</td><td>${tot[4]}</td><td>${tot[5]}</td><td>${tot[6]}</td><td class="fgft">${tot[7]}/${tot[8]}<br><small>${tot[8]?(100*tot[7]/tot[8]).toFixed(1):0}%</small></td><td class="fgft">${tot[9]}/${tot[10]}<br><small>${tot[10]?(100*tot[9]/tot[10]).toFixed(1):0}%</small></td></tr></tbody></table></div>`;
@@ -1950,7 +1972,7 @@ function vJogadores(){
   if(f!=="todos"){const m=d.mt[+f];ps=ps.filter(p=>p.t===m[0]||p.t===m[1])}
   const v=p=>modo==="sem"?p.W:modo==="l7"?(p.l7?p.l7.slice(0,11):zero()):(p.av?p.av.slice(0,11):zero());
   const gj=p=>modo==="sem"?p.g:modo==="l7"?(p.l7?p.l7[11]:0):(p.av?p.av[11]:0);
-  const cols=[["nota","Nota",p=>modo==="l7"?(p.nota7??-99):(p.nota??-99)],["rk","Rk 9cat",p=>-(p.rk?p.rk[0]:999)],["rk7","Rk 7d",p=>-(p.rk&&p.l7?p.rk[1]:999)],["g","J",gj],["0","PTS",p=>v(p)[0]],["1","REB",p=>v(p)[1]],["2","AST",p=>v(p)[2]],["3","STL",p=>v(p)[3]],["4","BLK",p=>v(p)[4]],["5","3PM",p=>v(p)[5]],["6","TO",p=>-v(p)[6]],["fg","FG%",p=>{const x=v(p);return x[8]?x[7]/x[8]:0}],["ft","FT%",p=>{const x=v(p);return x[10]?x[9]/x[10]:0}],["pick","Pick",p=>-(HIST.draft[p.n]||999)]];
+  const cols=[["nota","Nota",p=>modo==="l7"?(p.nota7??-99):(p.nota??-99)],["rkl","Rk Loydão",p=>-(p.rkL||999)],["rk","Rk 9cat",p=>-(p.rk?p.rk[0]:999)],["rkp","Rk proj",p=>-(p.rkP||999)],["rk7","Rk 7d",p=>-(p.rk&&p.l7?p.rk[1]:999)],["g","J",gj],["0","PTS",p=>v(p)[0]],["1","REB",p=>v(p)[1]],["2","AST",p=>v(p)[2]],["3","STL",p=>v(p)[3]],["4","BLK",p=>v(p)[4]],["5","3PM",p=>v(p)[5]],["6","TO",p=>-v(p)[6]],["fg","FG%",p=>{const x=v(p);return x[8]?x[7]/x[8]:0}],["ft","FT%",p=>{const x=v(p);return x[10]?x[9]/x[10]:0}],["pick","Pick",p=>-(HIST.draft[p.n]||999)]];
   const ord=cols.find(c=>c[0]===UI.jogOrd)||cols[0];
   ps.sort((x,y)=>ord[2](y)-ord[2](x));
   const nfmt=x=>modo==="sem"?x:x.toFixed(1);
@@ -1962,7 +1984,7 @@ function vJogadores(){
   ps.forEach(p=>{const x=v(p);const Tt=T(p.t);const nota=modo==="l7"?p.nota7:p.nota;
     h+=`<tr><td class="qm">${face(p.id,p.n,"")}<div><div style="font-weight:700">${esc(p.n)} ${tagInj(p)}${p.slot===12?'<span class="tag banco">BANCO</span>':p.slot===13?'<span class="tag ir">IR</span>':""}</div><div style="font-size:12px;color:var(--apagado)">${POS[p.pos]||""} · ${NBA[p.pro]||""}${p.hoje&&!(p.dl&&p.dl[d.cur])?' · <span class="ao-vivo">joga hoje</span>':""}</div></div></td>
     <td><a href="#time-${p.t}" title="${esc(Tt[0])}"><img class="tl" src="img/l/${Tt[1]}.webp" alt="${esc(Tt[0])}"></a></td>
-    <td><span class="nota ${nota>0?"pos":nota<0?"neg":""}">${nota==null?"–":nota.toFixed(1)}</span></td><td>${p.rk?p.rk[0]:"–"}</td><td>${p.rk&&p.l7?p.rk[1]:"–"}</td><td>${gj(p)}</td>
+    <td><span class="nota ${nota>0?"pos":nota<0?"neg":""}">${nota==null?"–":nota.toFixed(1)}</span></td><td class="rkl">${p.rkL||"–"}</td><td>${p.rk?p.rk[0]:"–"}</td><td>${p.rkP||"–"}</td><td>${p.rk&&p.l7?p.rk[1]:"–"}</td><td>${gj(p)}</td>
     <td>${nfmt(x[0])}</td><td>${nfmt(x[1])}</td><td>${nfmt(x[2])}</td><td>${nfmt(x[3])}</td><td>${nfmt(x[4])}</td><td>${nfmt(x[5])}</td><td>${nfmt(x[6])}</td>
     <td>${x[8]?(x[7]/x[8]*100).toFixed(1):"–"}</td><td>${x[10]?(x[9]/x[10]*100).toFixed(1):"–"}</td><td>${HIST.draft[p.n]||"FA"}</td></tr>`});
   return h+`</tbody></table></div>`;
@@ -2314,7 +2336,7 @@ document.addEventListener("click",e=>{
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
   else if(ds.drt){UI.drTemp=ds.drt;UI.drTime="todos";render()}
 });
-document.addEventListener("change",e=>{if(e.target.id==="noiteTime"){UI.noiteTime=+e.target.value;render()}if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
+document.addEventListener("change",e=>{if(e.target.id==="noiteTime"){UI.noiteTime=+e.target.value;render()}if(e.target.id==="rkModo"){UI.rkModo=e.target.value;try{localStorage.setItem("painel.rk",e.target.value)}catch(x){}render()}if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
 window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0)});
 $("#btnAtualiza").onclick=()=>atualizarAoVivo();
 function tourAuto(){let visto=null;try{visto=localStorage.getItem("painel.tour")}catch(e){}if(!visto){const espera=setInterval(()=>{if(DADOS&&document.querySelector(".jogo")){clearInterval(espera);tourInicio()}},800);setTimeout(()=>clearInterval(espera),30000)}}
@@ -2368,6 +2390,7 @@ atualizarAoVivo();
 /* logo e título do topo também voltam para o início */
 document.querySelectorAll(".topo .belt,.topo .mast").forEach(el=>{el.style.cursor="pointer";el.addEventListener("click",()=>ir("confrontos"))});
 
+try{const v=localStorage.getItem("painel.rk");if(v)UI.rkModo=v}catch(e){}
 /* app instalável */
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 let pedidoInstalar=null;
