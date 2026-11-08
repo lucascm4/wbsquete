@@ -1715,6 +1715,22 @@ svg.cad{width:18px;height:18px;display:block}
 .publi-on{all:unset;cursor:pointer;display:block;margin-top:4px;font:600 11px system-ui;color:var(--apagado);text-decoration:underline}
 .aviso-rap{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 100px);z-index:400;background:#000;color:#fff;border:2px solid var(--amarelo);padding:8px 14px;border-radius:10px;font-size:13px;max-width:90%}
 
+.tt-l{display:flex;flex-direction:column}
+.tt-r{padding:9px 12px;border-top:1px solid #241a1a}.tt-r:first-child{border-top:0}
+.tt-r.top{background:linear-gradient(90deg,rgba(255,212,0,.12),transparent)}
+.tt-a{display:flex;align-items:baseline;gap:8px;min-width:0}.tt-a b{font-family:var(--display);font-weight:400;font-size:17px;color:var(--amarelo);flex:0 0 auto}
+.tt-a span{font-size:13px;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tt-c{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.tt-ch{font-size:11.5px;color:#cfc4b8;background:#0a0707;border:1px solid #2c2020;border-radius:999px;padding:2px 8px}.tt-ch b{color:#fff}
+.tt-ch.ouro{color:#000;background:var(--amarelo);border-color:var(--amarelo);font-weight:800}.tt-ch.prata{color:#000;background:#d9d9d9;border-color:#d9d9d9;font-weight:800}
+
+.ff-l{display:flex;flex-direction:column}
+.ff-r{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:10px;align-items:center;padding:8px 12px;border-top:1px solid #241a1a}.ff-r:first-child{border-top:0}
+.ff-t{display:flex;align-items:center;gap:6px;min-width:0}.ff-t img,.ff-t .ini{width:22px;height:22px;flex:0 0 auto}.ff-t b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ff-v{display:flex;flex-direction:column;align-items:center;line-height:1.05}.ff-v b{font-family:var(--display);font-weight:400;font-size:17px}.ff-v small{font-size:9px;color:var(--apagado)}
+.ff-v.v b{color:#4ade80}.ff-v.d b{color:#f87171}
+.ff-s{display:flex;flex-direction:column;align-items:center;font-size:13px;line-height:1.1;min-width:44px}.ff-s small{font-size:8.5px;color:var(--apagado);text-transform:uppercase;letter-spacing:.04em}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1780,11 +1796,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794180289"></script>
-<script src="radar.js?v=1794180289"></script>
-<script src="midia.js?v=1794180289"></script>
+<script src="hist.js?v=1794180335"></script>
+<script src="radar.js?v=1794180335"></script>
+<script src="midia.js?v=1794180335"></script>
 <script>
-const VERSAO_PAINEL="20261108202449";
+const VERSAO_PAINEL="20261108202535";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1914,6 +1930,7 @@ const T=id=>TIMES[id]||["?","","","?","#555"];
 const GLOSS={
  nota:"Nota: resume as 9 categorias num número só. 0 é a média dos jogadores da liga; +5 é elite; negativo é peso morto. Turnover conta contra.",
  rating:"Rating do Loydão: começa em 1000 e soma vitórias e categorias desta temporada, a força do elenco de hoje, o momento (últimas 3 semanas), a temporada passada, o histórico desde 22/23 e os títulos.",
+ somado:"V-D-E = confrontos ganhos, perdidos e empatados. Categorias = soma das categorias de todos os confrontos. Somado = todas as stats dos confrontos entre os dois somadas, como se fosse um confronto só.",
  prev:"O número pequeno embaixo é onde a categoria deve fechar no domingo (o que já aconteceu + a média de cada jogador nos jogos que faltam). Bolinha verde: fecha ganhando. Vermelha: fecha perdendo.",
  vira:"VIRA: quem lidera a categoria agora deve perder até domingo, pela previsão.",
  pegado:"PEGADO: categoria em que cada lado tem entre 30% e 70% de chance. Decide no detalhe.",
@@ -3236,9 +3253,11 @@ function vTime(id){
   if(window.MUSEU){
     const rivais=[...new Set(confrontosDe(nome).map(m=>m.a===nome?m.b:m.a))];
     const rows=rivais.map(r=>{const x=h2hEntre(nome,r);let c=[0,0];x.l.forEach(m=>{const eu=m.a===nome;c[0]+=eu?m.r[0]:m.r[1];c[1]+=eu?m.r[1]:m.r[0]});return [r,x,c]}).sort((p,q)=>(q[1].va-q[1].vb)-(p[1].va-p[1].vb));
-    h+=`<div class="card tabela-wrap"><div class="bloco-tit">FRENTE A FRENTE DESDE 22/23</div><table class="t2"><thead><tr><th>Rival</th><th>Jogos</th><th>V</th><th>D</th><th>E</th><th>Categorias</th><th>Somado</th></tr></thead><tbody>${rows.map(([r,x,c])=>`<tr><td><span class="lg">${logo(r)}${esc(r)}</span></td><td>${x.l.length}</td><td class="${x.va>x.vb?"ouro":""}">${x.va}</td><td>${x.vb}</td><td>${x.e}</td><td>${c[0]}-${c[1]}</td><td>${(()=>{const g=placarSomado(nome,r);return g?`<b class="${g.w>g.l?"ouro":g.l>g.w?"neg":""}">${g.w}-${g.l}${g.t?"-"+g.t:""}</b>`:"–"})()}</td></tr>`).join("")}</tbody></table><div class="leg-rh">Somado = todas as stats dos confrontos entre os dois somadas, como se fosse um confronto só</div></div>`;
+    h+=`<div class="card"><div class="bloco-tit">FRENTE A FRENTE DESDE 22/23 <small>${tip("somado","")}</small></div><div class="ff-l">${rows.map(([r,x,c])=>{const g=placarSomado(nome,r);const res=x.va>x.vb?"v":x.vb>x.va?"d":"e";
+      return `<div class="ff-r"><span class="ff-t">${logo(r)}<b>${esc(r)}</b></span><span class="ff-v ${res}"><b>${x.va}-${x.vb}${x.e?"-"+x.e:""}</b><small>${x.l.length} jogos</small></span><span class="ff-s"><small>categorias</small>${c[0]}-${c[1]}</span><span class="ff-s"><small>somado</small>${g?`<b class="${g.w>g.l?"ouro":g.l>g.w?"neg":""}">${g.w}-${g.l}${g.t?"-"+g.t:""}</b>`:"–"}</span></div>`}).join("")}</div></div>`;
   }
-  h+=`<div class="card tabela-wrap"><div class="bloco-tit">TEMPORADA A TEMPORADA</div><table class="t2"><thead><tr><th>Temporada</th><th>Nome do time</th><th>V-D-E</th><th>Seed</th><th>Final</th><th>Adds</th><th>Trocas</th></tr></thead><tbody>${linhas.slice().reverse().map(r=>`<tr class="${r[6]===1?"top":""}"><td>${esc(r[0])}</td><td style="text-align:left">${esc(r[2])}</td><td>${r[3]}-${r[4]}-${r[5]}</td><td>${r[7]}º</td><td class="${r[6]===1?"ouro":""}">${r[6]===1?"🏆 campeão":r[6]+"º"}</td><td>${r[8]}</td><td>${r[9]}</td></tr>`).join("")}</tbody></table></div>`;
+  h+=`<div class="card"><div class="bloco-tit">TEMPORADA A TEMPORADA</div><div class="tt-l">${linhas.slice().reverse().map(r=>{const fin=r[6]===1?'<span class="tt-ch ouro">🏆 campeão</span>':r[6]===2?'<span class="tt-ch prata">🥈 vice</span>':`<span class="tt-ch">${r[6]}º no final</span>`;
+    return `<div class="tt-r ${r[6]===1?"top":""}"><div class="tt-a"><b>${esc(temporadaCurta(r[0]))}</b><span>${esc(r[2])}</span></div><div class="tt-c"><span class="tt-ch"><b>${r[3]}-${r[4]}-${r[5]}</b></span><span class="tt-ch">seed ${r[7]}º</span>${fin}<span class="tt-ch">${r[8]} adds</span>${r[9]?`<span class="tt-ch">${r[9]} troca${r[9]>1?"s":""}</span>`:""}</div></div>`}).join("")}</div></div>`;
   return h;
 }
 function elencoTabela(t){
