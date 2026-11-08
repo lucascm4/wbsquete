@@ -944,6 +944,8 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .pj-grade small{display:block;font-size:10px;color:var(--apagado);letter-spacing:.06em}
 .pj-grade b{font-family:var(--display);font-weight:400;font-size:26px;color:var(--amarelo);line-height:1.1}
 .pj-grade b small{font-family:inherit;font-size:11px;color:#fff;letter-spacing:0}
+/* pontos sem destaque: mesma fonte e cor das outras colunas */
+.lj .pts,.lj td.pts{font-family:inherit;font-size:inherit;color:inherit;font-weight:inherit}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1006,7 +1008,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108015125";
+const VERSAO_PAINEL="20261108015328";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1069,7 +1071,7 @@ const GLOSS={
  prev:"Previsão: como a categoria deve fechar no domingo, somando o que já aconteceu com a média de cada jogador nos jogos que faltam.",
  vira:"VIRA: quem lidera a categoria agora deve perder até domingo, pela previsão.",
  pegado:"PEGADO: categoria em que cada lado tem entre 30% e 70% de chance. Decide no detalhe.",
- rk:"Rk ESPN: o ranking oficial da ESPN entre todos os jogadores da NBA nesta temporada (1 é o melhor). Rk 7d é o mesmo ranking só com os últimos 7 dias.",
+ rk:"Rk 9cat: ranking próprio no formato da nossa liga (9 categorias, z-score, FG% e FT% pesados pelo volume, TO contra), no mesmo método do Basketball Monster. Rk 7d é o mesmo ranking só com os últimos 7 dias.",
  odd:"Odd: quanto você levaria por 1 real apostado. Vem da chance calculada pelo modelo do Loydão, com 7% de margem da casa, como numa bet de verdade.",
  chances:"Chances: 4.000 simulações do resto da semana. Em cada uma, cada jogador rende perto da média dele, com variação normal.",
  playoffs:"Playoffs: chance de terminar entre os 6 primeiros. 1.200 simulações do resto da temporada, com o modelo testado nas 4 temporadas anteriores da liga (acerta a classificação de playoffs com erro Brier 0,19 na semana 3 e 0,12 na semana 8).",
@@ -1089,9 +1091,16 @@ const seloFase=m=>{const r=rotulo(m);return r?` <span class="selo ${r==="FINAL"?
 let DADOS=null,EST=null;
 const UI={dia:{},museuFiltro:"campeoes",atu:"PTS",tabTemp:"2025/26",h2hA:"Iguana",h2hB:"Diabo",jogFiltro:"todos",jogOrd:"nota",jogModo:"sem",rkOrd:"proj",radar:"quente"};
 
-function notas(lista,getAv){
-  // z-score nas 9 categorias (por jogo), FG e FT pelo impacto
-  const ps=lista.filter(p=>getAv(p)&&getAv(p)[11]>=2);if(ps.length<5)return;
+function notas(lista,getAv,minG,pool){
+  // z-score nas 9 categorias, FG e FT pelo impacto (acertos acima da média da liga x volume).
+  // 1ª passada com todo mundo; 2ª recalcula médias e desvios só no top 156 (12 times x 13 vagas).
+  minG=minG??2;pool=pool??156;
+  const base=lista.filter(p=>getAv(p)&&getAv(p)[11]>=minG);if(base.length<5)return;
+  const f1=notasPool(base,getAv);if(base.length<=pool)return f1;
+  const top=base.map(p=>[p,f1(getAv(p)).n]).sort((x,y)=>y[1]-x[1]).slice(0,pool).map(x=>x[0]);
+  return notasPool(top,getAv);
+}
+function notasPool(ps,getAv){
   const m=k=>ps.reduce((s,p)=>s+getAv(p)[k],0)/ps.length;
   const sd=(k,mu)=>Math.sqrt(ps.reduce((s,p)=>s+(getAv(p)[k]-mu)**2,0)/ps.length)||1;
   const lgFG=ps.reduce((s,p)=>s+getAv(p)[7],0)/ps.reduce((s,p)=>s+getAv(p)[8],0),lgFT=ps.reduce((s,p)=>s+getAv(p)[9],0)/ps.reduce((s,p)=>s+getAv(p)[10],0);
@@ -1111,6 +1120,11 @@ function prepara(d){
   d.P.concat(d.fa||[]).forEach(p=>{const r=nota?nota(p.av):null;p.nota=r?r.n:null;p.zc=r?r.c:null;const r7=nota&&p.l7?nota(p.l7):null;p.nota7=r7?r7.n:null;
     // avx: média usada nas projeções. Com poucos jogos, encolhe para a projeção da ESPN (peso de 6 jogos).
     if(p.av){const g=p.av[11];p.avx=p.pj?p.av.slice(0,11).map((x,i)=>(x*g+p.pj[i]*6)/(g+6)):p.av.slice(0,11)}else if(p.pj)p.avx=p.pj.slice(0,11);else p.avx=null;});
+  // rank 9-cat próprio (troca o rank da ESPN): temporada por média, 7 dias pela média dos 7 dias
+  {const todos=d.P.concat(d.fa||[]).filter(p=>!p.fora);todos.forEach(p=>{if(p.rk&&!p.rkE)p.rkE=p.rk});
+   const ord=k=>todos.filter(p=>p[k]!=null&&(k==="nota"?p.av&&p.av[11]>=2:p.l7&&p.l7[11]>=2)).sort((x,y)=>y[k]-x[k]);
+   const r0={},r1={};ord("nota").forEach((p,i)=>r0[p.id]=i+1);ord("nota7").forEach((p,i)=>r1[p.id]=i+1);
+   todos.forEach(p=>{p.rk=(r0[p.id]||r1[p.id])?[r0[p.id]||null,r1[p.id]||null]:null});}
   d.teams.forEach(t=>{
     let a=zero();for(let sp=d.s0;sp<=ate;sp++){const v=d.D[t.id]&&d.D[t.id][sp];if(v)a=soma(a,v)}
     e.tot[t.id]=a;
@@ -1360,8 +1374,9 @@ function subJog(t,st,extra){ // linha de baixo do jogador: time, fg e ft em evid
 const _RK={};
 function rankLiga(sp){ // posição de cada jogador no rendimento da liga inteira (dia ou semana)
   const d=DADOS;const k=sp+"|"+d.gerado;if(_RK[k])return _RK[k];
-  const L=[];d.P.forEach(p=>{if(p.fora)return;if(sp==="sem"){if(p.g)L.push([p.id,valorJogo(p.W)])}else{const v=p.dl&&p.dl[sp];if(v)L.push([p.id,valorJogo(v)])}});
-  L.sort((x,y)=>y[1]-x[1]);const m={};L.forEach((x,i)=>m[x[0]]=i+1);m._n=L.length;return _RK[k]=m;
+  const L=[];d.P.forEach(p=>{if(sp==="sem"){if(p.g)L.push({id:p.id,a:[...p.W,p.g]})}else{const v=p.dl&&p.dl[sp];if(v)L.push({id:p.id,a:[...v.slice(0,11),1]})}});
+  const f=notas(L,x=>x.a,1);const m={},v={};if(f)L.forEach(x=>x.z=f(x.a).n);else L.forEach(x=>x.z=valorJogo(x.a));
+  L.sort((x,y)=>y.z-x.z);L.forEach((x,i)=>{m[x.id]=i+1;v[x.id]=x.z});m._n=L.length;m.v=v;return _RK[k]=m;
 }
 const rkTag=(m,id)=>m[id]?`<span class="rk-n">#${m[id]}</span>`:"";
 function listaJuntos(a,b,sp){
@@ -1374,6 +1389,7 @@ function listaJuntos(a,b,sp){
   const tit=ordenaLj(rows.filter(r=>r.slot<12).sort((x,y)=>y.val-x.val)),banco=rows.filter(r=>r.slot>=12).sort((x,y)=>(y.s?y.s[0]:0)-(x.s?x.s[0]:0));
   const n1=x=>futuro?(Math.round(x*10)/10).toFixed(1).replace(".0",""):x;
   const RK=futuro?{}:rankLiga(sp);
+  if(RK.v){rows.forEach(r=>{if(RK.v[r.p.id]!=null)r.val=RK.v[r.p.id]});tit.sort((x,y)=>y.val-x.val);if(UI.ljSort&&UI.ljSort.c!=null){const o=ordenaLj(tit);tit.length=0;tit.push(...o)}}
   const linha=r=>{const p=r.p;const st=r.s;const cor=T(r.t)[4];const g=!futuro&&sp!=="sem"?(d.nba&&d.nba[p.pro]):null;
     return `<tr class="${r.pend?"pend":""}${r.proj?" proj":""}" style="--cor:${cor}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RK,p.id)}${esc(p.n)}</b><small>${subJog(r.t,futuro?null:st,`${r.g!=null&&sp==="sem"?`<span>${r.g} j</span>`:""}${r.slot>=12&&r.slot!==13?'<span class="tag banco">BANCO</span>':r.slot===13?'<span class="tag ir">IR</span>':""} ${tagInj(p)}${r.pend?'<span class="tag hoje">JOGA</span>':""}${r.proj?'<span class="tag ir">MÉDIA</span>':""}`)}</small>${g?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
     ${st?`<td class="pts">${n1(st[0])}</td><td>${n1(st[1])}</td><td>${n1(st[2])}</td><td>${n1(st[3])}</td><td>${n1(st[4])}</td><td>${n1(st[5])}</td><td>${n1(st[6])}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td>`:`<td colspan="9" class="esp">${r.pend?"ainda não jogou":"sem média"}</td>`}</tr>`};
@@ -1568,6 +1584,7 @@ function vNoite(){
     if(sp==="sem"){if(p.g)rows.push({p,t:p.t,s:p.W,g:p.g,slot:0,val:valorJogo(p.W)})}
     else{const v=p.dl&&p.dl[sp];if(v)rows.push({p,t:p.t,s:v.slice(0,11),slot:v[11],min:v[12]||0,val:valorJogo(v)})}
   });
+  {const RKv=rankLiga(sp).v||{};rows.forEach(r=>{if(RKv[r.p.id]!=null)r.val=RKv[r.p.id]})}
   rows.sort((x,y)=>modo==="piores"?x.val-y.val:y.val-x.val);
   if(modo==="selecao")return vSelecao(rows,sp);
   const L=ordenaLj(rows.slice(0,40));
@@ -1575,7 +1592,7 @@ function vNoite(){
   const linha=r=>{const p=r.p;const st=r.s;const banco=r.slot>=12;
     return `<tr class="${banco?"fora":""}" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RK,p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,`${sp==="sem"?`<span>${r.g} j</span>`:""}${banco?'<span class="tag banco">BANCO</span>':""}`)}</small>${sp!=="sem"?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
     <td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td></tr>`};
-  let h=`<div class="cab-secao"><span class="sobre">JOGADORES · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">${modo==="piores"?"OS PIORES DA NOITE":"OS MELHORES DA NOITE"}</h1><p class="linha-fina">Todos os jogadores da liga, ordenados pelo rendimento (pontos, rebotes, assistências, roubos, tocos, bolas, aproveitamento e turnovers). O <b>#</b> é a posição do cara entre todos os ${rankLiga(sp)._n||0} que jogaram${ft?", mesmo filtrando por time":""}.</p></div>
+  let h=`<div class="cab-secao"><span class="sobre">JOGADORES · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">${modo==="piores"?"OS PIORES DA NOITE":"OS MELHORES DA NOITE"}</h1><p class="linha-fina">Todos os jogadores da liga, ordenados pelo valor nas 9 categorias da nossa liga (z-score, FG% e FT% pesados pelo volume, TO contra). O <b>#</b> é a posição do cara entre todos os ${rankLiga(sp)._n||0} que jogaram${ft?", mesmo filtrando por time":""}.</p></div>
   <div class="dias" role="group" aria-label="Dia"><button class="dia" type="button" data-nd="sem" aria-pressed="${sp==="sem"}">SEMANA<small>total</small></button>`;
   for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++){const r=spRot(x).split(" ");h+=`<button class="dia" type="button" data-nd="${x}" aria-pressed="${String(sp)===String(x)}">${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
   h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores" aria-pressed="${modo==="melhores"}">Melhores</button><button class="pil" type="button" data-nm="piores" aria-pressed="${modo==="piores"}">Piores</button><button class="pil" type="button" data-nm="selecao" aria-pressed="${modo==="selecao"}">Seleção ${tip("A melhor escalação possível com todo mundo da liga naquele dia: PG, SG, SF, PF, C, G, F e 2 UTIL, respeitando as posições da ESPN.","da noite")}</button><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===ft?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
@@ -1779,7 +1796,7 @@ function vJogadores(){
   if(f!=="todos"){const m=d.mt[+f];ps=ps.filter(p=>p.t===m[0]||p.t===m[1])}
   const v=p=>modo==="sem"?p.W:modo==="l7"?(p.l7?p.l7.slice(0,11):zero()):(p.av?p.av.slice(0,11):zero());
   const gj=p=>modo==="sem"?p.g:modo==="l7"?(p.l7?p.l7[11]:0):(p.av?p.av[11]:0);
-  const cols=[["nota","Nota",p=>modo==="l7"?(p.nota7??-99):(p.nota??-99)],["rk","Rk ESPN",p=>-(p.rk?p.rk[0]:999)],["rk7","Rk 7d",p=>-(p.rk&&p.l7?p.rk[1]:999)],["g","J",gj],["0","PTS",p=>v(p)[0]],["1","REB",p=>v(p)[1]],["2","AST",p=>v(p)[2]],["3","STL",p=>v(p)[3]],["4","BLK",p=>v(p)[4]],["5","3PM",p=>v(p)[5]],["6","TO",p=>-v(p)[6]],["fg","FG%",p=>{const x=v(p);return x[8]?x[7]/x[8]:0}],["ft","FT%",p=>{const x=v(p);return x[10]?x[9]/x[10]:0}],["pick","Pick",p=>-(HIST.draft[p.n]||999)]];
+  const cols=[["nota","Nota",p=>modo==="l7"?(p.nota7??-99):(p.nota??-99)],["rk","Rk 9cat",p=>-(p.rk?p.rk[0]:999)],["rk7","Rk 7d",p=>-(p.rk&&p.l7?p.rk[1]:999)],["g","J",gj],["0","PTS",p=>v(p)[0]],["1","REB",p=>v(p)[1]],["2","AST",p=>v(p)[2]],["3","STL",p=>v(p)[3]],["4","BLK",p=>v(p)[4]],["5","3PM",p=>v(p)[5]],["6","TO",p=>-v(p)[6]],["fg","FG%",p=>{const x=v(p);return x[8]?x[7]/x[8]:0}],["ft","FT%",p=>{const x=v(p);return x[10]?x[9]/x[10]:0}],["pick","Pick",p=>-(HIST.draft[p.n]||999)]];
   const ord=cols.find(c=>c[0]===UI.jogOrd)||cols[0];
   ps.sort((x,y)=>ord[2](y)-ord[2](x));
   const nfmt=x=>modo==="sem"?x:x.toFixed(1);
@@ -1835,7 +1852,7 @@ function vRadar(){
   // lixo
   const L=elenco.filter(p=>p.rk&&p.rk[0]>130&&p.slot!==13&&p.inj!=="OUT").map(p=>({p,sc:p.rk[0]+(p.l7&&p.l7[11]>=2?p.rk[1]:p.rk[0])})).sort((x,y)=>y.sc-x.sc).slice(0,15);
   h+=`<h1 class="manchete">PÁGINA DO LIXO</h1><p class="linha-fina">Quem ocupa vaga nos elencos da liga com o pior ranking da ESPN (temporada e últimos 7 dias). Quem tem, que se explique.</p></div>${pills}
-  <div class="card">${L.map(({p})=>linhaRd(p,"dn",`${p.rk[0]}<small>RK ESPN · PICK ${HIST.draft[p.n]||"FA"}</small>`,`${POS[p.pos]||""} · ${NBA[p.pro]||""} · ${SLOT[p.slot]||""} · ${p.av?linhaMedia(p.av):"sem jogos"}`)).join("")}</div>`;
+  <div class="card">${L.map(({p})=>linhaRd(p,"dn",`${p.rk[0]}<small>RK 9CAT · PICK ${HIST.draft[p.n]||"FA"}</small>`,`${POS[p.pos]||""} · ${NBA[p.pro]||""} · ${SLOT[p.slot]||""} · ${p.av?linhaMedia(p.av):"sem jogos"}`)).join("")}</div>`;
   return h;
 }
 
