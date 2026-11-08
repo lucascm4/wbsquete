@@ -1594,11 +1594,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794170966"></script>
-<script src="radar.js?v=1794170966"></script>
-<script src="midia.js?v=1794170966"></script>
+<script src="hist.js?v=1794171042"></script>
+<script src="radar.js?v=1794171042"></script>
+<script src="midia.js?v=1794171042"></script>
 <script>
-const VERSAO_PAINEL="20261108174926";
+const VERSAO_PAINEL="20261108175042";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3256,9 +3256,9 @@ function avDuelo(abas){
   const dia=placar(LA.tot,LB.tot),sem=placar(EST.tot[a],EST.tot[b]);
   const emq=L=>L.out.filter(x=>x.g&&x.g.live&&x.tit).length,falta=L=>L.out.filter(x=>x.g&&!x.g.live&&!x.g.fim&&x.tit).length,ja=L=>L.out.filter(x=>x.v&&x.tit&&x.g&&x.g.fim).length;
   const fmt=(c,v)=>c.pct?(v*100).toFixed(1):Math.round(v*10)/10;
-  const cats=CATS.map((c,i)=>{const x=c.f(LA.tot),y=c.f(LB.tot);const r=dia.r[i];return `<div class="du-c ${r>0?"a":r<0?"b":""}"><b>${LA.tot[8]||!c.pct?fmt(c,x):"–"}</b><small>${c.k}</small><b>${LB.tot[8]||!c.pct?fmt(c,y):"–"}</b></div>`}).join("");
+  const cats=CATS.map((c,i)=>{const x=c.f(LA.tot),y=c.f(LB.tot);const r=dia.r[i];return `<div class="du-c ${r>0?"a":r<0?"b":""}"><b>${!c.pct||LA.tot[c.k==="FG%"?8:10]?fmt(c,x):"–"}</b><small>${c.k}</small><b>${!c.pct||LB.tot[c.k==="FG%"?8:10]?fmt(c,y):"–"}</b></div>`}).join("");
   const card=x=>{const p=x.p,v=x.v,g=x.g;const st=g?(g.live?`<em class="lv">● ${esc(g.st)}</em>`:g.fim?`<em>final</em>`:`<em>${esc(g.st)}</em>`):"";
-    const ln=v?`<span class="du-l"><b>${v[0]}</b>p <b>${v[1]}</b>r <b>${v[2]}</b>a${v[3]?` <b>${v[3]}</b>s`:""}${v[4]?` <b>${v[4]}</b>b`:""}${v[5]?` <b>${v[5]}</b>3`:""}${v[6]?` <i>${v[6]}to</i>`:""} · ${v[7]}/${v[8]}</span>`:`<span class="du-l vz">${g&&g.live?"ainda não entrou":"não jogou"}</span>`;
+    const ln=v?`<span class="du-l"><b>${v[0]}</b>p <b>${v[1]}</b>r <b>${v[2]}</b>a${v[3]?` <b>${v[3]}</b>s`:""}${v[4]?` <b>${v[4]}</b>b`:""}${v[5]?` <b>${v[5]}</b>3pt`:""}${v[6]?` <i>${v[6]}to</i>`:""} · ${v[7]}/${v[8]}</span>`:`<span class="du-l vz">${g&&g.live?"ainda não entrou":"não jogou"}</span>`;
     return `<div class="du-p ${g&&g.live?"on":""} ${x.tit?"":"bn"}" data-pj="${p.id}">${face(p.id,p.n,"")}<div><b class="du-n">${esc(p.n.replace(/^(\S)\S*\s/,"$1. "))}${x.tit?"":' <u>banco</u>'}</b>${ln}<small>${st}${v&&v[12]?` · ${v[12]}min`:""}</small></div></div>`};
   return topo+`<div class="pilulas sel-c av-f">${sel}</div>
   <div class="card du"><div class="du-top"><a href="#time-${a}" class="du-t">${rostoTime(A[0])}<b>${esc(A[3]||A[0])}</b></a>
