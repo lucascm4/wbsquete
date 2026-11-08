@@ -799,6 +799,14 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .crono i{font-style:normal;margin-right:2px}
 @media (max-width:760px){.crono{font-size:10px}}
 
+/* barra do cronômetro */
+.crono{position:sticky;top:calc(env(safe-area-inset-top,0px) + 58px + 30px);z-index:18;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--amarelo);color:#000;border-bottom:3px solid #000;height:28px;font-size:13px;font-weight:700;letter-spacing:.02em;white-space:nowrap;overflow:hidden;padding:0 10px}
+.crono .cr-k{font-family:var(--display);font-weight:400;letter-spacing:.06em;font-size:13px}
+.crono .cr-q{color:#333}
+.crono .cr-t{font-family:var(--display);font-weight:400;font-size:17px;background:#000;color:var(--amarelo);padding:1px 8px;border-radius:4px}
+.ticker[hidden]+.crono{top:calc(env(safe-area-inset-top,0px) + 58px)}
+@media (max-width:760px){.crono{top:calc(env(safe-area-inset-top,0px) + 44px + 26px);height:26px;font-size:12px;gap:6px}.crono .cr-t{font-size:15px}.ticker[hidden]+.crono{top:calc(env(safe-area-inset-top,0px) + 44px)}}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -839,13 +847,14 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
     <img class="belt" src="img/cinturao.webp" alt="Cinturão da WBSQUETE">
     <div class="meio">
       <div class="mast">PAINEL DO LOYDÃO</div>
-      <div class="mast-sub" id="status">carregando…</div><div class="crono" id="crono"></div>
+      <div class="mast-sub" id="status">carregando…</div>
     </div>
     <nav class="nav-top" id="navTop" aria-label="Seções"></nav>
     <button class="btn-atualiza" id="btnAtualiza" type="button" title="Buscar dados novos na ESPN">Atualizar</button><button class="btn-reload" id="btnReload" type="button" title="Recarregar o site" aria-label="Recarregar o site">&#x21bb;</button><button class="btn-ajuda" id="btnAjuda" type="button" title="Como usar o painel" aria-label="Como usar o painel">?</button>
   </div>
 </header>
 <div id="ticker" class="ticker" hidden></div>
+<div id="crono" class="crono" hidden></div>
 
 <main><div class="wrap" id="app"></div></main>
 
@@ -860,7 +869,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108010320";
+const VERSAO_PAINEL="20261108011204";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1532,6 +1541,18 @@ const ICONE={
  escaladas:'<path d="M12 20V8M6 13l6-6 6 6M5 4h14"/>',
  drafts:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM8 11h8M8 15h5"/>',
  marcantes:'<path d="M12 3c1 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3 0-5 0-7zM6 21h12"/>'};
+function trocasAtuais(){ // 26/27: jogador em time diferente do draft sem registro de add = veio por troca
+  const d=DADOS;if(!d||!d.tx||!HIST.drafts||!HIST.drafts["2026/27"])return "";
+  const adds=new Set(d.tx.adds||[]);const dr={};HIST.drafts["2026/27"].forEach(r=>dr[r[3]]=r[2]);
+  const mov=d.P.filter(p=>!p.fora&&dr[p.n]&&dr[p.n]!==T(p.t)[0]&&!adds.has(p.id)).map(p=>({p,de:dr[p.n],para:T(p.t)[0]}));
+  if(!mov.length)return "";
+  const pares={};mov.forEach(m=>{const k=[m.de,m.para].sort().join("|");(pares[k]=pares[k]||[]).push(m)});
+  const datas=(d.tx.ac||[]).map(ms=>new Date(ms));
+  return Object.entries(pares).map(([k,ms],idx)=>{const [t1,t2]=k.split("|");const lado=t=>ms.filter(m=>m.para===t);
+    const dt=datas[datas.length-1-idx];const val=l=>l.reduce((s2,m)=>s2+(m.p.nota||0),0);
+    const l1=lado(t1),l2=lado(t2);const v1=val(l1),v2=val(l2);const venc=v1>=v2?t1:t2;
+    return `<div class="card troca"><div class="tq">2026/27${dt?" · "+dd(dt.getDate())+"/"+dd(dt.getMonth()+1)+"/"+String(dt.getFullYear()).slice(2):""} · temporada atual<span>na frente hoje: <b>${esc(venc)}</b></span></div><div class="tl2">${[[t1,l1,v1],[t2,l2,v2]].map(([t,l,v])=>`<div class="tlado ${t===venc?"ganhou":""}"><div class="tt">${logo(t)}<span>${esc(t)} recebeu</span><b class="num">${v>0?"+":""}${v.toFixed(1)}</b></div>${l.map(m=>`<div class="tj">${face(m.p.id,m.p.n,"")}<span>${esc(m.p.n)}</span><small class="num">nota ${m.p.nota==null?"–":m.p.nota.toFixed(1)} · ${m.p.av?m.p.av[0]+" pts":"–"}</small></div>`).join("")||'<div class="tj"><span class="esp">nada (ou jogador já largado)</span></div>'}</div>`).join("")}</div><div class="legenda">Valor = soma da nota da temporada dos jogadores recebidos, por enquanto. Troca detectada pelo elenco: quem está num time diferente do draft sem ter passado pelo waiver.</div></div>`}).join("");
+}
 function vMuseuCapa(){
   const n={campeoes:HIST.campeoes.length,tabelas:new Set(HIST.tab.map(r=>r[0])).size,atuacoes:Object.keys(HIST.perf).length,decepcoes:(HIST.decep||[]).length,escaladas:(HIST.escal||[]).length,trocas:(HIST.trocas||[]).length,confrontos:window.MUSEU?window.MUSEU.length:507,drafts:Object.keys(HIST.drafts||{}).length};
   const un={campeoes:"campeões",tabelas:"temporadas",atuacoes:"listas",decepcoes:"jogadores",escaladas:"jogadores",trocas:"trocas",confrontos:"confrontos",drafts:"drafts"};
@@ -1559,11 +1580,12 @@ function vMuseu(){
   }
   if(f==="trocas"){
     const Tr=(HIST.trocas||[]).map(t=>({...t,dif:Math.abs(t.l[0].v-t.l[1].v)}));
+    const atuais=trocasAtuais();
     const ord=UI.trocaOrd||"recentes";
     const L=ord==="lavadas"?Tr.slice().sort((a,b)=>b.dif-a.dif):Tr.slice().sort((a,b)=>b.t.localeCompare(a.t)||b.dia-a.dia);
     h+=`<h1 class="manchete">${ord==="lavadas"?"AS TROCAS MAIS LAVADAS":"HISTÓRICO DE TROCAS"}</h1><p class="linha-fina">${Tr.length} trocas no meio da temporada desde 22/23. O placar de cada lado é o valor nas 9 categorias que os jogadores recebidos produziram como titulares do novo time até o fim da temporada.</p></div>
     <div class="pilulas" role="group" aria-label="Ordem"><button class="pil" type="button" data-to="recentes" aria-pressed="${ord==="recentes"}">Mais recentes</button><button class="pil" type="button" data-to="lavadas" aria-pressed="${ord==="lavadas"}">Mais lavadas</button></div>
-    <div class="trocas">${L.map(t=>{const [x,y]=t.l;const vx=x.v>y.v?x:y;return `<div class="card troca"><div class="tq">${esc(t.t)} · ${esc(t.d)}<span>vencedor: <b>${esc(vx.para)}</b></span></div><div class="tl2">${[x,y].map(l=>`<div class="tlado ${l===vx?"ganhou":""}"><div class="tt">${logo(l.para)}<span>${esc(l.para)} recebeu</span><b class="num">${l.v>0?"+":""}${l.v}</b></div>${l.j.map(j=>`<div class="tj">${face(null,j[0],"")}<span>${esc(j[0])}</span><small class="num">${j[1]} jogos · ${j[2]>0?"+":""}${j[2]}</small></div>`).join("")}</div>`).join("")}</div></div>`}).join("")}</div>`;
+    <div class="trocas">${ord==="recentes"?atuais:""}${L.map(t=>{const [x,y]=t.l;const vx=x.v>y.v?x:y;return `<div class="card troca"><div class="tq">${esc(t.t)} · ${esc(t.d)}<span>vencedor: <b>${esc(vx.para)}</b></span></div><div class="tl2">${[x,y].map(l=>`<div class="tlado ${l===vx?"ganhou":""}"><div class="tt">${logo(l.para)}<span>${esc(l.para)} recebeu</span><b class="num">${l.v>0?"+":""}${l.v}</b></div>${l.j.map(j=>`<div class="tj">${face(null,j[0],"")}<span>${esc(j[0])}</span><small class="num">${j[1]} jogos · ${j[2]>0?"+":""}${j[2]}</small></div>`).join("")}</div>`).join("")}</div></div>`}).join("")}</div>`;
     return h;
   }
   if(f==="campeoes"){
@@ -1678,15 +1700,22 @@ async function baixarNBA(sp){ // placar dos jogos da NBA do dia (site.api.espn.c
     c.competitors.forEach(x=>{const o=c.competitors.find(y=>y!==x);out[+x.team.id]={op:(x.homeAway==="home"?"vs ":"@")+o.team.abbreviation,sc:tp==="pre"?"":`${x.score}-${o.score}`,st:txt,live:tp==="in",fim:tp==="post",frac}})});
   return out;
 }
+async function baixarTrocas(cur){ // uma vez por dia: adds/drops e aceites de troca da temporada toda
+  const ch="wbs.tx."+cur;const c=lerCache(ch);if(c)return c;
+  const adds=new Set(),ac=[];
+  const lotes=[];for(let sp=1;sp<=cur;sp++)lotes.push(ajson(AO.LG+"?view=mTransactions2&scoringPeriodId="+sp).catch(()=>({})));
+  (await Promise.all(lotes)).forEach(r=>(r.transactions||[]).forEach(t=>{if(t.status==="EXECUTED"&&["FREEAGENT","WAIVER"].includes(t.type))(t.items||[]).forEach(i=>{if(i.type==="ADD")adds.add(i.playerId)});if(t.type==="TRADE_ACCEPT")ac.push(t.processDate||t.proposedDate)}));
+  const out={adds:[...adds],ac:ac.sort()};gravarCache(ch,out);return out;
+}
 async function coletarAoVivo(){
   const cur=spHoje();const wk=cur<=6?1:Math.floor((cur-7)/7)+2;
   const s0=wk==1?1:7+(wk-2)*7,s1=wk==1?6:s0+6,ate=Math.min(cur,s1);
   const chave="wbs3.sem."+wk;const C=lerCache(chave)||{dias:{}};
-  const [base,sch,sb,fa,nba]=await Promise.all([
+  const [base,sch,sb,fa,nba,tx]=await Promise.all([
     ajson(AO.LG+"?view=mTeam&view=mMatchupScore&scoringPeriodId="+cur),
     AO.sch?Promise.resolve(AO.sch):ajson(AO.L+"?view=proTeamSchedules_wl"),
     AO.sb?Promise.resolve(AO.sb):ajson(AO.LG+"?view=mMatchupScore&view=mScoreboard"),
-    baixarFA(cur).catch(()=>[]),baixarNBA(cur).catch(()=>({}))]);
+    baixarFA(cur).catch(()=>[]),baixarNBA(cur).catch(()=>({})),baixarTrocas(cur).catch(()=>({adds:[],ac:[]}))]);
   AO.sch=sch;AO.sb=sb;
   const pend=[];for(let sp=s0;sp<=ate;sp++){const d=C.dias[sp];if(sp===ate||!d||!diaFechado(sp,d.quando))pend.push(sp)}
   const novos=await Promise.all(pend.map(baixarDia));pend.forEach((sp,i)=>C.dias[sp]=novos[i]);
@@ -1710,7 +1739,7 @@ async function coletarAoVivo(){
   const agenda=q=>{let n=0;q.gd=[];for(let sp=cur;sp<=s1;sp++){const g=games[q.pro]&&games[q.pro][sp];if(g&&g.length){q.gd.push(sp);if(!(sp===cur&&q.dl&&q.dl[cur]))n++}}q.gl=n;const g=games[q.pro]&&games[q.pro][cur];q.hoje=g&&g.length?1:0;if(q.fora){q.gl=0;q.hoje=0}};
   Object.values(P).forEach(agenda);fa.forEach(agenda);
   const hist=sb.schedule.filter(m=>m.matchupPeriodId<wk&&m.winner&&m.winner!=="UNDECIDED").map(m=>{const c=x=>[0,6,3,2,1,17,19,20,11].map(id=>{const s=x.cumulativeScore&&x.cumulativeScore.scoreByStat&&x.cumulativeScore.scoreByStat[id];return s?+(+s.score).toFixed(4):0});return [m.matchupPeriodId,m.home.teamId,m.away.teamId,[m.home.cumulativeScore.wins,m.home.cumulativeScore.losses,m.home.cumulativeScore.ties],m.winner==="HOME"?m.home.teamId:m.winner==="AWAY"?m.away.teamId:0,c(m.home),c(m.away)]});
-  return {v:7,gerado:Date.now(),cur,last,wk,s0,s1,teams,mt,fut,gw,D,hist,nba,P:Object.values(P),fa};
+  return {v:8,gerado:Date.now(),cur,last,wk,s0,s1,teams,mt,fut,gw,D,hist,nba,tx,P:Object.values(P),fa};
 }
 function janelaDeJogos(){
   if(!AO.sch)return null;const sp=spHoje();let ini=Infinity,fim=0;
@@ -1722,9 +1751,9 @@ function primeiroJogo(sp){if(!AO.sch)return null;let ini=Infinity;AO.sch.setting
 function cronometro(){ // próximo trancamento de escalação = primeiro jogo do dia
   const el=$("#crono");if(!el||!AO.sch)return;const n=Date.now();let sp=spHoje(),ini=primeiroJogo(sp),rot="hoje";
   if(ini==null||ini<n){for(let k=1;k<=3;k++){const x=primeiroJogo(sp+k);if(x!=null&&x>n){ini=x;rot=k===1?"amanhã":spRot(sp+k);break}}}
-  if(ini==null||ini<n){el.textContent="";return}
+  if(ini==null||ini<n){el.hidden=true;return}
   const ms=ini-n,h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4);const hm=new Date(ini).toLocaleTimeString("pt-BR",{timeZone:"America/Sao_Paulo",hour:"2-digit",minute:"2-digit"});
-  el.innerHTML=`<i>⏱</i> tranca ${rot} ${hm} · <b>${h?h+"h":""}${dd(m)}min</b>`;el.title="Primeiro jogo da NBA do dia: a escalação tranca jogador a jogador no horário de cada jogo";
+  el.hidden=false;el.innerHTML=`<span class="cr-k">⏱ ESCALAÇÃO TRANCA</span><span class="cr-q">${rot==="hoje"?"hoje":rot==="amanhã"?"amanhã":rot} às ${hm}</span><span class="cr-t">${h?h+"h ":""}${dd(m)}min</span>`;el.title="Primeiro jogo da NBA do dia. A escalação tranca jogador a jogador no horário de cada jogo.";
 }
 setInterval(cronometro,30000);
 async function atualizarAoVivo(){
@@ -1823,7 +1852,7 @@ function tourInicio(){if(tourEls)return;if(location.hash&&location.hash!=="#conf
 $("#btnAjuda").onclick=tourInicio;
 window.addEventListener("resize",()=>{if(tourEls)tourMostrar()});
 /* ---------- partida ---------- */
-(function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===7)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}else ticker()})();
+(function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===8)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}else ticker()})();
 atualizarAoVivo();
 </script>
 </body></html>
