@@ -591,6 +591,41 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .ch-t.ensaio-t{border-color:#ff2e8a}
 @media (max-width:420px){.st td{padding:7px 5px;font-size:14px}.st th{padding:8px 5px}.st .tm small{display:none}.st .rec{font-size:18px}.st .pb{display:none}}
 
+/* lista misturada */
+.lj{width:100%;border-collapse:collapse;min-width:640px}
+.lj th{font-size:11px;letter-spacing:.06em;color:var(--apagado);text-transform:uppercase;text-align:right;padding:8px 6px;border-bottom:2px solid #000;background:#0a0707;position:sticky;top:0}
+.lj th:first-child{text-align:left;position:sticky;left:0;z-index:2}
+.lj td{padding:6px;border-bottom:1px solid var(--linha);text-align:right;font-variant-numeric:tabular-nums;font-size:15px;white-space:nowrap}
+.lj td.jg{text-align:left;position:sticky;left:0;background:var(--card);box-shadow:inset 4px 0 0 var(--cor);padding-left:10px;min-width:190px;max-width:220px;z-index:1}
+.lj tr:hover td{background:#1d1212}.lj tr:hover td.jg{background:#1d1212}
+.lj .jg-in{display:flex;align-items:center;gap:8px}
+.lj .jg-in img.ft,.lj .jg-in .ft.ini{width:36px;height:36px;border-radius:50%;object-fit:cover;object-position:top;background:#e9e1d6;border:2px solid #000;flex:none;font-size:11px;color:#3a2a2a}
+.lj .jg-in b{display:block;font-size:14px;line-height:1.1;white-space:normal}
+.lj .jg-in small{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--apagado);margin-top:2px;flex-wrap:wrap}
+.lj .jg-in small img{width:14px;height:14px;border-radius:50%;object-fit:contain;background:#fff;border:1px solid #000}
+.lj .pts{font-family:var(--display);font-size:20px;color:var(--amarelo)}
+.lj .esp{color:var(--apagado);text-align:left;font-size:12px}
+.lj tr.pend td{opacity:.75}
+.lj tr.fora td{background:repeating-linear-gradient(-45deg,#1a0f0f 0 8px,#160c0c 8px 16px)}
+.lj tr.sepr td{background:#0a0707;color:var(--apagado);font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-align:left;padding:8px 10px}
+.cor-a{color:#fff;padding:0 6px;border-left:4px solid var(--cor)}
+.lj .nbag{margin:0}
+@media (max-width:520px){.lj td.jg{min-width:150px;max-width:160px}.lj .jg-in b{font-size:13px}.lj td{font-size:14px;padding:6px 5px}}
+/* todos contra todos no celular */
+.tt-lista{display:none}
+@media (max-width:760px){
+ .mx{display:none}
+ .tt-lista{display:flex;flex-direction:column;gap:8px}
+ .tt-row{background:#000;border:2px solid #000;padding:8px}
+ .tt-t{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin-bottom:6px}
+ .tt-t img{width:26px;height:26px;border-radius:50%;object-fit:contain;background:#fff;border:1px solid #000}
+ .tt-t b{margin-left:auto;font-family:var(--display);font-weight:400;font-size:20px;color:var(--amarelo)}
+ .tt-ops{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+ .tt-ops span{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:700;padding:3px 0;border:1px solid #000;font-variant-numeric:tabular-nums}
+ .tt-ops img{width:18px;height:18px;border-radius:50%;object-fit:contain;background:#fff;border:1px solid #000}
+ .tt-ops .w{background:var(--amarelo);color:#000}.tt-ops .l{background:#4a0006;color:#ffb3b3}.tt-ops .t{background:#8d8580;color:#000}
+}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -934,6 +969,21 @@ function jogoNBA(p,sp){ // "@OKC 55-84 · 2:28 3ºQ"
   const d=DADOS;if(sp!==d.cur||!d.nba)return "";const g=d.nba[p.pro];if(!g)return "";
   return `<span class="nbag ${g.live?"live":g.fim?"fim":""}">${esc(g.op)}${g.sc?" "+esc(g.sc):""} · ${esc(g.st)}</span>`;
 }
+function valorJogo(v){return v[0]+1.2*v[1]+1.5*v[2]+3*v[3]+3*v[4]+v[5]-v[6]+(v[7]-0.47*v[8])*1.5+(v[9]-0.78*v[10])}
+function listaJuntos(a,b,sp){
+  const d=DADOS;const rows=[];
+  [a,b].forEach(t=>(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t)).forEach(p=>{
+    if(sp==="sem"){if(p.g||p.bg)rows.push({p,t,s:p.W,g:p.g,slot:p.g?0:12,bp:p.bp,bg:p.bg,val:p.g?valorJogo(p.W):-1e6})}
+    else{const v=p.dl&&p.dl[sp];if(v)rows.push({p,t,s:v.slice(0,11),slot:v[11],min:v[12]||0,val:valorJogo(v)});else if(sp===d.cur&&p.hoje&&p.slot<12)rows.push({p,t,s:null,slot:p.slot,pend:1,val:-1e5})}
+  }));
+  const tit=rows.filter(r=>r.slot<12).sort((x,y)=>y.val-x.val),banco=rows.filter(r=>r.slot>=12).sort((x,y)=>(y.s?y.s[0]:0)-(x.s?x.s[0]:0));
+  const linha=r=>{const p=r.p;const st=r.s;const cor=T(r.t)[4];
+    return `<tr class="${r.pend?"pend":""}" style="--cor:${cor}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt="${esc(T(r.t)[0])}"> ${SLOT[r.slot]||""}${r.min?` · ${r.min}'`:""}${r.g!=null&&sp==="sem"?` · ${r.g} j`:""} ${tagInj(p)}${r.pend?'<span class="tag hoje">JOGA</span>':""}</small>${sp!=="sem"?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
+    ${st?`<td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[7]}/${st[8]}</td><td>${st[9]}/${st[10]}</td><td>${st[6]}</td>`:`<td colspan="9" class="esp">ainda não jogou</td>`}</tr>`};
+  const cab=`<thead><tr><th>Jogador</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>FG</th><th>FT</th><th>TO</th></tr></thead>`;
+  return `<div class="card tabela-wrap"><div class="bloco-tit">JOGADORES <small>${sp==="sem"?"semana toda":spRot(sp)} · do melhor pro pior · <span class="cor-a" style="--cor:${T(a)[4]}">${esc(T(a)[0])}</span> e <span class="cor-a" style="--cor:${T(b)[4]}">${esc(T(b)[0])}</span></small></div>
+  <table class="lj">${cab}<tbody>${tit.map(linha).join("")||`<tr><td colspan="10" class="esp">Ninguém em quadra nesse dia.</td></tr>`}${banco.length?`<tr class="sepr"><td colspan="10">Banco e IR${sp==="sem"?" · pontos que ficaram fora":""}</td></tr>`+banco.map(r=>sp==="sem"?`<tr style="--cor:${T(r.t)[4]}" class="fora"><td class="jg"><div class="jg-in">${face(r.p.id,r.p.n,"")}<div><b>${esc(r.p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${r.bg} jogo${r.bg>1?"s":""} no banco</small></div></div></td><td class="pts">${r.bp}</td><td colspan="8" class="esp">no banco</td></tr>`:linha(r)).join(""):""}</tbody></table></div>`;
+}
 function boxTime(tid,sp){
   const d=DADOS;const lista=[];
   (EST.rost[tid]||[]).concat(d.P.filter(p=>p.fora&&p.t===tid)).forEach(p=>{
@@ -1023,8 +1073,7 @@ function vJogo(i){
   </div>${tabelaCategorias(a,b,ta,tb,pa,pb,s)}</div>
   <div class="dias" role="group" aria-label="Escolher dia"><button class="dia" type="button" data-dia="sem" aria-pressed="${dsel==="sem"}">SEMANA<small>total</small></button>`;
   for(let sp=d.s0;sp<=d.s1;sp++){const r=spRot(sp).split(" ");h+=`<button class="dia" type="button" data-dia="${sp}" aria-pressed="${String(dsel)===String(sp)}" ${sp>d.cur?"disabled":""}>${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
-  h+=`</div><div class="duas box2">${[a,b].map(t=>{const tt=dsel==="sem"?EST.tot[t]:(d.D[t]&&d.D[t][dsel])||zero();
-    return `<div class="card"><div class="bloco-tit">${esc(T(t)[0].toUpperCase())} <small class="num">${tt[0]} pts · ${tt[1]} reb · ${tt[2]} ast</small></div><div class="box">${boxTime(t,dsel)}</div></div>`}).join("")}</div>
+  h+=`</div>${listaJuntos(a,b,dsel)}
   <div class="duas">${betLoyde(a,b,s)}<div class="card"><div class="bloco-tit">CHANCES DE PLACAR <small>${tip("chances","os 6 mais prováveis")}</small></div>${chancesPlacar(a,b,s)}</div></div>
   <div class="card"><div class="bloco-tit">LEITURA DO LOYDÃO <small>o que decide, quem carrega, onde buscar</small></div>${leitura(a,b,s)}</div>
   ${quadroConfronto(A[0],B[0],ta,tb,s)}
@@ -1110,7 +1159,10 @@ function vTodosBloco(){
   let h=`<div class="card tabela-wrap" style="padding:10px"><div class="bloco-tit" style="margin:-10px -10px 10px">TODOS CONTRA TODOS · SEMANA ${d.wk} <small>linha contra coluna, titulares reais de cada dia</small></div><table class="mx"><thead><tr><th></th>${ord.map(b=>`<th title="${esc(T(b)[0])}"><img src="img/l/${T(b)[1]}.webp" alt="${esc(T(b)[0])}"></th>`).join("")}</tr></thead><tbody>`;
   ord.forEach(a=>{h+=`<tr><th class="lin"><span><img src="img/l/${T(a)[1]}.webp" alt="" style="width:30px;height:30px;border-radius:50%;border:2px solid #000">${esc(T(a)[0])} <small>${rtxt(res[a].w,res[a].l,res[a].t)}</small></span></th>`;
     ord.forEach(b=>{if(a===b){h+=`<td class="x">–</td>`;return}const s=res[a].c[b];h+=`<td class="${s.w>s.l?"w":s.w<s.l?"l":"t"} num">${rtxt(s.w,s.l,s.t)}</td>`});h+=`</tr>`});
-  return h+`</tbody></table></div>`;
+  h+=`</tbody></table>`;
+  // versão de celular: uma linha por time, com o resultado contra cada um
+  h+=`<div class="tt-lista">${ord.map(a=>`<div class="tt-row"><div class="tt-t"><img src="img/l/${T(a)[1]}.webp" alt="">${esc(T(a)[0])}<b>${rtxt(res[a].w,res[a].l,res[a].t)}</b></div><div class="tt-ops">${ord.filter(b=>b!==a).map(b=>{const s=res[a].c[b];return `<span class="${s.w>s.l?"w":s.w<s.l?"l":"t"}" title="${esc(T(b)[0])} ${rtxt(s.w,s.l,s.t)}"><img src="img/l/${T(b)[1]}.webp" alt="">${s.w}-${s.l}</span>`}).join("")}</div></div>`).join("")}</div>`;
+  return h+`</div>`;
 }
 function titulos(nome){return HIST.campeoes.filter(c=>c[2]===nome)}
 function vTime(id){
