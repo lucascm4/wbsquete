@@ -1204,7 +1204,7 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108145052";
+const VERSAO_PAINEL="20261108145229";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2000,6 +2000,10 @@ function abrirLegenda(k){
 /* ficha completa do jogador: toque na linha */
 function linhaPer(p,per){ // números do jogador no período escolhido na ficha
   const d=DADOS;const id=p.id;let s2=null,g=1;
+  if(per==="ly"){const a=typeof LY!=="undefined"?LY[id]:null;if(a===undefined)return {carregando:1};if(!a)return null;
+    window._NAV=window._NAV||notas(d.P.concat(d.fa||[]),x=>x.av);const f=window._NAV;const z=f?f(a):null;const mg=minMedia("temp");
+    const reg=d.P.concat(d.fa||[]).filter(x=>x.av&&x.av[11]>=mg&&x.nota!=null).map(x=>x.nota);
+    return {s:a.slice(0,11),g:a[11],c:z&&z.c,rk:z?1+reg.filter(n=>n>z.n).length:null,n:reg.length,ly:1}}
   if(ehMedia(per)){const a=p[MEDIAS[per][0]];if(!a||!a[11])return null;s2=a.slice(0,11);g=a[11]}
   else if(per==="sem"){const q=d.P.filter(x=>x.id===id&&x.g);if(!q.length)return null;s2=zero();g=0;q.forEach(x=>{x.W.forEach((y,i)=>s2[i]+=y);g+=x.g})}
   else if(ehRange(per)){if(!rangePronto(per)){UI._fichaEspera=id;garantirBoxes(rangeDe(per)[1]);return {carregando:1}}const r=linhasRange(per).find(x=>x.p.id===id);if(!r)return null;s2=r.s;g=r.g}
@@ -2013,7 +2017,7 @@ function abrirJogador(id,perF){
   const r=Object.assign({t},linhaPer(p,sp)||{});
   const pc=(a,b)=>b?(100*a/b).toFixed(1)+"%":"–";const st=r.s;
   const ont=d.cur-1;const vOnt=ont>=d.s0?ont:"r:"+ont+"-"+ont;
-  const PERS=[[diaPadrao(),diaPadrao()===d.cur?"Hoje":"Último dia"],[vOnt,"Ontem"],["sem","Semana"],["l7","7 dias"],["l30","Mês"],["temp","Season"]].filter((x,i,A)=>A.findIndex(y=>String(y[0])===String(x[0]))===i);
+  const PERS=[[diaPadrao(),diaPadrao()===d.cur?"Hoje":"Último dia"],[vOnt,"Ontem"],["sem","Semana"],["l7","7 dias"],["l30","Mês"],["temp","Season"],["ly","25/26"]].filter((x,i,A)=>A.findIndex(y=>String(y[0])===String(x[0]))===i);
   const filtroPer=`<div class="pj-per" role="group" aria-label="Período">${PERS.map(([k,n])=>`<button type="button" data-fper="${k}" aria-pressed="${String(k)===String(sp)}">${n}</button>`).join("")}</div>`;
   const cel=st?[["PTS",n1(st[0])],["REB",n1(st[1])],["AST",n1(st[2])],["STL",n1(st[3])],["BLK",n1(st[4])],["3PM",n1(st[5])],["TO",n1(st[6])],["FG",`${pc(st[7],st[8])}<small>${n1(st[7])}/${n1(st[8])}</small>`],["FT",`${pc(st[9],st[10])}<small>${n1(st[9])}/${n1(st[10])}</small>`]]:[];
   // barras por categoria (z do período)
@@ -2021,7 +2025,7 @@ function abrirJogador(id,perF){
   const barras=K.map(k=>{const z=c[k];if(z==null)return "";const w=Math.min(50,Math.abs(z)*16);return `<div class="zb"><small>${k}</small><span class="zb-t"><span class="${z>=0?"pos":"neg"}" style="${z>=0?"left:50%":"right:50%"};width:${w}%"></span></span><b class="${z>=0.5?"pos":z<=-0.5?"neg":""}">${z>0?"+":""}${z.toFixed(1)}</b></div>`}).join("");
   // comparativo de médias
   const lin=(nome,a)=>a?`<tr><th>${nome}</th><td>${n1(a[0])}</td><td>${n1(a[1])}</td><td>${n1(a[2])}</td><td>${n1(a[3])}</td><td>${n1(a[4])}</td><td>${n1(a[5])}</td><td>${n1(a[6])}</td><td>${pc(a[7],a[8])}<small>${n1(a[7])}/${n1(a[8])}</small></td><td>${pc(a[9],a[10])}<small>${n1(a[9])}/${n1(a[10])}</small></td><td>${a[11]!=null?a[11]:""}</td></tr>`:"";
-  const medias=`<table class="pj-tab"><thead><tr><th></th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th>FG</th><th>FT</th><th>J</th></tr></thead><tbody>${lin("Temporada",p.av)}${lin("30 dias",p.l30)}${lin("7 dias",p.l7)}${lin("Projeção",p.pj)}</tbody></table>`;
+  const medias=`<table class="pj-tab"><thead><tr><th></th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th>FG</th><th>FT</th><th>J</th></tr></thead><tbody>${lin("Temporada",p.av)}${lin("25/26",LY[id])}${lin("30 dias",p.l30)}${lin("7 dias",p.l7)}${lin("Projeção",p.pj)}</tbody></table>`;
   // últimos jogos (boxes guardados)
   const ult=[];if(typeof BOX!=="undefined"){Object.keys(BOX.dias).map(Number).sort((a,b)=>b-a).forEach(x=>{if(ult.length>=6)return;const l=BOX.dias[x].find(l=>l[0]===id);if(l)ult.push([x,l])})}
   if(!ult.length&&p.dl)Object.keys(p.dl).map(Number).sort((a,b)=>b-a).slice(0,6).forEach(x=>{const v=p.dl[x];ult.push([x,[id,p.t,v[11],...v.slice(0,11)]])});
@@ -2041,11 +2045,13 @@ function abrirJogador(id,perF){
    <div class="pj-topo">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small><img src="img/l/${T(t)[1]}.webp" alt=""> ${esc(T(t)[0])} · ${esc(NBA[p.pro]||"")} · ${esc(POS[p.pos]||"")}${p.inj&&p.inj!=="ACTIVE"?` · <u>${esc(p.inj)}</u>`:""}</small></div></div>
    <div class="pj-rks">${rks.map(([k,v])=>`<div><small>${esc(k)}</small><b>#${v}</b></div>`).join("")}</div>
    <div class="pj-sec">PERÍODO</div>${filtroPer}
-   ${st?`<div class="pj-sub">${esc(rotPer(sp,1))}${(sp==="sem"||ehRange(sp))&&r.g?` · ${r.g} jogos (total)`:ehMedia(sp)?` · média por jogo · ${r.g} jogos`:""}${r.rk?` · <b>#${r.rk}</b> de ${r.n} no período`:""}</div><div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`:`<p class="pj-txt">${r.carregando?"Buscando os boxes…":"Não jogou nesse período."}</p>`}
+   ${st?`<div class="pj-sub">${esc(rotPer(sp,1))}${(sp==="sem"||ehRange(sp))&&r.g?` · ${r.g} jogos (total)`:(ehMedia(sp)||r.ly)?` · média por jogo · ${r.g} jogos`:""}${r.rk?(r.ly?` · nível de <b>#${r.rk}</b> na régua de hoje`:` · <b>#${r.rk}</b> de ${r.n} no período`):""}</div><div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`:`<p class="pj-txt">${r.carregando?(sp==="ly"?"Buscando a temporada passada…":"Buscando os boxes…"):sp==="ly"?"Não jogou na temporada passada.":"Não jogou nesse período."}</p>`}
    ${barras?`<div class="pj-sec">CATEGORIA POR CATEGORIA <small>acima (+) ou abaixo (−) de um titular médio</small></div><div class="pj-zb">${barras}</div>`:""}
    <div class="pj-sec">LEITURA DO LOYDÃO</div><p class="pj-txt">${frases.join(" ")}</p>
    <div class="pj-sec">MÉDIAS</div><div class="pj-scroll">${medias}</div>
    ${jogos?`<div class="pj-sec">ÚLTIMOS JOGOS</div><div class="pj-scroll">${jogos}</div>`:""}</div>`;
+  if(typeof LY!=="undefined"&&LY[id]===undefined)seasonPassada(id).then(()=>{const pop=document.getElementById("popFicha");if(pop&&pop.dataset.id==String(id)){const sc=pop.querySelector(".pop-full").scrollTop;abrirJogador(id,UI.fichaPer);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc}});
+  el.dataset.id=id;
   el.addEventListener("click",e=>{const b=e.target.closest("[data-fper]");if(b){e.stopPropagation();const v=b.dataset.fper;const sc=el.querySelector(".pop-full").scrollTop;abrirJogador(id,(v==="sem"||isNaN(+v))?v:+v);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc;return}if(e.target===el||e.target.closest("[data-fecha]"))fecharFicha()});
   document.body.appendChild(el);
 }
@@ -2483,6 +2489,16 @@ async function garantirBoxes(ate){
         BOX.dias[sp]=r.linhas;Object.assign(BOX.meta,m);gravarCache("wbs.box."+sp,{quando:r.quando,linhas:r.linhas,meta:m})});
       BOX.pronto=Object.keys(BOX.dias).length;render()}
   }finally{BOX.carregando=false;BOX.pronto=Object.keys(BOX.dias).length;render()}
+}
+/* temporada passada (25/26) de um jogador, sob demanda, guardada no aparelho */
+const LY={};
+async function seasonPassada(id){
+  if(LY[id]!==undefined)return LY[id];const c=lerCache("wbs.ly."+id);if(c){LY[id]=c.v;return c.v}
+  const f={players:{filterIds:{value:[id]},filterStatsForTopScoringPeriodIds:{value:2,additionalValue:["002026"]}}};
+  try{const r=await ajson(AO.LG+"?view=kona_player_info",{"X-Fantasy-Filter":JSON.stringify(f)});
+    const p=((r.players||[])[0]||{}).player||{};const s=(p.stats||[]).find(x=>x.id==="002026"&&x.statSplitTypeId===0);
+    const v=s&&s.stats&&s.stats["42"]?[...AO.K.map(k=>+((s.stats[k]||0)/s.stats["42"]).toFixed(1)),s.stats["42"]]:null;
+    LY[id]=v;gravarCache("wbs.ly."+id,{v});return v}catch(e){return null}
 }
 async function baixarFA(sp){
   const f={players:{filterStatus:{value:["FREEAGENT","WAIVERS"]},filterSlotIds:{value:[0,1,2,3,4,5,6,7,8,9,10,11]},limit:80,offset:0,sortPercOwned:{sortPriority:1,sortAsc:false},filterRanksForScoringPeriodIds:{value:[sp]},filterStatsForTopScoringPeriodIds:{value:2,additionalValue:["002027","012027"]}}};
