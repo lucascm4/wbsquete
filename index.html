@@ -922,7 +922,7 @@ const AO={
   rodando:false,ultimo:0
 };
 const ajson=u=>fetch(u,{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("ESPN respondeu "+r.status);return r.json()});
-function agoraBR(){return new Date(new Date().toLocaleString("en-US",{timeZone:"America/Sao_Paulo"}))}
+function agoraBR(){return new Date(new Date().toLocaleString("en-US",{timeZone:"America/New_York"}))}
 function spHoje(){const n=agoraBR();return Math.floor((new Date(n.getFullYear(),n.getMonth(),n.getDate())-D0)/864e5)+1}
 /* um dia está fechado se foi baixado depois das 6h do dia seguinte (horário de Brasília) */
 function diaFechado(sp,quando){const f=spData(sp+1);f.setHours(6);return quando&&quando>f.getTime()}
@@ -995,13 +995,22 @@ async function atualizarAoVivo(){
   if(AO.rodando)return;AO.rodando=true;const st=$("#status");
   st.innerHTML=`<span class="ao-vivo">buscando na ESPN…</span>`;
   try{const d=await coletarAoVivo();AO.ultimo=Date.now();lsSet("painel.cache",JSON.stringify(d));carrega(d);
-    st.innerHTML=`<span class="ao-vivo">ao vivo</span> · semana ${d.wk} · ${esc(spRot(d.cur))} · ${quando(d.gerado).split(" ").slice(2).join(" ")}`;}
+    const j=janelaDeJogos(),agora=temJogoAgora();const hm=ms=>{const x=new Date(ms);return dd(x.getHours())+":"+dd(x.getMinutes())};
+    st.innerHTML=(agora?`<span class="ao-vivo">ao vivo</span> · atualiza a cada 2 min`:j&&Date.now()<j[0]?`sem jogo agora · volta às ${hm(j[0])}`:`sem jogo agora`)+` · ${quando(d.gerado).split(" ").slice(2).join(" ")}`;}
   catch(e){console.error(e);st.textContent=(DADOS?"sem conexão com a ESPN agora · mostrando "+quando(DADOS.gerado):"não consegui falar com a ESPN: "+e.message)}
   finally{AO.rodando=false}
 }
 // atualiza a cada minuto com a página aberta, e na hora quando a pessoa volta para ela
-setInterval(()=>{if(document.visibilityState==="visible"&&Date.now()-AO.ultimo>55000)atualizarAoVivo()},15000);
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&Date.now()-AO.ultimo>30000)atualizarAoVivo()});
+/* só atualiza sozinho enquanto tem jogo da NBA rolando: do primeiro jogo do dia (−5 min) até 3h depois do último começar */
+function janelaDeJogos(){
+  if(!AO.sch)return null;const sp=spHoje();let ini=Infinity,fim=0;
+  AO.sch.settings.proTeams.forEach(pt=>{(pt.proGamesByScoringPeriod&&pt.proGamesByScoringPeriod[sp]||[]).forEach(g=>{if(g.date<ini)ini=g.date;if(g.date>fim)fim=g.date})});
+  return ini===Infinity?null:[ini-5*60000,fim+3*3600000];
+}
+function temJogoAgora(){const j=janelaDeJogos();const n=Date.now();return !!(j&&n>=j[0]&&n<=j[1])}
+const INTERVALO=120000;
+setInterval(()=>{if(document.visibilityState==="visible"&&temJogoAgora()&&Date.now()-AO.ultimo>INTERVALO-5000)atualizarAoVivo()},20000);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&Date.now()-AO.ultimo>(temJogoAgora()?60000:30*60000))atualizarAoVivo()});
 
 /* ---------- roteador ---------- */
 function rota(){return (location.hash||"#confrontos").slice(1)}
