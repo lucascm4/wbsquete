@@ -1263,6 +1263,13 @@ body:not(.rolou) .jn-mini>:not(small){display:none}
 .pg-cats>div.a b:first-of-type{color:var(--amarelo)}.pg-cats>div.b b:last-of-type{color:var(--amarelo)}
 @media (max-width:480px){.pg-cats{grid-template-columns:repeat(5,minmax(0,1fr))}}
 b.neg{color:#ff6b6b}
+/* escalação moleque */
+.moleque{margin:8px;padding:10px 12px;background:#000;border:2px dashed var(--amarelo);border-radius:10px}
+.ml-tit{font-family:var(--display);font-size:18px;color:var(--amarelo);letter-spacing:.03em}
+.ml-ab{margin:2px 0 6px;font-size:12px;color:var(--apagado);font-style:italic}
+.moleque ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+.moleque li{font-size:13.5px;line-height:1.4;color:#eee}.moleque li b{color:var(--amarelo);text-transform:uppercase;font-size:12px}
+.moleque li u{text-decoration:none;font-weight:800;color:#fff}.moleque li small{color:var(--apagado);font-size:11px}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1329,10 +1336,10 @@ b.neg{color:#ff6b6b}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794165076"></script>
-<script src="radar.js?v=1794165076"></script>
+<script src="hist.js?v=1794165312"></script>
+<script src="radar.js?v=1794165312"></script>
 <script>
-const VERSAO_PAINEL="20261108161116";
+const VERSAO_PAINEL="20261108161512";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2129,6 +2136,38 @@ function fichaJog(r,k,RK,cls){
   return `<div class="fj ${cls||""} ${r.slot>=12?"nobanco":""}" style="--cor:${T(r.t)[4]}" data-fj="${k}" role="button" tabindex="0" aria-label="ver stats de ${esc(p.n)}">${face(p.id,p.n,"")}<span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>
    <b>${esc(nm)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt="${esc(T(r.t)[0])}">${RK[p.id]?"#"+RK[p.id]:""}</small>
    <em><span>${st[0]}<i>p</i></span><span>${st[1]}<i>r</i></span><span>${st[2]}<i>a</i></span>${ext.map(x=>`<span>${x[0]}<i>${x[1]}</i></span>`).join("")}</em>${r.slot>=12?'<u>banco</u>':""}</div>`}
+/* ESCALAÇÃO MOLEQUE (no estilo do Alê do Pânico): cada titular vira uma comparação com trocadilho */
+const MOLEQUE={
+ bom:{
+  PTS:[["a fábrica da Volks fora de greve","faz cesta todo dia"],["o carnê das Casas Bahia","não para de cair na conta"],["o boleto do dia 5","chega sempre e não perdoa"]],
+  REB:[["o aspirador de pó","limpa tudo embaixo da cesta"],["a sogra no domingo","não deixa sobrar nada no prato"],["o garimpeiro","sai do garrafão com o ouro"]],
+  AST:[["o garçom de rodízio","passa em todas as mesas"],["o tio do pavê","sempre serve alguém"],["o motoboy do iFood","entrega em qualquer canto"]],
+  STL:[["a cleptomania","põe tudo no bolso"],["o batedor de carteira da Sé","rouba e ninguém vê"],["o pombo da praça","pega tudo que cai no chão"]],
+  BLK:[["a vasectomia","corta a bola e evita o choro"],["o porteiro do prédio","não deixa ninguém subir"],["o segurança da balada","barra quem chega de tênis"]],
+  "3PM":[["o foguete da NASA ao contrário","manda de longe e acerta"],["o tio do churrasco","acerta o ponto da carne de longe"],["o sniper do condomínio","mira na janela de longe"]],
+  "FG%":[["o urologista","coloca a luva e pega com firmeza"],["o cirurgião plástico","não erra um corte"],["o GPS da Waze","sempre acha o caminho"]],
+  "FT%":[["o relojoeiro suíço","não erra um tic-tac"],["o caixa do banco","conta tudo certinho"],["o professor de autoescola","faz baliza de olho fechado"]],
+  TO:[["o cofre do Itaú","não entrega nada"],["o pão-duro da família","não dá a bola pra ninguém"],["a mãe com o controle da TV","não solta de jeito nenhum"]]},
+ ruim:{
+  PTS:[["a fábrica da Volks em greve","não tá fazendo mais cesta"],["o filho do Carlos Alberto de Nóbrega","não serve nem pra ficar no banco"],["o sinal do 3G no elevador","some quando mais precisa"]],
+  "FG%":[["o foguete da NASA","sempre manda um pro espaço"],["o pedreiro da obra do vizinho","tijolo atrás de tijolo"],["o dardo de bar às 3 da manhã","mira no alvo e acerta o garçom"]],
+  "FT%":[["o ENEM","demorou, fecha a porta"],["a obra da prefeitura","tijolo e mais tijolo"],["o cego no tiroteio","atira pra tudo que é lado"]],
+  TO:[["o peido na transação","sente um desconforto na hora de passar"],["o caixa eletrônico do posto","entrega a bola pra quem passar"],["a Black Friday no Brasil","só dá desconto pro adversário"]],
+  REB:[["a pílula do dia seguinte","chega atrasada"],["o porteiro dormindo","deixa todo mundo entrar"],["o Saci com câimbra","não consegue ficar em pé"]],
+  AST:[["o namoro no sofá","maltrata a bola"],["o mendigo do centro","tem um pombo no pé"],["o fominha da pelada","passa a bola nem pra mãe"]],
+  STL:[["o gato carente","só fica roçando na canela"],["o turista em Copacabana","é ele que é roubado"],["o segurança de shopping","vê tudo e não pega nada"]],
+  BLK:[["a Black Friday no Brasil","não dá um desconto"],["a porta giratória sem detector","deixa passar até faca"],["o goleiro goiano","só fica olhando as bolas"]],
+  "3PM":[["a compra na Shein","demora quase um ano pra chegar"],["o Wi-Fi do aeroporto","conecta uma vez por dia"],["a promessa de político","fica só no discurso"]]}};
+function escalacaoMoleque(dono,coco,sp){
+  const usados=new Set();const K=["PTS","REB","AST","STL","BLK","3PM","FG%","FT%","TO"];
+  const linhas=dono.map((r,k)=>{if(!r)return "";const c=r.c||{};const lado=coco?"ruim":"bom";
+    const ord=K.filter(x=>c[x]!=null&&MOLEQUE[lado][x]).sort((a,b)=>coco?c[a]-c[b]:c[b]-c[a]);
+    let esc0=null;for(const cat of ord){const L=MOLEQUE[lado][cat];const h=r.p.id%L.length;for(let j=0;j<L.length;j++){const x=L[(h+j)%L.length];if(!usados.has(x[0])){esc0=[cat,x];break}}if(esc0)break}
+    if(!esc0)return "";usados.add(esc0[1][0]);const [cat,[cmp,punch]]=esc0;const st=r.s;const n1=x=>Number.isInteger(x)?x:Math.round(x*10)/10;
+    const num={PTS:`${n1(st[0])} pts`,REB:`${n1(st[1])} reb`,AST:`${n1(st[2])} ast`,STL:`${n1(st[3])} roubos`,BLK:`${n1(st[4])} tocos`,"3PM":`${n1(st[5])} bolas de 3`,"FG%":`${n1(st[7])}/${n1(st[8])} FG`,"FT%":`${n1(st[9])}/${n1(st[10])} LL`,TO:`${n1(st[6])} TO`}[cat];
+    const pos=SLOT[SLOTS_SEL[k]];const art=pos==="UTIL"?"o coringa":`o ${pos}`;
+    return `<li><b>${art}</b> é o <u>${esc(r.p.n)}</u>, ${esc(cmp)}: ${esc(punch)} <small>(${num})</small></li>`}).join("");
+  return linhas?`<div class="moleque"><div class="ml-tit">${coco?"A ESCALAÇÃO MOLEQUE DA VERGONHA":"ESCALAÇÃO MOLEQUE"}</div><p class="ml-ab">${coco?"É a escalação moleque que tem…":"Escalação, escalação, ESCALAÇÃO MOLEQUE, que tem…"}</p><ul>${linhas}</ul></div>`:""}
 function quadraSelecao(dono,tot,sp,coco){
   const RK=rkVer(sp);
   const linhas='<svg class="q-linhas" viewBox="0 0 100 94" preserveAspectRatio="none" aria-hidden="true"><rect x="1" y="1" width="98" height="92"/><rect x="34" y="1" width="32" height="38"/><circle cx="50" cy="39" r="12"/><path d="M6 1v27A45 45 0 0 0 94 28V1"/><path d="M44 8h12"/><circle cx="50" cy="11" r="1.8"/><path d="M38 93a12 12 0 0 1 24 0"/></svg>';
@@ -2139,7 +2178,7 @@ function quadraSelecao(dono,tot,sp,coco){
   const zoeira=coco?["😂","🍅","🤣","💩","🍅","😹","🤡","🍅","😂","💩"].map((e,i)=>`<span class="zo" style="left:${[6,88,14,72,40,92,4,60,30,80][i]}%;top:${[8,12,46,44,70,78,88,4,92,62][i]}%;animation-delay:${i*0.35}s">${e}</span>`).join(""):"";
   return `<div class="card quadra-card ${coco?"coco":""}">${coco?`<div class="bloco-tit">QUADRA DE COCÔ <small>a pior escalação ${sp==="sem"?"da semana":"da noite"} · toque na cara</small></div>`:""}<div class="quadra">${linhas}${zoeira}${quadra}</div>
   <div class="q-banco"><span class="q-rot">${coco?"BANCO DA VERGONHA":"SEGUNDA UNIDADE"}</span><div class="q-bl">${banco}</div></div>
-  <div class="q-tot">${cats.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div></div>`;
+  <div class="q-tot">${cats.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>${escalacaoMoleque(dono,coco,sp)}</div>`;
 }
 function abrirFicha(k){
   const x=window._SEL&&window._SEL[k];if(!x)return;const {r}=x;const p=r.p,st=r.s;const sp=UI.noiteDia??diaPadrao();
