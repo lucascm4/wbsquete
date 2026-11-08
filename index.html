@@ -1613,6 +1613,7 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 .pj-selo{display:inline-flex;align-items:center;gap:3px;font:800 10px system-ui;letter-spacing:.03em;padding:2px 7px 2px 3px;border-radius:999px;background:#2a2410;color:var(--amarelo);border:1px solid #5a4a10}
 .pj-selo.ruim{background:#2a1010;color:#ff8a8a;border-color:#5a1a1a}.pj-selo.bom{background:#0f2a18;color:#7ee2a0;border-color:#1a5a30}
 .pj-selo .ic-pr{width:18px;height:18px}
+.bq b:has(+ em){}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1679,11 +1680,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794173671"></script>
-<script src="radar.js?v=1794173671"></script>
-<script src="midia.js?v=1794173671"></script>
+<script src="hist.js?v=1794173739"></script>
+<script src="radar.js?v=1794173739"></script>
+<script src="midia.js?v=1794173739"></script>
 <script>
-const VERSAO_PAINEL="20261108183431";
+const VERSAO_PAINEL="20261108183539";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1775,8 +1776,9 @@ function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];const M=momento(
   if(!M.rem)return sm[k]=[sm.pa,sm.pe,sm.pb].map(p=>p>0.5?"✓":"✗"); // acabou: mercado liquidado
   // como as casas: mercado praticamente decidido (favorito com 98,5%+) é suspenso, em vez de ficar oferecendo 1.01
   const o=precifica([sm.pa,sm.pe,sm.pb],M.margem,M.T,M.mx,M.mn);
-  return sm[k]=o.susp?["🔒","🔒","🔒"]:o}
-function suspenso(a,b,s){return casa(a,b,s)[0]==="🔒"}
+  if(o.susp){const P=[sm.pa,sm.pe,sm.pb];const i=P.indexOf(Math.max(...P));const r=o.slice();r[i]="🔒";return sm[k]=r}
+  return sm[k]=o}
+function suspenso(a,b,s){return false}
 function maisMercados(a,b,s){const A=T(a),B=T(b);const M=momento(a,b);if(!M.rem)return "";const a3=A[3]||A[0],b3=B[3]||B[0];
   const R=Object.entries(s.res).map(([k,p])=>{const [w,l,t]=k.split("-").map(Number);return {w,l,t,p}});
   const soma=f=>R.filter(f).reduce((x,r)=>x+r.p,0);
