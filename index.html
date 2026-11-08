@@ -1169,6 +1169,9 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 .car-mais{grid-template-columns:repeat(7,minmax(0,1fr))}
 @media (max-width:420px){.car-mais{grid-template-columns:repeat(4,minmax(0,1fr))}.pop-full .pj-grade b{font-size:20px}}
 .car-dr{font:700 11px system-ui,sans-serif;color:#ccc;margin-top:3px;white-space:nowrap}.car-dr b{color:#fff}.car-dr.bom b{color:#3ddc84}.car-dr.ruim b{color:#ff5a5a}
+.nts{padding:0 0 6px}.nt-l{display:grid;grid-template-columns:26px auto auto 1fr;gap:8px;align-items:center;padding:6px 12px;border-bottom:1px solid #221818;font-size:14px}
+.nt-l img,.nt-l .ini{width:24px;height:24px;border-radius:50%;border:1.5px solid #000;object-fit:cover}.nt-l small{color:var(--apagado);font-size:12px}
+@media (max-width:480px){.nt-l{grid-template-columns:26px 1fr auto}.nt-l small{grid-column:2/-1}}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1238,7 +1241,7 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108151417";
+const VERSAO_PAINEL="20261108152101";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1305,7 +1308,11 @@ const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 const odd=p=>p<=0.001?"—":Math.max(1.01,1/(p*MARGEM)).toFixed(2);
 const pct=p=>p<0.001?"<0,1%":(p*100).toFixed(p<0.1?1:0).replace(".",",")+"%";
-const tagInj=p=>p.inj==="OUT"?'<span class="tag out">OUT</span>':p.inj==="DAY_TO_DAY"?'<span class="tag dtd">DTD</span>':"";
+/* notícia de lesão do dia (radar.js), vale só para o dia dela */
+const NOT_DNP={OUT:1,DUV:0.75,Q:0.45,PROV:0.1,IN:0.02};
+function noticia(p,sp){const L=RADAR.lesoes;if(!L||!L.itens||!p)return null;if(sp!=null&&sp!==L.sp)return null;if(DADOS&&L.sp!==DADOS.cur)return null;const x=L.itens[p.n];return x?{st:x[0],nota:x[1]}:null}
+const tagInj=p=>{const n=noticia(p);if(n&&n.st!=="IN")return `<span class="tag ${n.st==="OUT"?"out":"dtd"}" title="${esc(n.nota)}">${n.st==="Q"?"DÚVIDA":n.st==="DUV"?"PROV. FORA":n.st==="PROV"?"PROVÁVEL":"OUT"}</span>`;return tagInj0(p)};
+const tagInj0=p=>p.inj==="OUT"?'<span class="tag out">OUT</span>':p.inj==="DAY_TO_DAY"?'<span class="tag dtd">DTD</span>':"";
 const temporadaCurta=t=>t.slice(2);
 const T=id=>TIMES[id]||["?","","","?","#555"];
 const GLOSS={
@@ -1383,8 +1390,8 @@ function prepara(d){
     e.tot[t.id]=a;
     const rem=[];
     for(let sp=d.cur;sp<=d.s1;sp++){
-      const c=(e.rost[t.id]||[]).filter(p=>p.slot!==13&&p.inj!=="OUT"&&p.avx&&(p.gd||[]).includes(sp)&&!(sp===d.cur&&p.dl&&p.dl[sp]));
-      c.sort((x,y)=>(y.nota||0)-(x.nota||0));c.slice(0,10).forEach(p=>{const av=p.avx.slice();av.dnp=p.inj==="DAY_TO_DAY"?0.35:0.05;rem.push(av)});
+      const c=(e.rost[t.id]||[]).filter(p=>{const nw=noticia(p,sp);return p.slot!==13&&(nw?nw.st!=="OUT":p.inj!=="OUT")&&p.avx&&(p.gd||[]).includes(sp)&&!(sp===d.cur&&p.dl&&p.dl[sp])});
+      c.sort((x,y)=>(y.nota||0)-(x.nota||0));c.slice(0,10).forEach(p=>{const av=p.avx.slice();const nw=noticia(p,sp);av.dnp=nw?NOT_DNP[nw.st]??0.05:p.inj==="DAY_TO_DAY"?0.35:0.05;rem.push(av)});
       // jogo em andamento: quem já tem linha parcial hoje ainda produz o resto do jogo
       if(sp===d.cur&&d.nba)(e.rost[t.id]||[]).forEach(p=>{const g=d.nba[p.pro];if(p.slot<12&&p.avx&&p.dl&&p.dl[sp]&&g&&g.live&&g.frac<1){const av=p.avx.map(x=>x*(1-g.frac));av.dnp=0;rem.push(av)}});
     }
@@ -1874,7 +1881,9 @@ function abaOdds(a,b,ta,tb,pa,pb,s){
   const A=T(a),B=T(b);const sc=placar(ta,tb);
   const linhas=CATS.map((c,j)=>{const p=s.cat?s.cat[j]:null;if(p==null)return "";const e=s.catE?s.catE[j]:0;const q=Math.max(0,1-p-e);const fa=p>=q;
     return `<tr><td class="${sc.r[j]>0?"g":""}">${fmt(c,c.f(ta))}</td><td class="oc-cat"><b>${c.k}</b><div class="oc-bar"><i style="width:${(100*p).toFixed(0)}%;background:${A[4]}"></i>${e>0.005?`<i style="width:${(100*e).toFixed(1)}%;background:#666"></i>`:""}<i style="width:${(100*q).toFixed(0)}%;background:${B[4]}"></i></div><small><span class="${fa?"f":""}">${pct(p)}</span><span class="${!fa?"f":""}">${pct(q)}</span></small></td><td class="${sc.r[j]<0?"g":""}">${fmt(c,c.f(tb))}</td></tr>`}).join("");
-  return `${betLoyde(a,b,s)}
+  const nts=[a,b].flatMap(t=>(EST.rost[t]||[]).filter(p=>(p.gd||[]).includes(DADOS.cur)&&noticia(p)&&!(p.dl&&p.dl[DADOS.cur])).map(p=>[t,p,noticia(p)]));
+  const blocoNot=nts.length?`<div class="card nts"><div class="bloco-tit">QUEM ESTÁ FORA OU EM DÚVIDA HOJE <small>${esc(RADAR.lesoes.quando)} · ${esc(RADAR.lesoes.fonte)} · já entra nas odds</small></div>${nts.map(([t,p,n])=>`<div class="nt-l clic" data-pj="${p.id}">${logo(T(t)[0])}<b>${esc(p.n)}</b>${tagInj(p)}<small>${esc(n.nota)}${p.slot>=12?" · no banco":""}</small></div>`).join("")}</div>`:"";
+  return `${blocoNot}${betLoyde(a,b,s)}
   <div class="card"><div class="bloco-tit">CHANCE EM CADA CATEGORIA <small>${tip("Chance de cada time terminar a semana na frente naquela categoria, pela simulação de 4000 semanas com o que cada elenco ainda tem de jogos.","como calcula")}</small></div>
   <table class="odds-cat"><thead><tr><th><img src="img/l/${A[1]}.webp" alt=""> ${esc(A[0])}</th><th>agora · chance</th><th>${esc(B[0])} <img src="img/l/${B[1]}.webp" alt=""></th></tr></thead><tbody>${linhas}</tbody></table>
   <div class="oc-pe">Faltam ${EST.jr[a]} jogos do ${esc(A[0])} e ${EST.jr[b]} do ${esc(B[0])}. Agora ${rtxt(sc.w,sc.l,sc.t)}.</div></div>
