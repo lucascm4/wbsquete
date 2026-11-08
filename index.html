@@ -933,7 +933,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108013913";
+const VERSAO_PAINEL="20261108014024";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1204,7 +1204,7 @@ function noticias(){
     // contra a própria média
     if(slot<12&&p.av&&p.av[11]>=5){const val=valorJogo(v),base=valorJogo(p.av.slice(0,11));const mp=p.av[0];
       if(val-base>=16&&pts>=22&&pts>=1.6*mp)it.push({w:28+Math.min(20,val-base),k:"ESTOURANDO",t:`${quem}: ${pts} pts, ${reb} reb, ${ast} ast${live}. Média dele é ${mp} pontos.`});
-      else if(base>=20&&base-val>=13&&((v[12]||0)>=15||(g&&g.fim))&&pts<=0.5*mp)it.push({w:26+Math.min(15,base-val),k:"APAGADO",t:`${quem} fez só ${pts} ponto${pts===1?"":"s"}${g&&g.fim?"":" até agora"}. Média de ${mp}.`});}
+      else if(mp>=14&&base>=20&&base-val>=13&&((v[12]||0)>=15||(g&&g.fim))&&pts<=0.5*mp)it.push({w:26+Math.min(15,base-val),k:"APAGADO",t:`${quem} fez só ${pts===0?"zero":pts} ponto${pts===1?"":"s"}${g&&g.fim?"":" até agora"}. Média de ${mp}.`});}
   });
   // viradas desde a última vez que esta pessoa abriu
   let ant=null;try{ant=JSON.parse(localStorage.getItem("painel.snap")||"null")}catch(e){}
