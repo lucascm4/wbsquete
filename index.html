@@ -547,6 +547,11 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .chave .fora{margin-top:8px;display:flex;flex-direction:column;gap:4px}
 @media (max-width:640px){.chave{grid-template-columns:minmax(0,1fr)}}
 
+.dest-l{display:inline-block;margin-top:4px;font-size:12px;font-weight:700;padding:2px 8px;border:1px solid #000}
+.dest-l.fiel{background:#0f2a15;color:#9ff0b4}
+.dest-l.drop{background:#2a0b0b;color:#ff9c9c}
+.dest-l.troca{background:#2a240b;color:var(--amarelo)}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;padding-top:8px}
 .pasta{position:relative;display:flex;flex-direction:column;gap:6px;background:#f2d27a;color:#1d1b18;text-decoration:none;padding:18px 16px 14px;border:3px solid #000;box-shadow:5px 5px 0 #000;border-radius:0 8px 8px 8px;min-height:130px;transition:transform .12s}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000}
@@ -1154,10 +1159,16 @@ function vRadar(){
 
 /* ---------- museu ---------- */
 const ATU={PTS:["Pontos",0,"PTS"],REB:["Rebotes",1,"REB"],AST:["Assistências",2,"AST"],STL:["Roubos",3,"STL"],BLK:["Tocos",4,"BLK"],"3PM":["Bolas de 3",5,"3PM"],TD:["Triplos-duplos",0,"PTS"],FG:["Mão quente",-1,"FG"],BANCO:["Esquecidos no banco",0,"PTS"]};
-const PASTAS=[["campeoes","Campeões","Quem levantou o cinturão, de 2021 a 2026."],["confrontos","Todos os confrontos","Todas as semanas desde 22/23, com box de cada jogador."],["trocas","Todas as trocas","Quem deu, quem recebeu e quem se deu bem."],["tabelas","Classificações","A tabela final de cada temporada."],["frente","Frente a frente","Escolha dois times."],["atuacoes","Atuações marcantes","As maiores noites de um jogador na liga."],["decepcoes","Maiores decepções","Pick alto que não entregou."],["escaladas","Maiores escaladas","Pick do fim do draft que virou craque."],["marcantes","Finais e 9-0","Toda final e toda varrida."],["detalhe","No detalhe","Todo 5-4 e todo empate."]];
+const PASTAS=[["campeoes","Campeões","Quem levantou o cinturão, de 2021 a 2026."],["confrontos","Todos os confrontos","Todas as semanas desde 22/23, com box de cada jogador."],["trocas","Todas as trocas","Quem deu, quem recebeu e quem se deu bem."],["tabelas","Classificações","A tabela final de cada temporada."],["frente","Frente a frente","Escolha dois times."],["atuacoes","Atuações marcantes","As maiores noites de um jogador na liga."],["decepcoes","Maiores decepções","Pick alto que não entregou, e quem segurou até o fim."],["escaladas","Achados do draft","Pick do fim do draft que virou craque, e quem ficou com ele."],["drafts","Drafts","Todos os drafts, pick a pick, com o destino de cada jogador."],["marcantes","Finais e 9-0","Toda final e toda varrida."]];
+function destino(c,quem){
+  if(!c)return "";
+  if(c.drop)return `<div class="dest-l drop">${esc(quem)} largou em ${esc(c.drop)}${c.fim&&c.fim!==quem?` · terminou no ${esc(c.fim)}`:""}${c.n>2?` · passou por ${c.n} times`:""}</div>`;
+  if(c.troca)return `<div class="dest-l troca">saiu do ${esc(quem)} em ${esc(c.troca[0])} pro ${esc(c.troca[1])}${c.fim&&c.fim!==c.troca[1]?` · terminou no ${esc(c.fim)}`:""}</div>`;
+  return `<div class="dest-l fiel">${esc(quem)} segurou a temporada inteira</div>`;
+}
 function vMuseuCapa(){
-  const n={campeoes:HIST.campeoes.length,tabelas:new Set(HIST.tab.map(r=>r[0])).size,atuacoes:Object.keys(HIST.perf).length,decepcoes:(HIST.decep||[]).length,escaladas:(HIST.escal||[]).length,trocas:(HIST.trocas||[]).length,confrontos:window.MUSEU?window.MUSEU.length:507};
-  const un={campeoes:"campeões",tabelas:"temporadas",atuacoes:"listas",decepcoes:"jogadores",escaladas:"jogadores",trocas:"trocas",confrontos:"confrontos"};
+  const n={campeoes:HIST.campeoes.length,tabelas:new Set(HIST.tab.map(r=>r[0])).size,atuacoes:Object.keys(HIST.perf).length,decepcoes:(HIST.decep||[]).length,escaladas:(HIST.escal||[]).length,trocas:(HIST.trocas||[]).length,confrontos:window.MUSEU?window.MUSEU.length:507,drafts:Object.keys(HIST.drafts||{}).length};
+  const un={campeoes:"campeões",tabelas:"temporadas",atuacoes:"listas",decepcoes:"jogadores",escaladas:"jogadores",trocas:"trocas",confrontos:"confrontos",drafts:"drafts"};
   return `<div class="cab-secao"><span class="sobre">MUSEU DA WBSQUETE</span><h1 class="manchete">O ACERVO</h1><p class="linha-fina">A história da liga desde 22/23. Escolha uma pasta.</p></div>
   <div class="pastas">${PASTAS.map(([k,t,d])=>`<a class="pasta" href="#acervo-${k}"><span class="aba"></span><span class="pt">${esc(t)}</span><span class="pd">${esc(d)}</span>${n[k]?`<span class="pn">${n[k]} ${un[k]}</span>`:""}</a>`).join("")}</div>`;
 }
@@ -1166,8 +1177,18 @@ function vMuseu(){
   let h=`<a class="voltar" href="#museu" style="text-decoration:none">← Acervo</a><div class="cab-secao"><span class="sobre">MUSEU · ${esc(pasta?pasta[1].toUpperCase():"")}</span>`;
   if(f==="decepcoes"||f==="escaladas"){
     const L=f==="decepcoes"?HIST.decep:HIST.escal;
-    h+=`<h1 class="manchete">${f==="decepcoes"?"PICK ALTO, RETORNO NENHUM":"DO FIM DO DRAFT PRO TOPO"}</h1><p class="linha-fina">${f==="decepcoes"?"Escolhas até o pick 36 que terminaram a temporada mais longe da posição em que foram draftadas.":"Escolhas do pick 60 em diante que terminaram entre os 60 melhores da temporada."} Ranking pelo valor nas 9 categorias somado nos jogos como titular de algum time da liga.</p></div>
-    <div class="card">${L.map((r,i)=>{const [n,t,pk,quem,rk,g,val,av]=r;return `<div class="perf"><span class="pos">${i+1}</span>${face(null,n)}<div><div style="font-weight:700">${esc(n)}</div><div style="font-size:12px;color:var(--apagado)">${esc(t)} · draftado pelo ${esc(quem)} · ${g} jogos</div><div class="lin" style="font-size:12.5px">${g?`${av[0]} pts · ${av[1]} reb · ${av[2]} ast · ${av[3]} rb · ${av[4]} tc · ${av[5]} 3pt por jogo`:"não jogou como titular na liga"}</div></div><div class="big num" style="font-size:24px">${pk}<small>PICK</small></div><div class="big num" style="font-size:24px;color:${f==="decepcoes"?"#ff8a8a":"var(--amarelo)"}">${rk>=400?"–":rk}<small>RK FINAL</small></div></div>`}).join("")}</div>`;
+    h+=`<h1 class="manchete">${f==="decepcoes"?"PICK ALTO, RETORNO NENHUM":"ACHADOS DO DRAFT"}</h1><p class="linha-fina">${f==="decepcoes"?"Escolhas até o pick 36 que terminaram a temporada mais longe de onde foram draftadas. E o que o dono fez: segurou, largou ou trocou.":"Escolhas do pick 60 em diante que terminaram entre os 60 melhores. E quem ficou com o prêmio."}</p></div>
+    <div class="card">${L.map((r,i)=>{const [n,t,pk,quem,rk,g,val,av,c]=r;return `<div class="perf"><span class="pos">${i+1}</span>${face(null,n)}<div><div style="font-weight:700">${esc(n)}</div><div style="font-size:12px;color:var(--apagado)">${esc(t)} · draftado pelo ${esc(quem)} · ${g} jogos</div><div class="lin" style="font-size:12.5px">${g?`${av[0]} pts · ${av[1]} reb · ${av[2]} ast · ${av[3]} rb · ${av[4]} tc · ${av[5]} 3pt por jogo`:"não jogou como titular na liga"}</div>${destino(c,quem)}</div><div class="big num" style="font-size:24px">${pk}<small>PICK</small></div><div class="big num" style="font-size:24px;color:${f==="decepcoes"?"#ff8a8a":"var(--amarelo)"}">${rk>=400?"–":rk}<small>RK FINAL</small></div></div>`}).join("")}</div>`;
+    return h;
+  }
+  if(f==="drafts"){
+    const temps=Object.keys(HIST.drafts||{}).sort().reverse();const t=UI.drTemp||temps[0];const tm=UI.drTime||"todos";
+    const L=(HIST.drafts[t]||[]).filter(r=>tm==="todos"||r[2]===tm);const times=[...new Set((HIST.drafts[t]||[]).map(r=>r[2]))].sort();
+    const dest=r=>{const [pk,rd,quem,n,auto,fim,nt,drop,troca]=r;if(t==="2026/27")return "";if(drop)return `<span class="dest-l drop">largou em ${esc(drop)}${fim&&fim!==quem?` · fim: ${esc(fim)}`:""}</span>`;if(troca)return `<span class="dest-l troca">foi pro ${esc(troca[1])} em ${esc(troca[0])}</span>`;return `<span class="dest-l fiel">ficou a temporada inteira</span>`};
+    h+=`<h1 class="manchete">DRAFT ${esc(t)}</h1><p class="linha-fina">Pick a pick. Em cada jogador, o que aconteceu depois: ficou, foi largado ou trocado.</p></div>
+    <div class="pilulas" role="group" aria-label="Temporada">${temps.map(x=>`<button class="pil" type="button" data-drt="${x}" aria-pressed="${x===t}">${x}</button>`).join("")}</div>
+    <div class="filtros"><label for="drTime">Time</label><select id="drTime"><option value="todos" ${tm==="todos"?"selected":""}>todos</option>${times.map(n2=>`<option ${n2===tm?"selected":""}>${esc(n2)}</option>`).join("")}</select></div>
+    <div class="card">${L.map(r=>{const [pk,rd,quem,n,auto]=r;return `<div class="perf" style="grid-template-columns:40px 44px minmax(0,1fr)"><span class="pos" style="font-size:18px">${pk}</span>${face(null,n)}<div><div style="font-weight:700">${esc(n)}${auto?' <span class="tag ir">AUTO</span>':""}</div><div style="font-size:12px;color:var(--apagado)">rodada ${rd} · <span class="lg" style="display:inline-flex;align-items:center;gap:4px">${logo(quem,"width:18px;height:18px;border-radius:50%;background:#fff;border:1px solid #000;object-fit:contain")}${esc(quem)}</span></div>${dest(r)}</div></div>`}).join("")}</div>`;
     return h;
   }
   if(f==="trocas"){
@@ -1360,7 +1381,7 @@ function render(){
 }
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
-  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft]");if(!t)return;
+  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt]");if(!t)return;
   if(e.target.closest("a"))return;
   const ds=t.dataset;
   if(ds.jogo!==undefined)ir("jogo-"+ds.jogo);
@@ -1378,8 +1399,9 @@ document.addEventListener("click",e=>{
   else if(ds.rko){UI.rkOrd=ds.rko;render()}
   else if(ds.rd){UI.radar=ds.rd;render()}
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
+  else if(ds.drt){UI.drTemp=ds.drt;UI.drTime="todos";render()}
 });
-document.addEventListener("change",e=>{if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
+document.addEventListener("change",e=>{if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
 window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0)});
 $("#btnAtualiza").onclick=()=>atualizarAoVivo();
 $("#nav").innerHTML=NAVS.map(([k,n,ic])=>`<a href="#${k}" data-nav="${k}"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg>${n}</a>`).join("");
