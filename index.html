@@ -1147,7 +1147,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108135554";
+const VERSAO_PAINEL="20261108135727";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1925,7 +1925,7 @@ function vSelecao(rows,sp){
   const linha=(r,k)=>{if(!r)return `<tr><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span><div><b>—</b></div></div></td><td colspan="9" class="esp">ninguém</td></tr>`;const p=r.p,st=r.s;
     return `<tr style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>${face(p.id,p.n,"")}<div><b>${rkTag(rkVer(sp),p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,r.slot>=12?'<span class="tag banco">NO BANCO</span>':"")}</small></div></div></td><td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td></tr>`};
   const nb=dono.filter(r=>r&&r.slot>=12).length;
-  let h=`<div class="cab-secao"><span class="sobre">SELEÇÃO · ${esc(rotPer(sp,1))}</span><h1 class="manchete">SELEÇÃO ${rotPer(sp)}</h1><p class="linha-fina">Toque na carinha para ver as stats. A melhor escalação possível ${sp==="sem"?"na semana":ehMedia(sp)?"pela média por jogo "+rotPer(sp).toLowerCase()+" (mínimo de "+minMedia(sp)+" jogos)":"com os jogos do dia"}, juntando os 12 elencos: PG, SG, SF, PF, C, G, F e 2 UTIL, nas posições da ESPN.${nb?` <b>${nb} ${nb>1?"estavam":"estava"} no banco.</b>`:""}</p></div>
+  let h=`<div class="cab-secao"><span class="sobre">SELEÇÃO · ${esc(rotPer(sp,1))}</span><h1 class="manchete">SELEÇÃO ${rotPer(sp)}</h1><p class="linha-fina">Toque na carinha para ver as stats. A melhor escalação possível ${sp==="sem"?"na semana":ehRange(sp)?"somando tudo "+rotPer(sp).toLowerCase():ehMedia(sp)?"pela média por jogo "+rotPer(sp).toLowerCase()+" (mínimo de "+minMedia(sp)+" jogos)":"com os jogos do dia"}, juntando os 12 elencos: PG, SG, SF, PF, C, G, F e 2 UTIL, nas posições da ESPN.${nb?` <b>${nb} ${nb>1?"estavam":"estava"} no banco.</b>`:""}</p></div>
   <div class="dias" role="group" aria-label="Período">${botoesPer(sp,"data-nd")}`;
   h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores">Melhores</button><button class="pil" type="button" data-nm="piores">Piores</button><button class="pil" type="button" data-nm="selecao" aria-pressed="true">Seleção</button>${rkSel(sp)}</div>
   ${quadraSelecao(dono,tot,sp)}
@@ -2451,7 +2451,7 @@ document.addEventListener("click",e=>{
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
   else if(ds.drt){UI.drTemp=ds.drt;UI.drTime="todos";render()}
 });
-document.addEventListener("change",e=>{if(e.target.id==="noiteTime"){UI.noiteTime=+e.target.value;render()}if(e.target.id==="perSel"&&e.target.value){const v=e.target.value;UI.noiteDia=v==="range"?"r:"+DADOS.s0+"-"+Math.min(DADOS.cur,DADOS.s1):(isNaN(+v)?v:+v);render()}if(e.target.id==="rgA"||e.target.id==="rgB"){const A=document.getElementById("rgA").value,B=document.getElementById("rgB").value;UI.noiteDia="r:"+A+"-"+B;render()}if(e.target.id==="rkModo"){UI.rkModo=e.target.value;try{localStorage.setItem("painel.rk",e.target.value)}catch(x){}render()}if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
+document.addEventListener("change",e=>{if(e.target.id==="noiteTime"){UI.noiteTime=+e.target.value;render()}if(e.target.id==="perSel"&&e.target.value){const v=e.target.value;UI.noiteDia=v==="range"?"r:1-"+DADOS.last:(isNaN(+v)?v:+v);render()}if(e.target.id==="rgA"||e.target.id==="rgB"){const A=document.getElementById("rgA").value,B=document.getElementById("rgB").value;UI.noiteDia="r:"+A+"-"+B;render()}if(e.target.id==="rkModo"){UI.rkModo=e.target.value;try{localStorage.setItem("painel.rk",e.target.value)}catch(x){}render()}if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
 window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0)});
 $("#btnAtualiza").onclick=()=>atualizarAoVivo();
 function tourAuto(){let visto=null;try{visto=localStorage.getItem("painel.tour")}catch(e){}if(!visto){const espera=setInterval(()=>{if(DADOS&&document.querySelector(".jogo")){clearInterval(espera);tourInicio()}},800);setTimeout(()=>clearInterval(espera),30000)}}
