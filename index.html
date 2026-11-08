@@ -1079,7 +1079,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108021258";
+const VERSAO_PAINEL="20261108021403";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1386,7 +1386,7 @@ function noticias(){
   });
   cand.sort((x,y)=>y.w-x.w);
   // no máximo 3 do mesmo selo, pra não ficar repetitivo
-  const cont={};cand.forEach(x=>{cont[x.k]=(cont[x.k]||0)+1;if(cont[x.k]<=3&&it.length<14)it.push({w:x.w,k:x.k,t:x.f()})});
+  const cont={};cand.forEach(x=>{cont[x.k]=(cont[x.k]||0)+1;if(cont[x.k]<=3&&it.length<14)it.push({w:x.w,k:x.k,t:x.f().replace(/\. ([a-zà-ú])/g,(m,l)=>". "+l.toUpperCase())})});
   return it;
 }
 function ticker(){
