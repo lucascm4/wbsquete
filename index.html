@@ -1149,7 +1149,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108135809";
+const VERSAO_PAINEL="20261108135925";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1856,7 +1856,7 @@ function vNoite(){
   let coco="";
   if(modo==="piores"){const cand=rows.filter(r=>ehMedia(sp)?true:(sp==="sem"||ehRange(sp))?r.g>=2:(r.min||0)>=15).sort((x,y)=>x.val-y.val);const dono=escalaMelhor(cand);
     const tot=zero();dono.forEach(r=>{if(r)r.s.forEach((x,i)=>tot[i]+=x)});tot.forEach((x,i)=>tot[i]=Math.round(x*10)/10);window._SEL=[];coco=quadraSelecao(dono,tot,sp,true);}
-  const L=ordenaLj(rows.slice(0,40));
+  const L=ordenaLj(rows);
   const RK=rankLiga(sp);const RKV=rkVer(sp);
   const linha=r=>{const p=r.p;const st=r.s;const banco=r.slot>=12;
     return `<tr class="${banco?"fora":""}" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RKV,p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,`${(sp==="sem"||ehRange(sp))?`<span>${r.g} j</span>`:""}${banco?'<span class="tag banco">BANCO</span>':""}`)}</small>${sp!=="sem"&&!ehMedia(sp)&&!ehRange(sp)?`<small>${jogoNBA(p,sp)}</small>`:ehMedia(sp)?`<small>média por jogo · ${r.g} jogos</small>`:""}</div></div></td>
