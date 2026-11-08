@@ -1063,6 +1063,11 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .tmini td.up.f{background:rgba(63,212,122,.15)}.tmini td.dn.f{background:rgba(255,107,107,.15)}
 @media (max-width:760px){.tmini{font-size:10px}.tmini thead th{font-size:8px}.tmini tbody th{width:36px;font-size:8.5px}.rd .d .rk-grande{font-size:24px}}
 
+.rd-baixo{grid-column:1/-1;margin-top:-4px}
+.rd-baixo .tmini{margin-top:0}
+.tmini tbody th{width:40px}
+@media (max-width:760px){.tmini tbody th{width:34px}}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1124,7 +1129,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108022242";
+const VERSAO_PAINEL="20261108022403";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1181,7 +1186,7 @@ function tabMini(a7,av){ // 7 dias x temporada, uma coluna por stat, e a variaç
     let d,txt;if(c[1]==="fg"||c[1]==="ft"){d=x-y;txt=(d>0?"+":"")+d.toFixed(0)}else{if(!y&&!x)return `<td class="z">0</td>`;d=y?100*(x-y)/y:100;txt=(d>0?"+":"")+d.toFixed(0)+"%"}
     const bom=c[2]?d<0:d>0;const forte=Math.abs(d)>=(c[1]==="fg"||c[1]==="ft"?4:25);return `<td class="${Math.abs(d)<0.5?"z":bom?"up":"dn"}${forte?" f":""}">${txt}</td>`};
   return `<table class="tmini"><thead><tr><th></th>${C.map(c=>`<th>${c[0]}</th>`).join("")}</tr></thead><tbody>
-   <tr><th>7 dias</th>${C.map(c=>`<td>${f(val(a7,c),c)}</td>`).join("")}</tr>
+   <tr><th>7d</th>${C.map(c=>`<td>${f(val(a7,c),c)}</td>`).join("")}</tr>
    <tr><th>Temp.</th>${C.map(c=>`<td>${f(val(av,c),c)}</td>`).join("")}</tr>
    <tr class="dl"><th>Δ</th>${C.map(dlt).join("")}</tr></tbody></table>`;
 }
@@ -2040,12 +2045,12 @@ function vRadar(){
   const pil=[["quente","Lista quente"],["baixa","Lista baixa"],["pegar","Quem pegar"],["sobe","Sobe e afunda"],["lixo","Página do lixo"]];
   const pills=`<div class="pilulas" role="group" aria-label="Listas">${pil.map(([k,n])=>`<button class="pil" type="button" data-rd="${k}" aria-pressed="${f===k}">${n}</button>`).join("")}</div>`;
   const elenco=d.P.filter(p=>!p.fora);
-  const linhaRd=(p,dir,big,sub,extra)=>`<div class="rd">${face(p.id,p.n)}<div><div class="n">${esc(p.n)} ${tagInj(p)}${p.t?`<a href="#time-${p.t}"><img class="tl" src="img/l/${T(p.t)[1]}.webp" alt="${esc(T(p.t)[0])}" title="${esc(T(p.t)[0])}"></a>`:`<span class="selo ${p.st==="WAIVERS"?"wv":"livre"}">${p.st==="WAIVERS"?"WAIVER":"LIVRE"}</span>`}</div><div class="s">${sub}</div>${extra||""}${nota(p.n)?`<div class="q">“${esc(nota(p.n))}”</div>`:""}</div><div class="d ${dir}">${big}</div></div>`;
+  const linhaRd=(p,dir,big,sub,extra,baixo)=>`<div class="rd">${face(p.id,p.n)}<div><div class="n">${esc(p.n)} ${tagInj(p)}${p.t?`<a href="#time-${p.t}"><img class="tl" src="img/l/${T(p.t)[1]}.webp" alt="${esc(T(p.t)[0])}" title="${esc(T(p.t)[0])}"></a>`:`<span class="selo ${p.st==="WAIVERS"?"wv":"livre"}">${p.st==="WAIVERS"?"WAIVER":"LIVRE"}</span>`}</div><div class="s">${sub}</div>${extra||""}${nota(p.n)?`<div class="q">“${esc(nota(p.n))}”</div>`:""}</div><div class="d ${dir}">${big}</div>${baixo?`<div class="rd-baixo">${baixo}</div>`:""}</div>`;
   let h=`<div class="cab-secao"><span class="sobre">RADAR DO LOYDÃO${RADAR.quando?` · NOTAS DE ${esc(RADAR.quando)}`:""}</span>`;
   if(f==="quente"||f==="baixa"){
     const L=elenco.filter(p=>p.rk&&p.l7&&p.l7[11]>=3&&p.rk[0]<400).map(p=>({p,dl:p.rk[0]-p.rk[1]})).filter(x=>f==="quente"?x.dl>0:x.dl<0).sort((x,y)=>f==="quente"?y.dl-x.dl:x.dl-y.dl).slice(0,20);
     h+=`<h1 class="manchete">${f==="quente"?"LISTA QUENTE":"LISTA BAIXA"}</h1><p class="linha-fina">${f==="quente"?"Quem mais subiu nos últimos 7 dias.":"Quem mais caiu nos últimos 7 dias."} ${tip("rk","O que é Rk")}. As aspas são do Loydão.</p></div>${pills}
-    <div class="card">${L.map(({p,dl})=>linhaRd(p,dl>0?"up":"dn",`<b class="rk-grande">#${p.rk[1]}</b><span class="rk-mov">${dl>0?"▲":"▼"}${Math.abs(dl)}</span><small>era #${p.rk[0]}</small>`,tabMini(p.l7,p.av||zero()))).join("")||'<div class="vazio">Nada por aqui.</div>'}</div>`;
+    <div class="card">${L.map(({p,dl})=>linhaRd(p,dl>0?"up":"dn",`<b class="rk-grande">#${p.rk[1]}</b><span class="rk-mov">${dl>0?"▲":"▼"}${Math.abs(dl)}</span><small>era #${p.rk[0]}</small>`,`${NBA[p.pro]||""}${p.l7?` · ${p.l7[11]} jogos nos 7 dias`:""}`,"",tabMini(p.l7,p.av||zero()))).join("")||'<div class="vazio">Nada por aqui.</div>'}</div>`;
     return h;
   }
   if(f==="sobe"){
