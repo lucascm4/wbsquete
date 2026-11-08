@@ -1537,6 +1537,10 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 .od-up,.od-dn{font-style:normal;font-size:.62em;margin-left:2px;vertical-align:middle}.od-up{color:#22c55e}.od-dn{color:#ff4a4a}
 .du-ct{font:800 9px system-ui;letter-spacing:.06em;color:var(--apagado);text-align:center;padding-top:6px}
 
+.du-ct{display:flex;justify-content:center;gap:6px;padding:8px 6px 0}
+.du-ct button{all:unset;cursor:pointer;font:800 10px system-ui;letter-spacing:.04em;padding:4px 10px;border-radius:999px;border:1.5px solid #444;color:#ddd}
+.du-ct button[aria-pressed="true"]{background:var(--amarelo);color:#000;border-color:var(--amarelo)}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1602,11 +1606,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794171537"></script>
-<script src="radar.js?v=1794171537"></script>
-<script src="midia.js?v=1794171537"></script>
+<script src="hist.js?v=1794171612"></script>
+<script src="radar.js?v=1794171612"></script>
+<script src="midia.js?v=1794171612"></script>
 <script>
-const VERSAO_PAINEL="20261108175857";
+const VERSAO_PAINEL="20261108180012";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3271,7 +3275,8 @@ function avDuelo(abas){
   const dia=placar(LA.tot,LB.tot),sem=placar(EST.tot[a],EST.tot[b]);
   const emq=L=>L.out.filter(x=>x.g&&x.g.live&&x.tit).length,falta=L=>L.out.filter(x=>x.g&&!x.g.live&&!x.g.fim&&x.tit).length,ja=L=>L.out.filter(x=>x.v&&x.tit&&x.g&&x.g.fim).length;
   const fmt=(c,v)=>c.pct?(v*100).toFixed(1):Math.round(v*10)/10;
-  const cats=CATS.map((c,i)=>{const x=c.f(LA.tot),y=c.f(LB.tot);const r=dia.r[i];return `<div class="du-c ${r>0?"a":r<0?"b":""}"><b>${!c.pct||LA.tot[c.k==="FG%"?8:10]?fmt(c,x):"–"}</b><small>${c.k}</small><b>${!c.pct||LB.tot[c.k==="FG%"?8:10]?fmt(c,y):"–"}</b></div>`}).join("");
+  const cv=UI.duCat||"sem";const TA=cv==="sem"?EST.tot[a]:LA.tot,TB=cv==="sem"?EST.tot[b]:LB.tot,RR=cv==="sem"?sem.r:dia.r;
+  const cats=CATS.map((c,i)=>{const x=c.f(TA),y=c.f(TB);const r=RR[i];return `<div class="du-c ${r>0?"a":r<0?"b":""}"><b>${!c.pct||TA[c.k==="FG%"?8:10]?fmt(c,x):"–"}</b><small>${c.k}</small><b>${!c.pct||TB[c.k==="FG%"?8:10]?fmt(c,y):"–"}</b></div>`}).join("");
   const card=x=>{const p=x.p,v=x.v,g=x.g;const st=g?(g.live?`<em class="lv">● ${esc(g.st)}</em>`:g.fim?`<em>final</em>`:`<em>${esc(g.st)}</em>`):"";
     const ln=v?`<span class="du-l"><b>${v[0]}</b>p <b>${v[1]}</b>r <b>${v[2]}</b>a${v[3]?` <b>${v[3]}</b>s`:""}${v[4]?` <b>${v[4]}</b>b`:""}${v[5]?` <b>${v[5]}</b>3pt`:""}${v[6]?` <i>${v[6]}to</i>`:""} · ${v[7]}/${v[8]}</span>`:`<span class="du-l vz">${g&&g.live?"ainda não entrou":"não jogou"}</span>`;
     return `<div class="du-p ${g&&g.live?"on":""} ${x.tit?"":"bn"}" data-pj="${p.id}">${face(p.id,p.n,"")}<div><b class="du-n">${esc(p.n.replace(/^(\S)\S*\s/,"$1. "))}${x.tit?"":' <u>banco</u>'}</b>${ln}<small>${st}${v&&v[12]?` · ${v[12]}min`:""}</small></div></div>`};
@@ -3280,9 +3285,9 @@ function avDuelo(abas){
     <div class="du-pl"><small>SEMANA</small><b><i class="${sem.w>sem.l?"v":""}">${sem.w}</i>-<i class="${sem.l>sem.w?"v":""}">${sem.l}</i>${sem.t?"-"+sem.t:""}</b><small>hoje ${dia.w}-${dia.l}${dia.t?"-"+dia.t:""}</small></div>
     <a href="#time-${b}" class="du-t">${rostoTime(B[0])}<b>${esc(B[3]||B[0])}</b></a></div>
    <div class="du-st"><span>🔴 ${emq(LA)} em quadra · ${ja(LA)} já · ${falta(LA)} faltam</span><span>🔴 ${emq(LB)} em quadra · ${ja(LB)} já · ${falta(LB)} faltam</span></div>
-   <div class="du-ct">CATEGORIAS SÓ DE HOJE</div><div class="du-cats">${cats}</div></div>
+   <div class="du-ct"><button type="button" data-duc="sem" aria-pressed="${cv==="sem"}">Semana (acumulado)</button><button type="button" data-duc="hoje" aria-pressed="${cv==="hoje"}">Só hoje</button></div><div class="du-cats">${cats}</div></div>
   <div class="du-cols"><div class="du-col"><div class="du-h" style="--cor:${A[4]}">${esc(A[0])}</div>${LA.out.map(card).join("")||'<p class="vazio">ninguém hoje</p>'}</div><div class="du-col"><div class="du-h" style="--cor:${B[4]}">${esc(B[0])}</div>${LB.out.map(card).join("")||'<p class="vazio">ninguém hoje</p>'}</div></div>
-  <p class="qd-leg">Placar de HOJE = só os titulares do dia. Verde = quem está levando a categoria hoje.</p>`}
+  <p class="qd-leg">Placar grande = semana acumulada; "hoje" = só os titulares do dia. Verde = quem está levando a categoria.</p>`}
 function vAoVivoTodos(abas){
   const d=DADOS;const sp=d.cur;const meu=meuTime();
   const f=UI.avF??(meu||0);const q=UI.avQ||"quadra";
@@ -3486,6 +3491,7 @@ function montarBusca(r){
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
+  {const dc=e.target.closest("[data-duc]");if(dc){UI.duCat=dc.dataset.duc;render();return}}
   {const mm=e.target.closest("[data-avm]");if(mm){UI.avModo=mm.dataset.avm;render();return}}
   {const q=e.target.closest("[data-avq]");if(q){UI.avQ=q.dataset.avq;render();return}const f=e.target.closest("[data-avf]");if(f){UI.avF=+f.dataset.avf;render();return}}
   {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();location.hash="time-"+tid;return}}
