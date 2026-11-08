@@ -42,7 +42,7 @@ button{font:inherit;color:inherit}
 .nav-top{display:none}
 
 /* chão */
-main{position:relative;min-height:70vh;background:var(--chao);padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+main{position:relative;min-height:70vh;background:var(--chao);padding-bottom:16px}
 main::before{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--chao-ponto) 2px,transparent 2.4px);background-size:14px 14px;pointer-events:none}
 .wrap{position:relative;max-width:1180px;margin:0 auto;padding-block:18px 28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
 
@@ -1421,6 +1421,21 @@ b.neg{color:#ff6b6b}
 .ap-l img,.ap-l .ini{width:20px!important;height:20px!important;border-radius:50%;flex:0 0 auto}
 .pj-tab td.adv{white-space:nowrap}
 
+/* barra inferior grudada no fim (sticky) em vez de fixed: o iOS deixava ela no meio da tela */
+@media (max-width:899px){.nav{position:sticky!important;bottom:0;left:auto;right:auto}}
+/* abas do confronto como botões */
+.sub-wrap{margin:0 0 8px}
+.subabas.sb2{display:flex!important;gap:6px;overflow-x:auto;scrollbar-width:none;background:transparent;border:0;padding:2px 0}
+.subabas.sb2::-webkit-scrollbar{display:none}
+.subabas.sb2 button{flex:1 0 auto;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 10px;border-radius:10px;background:#0a0707;border:2px solid #000;color:#fff;font-size:13px;letter-spacing:.03em;box-shadow:0 2px 0 #000}
+.subabas.sb2 button i{font-style:normal;font-size:17px;line-height:1}
+.subabas.sb2 button[aria-selected="true"]{background:var(--amarelo);color:#000;border-color:#000}
+.subabas.sb2 button:active{transform:translateY(1px)}
+/* resumo do dia: tudo numa linha */
+.dia-res>span{flex-wrap:nowrap;white-space:nowrap;align-items:center}
+.dia-res small{white-space:nowrap}
+.dia-res b{white-space:nowrap;font-size:18px}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1486,11 +1501,11 @@ b.neg{color:#ff6b6b}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794169847"></script>
-<script src="radar.js?v=1794169847"></script>
-<script src="midia.js?v=1794169847"></script>
+<script src="hist.js?v=1794169997"></script>
+<script src="radar.js?v=1794169997"></script>
+<script src="midia.js?v=1794169997"></script>
 <script>
-const VERSAO_PAINEL="20261108173047";
+const VERSAO_PAINEL="20261108173317";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1976,7 +1991,7 @@ function listaJuntos(a,b,sp){
   const cab=cabLj();
   const filtros=`<div class="pilulas mini" role="group" aria-label="Time">${[[0,"Os dois"],[a,T(a)[0]],[b,T(b)[0]]].map(([k,n])=>`<button class="pil" type="button" data-ft="${k}" aria-pressed="${ft===k}">${esc(n)}</button>`).join("")}</div>`;
   const ja=jogadoresDia(a,sp),jb=jogadoresDia(b,sp);const pdx=placarDia(a,b,sp);
-  const resumo=`<div class="dia-res">${pdx?`<span class="dr-pl"><small>${sp===d.cur?"PLACAR DE HOJE":"PLACAR DO DIA"}</small><b><i class="${pdx.w>pdx.l?"v":""}">${pdx.w}</i>-<i class="${pdx.l>pdx.w?"v":""}">${pdx.l}</i>${pdx.t?"-"+pdx.t:""}</b><small>só o dia, sem acumulado</small></span>`:""}<span class="dr-jg"><small>${sp==="sem"?"JOGOS NA SEMANA":futuro?"JOGADORES EM QUADRA (PREVISTO)":"JOGADORES EM QUADRA"}</small><b>${txtJog(ja)} x ${txtJog(jb)}</b><small>${esc(T(a)[3]||T(a)[0])} x ${esc(T(b)[3]||T(b)[0])}${typeof ja==="object"||typeof jb==="object"?" · contando quem ainda vai jogar":""}</small></span></div>`;
+  const resumo=`<div class="dia-res">${pdx?`<span class="dr-pl"><small>${sp===d.cur?"HOJE":"NO DIA"}</small><b><i class="${pdx.w>pdx.l?"v":""}">${pdx.w}</i>-<i class="${pdx.l>pdx.w?"v":""}">${pdx.l}</i>${pdx.t?"-"+pdx.t:""}</b><small>só o dia, sem acumulado</small></span>`:""}<span class="dr-jg"><small>${sp==="sem"?"JOGOS":futuro?"EM QUADRA (PREV.)":"EM QUADRA"}</small><b>${txtJog(ja)} x ${txtJog(jb)}</b><small>${esc(T(a)[3]||T(a)[0])} x ${esc(T(b)[3]||T(b)[0])}${typeof ja==="object"||typeof jb==="object"?" · contando quem ainda vai jogar":""}</small></span></div>`;
   return `<div class="card lj-wrap"><div class="bloco-tit">JOGADORES <small>${sp==="sem"?"semana toda":futuro?spRot(sp)+" · média da temporada de quem joga":spRot(sp)} · do melhor pro pior</small></div>${resumo}${filtros}
   <table class="lj">${cab}<tbody>${tit.map(linha).join("")||`<tr><td colspan="10" class="esp">${futuro?"Ninguém joga nesse dia.":"Ninguém em quadra nesse dia."}</td></tr>`}${banco.length?`<tr class="sepr"><td colspan="10">Banco e IR${sp==="sem"?" · o que ficou fora":""}</td></tr>`+banco.map(r=>sp==="sem"?`<tr style="--cor:${T(r.t)[4]}" class="fora"><td class="jg"><div class="jg-in">${face(r.p.id,r.p.n,"")}<div><b>${esc(r.p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${r.bg} jogo${r.bg>1?"s":""} fora (banco/IR)</small></div></div></td>${(()=>{const B=bancoDe(r.p).B;return `<td class="pts">${B[0]}</td><td>${B[1]}</td><td>${B[2]}</td><td>${B[3]}</td><td>${B[4]}</td><td>${B[5]}</td><td>${B[6]}</td><td class="fgft">${fgc(B[7],B[8])}</td><td class="fgft">${fgc(B[9],B[10])}</td>`})()}</tr>`:linha(r)).join(""):""}</tbody></table></div>`;
 }
@@ -2149,10 +2164,9 @@ function vJogo(i){
   const [a,b]=m,A=T(a),B=T(b);const ta=EST.tot[a],tb=EST.tot[b],pa=EST.proj[a],pb=EST.proj[b];
   const sc=placar(ta,tb),s=simula(a,b);const dsel=UI.dia[i]??(d.last===d.cur?d.cur:"sem");const dia=d.cur-d.s0+1;
   const sub=UI.subJogo||"placar";const n=d.mt.length;const prev=(i+n-1)%n,next=(i+1)%n;
-  const abas=[["placar","Placar"],["jogadores","Jogadores"],["odds","Odds"],["destaques","Destaques"],["premios","Prêmios"]];
+  const abas=[["placar","📊","Placar"],["jogadores","👥","Jogadores"],["odds","🎲","Odds"],["destaques","⭐","Destaques"],["premios","🏆","Prêmios"]];
   let h=`<div class="jogo-nav"><button class="jn-home" type="button" data-ir="confrontos" aria-label="Início">⌂</button><button type="button" class="jn-b" data-jogo="${prev}" aria-label="confronto anterior">‹</button><div class="jn-mini"><a href="#time-${a}"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></a><b>${esc(A[3]||A[0])}</b><span class="num"><em class="${sc.w>sc.l?"v":""}">${sc.w}</em>-<em class="${sc.l>sc.w?"v":""}">${sc.l}</em>${sc.t?"-"+sc.t:""}</span><b>${esc(B[3]||B[0])}</b><a href="#time-${b}"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></a><small>${i+1}/${n}</small></div><button type="button" class="jn-b" data-jogo="${next}" aria-label="próximo confronto">›</button></div>
-  <div class="card"><div class="pt-linha"><a href="#time-${a}">${esc(A[0])} <small>${esc(A[2])}</small></a><span>sem ${d.wk} · dia ${Math.min(dia,7)}/7 · prev. ${(()=>{const p=placar(pa,pb);return rtxt(p.w,p.l,p.t)})()}</span><a href="#time-${b}"><small>${esc(B[2])}</small> ${esc(B[0])}</a></div>
-  <div class="subabas" role="tablist">${abas.map(([k,nm])=>`<button type="button" role="tab" data-sub="${k}" aria-selected="${sub===k}">${nm}</button>`).join("")}</div></div>`;
+  <div class="sub-wrap">  <div class="subabas sb2" role="tablist">${abas.map(([k,ic,nm])=>`<button type="button" role="tab" data-sub="${k}" aria-selected="${sub===k}"><i>${ic}</i>${nm}</button>`).join("")}</div></div>`;
   if(sub==="placar"){
     const hh=window.MUSEU?h2hEntre(A[0],B[0]):null;const mm=hh?hh.l.filter(x=>!x.atual&&seloFase(x)&&!/CONSOLA/.test(seloFase(x))).length:0;
     h+=`<div class="card">${tabelaCategorias(a,b,ta,tb,pa,pb,s)}</div>
