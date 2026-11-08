@@ -1504,6 +1504,31 @@ img[src*="img/l/"]{cursor:pointer}
 .av-f{margin-bottom:6px}
 tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 
+/* tags menores */
+.tag{font-size:8px!important;padding:1px 3px!important;letter-spacing:.03em!important;line-height:1.2;border-radius:3px}
+/* duelo ao vivo */
+.av-modo{margin:6px 0}
+.du-top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;padding:10px;background:#000}
+.du-t{display:flex;flex-direction:column;align-items:center;gap:3px;color:#fff;text-decoration:none;font-family:var(--display);font-size:15px}
+.du-t .rosto{width:42px;height:42px}
+.du-pl{text-align:center;line-height:1.05}.du-pl small{display:block;font:700 9px system-ui;color:var(--apagado);letter-spacing:.06em}
+.du-pl b{font-family:var(--display);font-weight:400;font-size:34px;color:#fff}.du-pl i{font-style:normal}.du-pl i.v{color:var(--amarelo)}
+.du-st{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:4px 8px;font-size:10px;color:var(--apagado);text-align:center;background:#0a0707}
+.du-cats{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:2px;padding:6px}
+.du-c{display:flex;flex-direction:column;align-items:center;background:#0a0707;border-radius:4px;padding:3px 0;min-width:0}
+.du-c small{font:800 8px system-ui;color:var(--amarelo);margin:1px 0}.du-c b{font-family:var(--display);font-weight:400;font-size:12px;color:#ddd;white-space:nowrap}
+.du-c.a b:first-child{color:#4ade80}.du-c.b b:last-child{color:#4ade80}
+.du-cols{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.du-col{display:flex;flex-direction:column;gap:4px;min-width:0}
+.du-h{font-family:var(--display);font-size:14px;color:#fff;background:#000;border-bottom:3px solid var(--cor);padding:5px 8px;border-radius:6px 6px 0 0}
+.du-p{display:flex;gap:6px;align-items:center;background:var(--card);border-radius:6px;padding:5px;cursor:pointer;min-width:0;border-left:3px solid transparent}
+.du-p.on{border-left-color:#ff3b3b;background:#1c0d0d}.du-p.bn{opacity:.55}
+.du-p .face,.du-p img.face{width:30px!important;height:30px!important;flex:0 0 auto}
+.du-p>div{min-width:0;display:flex;flex-direction:column}
+.du-n{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.du-n u{font-size:8px;color:var(--apagado);text-decoration:none}
+.du-l{font-size:11px;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.du-l b{color:#fff;font-size:12px}.du-l i{color:#f87171;font-style:normal}.du-l.vz{color:var(--apagado)}
+.du-p small{font-size:9px;color:var(--apagado)}.du-p em{font-style:normal}.du-p em.lv{color:#ff6b6b;font-weight:700}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1569,11 +1594,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794170742"></script>
-<script src="radar.js?v=1794170742"></script>
-<script src="midia.js?v=1794170742"></script>
+<script src="hist.js?v=1794170966"></script>
+<script src="radar.js?v=1794170966"></script>
+<script src="midia.js?v=1794170966"></script>
 <script>
-const VERSAO_PAINEL="20261108174542";
+const VERSAO_PAINEL="20261108174926";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1650,7 +1675,7 @@ const pct=p=>p<0.001?"<0,1%":(p*100).toFixed(p<0.1?1:0).replace(".",",")+"%";
 /* notícia de lesão do dia (radar.js), vale só para o dia dela */
 const NOT_DNP={OUT:1,DUV:0.75,Q:0.45,PROV:0.1,IN:0.02};
 function noticia(p,sp){const L=RADAR.lesoes;if(!L||!L.itens||!p)return null;if(sp!=null&&sp!==L.sp)return null;if(DADOS&&L.sp!==DADOS.cur)return null;const x=L.itens[p.n];return x?{st:x[0],nota:x[1]}:null}
-const tagInj=p=>{const n=noticia(p);if(n&&n.st!=="IN")return `<span class="tag ${n.st==="OUT"?"out":"dtd"}" title="${esc(n.nota)}">${n.st==="Q"?"DÚVIDA":n.st==="DUV"?"PROV. FORA":n.st==="PROV"?"PROVÁVEL":"OUT"}</span>`;return tagInj0(p)};
+const tagInj=p=>{const n=noticia(p);if(n&&n.st!=="IN")return `<span class="tag ${n.st==="OUT"?"out":"dtd"}" title="${esc(n.nota)}">${n.st==="Q"?"DÚV":n.st==="DUV"?"P.FORA":n.st==="PROV"?"PROV":"OUT"}</span>`;return tagInj0(p)};
 const tagInj0=p=>p.inj==="OUT"?'<span class="tag out">OUT</span>':p.inj==="DAY_TO_DAY"?'<span class="tag dtd">DTD</span>':"";
 const temporadaCurta=t=>t.slice(2);
 const T=id=>TIMES[id]||["?","","","?","#555"];
@@ -3213,6 +3238,38 @@ function vMuseuJogo(i){
 function jogosAoVivo(){const d=DADOS;if(!d||!d.nba)return {live:0,hoje:0};const v=Object.values(d.nba);return {live:v.filter(g=>g.live).length/2,hoje:v.length/2}}
 function vAoVivo(){
   const d=DADOS;if(!d)return vazio();const sp=d.cur;const meu=meuTime();
+  const modo=UI.avModo||(meu?"duelo":"todos");
+  const abas=`<div class="pilulas sel-c av-modo"><button class="pil" type="button" data-avm="duelo" aria-pressed="${modo==="duelo"}">⚔️ Meu confronto</button><button class="pil" type="button" data-avm="todos" aria-pressed="${modo==="todos"}">👥 Todos</button></div>`;
+  if(modo==="duelo")return avDuelo(abas);
+  return vAoVivoTodos(abas)}
+function avDuelo(abas){
+  const d=DADOS;const sp=d.cur;const G=d.nba||{};let me=UI.avDuelo||meuTime();
+  const sel=`<select id="avDuelo" class="sel" aria-label="Seu time"><option value="">qual é o seu time?</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===me?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select>`;
+  const m=me&&d.mt.find(x=>x.includes(me));
+  const topo=`<div class="cab-secao cab-c"><span class="sobre">AO VIVO · ${esc(spRot(sp))}</span><h1 class="manchete">🔴 AO VIVO</h1></div>${abas}`;
+  if(!m)return topo+`<div class="card"><div class="vazio">Escolha o seu time: ${sel}</div></div>`;
+  const a=me,b=m[0]===me?m[1]:m[0];const A=T(a),B=T(b);
+  const lado=t=>{const out=[];const tot=zero();(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t)).forEach(p=>{const g=G[p.pro];const v=p.dl&&p.dl[sp];if(!g&&!v)return;const tit=v?v[11]<12:(p.slot<12);if(v&&v[11]<12)v.slice(0,11).forEach((x,i)=>tot[i]+=x);
+      out.push({p,g,v,tit,ord:(g&&g.live?0:v?1:2)+(tit?0:3),val:v?valorJogo(v):-1e5})});
+    out.sort((x,y)=>x.ord-y.ord||y.val-x.val);return {out,tot}};
+  const LA=lado(a),LB=lado(b);
+  const dia=placar(LA.tot,LB.tot),sem=placar(EST.tot[a],EST.tot[b]);
+  const emq=L=>L.out.filter(x=>x.g&&x.g.live&&x.tit).length,falta=L=>L.out.filter(x=>x.g&&!x.g.live&&!x.g.fim&&x.tit).length,ja=L=>L.out.filter(x=>x.v&&x.tit&&x.g&&x.g.fim).length;
+  const fmt=(c,v)=>c.pct?(v*100).toFixed(1):Math.round(v*10)/10;
+  const cats=CATS.map((c,i)=>{const x=c.f(LA.tot),y=c.f(LB.tot);const r=dia.r[i];return `<div class="du-c ${r>0?"a":r<0?"b":""}"><b>${LA.tot[8]||!c.pct?fmt(c,x):"–"}</b><small>${c.k}</small><b>${LB.tot[8]||!c.pct?fmt(c,y):"–"}</b></div>`}).join("");
+  const card=x=>{const p=x.p,v=x.v,g=x.g;const st=g?(g.live?`<em class="lv">● ${esc(g.st)}</em>`:g.fim?`<em>final</em>`:`<em>${esc(g.st)}</em>`):"";
+    const ln=v?`<span class="du-l"><b>${v[0]}</b>p <b>${v[1]}</b>r <b>${v[2]}</b>a${v[3]?` <b>${v[3]}</b>s`:""}${v[4]?` <b>${v[4]}</b>b`:""}${v[5]?` <b>${v[5]}</b>3`:""}${v[6]?` <i>${v[6]}to</i>`:""} · ${v[7]}/${v[8]}</span>`:`<span class="du-l vz">${g&&g.live?"ainda não entrou":"não jogou"}</span>`;
+    return `<div class="du-p ${g&&g.live?"on":""} ${x.tit?"":"bn"}" data-pj="${p.id}">${face(p.id,p.n,"")}<div><b class="du-n">${esc(p.n.replace(/^(\S)\S*\s/,"$1. "))}${x.tit?"":' <u>banco</u>'}</b>${ln}<small>${st}${v&&v[12]?` · ${v[12]}min`:""}</small></div></div>`};
+  return topo+`<div class="pilulas sel-c av-f">${sel}</div>
+  <div class="card du"><div class="du-top"><a href="#time-${a}" class="du-t">${rostoTime(A[0])}<b>${esc(A[3]||A[0])}</b></a>
+    <div class="du-pl"><small>HOJE</small><b><i class="${dia.w>dia.l?"v":""}">${dia.w}</i>-<i class="${dia.l>dia.w?"v":""}">${dia.l}</i>${dia.t?"-"+dia.t:""}</b><small>semana ${sem.w}-${sem.l}${sem.t?"-"+sem.t:""}</small></div>
+    <a href="#time-${b}" class="du-t">${rostoTime(B[0])}<b>${esc(B[3]||B[0])}</b></a></div>
+   <div class="du-st"><span>🔴 ${emq(LA)} em quadra · ${ja(LA)} já · ${falta(LA)} faltam</span><span>🔴 ${emq(LB)} em quadra · ${ja(LB)} já · ${falta(LB)} faltam</span></div>
+   <div class="du-cats">${cats}</div></div>
+  <div class="du-cols"><div class="du-col"><div class="du-h" style="--cor:${A[4]}">${esc(A[0])}</div>${LA.out.map(card).join("")||'<p class="vazio">ninguém hoje</p>'}</div><div class="du-col"><div class="du-h" style="--cor:${B[4]}">${esc(B[0])}</div>${LB.out.map(card).join("")||'<p class="vazio">ninguém hoje</p>'}</div></div>
+  <p class="qd-leg">Placar de HOJE = só os titulares do dia. Verde = quem está levando a categoria hoje.</p>`}
+function vAoVivoTodos(abas){
+  const d=DADOS;const sp=d.cur;const meu=meuTime();
   const f=UI.avF??(meu||0);const q=UI.avQ||"quadra";
   const G=d.nba||{};const jg=jogosAoVivo();
   const jogos=Object.entries(G).filter(([id,g])=>/^vs /.test(g.op)).sort((a,b)=>(b[1].live-a[1].live)||(a[1].fim-b[1].fim)).map(([id,g])=>`<span class="av-j ${g.live?"live":g.fim?"fim":""}"><b>${esc(NBA[id]||"")}</b> ${g.sc?esc(g.sc):""} <b>${esc(g.op.slice(3))}</b><small>${esc(g.st)}</small></span>`).join("");
@@ -3223,7 +3280,7 @@ function vAoVivo(){
   const linha=r=>{const p=r.p,st=r.s;return `<tr data-pj="${p.id}" class="clic${r.g.live?" av-on":""}" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small>${subJog(r.t,null,`${r.slot>=12&&r.slot!==13?'<span class="tag banco">BANCO</span>':r.slot===13?'<span class="tag ir">IR</span>':""} ${tagInj(p)}`)}</small><small>${jogoNBA(p,sp)}${r.min?` · ${r.min} min`:""}</small></div></div></td>
     ${st?`<td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${fgc(st[7],st[8])}</td><td class="fgft">${fgc(st[9],st[10])}</td>`:`<td colspan="9" class="esp">${r.g.live?"ainda não entrou":"jogo às "+esc(r.g.st)}</td>`}</tr>`};
   const nome=f?T(f)[0]:"todos os times";
-  return `<div class="cab-secao cab-c"><span class="sobre">AO VIVO · ${esc(spRot(sp))}</span><h1 class="manchete">🔴 AO VIVO</h1></div>
+  return `<div class="cab-secao cab-c"><span class="sobre">AO VIVO · ${esc(spRot(sp))}</span><h1 class="manchete">🔴 AO VIVO</h1></div>${abas}
   ${jogos?`<div class="av-jogos">${jogos}</div>`:'<div class="card"><div class="vazio">Sem jogo da NBA hoje.</div></div>'}
   <div class="pilulas sel-c av-f"><button class="pil" type="button" data-avq="quadra" aria-pressed="${q==="quadra"}">Em quadra agora</button><button class="pil" type="button" data-avq="hoje" aria-pressed="${q==="hoje"}">Todos de hoje</button></div>
   <div class="pilulas sel-c av-f">${meu?`<button class="pil" type="button" data-avf="${meu}" aria-pressed="${f===meu}">Meu time</button>`:""}<button class="pil" type="button" data-avf="0" aria-pressed="${!f}">Todos</button><select id="avTime" class="sel" aria-label="Time"><option value="">escolher time…</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===f?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
@@ -3414,6 +3471,7 @@ function montarBusca(r){
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
+  {const mm=e.target.closest("[data-avm]");if(mm){UI.avModo=mm.dataset.avm;render();return}}
   {const q=e.target.closest("[data-avq]");if(q){UI.avQ=q.dataset.avq;render();return}const f=e.target.closest("[data-avf]");if(f){UI.avF=+f.dataset.avf;render();return}}
   {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();location.hash="time-"+tid;return}}
   {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();location.hash="time-"+tid;return}}
@@ -3586,6 +3644,6 @@ function montarLive(r){let b=document.getElementById("fabLive");const jg=typeof 
   if(!jg.live||r==="aovivo"){if(b)b.remove();return}
   if(!b){b=document.createElement("a");b.id="fabLive";b.className="fab-live";b.href="#aovivo";document.body.appendChild(b)}
   b.innerHTML=`<i></i>AO VIVO <small>${jg.live} jogo${jg.live>1?"s":""}</small>`}
-document.addEventListener("change",e=>{if(e.target&&e.target.id==="avTime"){UI.avF=+e.target.value||0;render()}});
+document.addEventListener("change",e=>{if(e.target&&e.target.id==="avTime"){UI.avF=+e.target.value||0;render()}if(e.target&&e.target.id==="avDuelo"){UI.avDuelo=+e.target.value||0;try{if(UI.avDuelo&&!meuTime())localStorage.setItem("painel.meu",UI.avDuelo)}catch(x){}render()}});
 </script>
 </body></html>
