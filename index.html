@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#0a0707">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Loydão">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="WBSQUETE">
 <title>Painel WBSQUETE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Narrow:wght@500;600;700&display=swap">
@@ -1033,6 +1033,21 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .rk-n.alt{color:#7fc8ff}.rk-n.ld{color:#fff;background:var(--vermelho);padding:0 3px;border:1px solid #000}
 .ros td.rkl{color:var(--amarelo);font-weight:700}
 
+/* atalhos compactos: uma fileira de 5 no celular */
+.cab-secao .atalhos{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;align-items:stretch}
+.atalho{flex-direction:column;justify-content:center;gap:3px;padding:7px 2px;font-size:13px;text-align:center;box-shadow:2px 2px 0 #000;border-width:2px}
+.atalho svg{width:20px;height:20px}
+.atalho span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.cab-secao .atalhos .meu,.cab-secao .atalhos .baixar{grid-column:auto}
+.cab-secao .atalhos+.linha-meu{display:flex}
+.baixar{all:unset;cursor:pointer;grid-column:1/3!important;background:var(--amarelo);color:#000;border:2px solid #000;font-family:var(--display);font-size:13px;letter-spacing:.03em;padding:5px 8px;text-align:center;box-shadow:2px 2px 0 #000}
+.cab-secao .atalhos .meu{grid-column:3/6!important;margin:0;justify-content:flex-end;font-size:13px}
+.cab-secao .atalhos .meu:only-of-type{grid-column:1/6}
+@media (max-width:760px){.cab-secao .atalhos{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.atalho{font-size:10.5px;padding:6px 1px;letter-spacing:0}.atalho svg{width:18px;height:18px}.cab-secao .atalhos .meu{font-size:12px}}
+/* app instalado: conteúdo começa abaixo da barra do iPhone */
+@media (display-mode: standalone){html{padding-top:env(safe-area-inset-top,0px)}}
+.cab-secao .atalhos:not(:has(.baixar)) .meu{grid-column:1/6!important;justify-content:flex-start}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1094,7 +1109,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108021834";
+const VERSAO_PAINEL="20261108022059";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1448,7 +1463,7 @@ function vConfrontos(){
   const mais=ordem.slice().sort((x,y)=>Math.abs(x.s.pa-x.s.pb)-Math.abs(y.s.pa-y.s.pb))[0];
   const dia=d.cur-d.s0+1;
   let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
-  <div class="atalhos"><button type="button" class="atalho" data-sel="${d.last}">${ICS.sel} Seleção</button><button type="button" class="atalho" data-ir="desempenhos">${ICS.fogo} Desempenhos hoje</button><button type="button" class="atalho" data-ir="times">${ICS.rk} Ranking</button><button type="button" class="atalho" data-ir="radar">${ICS.radar} Radar</button><button type="button" class="atalho" data-ir="museu">${ICS.museu} Museu</button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="atalho baixar" data-instalar>📲 Baixar o app</button>`:""}<label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
+  <div class="atalhos"><button type="button" class="atalho" data-sel="${d.last}">${ICS.sel} <span>Seleção</span></button><button type="button" class="atalho" data-ir="desempenhos">${ICS.fogo} <span>Desempenhos</span></button><button type="button" class="atalho" data-ir="times">${ICS.rk} <span>Ranking</span></button><button type="button" class="atalho" data-ir="radar">${ICS.radar} <span>Radar</span></button><button type="button" class="atalho" data-ir="museu">${ICS.museu} <span>Museu</span></button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="baixar" data-instalar>📲 Baixar o app</button>`:""}<label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
   ordem.forEach(({m,i,sc,s})=>{
     const [a,b]=m,A=T(a),B=T(b);
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;

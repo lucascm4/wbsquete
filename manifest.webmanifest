@@ -1,6 +1,6 @@
 {
-  "name": "Painel do Loydão · WBSQUETE",
-  "short_name": "Loydão",
+  "name": "WBSQUETE",
+  "short_name": "WBSQUETE",
   "description": "Confrontos, odds e zoeira da WBSQUETE ao vivo.",
   "start_url": "./#confrontos",
   "scope": "./",
@@ -10,8 +10,21 @@
   "theme_color": "#0a0707",
   "lang": "pt-BR",
   "icons": [
-    {"src": "img/app/icon-192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "img/app/icon-512.png", "sizes": "512x512", "type": "image/png"},
-    {"src": "img/app/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+    {
+      "src": "img/app/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "img/app/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "img/app/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
