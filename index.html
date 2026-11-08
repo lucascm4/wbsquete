@@ -846,6 +846,20 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 @media (max-width:760px){.subabas button{font-size:14px;padding:10px 2px}.pr .pn em{font-size:10.5px}.jn-set small{display:none}
 .premios.cheio{grid-template-columns:1fr}.premios.cheio .pr{grid-template-columns:44px minmax(0,1fr)}.premios.cheio .pr .ft{width:44px;height:44px}.premios.cheio .pr .pn b{font-size:14px}}
 
+/* selos dos prêmios */
+.selo{width:26px;height:26px;flex:none;display:inline-block;vertical-align:middle}
+.pr .pk{display:inline-flex;align-items:center;gap:6px;padding:2px 10px 2px 4px;font-size:13px}
+.pr .pk.bom{background:#5ad1ff;color:#000}
+.pr-modo{display:flex;gap:6px;padding:0 10px 6px}
+.pr-modo button{all:unset;cursor:pointer;font-family:var(--display);font-size:13px;letter-spacing:.06em;padding:5px 12px;background:#000;color:#bbb;border:2px solid #000}
+.pr-modo button[aria-pressed="true"]{background:var(--amarelo);color:#000}
+.chips-pr{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;align-items:center;padding-bottom:2px}
+.chips-pr::-webkit-scrollbar{display:none}
+.chips-pr .cp-rot{font-family:var(--display);font-size:10px;letter-spacing:.08em;color:#fff;text-shadow:1px 1px 0 #000;flex:none}
+.cp-i{flex:none;padding:2px 8px 2px 3px;gap:4px}
+.cp-i .selo{width:22px;height:22px}
+.cp-i.ouro{border-color:var(--amarelo)}.cp-i.ruim{border-color:var(--vermelho)}.cp-i.bom{border-color:#5ad1ff}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -907,7 +921,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108012708";
+const VERSAO_PAINEL="20261108013405";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1323,43 +1337,76 @@ function leitura(a,b,s){
   return `<div class="leitura"><ul>${itens.slice(0,7).map(([i,t])=>`<li>${i}<span>${t}</span></li>`).join("")||"<li>Nada a declarar. Por enquanto.</li>"}</ul></div>`;
 }
 /* prêmios da semana do confronto */
-function premios(a,b){
-  const d=DADOS;const ta=EST.tot[a],tb=EST.tot[b];
-  const jog=t=>(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t));
-  const drafted=new Set((HIST.drafts&&HIST.drafts["2026/27"]||[]).map(r=>r[3]));
-  const impacto=(p,t)=>{ // quanto o jogador pesou nas categorias que o time ganha / perde
-    const me=t===a?ta:tb,op=t===a?tb:ta;let bom=0,ruim=0;const W=p.W;
+const SELO={
+ MVP:'<path d="M4 24h24l-2-14-6 5-4-8-4 8-6-5z" fill="#ffd400" stroke="#000" stroke-width="1.5"/><rect x="4" y="24" width="24" height="4" fill="#ffd400" stroke="#000" stroke-width="1.5"/>',
+ PIPOQUEIRO:'<circle cx="10" cy="12" r="3.4" fill="#fff3b0" stroke="#000" stroke-width="1.2"/><circle cx="22" cy="12" r="3.4" fill="#fff3b0" stroke="#000" stroke-width="1.2"/><circle cx="13" cy="8" r="2.8" fill="#fff3b0" stroke="#000" stroke-width="1.2"/><circle cx="19" cy="7.5" r="2.8" fill="#fff3b0" stroke="#000" stroke-width="1.2"/><circle cx="16" cy="11" r="3.6" fill="#fff3b0" stroke="#000" stroke-width="1.2"/><path d="M8 14l2 14h12l2-14z" fill="#fff" stroke="#000" stroke-width="1.5"/><path d="M11.5 15l1.2 12M16 15v12M20.5 15l-1.2 12" stroke="#d4121c" stroke-width="2.4"/>',
+ RUI:'<rect x="3" y="9" width="26" height="14" rx="1" fill="#b5451b" stroke="#000" stroke-width="1.5"/><path d="M3 16h26M12 9v7M20 16v7" stroke="#000" stroke-width="1.5"/>',
+ BELEZINHA:'<path d="M9 6h14l6 7-13 15L3 13z" fill="#5ad1ff" stroke="#000" stroke-width="1.5"/><path d="M3 13h26M9 6l4 7 3-7 3 7 4-7M13 13l3 15 3-15" stroke="#000" stroke-width="1.2" fill="none"/>',
+ URGH:'<circle cx="16" cy="13" r="11" fill="#7ac943" stroke="#000" stroke-width="1.5"/><path d="M10 10l4 2M22 10l-4 2" stroke="#000" stroke-width="2" stroke-linecap="round"/><path d="M11 18q5-3 10 0" stroke="#000" stroke-width="2" fill="none"/><path d="M13 19h6v4a3 3 0 0 1-6 0z" fill="#a4d86b" stroke="#000" stroke-width="1.2"/><circle cx="12" cy="28" r="1.6" fill="#a4d86b"/><circle cx="20" cy="29" r="1.3" fill="#a4d86b"/>',
+ PACOCA:'<rect x="5" y="11" width="22" height="10" rx="5" fill="#c08a4a" stroke="#000" stroke-width="1.5"/><path d="M8 16h16" stroke="#8a5a2b" stroke-width="1.4" stroke-dasharray="2 2"/><circle cx="9" cy="25" r="1.4" fill="#c08a4a"/><circle cx="23" cy="25" r="1.4" fill="#c08a4a"/><circle cx="16" cy="26" r="1.1" fill="#c08a4a"/>',
+ TRAB:'<path d="M6 20a10 10 0 0 1 20 0z" fill="#ffd400" stroke="#000" stroke-width="1.5"/><rect x="3" y="20" width="26" height="4" rx="1" fill="#ffd400" stroke="#000" stroke-width="1.5"/><path d="M16 10v10" stroke="#000" stroke-width="1.5"/>',
+ CULPADO:'<rect x="3" y="14" width="26" height="5" fill="#8a5a2b" stroke="#000" stroke-width="1.5"/><path d="M6 19v8M26 19v8M3 23h26" stroke="#000" stroke-width="2"/>'
+};
+const PREMIO={
+ MVP:{n:"MVP",d:"quem mais pesou nas categorias que o time ganha",cls:"ouro"},
+ PIPOQUEIRO:{n:"PIPOQUEIRO",d:"costuma render muito mais do que rendeu",cls:"ruim"},
+ RUI:{n:"RUI DIMAI",d:"volume com pontaria ruim e turnover, sem compensar no resto",cls:"ruim"},
+ BELEZINHA:{n:"BELEZINHA",d:"pego na waiver nesta semana e está voando",cls:"bom"},
+ URGH:{n:"URGH",d:"pego na waiver nesta semana e vomitou",cls:"ruim"},
+ PACOCA:{n:"ENTREGANDO A PAÇOCA",d:"quem mais comprometeu as categorias que o time perde",cls:"ruim"},
+ TRAB:{n:"TRABALHADOR",d:"mais jogos como titular na semana",cls:""},
+ CULPADO:{n:"CULPADO",d:"pontos que o manager deixou no banco",cls:"ruim"}
+};
+const selo=k=>`<svg class="selo" viewBox="0 0 32 32" aria-hidden="true">${SELO[k]}</svg>`;
+const PRINCIPAIS=["MVP","PIPOQUEIRO","RUI","BELEZINHA","URGH"];
+function addsSemana(){ // jogador pego na waiver/FA nesta semana: "id:time" -> sp
+  const d=DADOS;const m={};((d.tx&&d.tx.lst)||[]).forEach(([pid,sp,t])=>{if(sp>=d.s0&&sp<=d.cur)m[pid+":"+t]=sp});return m;
+}
+function premios(a,b,sp){ // sp="sem" (acumulado da semana) ou número do dia
+  const d=DADOS;sp=sp||"sem";const dia=sp!=="sem";
+  const tot=t=>dia?((d.D[t]&&d.D[t][sp])||zero()):EST.tot[t];const ta=tot(a),tb=tot(b);
+  const rows=[],banco=[];
+  [a,b].forEach(t=>(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t)).forEach(p=>{
+    if(!dia){if(p.g>0)rows.push({p,t,W:p.W,g:p.g});if(p.bp>0)banco.push({p,t,bp:p.bp,bg:p.bg})}
+    else{const v=p.dl&&p.dl[sp];if(!v)return;const W=v.slice(0,11);if(v[11]<12)rows.push({p,t,W,g:1});else if(v[11]===12&&W[0]>0)banco.push({p,t,bp:W[0],bg:1})}
+  }));
+  if(!rows.length)return null;
+  const impacto=(W,t)=>{const me=t===a?ta:tb,op=t===a?tb:ta;let bom=0,ruim=0;
     CATS.forEach(c=>{let m=c.inv?op[6]-me[6]:c.f(me)-c.f(op);
-      if(c.pct){const im=c.k==="FG%"?7:9,ia=c.k==="FG%"?8:10;const sem=(me[im]-W[im])/Math.max(1,me[ia]-W[ia]);const eff=c.f(me)-sem; // efeito dele na % do time
+      if(c.pct){const im=c.k==="FG%"?7:9,ia=c.k==="FG%"?8:10;const sem=(me[im]-W[im])/Math.max(1,me[ia]-W[ia]);const eff=c.f(me)-sem;
         const peso=Math.min(1.5,Math.abs(eff)/0.012);if(eff>0)bom+=peso*(m>0?1:0.5);else ruim+=peso*(m<0?1:0.5);return}
-      const x=c.inv?-W[6]:W[c.i];const tot=Math.abs(c.f(me))+1;const share=Math.abs(x)/tot; // fatia dele no total do time
-      const fator=Math.min(1.5,share*4);
+      const x=c.inv?-W[6]:W[c.i];const tot=Math.abs(c.f(me))+1;const share=Math.abs(x)/tot;const fator=Math.min(1.5,share*4);
       if(x>=0){if(m>0)bom+=fator*(Math.abs(x)>=Math.abs(m)?1.3:1);else bom+=fator*0.4}
       else{if(m<0)ruim+=fator*(Math.abs(x)>=Math.abs(m)?1.3:1);else ruim+=fator*0.5}});
-    return {bom,ruim};
-  };
-  const todos=[];[a,b].forEach(t=>jog(t).forEach(p=>{if(p.g>0){const im=impacto(p,t);todos.push({p,t,...im,val:valorJogo(p.W),pg:valorJogo(p.W)/p.g})}}));
-  if(!todos.length)return null;
-  const by=(k,f)=>todos.filter(f||(()=>true)).sort((x,y)=>k(y)-k(x))[0];
-  const out=[];
-  const mvp=by(x=>x.bom);if(mvp)out.push({k:"MVP",d:"quem mais pesou nas categorias que o time ganha",x:mvp,l:`${mvp.p.W[0]} pts · ${mvp.p.W[1]} reb · ${mvp.p.W[2]} ast em ${mvp.p.g} j`});
-  const pac=by(x=>x.ruim,x=>x.p.g>=2);if(pac&&pac.ruim>0.8)out.push({k:"ENTREGANDO A PAÇOCA",d:"quem mais comprometeu categorias que o time perde",x:pac,l:`${pac.p.W[6]} to · ${pac.p.W[7]}/${pac.p.W[8]} fg · ${pac.p.W[9]}/${pac.p.W[10]} ft`});
-  const dimai=by(x=>x.p.W[8]*(0.47-(x.p.W[7]/x.p.W[8])),x=>x.p.W[8]>=30&&x.p.W[7]/x.p.W[8]<0.41);if(dimai)out.push({k:"RUI DIMAI",d:"muito volume, pouca pontaria: FG abaixo de 41% com 30+ arremessos",x:dimai,l:`${dimai.p.W[7]}/${dimai.p.W[8]} fg (${(100*dimai.p.W[7]/dimai.p.W[8]).toFixed(1)}%)`});
-  const lixo=by(x=>-x.pg,x=>x.p.g>=2&&x.p.slot<12);if(lixo&&lixo!==mvp)out.push({k:"LIXO",d:"pior rendimento por jogo entre os titulares com 2+ jogos",x:lixo,l:`${lixo.p.W[0]} pts · ${lixo.p.W[1]} reb · ${lixo.p.W[2]} ast em ${lixo.p.g} j`});
-  const trab=by(x=>x.p.g*10+x.val/100);if(trab)out.push({k:"TRABALHADOR",d:"mais jogos como titular na semana",x:trab,l:`${trab.p.g} jogos · ${trab.p.W[0]} pts`});
-  const mip=by(x=>x.p.av?x.pg-valorJogo(x.p.av.slice(0,11)):-1e9,x=>x.p.g>=2&&x.p.av&&x.p.av[11]>=5);if(mip&&mip.pg-valorJogo(mip.p.av.slice(0,11))>3)out.push({k:"MIP",d:"quem mais rendeu acima da própria média da temporada",x:mip,l:`${(mip.p.W[0]/mip.p.g).toFixed(1)} pts/j na semana · ${mip.p.av[0]} na temporada`});
-  const wv=by(x=>x.val,x=>!drafted.has(x.p.n)&&x.p.g>=1);if(wv)out.push({k:"MELHOR WAIVER",d:"melhor semana entre quem não foi draftado",x:wv,l:`${wv.p.W[0]} pts · ${wv.p.W[1]} reb · ${wv.p.W[2]} ast em ${wv.p.g} j`});
-  const banco=[];[a,b].forEach(t=>jog(t).forEach(p=>{if(p.bp>0)banco.push({p,t})}));banco.sort((x,y)=>y.p.bp-x.p.bp);if(banco[0]&&banco[0].p.bp>=12)out.push({k:"CULPADO",d:"pontos que o manager deixou no banco",x:banco[0],l:`${banco[0].p.bp} pts no banco em ${banco[0].p.bg} j · culpa do ${T(banco[0].t)[2]}`});
+    return {bom,ruim}};
+  rows.forEach(r=>{Object.assign(r,impacto(r.W,r.t));r.val=valorJogo(r.W);r.pg=r.val/r.g;
+    const W=r.W;r.dmg=(0.47*W[8]-W[7])*1.5+(0.78*W[10]-W[9])+W[6];
+    r.base=r.p.av&&r.p.av[11]>=5?valorJogo(r.p.av.slice(0,11)):null});
+  const adds=addsSemana();const pego=r=>adds[r.p.id+":"+r.t]!=null;
+  const top=(f,k)=>{const L=rows.filter(f);if(!L.length)return null;return L.sort((x,y)=>k(y)-k(x))[0]};
+  const out=[];const usado=new Set();const pos=(k,r)=>{if(!r)return;out.push({k,...PREMIO[k],x:r,W:r.W,g:r.g});usado.add(r.p.id)};
+  pos("MVP",top(r=>r.bom>0,r=>r.bom));
+  pos("PIPOQUEIRO",top(r=>r.base!=null&&r.base>=18&&r.base-r.pg>=(dia?10:7)&&!usado.has(r.p.id),r=>r.base-r.pg));
+  pos("RUI",top(r=>r.W[8]>=(dia?10:30)&&r.dmg/r.g>=3&&r.pg<18&&!usado.has(r.p.id),r=>r.dmg));
+  pos("BELEZINHA",top(r=>pego(r)&&r.pg>=14,r=>r.pg));
+  pos("URGH",top(r=>pego(r)&&r.pg<=6&&!usado.has(r.p.id),r=>-r.pg));
+  if(!dia){
+    pos("PACOCA",top(r=>r.g>=2&&r.ruim>0.8&&!usado.has(r.p.id),r=>r.ruim));
+    pos("TRAB",top(r=>r.g>=2,r=>r.g*10+r.val/100));
+  }
+  const cb=banco.sort((x,y)=>y.bp-x.bp)[0];if(cb&&cb.bp>=(dia?10:12))out.push({k:"CULPADO",...PREMIO.CULPADO,x:cb,W:null,l:`${cb.bp} pts no banco em ${cb.bg} j · culpa do ${T(cb.t)[2]}`});
   return out;
 }
 function cardPremios(a,b){
-  const L=premios(a,b);if(!L)return "";
-  return `<div class="card"><div class="bloco-tit">PRÊMIOS DA SEMANA <small>${tip("MVP = quem mais pesou nas categorias que o time ganha. Paçoca = quem mais comprometeu as que perde. Rui Dimai = volume com pontaria ruim. MIP = acima da própria média. Culpado = pontos no banco.","como são escolhidos")}</small></div>
-  <div class="premios cheio">${L.map(w=>`<div class="pr" style="--cor:${T(w.x.t)[4]}"><span class="pk ${w.k==="MVP"?"ouro":["ENTREGANDO A PAÇOCA","LIXO","RUI DIMAI","CULPADO"].includes(w.k)?"ruim":""}">${w.k}</span>${face(w.x.p.id,w.x.p.n,"")}<div class="pn"><b>${esc(w.x.p.n)}</b><small><img src="img/l/${T(w.x.t)[1]}.webp" alt=""> ${esc(T(w.x.t)[0])} · ${esc(w.d)}</small><em>${w.k==="CULPADO"?esc(w.l):linhaStats(w.x.p.W)+" · "+w.x.p.g+" j"}</em></div></div>`).join("")}</div></div>`;
+  const d=DADOS;const modo=UI.prModo||"sem";const ult=d.last;const L=premios(a,b,modo==="sem"?"sem":ult);
+  const pills=`<div class="pr-modo"><button type="button" data-prm="sem" aria-pressed="${modo==="sem"}">SEMANA</button><button type="button" data-prm="dia" aria-pressed="${modo==="dia"}">${esc(spRot(ult).toUpperCase())}</button></div>`;
+  return `<div class="card"><div class="bloco-tit">PRÊMIOS ${modo==="sem"?"DA SEMANA":"DO DIA"} <small>${tip("MVP = quem mais pesou nas categorias que o time ganha. Pipoqueiro = rendeu muito abaixo da própria média. Rui Dimai = volume com pontaria ruim e turnover, sem compensar no resto. Belezinha / Urgh = pego na waiver nesta semana e foi muito bem / muito mal. Paçoca = quem mais comprometeu as que perde. Culpado = pontos no banco.","como são escolhidos")}</small></div>${pills}
+  ${L&&L.length?`<div class="premios cheio">${L.map(w=>`<div class="pr" style="--cor:${T(w.x.t)[4]}"><span class="pk ${w.cls}">${selo(w.k)}${w.n}</span>${face(w.x.p.id,w.x.p.n,"")}<div class="pn"><b>${esc(w.x.p.n)}</b><small><img src="img/l/${T(w.x.t)[1]}.webp" alt=""> ${esc(T(w.x.t)[0])} · ${esc(w.d)}</small><em>${w.W?linhaStats(w.W)+" · "+w.g+" j":esc(w.l)}</em></div></div>`).join("")}</div>`:'<div class="vazio">Ninguém mereceu prêmio ainda.</div>'}</div>`;
 }
 function chipsPremios(a,b){
-  const L=premios(a,b);if(!L)return "";const m=L.find(w=>w.k==="MVP"),p=L.find(w=>w.k==="ENTREGANDO A PAÇOCA")||L.find(w=>w.k==="LIXO");
-  return `<div class="chips-pr">${m?`<span class="cp-i"><b class="ouro">MVP</b>${face(m.x.p.id,m.x.p.n,"")}<span>${esc(m.x.p.n.split(" ").slice(-1)[0])}</span></span>`:""}${p?`<span class="cp-i"><b class="ruim">${p.k==="LIXO"?"LIXO":"PAÇOCA"}</b>${face(p.x.p.id,p.x.p.n,"")}<span>${esc(p.x.p.n.split(" ").slice(-1)[0])}</span></span>`:""}</div>`;
+  const d=DADOS;const L=premios(a,b,d.last);if(!L)return "";
+  const P=L.filter(w=>PRINCIPAIS.includes(w.k));if(!P.length)return "";
+  return `<div class="chips-pr"><small class="cp-rot">${esc(spRot(d.last).split(" ")[0].toUpperCase())}</small>${P.map(w=>`<span class="cp-i ${w.cls}" title="${esc(w.n)}: ${esc(w.d)}">${selo(w.k)}${face(w.x.p.id,w.x.p.n,"")}<span>${esc(w.x.p.n.split(" ").slice(-1)[0])}</span></span>`).join("")}</div>`;
 }
 function destaques(a,b){
   const d=DADOS;const L=[];
@@ -1803,11 +1850,11 @@ async function baixarNBA(sp){ // placar dos jogos da NBA do dia (site.api.espn.c
   return out;
 }
 async function baixarTrocas(cur){ // uma vez por dia: adds/drops e aceites de troca da temporada toda
-  const ch="wbs.tx."+cur;const c=lerCache(ch);if(c)return c;
-  const adds=new Set(),ac=[];
-  const lotes=[];for(let sp=1;sp<=cur;sp++)lotes.push(ajson(AO.LG+"?view=mTransactions2&scoringPeriodId="+sp).catch(()=>({})));
-  (await Promise.all(lotes)).forEach(r=>(r.transactions||[]).forEach(t=>{if(t.status==="EXECUTED"&&["FREEAGENT","WAIVER"].includes(t.type))(t.items||[]).forEach(i=>{if(i.type==="ADD")adds.add(i.playerId)});if(t.type==="TRADE_ACCEPT")ac.push(t.processDate||t.proposedDate)}));
-  const out={adds:[...adds],ac:ac.sort()};gravarCache(ch,out);return out;
+  const ch="wbs.tx2."+cur;const c=lerCache(ch);if(c)return c;
+  const adds=new Set(),ac=[],lst=[];
+  const lotes=[];for(let sp=1;sp<=cur;sp++)lotes.push(ajson(AO.LG+"?view=mTransactions2&scoringPeriodId="+sp).then(r=>[sp,r]).catch(()=>[sp,{}]));
+  (await Promise.all(lotes)).forEach(([sp,r])=>(r.transactions||[]).forEach(t=>{if(t.status==="EXECUTED"&&["FREEAGENT","WAIVER"].includes(t.type))(t.items||[]).forEach(i=>{if(i.type==="ADD"){adds.add(i.playerId);lst.push([i.playerId,sp,i.toTeamId||t.teamId])}});if(t.type==="TRADE_ACCEPT")ac.push(t.processDate||t.proposedDate)}));
+  const out={adds:[...adds],ac:ac.sort(),lst};gravarCache(ch,out);return out;
 }
 async function coletarAoVivo(){
   const cur=spHoje();const wk=cur<=6?1:Math.floor((cur-7)/7)+2;
@@ -1895,7 +1942,7 @@ function render(){
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
-  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub]");if(!t)return;
+  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
   if(ds.jogo!==undefined)ir("jogo-"+ds.jogo);
@@ -1917,6 +1964,7 @@ document.addEventListener("click",e=>{
   else if(ds.nd){UI.noiteDia=ds.nd==="sem"?"sem":+ds.nd;render()}
   else if(ds.nm){UI.noiteModo=ds.nm;render()}
   else if(ds.sub){UI.subJogo=ds.sub;window.scrollTo(0,0);render()}
+  else if(ds.prm){UI.prModo=ds.prm;render()}
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
   else if(ds.drt){UI.drTemp=ds.drt;UI.drTime="todos";render()}
 });
