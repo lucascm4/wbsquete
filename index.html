@@ -1231,8 +1231,7 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
  .cab-secao{margin-bottom:6px}
  .placar-topo{padding:8px 6px}.placar-topo .rosto{width:42px;height:42px}.placar-topo .lado .nm{font-size:15px}.placar-topo .lado .mg{font-size:11px}.placar-topo .pl{font-size:32px}
 }
-body:not(.rolou) .jn-mini>:not(small){display:none}
-.jn-mini small{font-size:12px;color:#fff}body:not(.rolou) .jn-mini small:after{content:" · deslize pra trocar";color:var(--apagado);font-weight:500}
+.jn-mini small{font-size:12px;color:#fff}
 #app{position:relative}
 .barra-inicio{float:none;position:absolute;right:max(10px,env(safe-area-inset-right,0px));top:10px;margin:0;z-index:5}
 .pilulas.vis{margin-top:4px}.pilulas.vis .rk-sel{font-size:13px}.pilulas.vis select{padding:4px 8px;font-size:13px}
@@ -1365,6 +1364,27 @@ b.neg{color:#ff6b6b}
 @keyframes sobe{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){#popFicha .pop-full{animation:none}}
 
+/* matchup compacto: placar só na barra; resumo em linha; placar global em tabela */
+.jn-mini a{display:flex}
+.pt-linha{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 10px;background:#000;border-bottom:2px solid var(--ouro);font:600 11px system-ui,sans-serif;color:var(--apagado);text-transform:uppercase;letter-spacing:.04em}
+.pt-linha a{color:#fff;text-decoration:none;font-family:var(--display);font-size:15px;letter-spacing:.02em;text-transform:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.pt-linha a small{font:500 10px system-ui,sans-serif;color:var(--apagado)}
+.pt-linha span{flex:0 0 auto;text-align:center}
+@media (max-width:420px){.pt-linha a small{display:none}}
+.dia-res{padding:6px 8px 2px}
+.dia-res>span{flex-direction:row;justify-content:center;gap:6px;padding:4px 6px;align-items:baseline}
+.dia-res>span small:last-child{display:none}
+.dia-res b{font-size:17px}
+.pg2-pl{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:8px;font-family:var(--display);font-size:20px;color:#fff}
+.pg2-pl b{font-size:30px;font-weight:400}.pg2-pl .v{color:var(--amarelo)}.pg2-pl i{font-style:normal;color:var(--apagado);font-size:16px}.pg2-pl small{font:600 11px system-ui;color:var(--apagado)}
+.pg2{width:100%;border-collapse:collapse;font-family:var(--display);font-variant-numeric:tabular-nums}
+.pg2 thead th{padding:4px;font:700 10px system-ui,sans-serif;color:var(--apagado);text-transform:uppercase;letter-spacing:.06em}
+.pg2 thead .rosto{width:30px;height:30px}
+.pg2 td,.pg2 tbody th{padding:5px 4px;text-align:center;border-top:1px solid rgba(255,255,255,.08)}
+.pg2 td{font-size:19px;color:#fff;width:38%}.pg2 td.w{background:var(--amarelo);color:#000}
+.pg2 tbody th{font-size:14px;color:var(--amarelo);font-weight:400}
+.pg2-nota{margin:6px 10px 8px;font-size:11px;color:var(--apagado)}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1430,11 +1450,11 @@ b.neg{color:#ff6b6b}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794169237"></script>
-<script src="radar.js?v=1794169237"></script>
-<script src="midia.js?v=1794169237"></script>
+<script src="hist.js?v=1794169377"></script>
+<script src="radar.js?v=1794169377"></script>
+<script src="midia.js?v=1794169377"></script>
 <script>
-const VERSAO_PAINEL="20261108172037";
+const VERSAO_PAINEL="20261108172257";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2094,12 +2114,8 @@ function vJogo(i){
   const sc=placar(ta,tb),s=simula(a,b);const dsel=UI.dia[i]??(d.last===d.cur?d.cur:"sem");const dia=d.cur-d.s0+1;
   const sub=UI.subJogo||"placar";const n=d.mt.length;const prev=(i+n-1)%n,next=(i+1)%n;
   const abas=[["placar","Placar"],["jogadores","Jogadores"],["odds","Odds"],["destaques","Destaques"],["premios","Prêmios"]];
-  let h=`<div class="jogo-nav"><button class="jn-home" type="button" data-ir="confrontos" aria-label="Início">⌂</button><button type="button" class="jn-b" data-jogo="${prev}" aria-label="confronto anterior">‹</button><div class="jn-mini"><img src="img/l/${A[1]}.webp" alt=""><b>${esc(A[3]||A[0])}</b><span class="num"><em class="${sc.w>sc.l?"v":""}">${sc.w}</em>-<em class="${sc.l>sc.w?"v":""}">${sc.l}</em>${sc.t?"-"+sc.t:""}</span><b>${esc(B[3]||B[0])}</b><img src="img/l/${B[1]}.webp" alt=""><small>${i+1}/${n}</small></div><button type="button" class="jn-b" data-jogo="${next}" aria-label="próximo confronto">›</button></div>
-  <div class="card"><div class="placar-topo">
-    <div class="lado"><a href="#time-${a}" style="text-decoration:none;color:inherit">${rostoTime(A[0])}</a><div class="info"><div class="nm">${esc(A[0])}</div><div class="mg">${esc(A[2])}</div></div></div>
-    <div class="pl num"><span class="${sc.w>sc.l?"v":""}">${sc.w}</span>-<span class="${sc.l>sc.w?"v":""}">${sc.l}</span>${sc.t?"-"+sc.t:""}<small>sem ${d.wk} · dia ${Math.min(dia,7)}/7 · previsão ${(()=>{const p=placar(pa,pb);return rtxt(p.w,p.l,p.t)})()}</small></div>
-    <div class="lado"><a href="#time-${b}" style="text-decoration:none;color:inherit">${rostoTime(B[0])}</a><div class="info"><div class="nm">${esc(B[0])}</div><div class="mg">${esc(B[2])}</div></div></div>
-  </div>
+  let h=`<div class="jogo-nav"><button class="jn-home" type="button" data-ir="confrontos" aria-label="Início">⌂</button><button type="button" class="jn-b" data-jogo="${prev}" aria-label="confronto anterior">‹</button><div class="jn-mini"><a href="#time-${a}"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></a><b>${esc(A[3]||A[0])}</b><span class="num"><em class="${sc.w>sc.l?"v":""}">${sc.w}</em>-<em class="${sc.l>sc.w?"v":""}">${sc.l}</em>${sc.t?"-"+sc.t:""}</span><b>${esc(B[3]||B[0])}</b><a href="#time-${b}"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></a><small>${i+1}/${n}</small></div><button type="button" class="jn-b" data-jogo="${next}" aria-label="próximo confronto">›</button></div>
+  <div class="card"><div class="pt-linha"><a href="#time-${a}">${esc(A[0])} <small>${esc(A[2])}</small></a><span>sem ${d.wk} · dia ${Math.min(dia,7)}/7 · prev. ${(()=>{const p=placar(pa,pb);return rtxt(p.w,p.l,p.t)})()}</span><a href="#time-${b}"><small>${esc(B[2])}</small> ${esc(B[0])}</a></div>
   <div class="subabas" role="tablist">${abas.map(([k,nm])=>`<button type="button" role="tab" data-sub="${k}" aria-selected="${sub===k}">${nm}</button>`).join("")}</div></div>`;
   if(sub==="placar"){
     const hh=window.MUSEU?h2hEntre(A[0],B[0]):null;const mm=hh?hh.l.filter(x=>!x.atual&&seloFase(x)&&!/CONSOLA/.test(seloFase(x))).length:0;
@@ -2735,9 +2751,11 @@ function placarSomado(A,B){if(!window.MUSEU)return null;const L=window.MUSEU.fil
   [6,7].forEach(i=>{sa[i]/=L.length;sb[i]/=L.length});let w=0,l=0,t=0;const r=KG.map((k,i)=>{let d=sa[i]-sb[i];if(k==="TO")d=-d;if(Math.abs(d)<1e-9){t++;return 0}d>0?w++:l++;return d>0?1:-1});
   return {n:L.length,sa,sb,w,l,t,r}}
 function blocoGlobal(A,B){const g=placarSomado(A,B);if(!g)return "";const f=(i,v)=>i===6||i===7?(v*100).toFixed(1):Math.round(v).toLocaleString("pt-BR");
-  return `<div class="card"><div class="bloco-tit">PLACAR GLOBAL ENTRE ELES <small>somando as stats dos ${g.n} confrontos desde 22/23 (FG% e FT% = média)</small></div>
-  <div class="saldo-h2h"><span class="${g.w>g.l?"lid":""}">${esc(A)} <b>${g.w}</b></span><span class="x">${g.t?g.t+" emp.":"x"}</span><span class="${g.l>g.w?"lid":""}"><b>${g.l}</b> ${esc(B)}</span><small>como se fosse um confronto só</small></div>
-  <div class="pg-cats">${KG.map((k,i)=>`<div class="${g.r[i]>0?"a":g.r[i]<0?"b":""}"><small>${k}</small><b>${f(i,g.sa[i])}</b><b>${f(i,g.sb[i])}</b></div>`).join("")}</div></div>`}
+  const ra=typeof rostoTime==="function"?rostoTime(A):"",rb=typeof rostoTime==="function"?rostoTime(B):"";
+  return `<div class="card"><div class="bloco-tit">PLACAR GLOBAL ENTRE ELES <small>${g.n} confrontos desde 22/23 somados, como se fosse um só</small></div>
+  <div class="pg2-pl"><span class="${g.w>g.l?"v":""}">${esc(A)} <b>${g.w}</b></span><i>x</i><span class="${g.l>g.w?"v":""}"><b>${g.l}</b> ${esc(B)}</span>${g.t?`<small>${g.t} emp.</small>`:""}</div>
+  <table class="pg2"><thead><tr><th>${ra}</th><th>categoria</th><th>${rb}</th></tr></thead><tbody>${KG.map((k,i)=>`<tr><td class="${g.r[i]>0?"w":""}">${f(i,g.sa[i])}</td><th>${k}</th><td class="${g.r[i]<0?"w":""}">${f(i,g.sb[i])}</td></tr>`).join("")}</tbody></table>
+  <p class="pg2-nota">FG% e FT% = média dos confrontos. Amarelo = quem levou a categoria.</p></div>`}
 /* perfil do treinador */
 function perfilTreinador(id,nome){const d=DADOS;const L=HIST.tab.filter(r=>r[1]===nome);
   const tit=(HIST.campeoes||[]).filter(c=>c[2]===nome).length;const fin=L.filter(r=>r[6]<=2).length;const po=L.filter(r=>r[7]&&r[7]<=6).length;
