@@ -1466,6 +1466,16 @@ b.neg{color:#ff6b6b}
 /* logos de time clicáveis */
 img[src*="img/l/"]{cursor:pointer}
 
+/* ficha do jogador = página exclusiva (cobre tudo, fundo opaco, nada mexendo atrás) */
+#popFicha.pop-fundo{position:fixed;inset:0;height:auto;padding:0!important;background:var(--tinta)!important;align-items:stretch!important;justify-content:center;z-index:200}
+#popFicha .pop-full{width:100%!important;max-width:640px;height:100%!important;max-height:none!important;border-radius:0!important;animation:none!important;
+ padding-top:env(safe-area-inset-top,0px)!important;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))!important;box-shadow:none;border:0}
+#popFicha .pop-full::before{display:none!important}
+.pj-barra{position:sticky;top:calc(-1 * env(safe-area-inset-top,0px));z-index:5;margin:0 -14px 8px;padding:8px 14px;background:#120c0c;border-bottom:2px solid var(--amarelo)}
+.pj-volta{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;background:#000;border:2px solid var(--amarelo);color:var(--amarelo);font-family:var(--display);font-size:15px;letter-spacing:.03em}
+.pj-volta:active{transform:translateY(1px)}
+.pj-tabs{position:static!important}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1531,11 +1541,11 @@ img[src*="img/l/"]{cursor:pointer}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794170429"></script>
-<script src="radar.js?v=1794170429"></script>
-<script src="midia.js?v=1794170429"></script>
+<script src="hist.js?v=1794170505"></script>
+<script src="radar.js?v=1794170505"></script>
+<script src="midia.js?v=1794170505"></script>
 <script>
-const VERSAO_PAINEL="20261108174029";
+const VERSAO_PAINEL="20261108174145";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2388,7 +2398,7 @@ function abrirFicha(k){
   const pc=(a,b)=>b?(100*a/b).toFixed(1)+"%":"–";
   const cel=[["PTS",st[0]],["REB",st[1]],["AST",st[2]],["STL",st[3]],["BLK",st[4]],["3PM",st[5]],["TO",st[6]],["FG",`${st[7]}/${st[8]}<small>${pc(st[7],st[8])}</small>`],["FT",`${st[9]}/${st[10]}<small>${pc(st[9],st[10])}</small>`]];
   fecharFicha();const el=document.createElement("div");el.className="pop-fundo";el.id="popFicha";
-  el.innerHTML=`<div class="pop-jog" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(r.t)[4]}"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button>
+  el.innerHTML=`<div class="pop-jog" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(r.t)[4]}"><div class="pj-barra"><button type="button" class="pj-volta" data-fecha aria-label="voltar">← Voltar</button></div>
    <div class="pj-topo">${face(p.id,p.n,"")}<div><span class="slot-sel">${x.slot}</span>${x.rk?`<span class="rk-n">#${x.rk} de ${x.n}</span>`:""}<b>${esc(p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${esc(T(r.t)[0])} · ${esc(T(r.t)[2])}${(sp==="sem"||ehRange(sp))?` · ${r.g} jogos`:""}${r.slot>=12?' · <u>estava no banco</u>':""}</small>${sp!=="sem"&&!ehMedia(sp)&&!ehRange(sp)?`<small>${jogoNBA(p,sp)}</small>`:ehMedia(sp)?`<small>média por jogo · ${r.g} jogos</small>`:""}</div></div>
    <div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div></div>`;
   el.addEventListener("click",e=>{if(e.target===el||e.target.closest("[data-fecha]"))fecharFichaU()});
@@ -3349,6 +3359,7 @@ function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scr
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
   {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();location.hash="time-"+tid;return}}
+  {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();location.hash="time-"+tid;return}}
   {const pn=e.target.closest("[data-pjn]");if(pn&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){UI.fichaPer=null;abrirJogadorNome(pn.dataset.pjn);return}}
   {const pj=e.target.closest("[data-pj]");if(pj&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){UI.fichaPer=null;abrirJogador(+pj.dataset.pj);return}}
   const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-mda],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj],[data-dd],[data-leg]");if(!t)return;
@@ -3492,6 +3503,16 @@ function montarAtalhos(r){
   secs.forEach(([c,t],i)=>{const id="sec-"+i;c.id=c.id||id;const nm=(t.childNodes[0]&&t.childNodes[0].textContent||t.textContent).trim().replace(/\s*·.*$/,"");const b=document.createElement("button");b.type="button";b.className="pil";b.textContent=nm.charAt(0)+nm.slice(1).toLowerCase();b.onclick=()=>c.scrollIntoView({behavior:"smooth",block:"start"});nav.appendChild(b)});
   const ref=secs[0][0].previousElementSibling&&secs[0][0].previousElementSibling.classList.contains("thero")?secs[0][0]:(app.querySelector(".thero")?app.querySelector(".thero").nextSibling:secs[0][0]);
   app.insertBefore(nav,ref)}
+
+/* logo ou nome de time da liga = abre o perfil do time */
+function timeDoClique(el){
+  if(!el||el.closest("button[data-ft],[data-sub],[data-jogo],.pilulas,select,input,.nav,.jogo-nav .jn-b,.atalhos"))return 0;
+  const img=el.closest("img");if(img){const m=/img\/l\/([a-z0-9_-]+)\.webp/i.exec(img.getAttribute("src")||"");if(m){const id=Object.keys(TIMES).find(k=>TIMES[k][1]===m[1]);if(id&&!(location.hash==="#time-"+id))return +id}}
+  const r=el.closest(".rosto");if(r){const i=r.querySelector("img");if(i&&i!==img)return timeDoClique(i)}
+  let x=el;for(let k=0;k<2&&x;k++,x=x.parentElement){if(x.children.length>1||x.matches("tr,td,table,.card,a[href],button"))break;const t=(x.textContent||"").trim();if(IDN[t]&&location.hash!=="#time-"+IDN[t])return IDN[t]}
+  return 0}
+/* trava o fundo enquanto a ficha está aberta (o fundo não mexe) */
+(function(){let y=0,trav=false;new MutationObserver(()=>{const ab=!!document.getElementById("popFicha");if(ab&&!trav){y=scrollY;trav=true;const b=document.body.style;b.position="fixed";b.top=(-y)+"px";b.left="0";b.right="0";b.width="100%"}else if(!ab&&trav){trav=false;const b=document.body.style;b.position=b.top=b.left=b.right=b.width="";scrollTo(0,y)}}).observe(document.body,{childList:true})})();
 
 /* logo ou nome de time da liga = abre o perfil do time */
 function timeDoClique(el){
