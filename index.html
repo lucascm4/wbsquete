@@ -957,7 +957,7 @@ function vRadar(){
     return h;
   }
   if(f==="sobe"){
-    const L=elenco.filter(p=>HIST.draft[p.n]&&p.rk).map(p=>({p,pk:HIST.draft[p.n],rk:p.rk[0],dl:HIST.draft[p.n]-p.rk[0]}));
+    const L=elenco.filter(p=>HIST.draft[p.n]&&p.rk&&p.rk[0]>0).map(p=>({p,pk:HIST.draft[p.n],rk:p.rk[0],dl:HIST.draft[p.n]-p.rk[0]}));
     const sobe=L.filter(x=>x.dl>0).sort((x,y)=>y.dl-x.dl).slice(0,8),afunda=L.filter(x=>x.dl<0&&x.pk<=80).sort((x,y)=>x.dl-y.dl).slice(0,8);
     h+=`<h1 class="manchete">QUEM SOBE, QUEM AFUNDA</h1><p class="linha-fina">Pick do draft ➜ ranking da ESPN na temporada. Igual à página da revista, só que ao vivo.</p></div>${pills}
     <div class="radar-grid"><div class="card"><div class="bloco-tit">SOBE</div>${sobe.map(({p,pk,rk})=>linhaRd(p,"up",`${rk}<small>RK · PICK ${pk}</small>`,linhaMedia(p.av||zero()))).join("")}</div><div class="card"><div class="bloco-tit">AFUNDA</div>${afunda.map(({p,pk,rk})=>linhaRd(p,"dn",`${rk}<small>RK · PICK ${pk}</small>`,linhaMedia(p.av||zero()))).join("")}</div></div>`;
@@ -977,7 +977,7 @@ function vRadar(){
     return h;
   }
   // lixo
-  const L=elenco.filter(p=>p.rk&&p.rk[0]>130&&p.slot!==13).map(p=>({p,sc:p.rk[0]+(p.l7&&p.l7[11]>=2?p.rk[1]:p.rk[0])})).sort((x,y)=>y.sc-x.sc).slice(0,15);
+  const L=elenco.filter(p=>p.rk&&p.rk[0]>130&&p.slot!==13&&p.inj!=="OUT").map(p=>({p,sc:p.rk[0]+(p.l7&&p.l7[11]>=2?p.rk[1]:p.rk[0])})).sort((x,y)=>y.sc-x.sc).slice(0,15);
   h+=`<h1 class="manchete">PÁGINA DO LIXO</h1><p class="linha-fina">Quem ocupa vaga nos elencos da liga com o pior ranking da ESPN (temporada e últimos 7 dias). Quem tem, que se explique.</p></div>${pills}
   <div class="card">${L.map(({p})=>linhaRd(p,"dn",`${p.rk[0]}<small>RK ESPN · PICK ${HIST.draft[p.n]||"FA"}</small>`,`${POS[p.pos]||""} · ${NBA[p.pro]||""} · ${SLOT[p.slot]||""} · ${p.av?linhaMedia(p.av):"sem jogos"}`)).join("")}</div>`;
   return h;
