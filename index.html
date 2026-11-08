@@ -1134,7 +1134,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108023455";
+const VERSAO_PAINEL="20261108023503";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1571,7 +1571,7 @@ function rkSel(sp){const modo=UI.rkModo||"periodo";return `<label class="rk-sel"
 function listaJuntos(a,b,sp){
   const d=DADOS;const rows=[];const futuro=sp!=="sem"&&sp>d.cur;const ft=UI.filtroTime||0;
   [a,b].filter(t=>!ft||t===ft).forEach(t=>(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t)).forEach(p=>{
-    if(sp==="sem"){if(p.g||p.bg)rows.push({p,t,s:p.W,g:p.g,slot:p.g?0:12,bp:p.bp,bg:p.bg,val:p.g?valorJogo(p.W):-1e6})}
+    if(sp==="sem"){const bb=bancoDe(p);if(p.g||bb.g)rows.push({p,t,s:p.W,g:p.g,slot:p.g?0:12,bp:p.bp,bg:bb.g,val:p.g?valorJogo(p.W):-1e6})}
     else if(futuro){if(!p.fora&&p.slot!==13&&(p.gd||[]).includes(sp)){const av=p.av?p.av.slice(0,11):null;rows.push({p,t,s:av,slot:p.slot,proj:1,val:av?valorJogo(av):-1e5})}}
     else{const v=p.dl&&p.dl[sp];if(v)rows.push({p,t,s:v.slice(0,11),slot:v[11],min:v[12]||0,val:valorJogo(v)});else if(sp===d.cur&&p.hoje&&p.slot<12)rows.push({p,t,s:null,slot:p.slot,pend:1,val:-1e5})}
   }));
@@ -1585,7 +1585,7 @@ function listaJuntos(a,b,sp){
   const cab=cabLj();
   const filtros=`<div class="pilulas mini" role="group" aria-label="Time">${[[0,"Os dois"],[a,T(a)[0]],[b,T(b)[0]]].map(([k,n])=>`<button class="pil" type="button" data-ft="${k}" aria-pressed="${ft===k}">${esc(n)}</button>`).join("")}${futuro?"":rkSel(sp)}</div>`;
   return `<div class="card lj-wrap"><div class="bloco-tit">JOGADORES <small>${sp==="sem"?"semana toda":futuro?spRot(sp)+" · média da temporada de quem joga":spRot(sp)} · do melhor pro pior</small></div>${filtros}
-  <table class="lj">${cab}<tbody>${tit.map(linha).join("")||`<tr><td colspan="10" class="esp">${futuro?"Ninguém joga nesse dia.":"Ninguém em quadra nesse dia."}</td></tr>`}${banco.length?`<tr class="sepr"><td colspan="10">Banco e IR${sp==="sem"?" · o que ficou fora":""}</td></tr>`+banco.map(r=>sp==="sem"?`<tr style="--cor:${T(r.t)[4]}" class="fora"><td class="jg"><div class="jg-in">${face(r.p.id,r.p.n,"")}<div><b>${esc(r.p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${r.bg} jogo${r.bg>1?"s":""} no banco</small></div></div></td>${(()=>{const B=bancoDe(r.p).B;return `<td class="pts">${B[0]}</td><td>${B[1]}</td><td>${B[2]}</td><td>${B[3]}</td><td>${B[4]}</td><td>${B[5]}</td><td>${B[6]}</td><td class="fgft">${B[7]}/${B[8]}</td><td class="fgft">${B[9]}/${B[10]}</td>`})()}</tr>`:linha(r)).join(""):""}</tbody></table></div>`;
+  <table class="lj">${cab}<tbody>${tit.map(linha).join("")||`<tr><td colspan="10" class="esp">${futuro?"Ninguém joga nesse dia.":"Ninguém em quadra nesse dia."}</td></tr>`}${banco.length?`<tr class="sepr"><td colspan="10">Banco e IR${sp==="sem"?" · o que ficou fora":""}</td></tr>`+banco.map(r=>sp==="sem"?`<tr style="--cor:${T(r.t)[4]}" class="fora"><td class="jg"><div class="jg-in">${face(r.p.id,r.p.n,"")}<div><b>${esc(r.p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${r.bg} jogo${r.bg>1?"s":""} fora (banco/IR)</small></div></div></td>${(()=>{const B=bancoDe(r.p).B;return `<td class="pts">${B[0]}</td><td>${B[1]}</td><td>${B[2]}</td><td>${B[3]}</td><td>${B[4]}</td><td>${B[5]}</td><td>${B[6]}</td><td class="fgft">${B[7]}/${B[8]}</td><td class="fgft">${B[9]}/${B[10]}</td>`})()}</tr>`:linha(r)).join(""):""}</tbody></table></div>`;
 }
 function boxTime(tid,sp){
   const d=DADOS;const lista=[];
