@@ -1329,10 +1329,10 @@ b.neg{color:#ff6b6b}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794165014"></script>
-<script src="radar.js?v=1794165014"></script>
+<script src="hist.js?v=1794165076"></script>
+<script src="radar.js?v=1794165076"></script>
 <script>
-const VERSAO_PAINEL="20261108161014";
+const VERSAO_PAINEL="20261108161116";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2590,7 +2590,7 @@ function perfilTreinador(id,nome){const d=DADOS;const L=HIST.tab.filter(r=>r[1]=
   const anos=L.length+(d?1:0);const pc=(v+e/2)/Math.max(1,v+dd+e);
   const tile=(k,vv,sub)=>`<div><small>${k}</small><b>${vv}</b>${sub?`<i>${sub}</i>`:""}</div>`;
   return `<div class="card"><div class="bloco-tit">PERFIL DO TREINADOR <small>${anos} temporadas na liga · desde 22/23 nos números</small></div><div class="pf-grid">
-   ${tile("Títulos",tit?"🏆".repeat(tit):"0",fin?`${fin} final${fin>1?"is":""}`:"nenhuma final")}${tile("Playoffs",`${po}/${L.length}`,"temporadas fechadas")}
+   ${tile("Títulos",tit?"🏆".repeat(tit):"0",fin?`${fin} final${fin>1?"is":""} desde 22/23`:"nenhuma final desde 22/23")}${tile("Playoffs",`${po}/${L.length}`,"temporadas fechadas")}
    ${tile("V-D-E",`${v}-${dd}-${e}`,`${(pc*100).toFixed(0)}% de aproveitamento`)}${tile("Mata-mata",`${mv}-${md}`,"vitórias-derrotas")}
    ${tile("Categorias",`${(100*cw/Math.max(1,cw+cl)).toFixed(0)}%`,`${cw} ganhas · ${cl} perdidas`)}${tile("Adds",adds,`${(adds/Math.max(1,anos)).toFixed(0)} por temporada`)}
    ${tile("Trocas",trocas,trocas?"":"nunca trocou")}${big?tile("Maior surra",`${big.o.w}-${big.o.l}`,`no ${esc(big.o.op)} · ${esc(big.m.t)}`):""}
