@@ -772,6 +772,28 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 
 .bet-odds .bq em{font-style:normal;font-size:10px;color:#666;font-weight:700}
 
+/* fotos: sempre círculo fixo, nunca esticar */
+.ft,.jg-in .ft,.rd .ft,.perf .ft,.mini .ft{width:44px;height:44px;flex:none;border-radius:50%;object-fit:cover;object-position:top;background:#e9e1d6;border:2px solid #000;display:block}
+.ft.ini{display:grid;place-items:center;font-family:var(--display);font-size:14px;color:#3a2a2a;line-height:1}
+.rd{grid-template-columns:44px minmax(0,1fr) auto;align-items:start}
+.rd .ft{margin-top:2px}
+.perf .ft,.perf .ft.ini{width:48px;height:48px}
+/* rodapé: 4 botões centrados */
+.nav{grid-template-columns:repeat(4,minmax(0,1fr))}
+/* tour de primeira visita */
+.tour-mask{position:fixed;inset:0;z-index:60;pointer-events:none}
+.tour-foco{position:fixed;z-index:61;border:3px solid var(--amarelo);border-radius:10px;box-shadow:0 0 0 9999px rgba(0,0,0,.72);pointer-events:none;transition:all .25s}
+.tour-box{position:fixed;z-index:62;left:50%;transform:translateX(-50%);width:min(360px,calc(100vw - 32px));background:#000;color:#fff;border:3px solid var(--amarelo);box-shadow:6px 6px 0 #000;padding:14px 14px 12px;font-size:14px;line-height:1.35}
+.tour-box h4{margin:0 0 6px;font-family:var(--display);font-weight:400;font-size:20px;color:var(--amarelo);letter-spacing:.02em}
+.tour-box p{margin:0 0 10px}
+.tour-box .acoes{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tour-box .passo{font-size:11px;color:var(--apagado);letter-spacing:.08em}
+.tour-box button{font:inherit;cursor:pointer;border:2px solid #000;padding:6px 12px;font-weight:700}
+.tour-box .prox{background:var(--amarelo);color:#000}
+.tour-box .pular{background:transparent;color:var(--apagado);border-color:transparent}
+.btn-ajuda{flex:none;width:34px;height:34px;border-radius:50%;background:transparent;border:1px solid rgba(232,192,102,.45);color:var(--ouro);font:700 15px var(--ui);cursor:pointer;margin-left:-4px}
+@media (max-width:760px){.btn-ajuda{width:28px;height:28px;font-size:13px}}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -815,7 +837,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
       <div class="mast-sub" id="status">carregando…</div>
     </div>
     <nav class="nav-top" id="navTop" aria-label="Seções"></nav>
-    <button class="btn-atualiza" id="btnAtualiza" type="button" title="Buscar dados novos na ESPN">Atualizar</button><button class="btn-reload" id="btnReload" type="button" title="Recarregar o site" aria-label="Recarregar o site">&#x21bb;</button>
+    <button class="btn-atualiza" id="btnAtualiza" type="button" title="Buscar dados novos na ESPN">Atualizar</button><button class="btn-reload" id="btnReload" type="button" title="Recarregar o site" aria-label="Recarregar o site">&#x21bb;</button><button class="btn-ajuda" id="btnAjuda" type="button" title="Como usar o painel" aria-label="Como usar o painel">?</button>
   </div>
 </header>
 <div id="ticker" class="ticker" hidden></div>
@@ -833,7 +855,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108004931";
+const VERSAO_PAINEL="20261108010150";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1753,11 +1775,39 @@ document.addEventListener("click",e=>{
 document.addEventListener("change",e=>{if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
 window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0)});
 $("#btnAtualiza").onclick=()=>atualizarAoVivo();
+(function(){let visto=null;try{visto=localStorage.getItem("painel.tour")}catch(e){}if(!visto){const espera=setInterval(()=>{if(DADOS&&document.querySelector(".jogo")){clearInterval(espera);tourInicio()}},800);setTimeout(()=>clearInterval(espera),30000)}})();
 $("#btnReload").onclick=()=>{try{localStorage.removeItem("painel.cache")}catch(e){}location.replace(location.pathname+"?b="+Date.now()+location.hash)};
 $("#nav").innerHTML=NAVS.map(([k,n,ic])=>`<a href="#${k}" data-nav="${k}"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg>${n}</a>`).join("");
 $("#navTop").innerHTML=NAVS.map(([k,n])=>`<a href="#${k}" data-nav="${k}">${n}</a>`).join("");
 
 document.addEventListener("click",e=>{const t=e.target.closest(".tip");document.querySelectorAll(".tip.aberta").forEach(x=>{if(x!==t)x.classList.remove("aberta")});if(t){e.preventDefault();e.stopPropagation();t.classList.toggle("aberta");t.classList.toggle("dir",t.getBoundingClientRect().left>window.innerWidth/2)}},true);
+/* ---------- tour de primeira visita ---------- */
+const PASSOS=[
+ {sel:"#ticker",t:"O letreiro",p:"Notícias automáticas do dia: quem fez 40, triplo-duplo, categoria que virou, confronto aberto. Toque numa notícia para abrir o confronto."},
+ {sel:".jogo",t:"O confronto",p:"Cada card é um confronto da semana. As 9 categorias com o número dos dois times: amarelo é quem está na frente. Toque no card para abrir a página dele."},
+ {sel:".jogo .bf",t:"BetLoyde",p:"As odds do modelo do Loydão: 1 é o time da esquerda, X empate, 2 o da direita. Quanto menor a odd, mais favorito. Na página do confronto tem a porcentagem."},
+ {sel:"#meuTime",t:"Meu time",p:"Escolha o seu time uma vez. Fica salvo neste aparelho e o seu confronto aparece sempre primeiro."},
+ {sel:'[data-nav="times"]',t:"Ranking",p:"Classificação projetada para o fim da temporada, categorias, chances de playoffs e de título, playoffs projetados e o Ranking do Loydão."},
+ {sel:'[data-nav="radar"]',t:"Radar",p:"Quem está quente, quem está frio, quem pegar no waiver, quem subiu e quem afundou em relação ao draft, e a Página do Lixo."},
+ {sel:'[data-nav="museu"]',t:"Museu",p:"A história da liga desde 22/23: campeões, todos os confrontos com box, trocas, drafts, recordes."},
+ {sel:"#btnAtualiza",t:"Atualizar",p:"O painel se atualiza sozinho a cada 5 minutos com jogo rolando. Este botão força agora; o ⟳ recarrega o site; o ? repete este guia."}];
+let tourI=0,tourEls=null;
+function tourMostrar(){
+  const p=PASSOS[tourI];if(!p){tourFim();return}
+  const vis=[...document.querySelectorAll(p.sel)].find(e=>e.offsetParent!==null&&e.getBoundingClientRect().width>0);
+  if(!vis){tourI++;tourMostrar();return}
+  vis.scrollIntoView({block:"center",behavior:"instant"});
+  const r=vis.getBoundingClientRect();const pad=6;
+  tourEls.foco.style.cssText=`top:${r.top-pad}px;left:${r.left-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px`;
+  const emb=r.top>window.innerHeight/2;
+  tourEls.box.style.top=emb?"auto":Math.min(window.innerHeight-220,r.bottom+14)+"px";tourEls.box.style.bottom=emb?Math.max(12,window.innerHeight-r.top+14)+"px":"auto";
+  tourEls.box.innerHTML=`<h4>${esc(p.t)}</h4><p>${esc(p.p)}</p><div class="acoes"><span class="passo">${tourI+1} / ${PASSOS.length}</span><span><button class="pular" type="button">Pular</button> <button class="prox" type="button">${tourI===PASSOS.length-1?"Fechar":"Próximo"}</button></span></div>`;
+  tourEls.box.querySelector(".prox").onclick=()=>{tourI++;tourMostrar()};tourEls.box.querySelector(".pular").onclick=tourFim;
+}
+function tourFim(){if(tourEls){tourEls.foco.remove();tourEls.box.remove();tourEls=null}try{localStorage.setItem("painel.tour","1")}catch(e){}}
+function tourInicio(){if(tourEls)return;if(location.hash&&location.hash!=="#confrontos"){location.hash="#confrontos"}tourI=0;const foco=document.createElement("div");foco.className="tour-foco";const box=document.createElement("div");box.className="tour-box";document.body.append(foco,box);tourEls={foco,box};setTimeout(tourMostrar,400)}
+$("#btnAjuda").onclick=tourInicio;
+window.addEventListener("resize",()=>{if(tourEls)tourMostrar()});
 /* ---------- partida ---------- */
 (function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===7)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}else ticker()})();
 atualizarAoVivo();
