@@ -1661,6 +1661,14 @@ svg.cad{width:18px;height:18px;display:block}
 .tabcat.tc3{border-collapse:separate!important;border-spacing:0 3px}
 .tabcat.tc3 tbody td{background:#16110f}
 
+.tc3 .pv2{font:500 11px system-ui,sans-serif!important;color:#8f8478!important}
+.tc3 .pv2.ganha{font-weight:800!important;color:#e8f0ff!important}
+.tc3 td.g .pv2{color:#5a4b00!important}.tc3 td.g .pv2.ganha{color:#000!important}
+.ver-lista{all:unset;cursor:pointer;display:block;text-align:center;margin:8px 10px 12px;padding:9px;border-radius:10px;border:2px solid var(--amarelo);color:var(--amarelo);font-family:var(--display);font-size:15px;letter-spacing:.03em}
+#popLista{z-index:300;align-items:flex-start;overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 24px}
+#popLista .hist-lista{margin-top:6px}
+.topo .belt,.topo .mast{cursor:pointer}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1726,11 +1734,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794174524"></script>
-<script src="radar.js?v=1794174524"></script>
-<script src="midia.js?v=1794174524"></script>
+<script src="hist.js?v=1794174738"></script>
+<script src="radar.js?v=1794174738"></script>
+<script src="midia.js?v=1794174738"></script>
 <script>
-const VERSAO_PAINEL="20261108184844";
+const VERSAO_PAINEL="20261108185218";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2313,10 +2321,10 @@ function boxTime(tid,sp){
 /* placar aberto das 9 categorias, com previsão de fechamento */
 function tabelaCategorias(a,b,ta,tb,pa,pb,sim){
   const sc=placar(ta,tb);const A=T(a),B=T(b);
-  let h=`<table class="tabcat tc3"><colgroup><col class="c1"><col class="c3"><col class="c1"></colgroup><thead><tr><th class="lg"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></th><th>categoria <small class="tc-leg">embaixo: ${tip("prev","deve fechar")}</small></th><th class="lg"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></th></tr></thead><tbody>`;
+  let h=`<table class="tabcat tc3"><colgroup><col class="c1"><col class="c3"><col class="c1"></colgroup><thead><tr><th class="lg"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></th><th>categoria <small class="tc-leg">${tip("prev","em negrito: fecha ganhando")}</small></th><th class="lg"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></th></tr></thead><tbody>`;
   CATS.forEach((c,j)=>{const r=sc.r[j];const px=c.f(pa),py=c.f(pb);const pr=c.inv?(px<py?1:px>py?-1:0):(px>py?1:px<py?-1:0);
-    const ok=v=>v>0?'<b class="ck">✓</b>':v<0?'<b class="xx">✗</b>':'<b class="eq">=</b>';
-    h+=`<tr><td class="${r>0?"g":r<0?"p":""}"><span class="v">${fmt(c,c.f(ta))}</span><small class="pv2">→ ${fmt(c,px)} ${ok(pr)}</small></td><td><span class="cn">${c.k}</span></td><td class="${r<0?"g":r>0?"p":""}"><span class="v">${fmt(c,c.f(tb))}</span><small class="pv2">→ ${fmt(c,py)} ${ok(-pr)}</small></td></tr>`});
+    const pv=(v,k)=>`<small class="pv2 ${k>0?"ganha":k<0?"perde":""}">fecha ${v}</small>`;
+    h+=`<tr><td class="${r>0?"g":r<0?"p":""}"><span class="v">${fmt(c,c.f(ta))}</span>${pv(fmt(c,px),pr)}</td><td><span class="cn">${c.k}</span></td><td class="${r<0?"g":r>0?"p":""}"><span class="v">${fmt(c,c.f(tb))}</span>${pv(fmt(c,py),-pr)}</td></tr>`});
   const ps=placar(pa,pb);
   h+=`<tr class="resumo"><td colspan="3">Agora <b>${rtxt(sc.w,sc.l,sc.t)}</b> · deve fechar <b>${rtxt(ps.w,ps.l,ps.t)}</b> · faltam ${EST.jr[a]} jogos do ${esc(A[0])} e ${EST.jr[b]} do ${esc(B[0])}</td></tr>`;
   return h+`</tbody></table>`;
@@ -2471,7 +2479,7 @@ function vJogo(i){
   if(sub==="placar"){
     const hh=window.MUSEU?h2hEntre(A[0],B[0]):null;const mm=hh?hh.l.filter(x=>!x.atual&&seloFase(x)&&!/CONSOLA/.test(seloFase(x))).length:0;
     h+=`<div class="card">${tabelaCategorias(a,b,ta,tb,pa,pb,s)}</div>
-    ${hh?`<div class="card"><div class="bloco-tit">HISTÓRICO DIRETO <small>toque para abrir o box</small></div><div class="saldo-h2h"><span class="${hh.va>hh.vb?"lid":""}">${esc(A[0])} <b>${hh.va}</b></span><span class="x">${hh.e?hh.e+" emp.":"x"}</span><span class="${hh.vb>hh.va?"lid":""}"><b>${hh.vb}</b> ${esc(B[0])}</span><small>desde 22/23${mm?` · ${mm} em mata-mata`:""}</small></div><div class="hist-lista">${hh.l.map(m2=>{const [w,lo,t]=m2.r;return `<button type="button" ${m2.atual?"disabled":`data-mj="${m2.i}"`}><span class="qd">${temporadaCurta(m2.t)} · sem ${m2.w}</span><span><span class="${m2.v===m2.a?"w":""}">${esc(m2.a)}</span> x <span class="${m2.v===m2.b?"w":""}">${esc(m2.b)}</span>${seloFase(m2)}</span><span class="rs num">${rtxt(w,lo,t)}</span></button>`}).join("")||'<div class="vazio">Nunca se enfrentaram desde 22/23.</div>'}</div></div>`:""}`;
+    ${hh?`<div class="card"><div class="bloco-tit">HISTÓRICO DIRETO</div><div class="saldo-h2h"><span class="${hh.va>hh.vb?"lid":""}">${esc(A[0])} <b>${hh.va}</b></span><span class="x">${hh.e?hh.e+" emp.":"x"}</span><span class="${hh.vb>hh.va?"lid":""}"><b>${hh.vb}</b> ${esc(B[0])}</span><small>desde 22/23${mm?` · ${mm} em mata-mata`:""}</small></div>${(()=>{UI._h2h={t:`${A[0]} x ${B[0]} desde 22/23`,h:`<div class="hist-lista">${hh.l.map(m2=>{const [w,lo,t]=m2.r;return `<button type="button" ${m2.atual?"disabled":`data-mj="${m2.i}"`}><span class="qd">${temporadaCurta(m2.t)} · sem ${m2.w}</span><span><span class="${m2.v===m2.a?"w":""}">${esc(m2.a)}</span> x <span class="${m2.v===m2.b?"w":""}">${esc(m2.b)}</span>${seloFase(m2)}</span><span class="rs num">${rtxt(w,lo,t)}</span></button>`}).join("")||'<div class="vazio">Nunca se enfrentaram desde 22/23.</div>'}</div>`};return hh.l.length?`<button type="button" class="ver-lista" data-h2hlista>Ver os ${hh.l.length} confrontos ›</button>`:'<div class="vazio">Nunca se enfrentaram desde 22/23.</div>'})()}</div>`:""}`;
     if(window.MUSEU)h+=blocoGlobal(A[0],B[0]);
   }else if(sub==="jogadores"){
     // ordem: hoje, total da semana, dias passados do mais recente pro mais antigo, depois os futuros
@@ -3681,6 +3689,9 @@ function montarBusca(r){
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
+  if(e.target.closest("[data-h2hlista]")&&UI._h2h){const el=document.createElement("div");el.className="pop-fundo";el.id="popLista";el.innerHTML=`<div class="inst"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button><div class="inst-cab"><div><b>HISTÓRICO DIRETO</b><small>${esc(UI._h2h.t)} · toque para abrir o box</small></div></div>${UI._h2h.h}</div>`;
+    el.addEventListener("click",ev=>{if(ev.target===el||ev.target.closest("[data-fecha]")){el.remove();return}if(ev.target.closest("[data-mj]"))el.remove()},true);document.body.appendChild(el);return}
+  if(e.target.closest(".topo .belt,.topo .mast")){location.hash="confrontos";scrollTo(0,0);return}
   {const dc=e.target.closest("[data-duc]");if(dc){UI.duCat=dc.dataset.duc;render();return}}
   {const mm=e.target.closest("[data-avm]");if(mm){UI.avModo=mm.dataset.avm;render();return}}
   {const q=e.target.closest("[data-avq]");if(q){UI.avQ=q.dataset.avq;render();return}const f=e.target.closest("[data-avf]");if(f){UI.avF=+f.dataset.avf;render();return}}
