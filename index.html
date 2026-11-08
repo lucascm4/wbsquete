@@ -851,7 +851,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .premios.cheio{grid-template-columns:1fr}.premios.cheio .pr{grid-template-columns:44px minmax(0,1fr)}.premios.cheio .pr .ft{width:44px;height:44px}.premios.cheio .pr .pn b{font-size:14px}}
 
 /* selos dos prêmios */
-.selo{width:26px;height:26px;flex:none;display:inline-block;vertical-align:middle}
+.ic-pr{width:26px;height:26px;flex:none;display:inline-block;vertical-align:middle}
 .pr .pk{display:inline-flex;align-items:center;gap:6px;padding:2px 10px 2px 4px;font-size:13px}
 .pr .pk.bom{background:#5ad1ff;color:#000}
 .pr-modo{display:flex;gap:6px;padding:0 10px 6px}
@@ -861,7 +861,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .chips-pr::-webkit-scrollbar{display:none}
 .chips-pr .cp-rot{font-family:var(--display);font-size:10px;letter-spacing:.08em;color:#fff;text-shadow:1px 1px 0 #000;flex:none}
 .cp-i{flex:none;padding:2px 8px 2px 3px;gap:4px}
-.cp-i .selo{width:22px;height:22px}
+.cp-i .ic-pr{width:22px;height:22px}
 .cp-i.ouro{border-color:var(--amarelo)}.cp-i.ruim{border-color:var(--vermelho)}.cp-i.bom{border-color:#5ad1ff}
 
 /* tabelas de jogadores: sem sobreposição, fg/ft em evidência, cabeçalho ordenável */
@@ -883,8 +883,8 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 /* chips de prêmio da home: selo solto + nome, cabe sem rolar */
 .chips-pr{flex-wrap:wrap;overflow:visible;gap:4px 10px}
 .cp-i,.cp-i.ouro,.cp-i.ruim,.cp-i.bom{background:none;border:0;padding:0;gap:3px;font-size:12px}
-.cp-i .selo{width:16px;height:16px}
-@media (max-width:760px){.cp-i{font-size:11px}.cp-i .selo{width:15px;height:15px}}
+.cp-i .ic-pr{width:16px;height:16px}
+@media (max-width:760px){.cp-i{font-size:11px}.cp-i .ic-pr{width:15px;height:15px}}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -947,7 +947,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108014351";
+const VERSAO_PAINEL="20261108014510";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1403,7 +1403,7 @@ const PREMIO={
  TRAB:{n:"TRABALHADOR",d:"mais jogos como titular na semana",cls:""},
  CULPADO:{n:"CULPADO",d:"pontos que o manager deixou no banco",cls:"ruim"}
 };
-const selo=k=>`<svg class="selo" viewBox="0 0 32 32" aria-hidden="true">${SELO[k]}</svg>`;
+const selo=k=>`<svg class="ic-pr" viewBox="0 0 32 32" aria-hidden="true">${SELO[k]}</svg>`;
 const PRINCIPAIS=["MVP","PIPOQUEIRO","RUI","BELEZINHA","URGH"];
 function addsSemana(){ // jogador pego na waiver/FA nesta semana: "id:time" -> sp
   const d=DADOS;const m={};((d.tx&&d.tx.lst)||[]).forEach(([pid,sp,t])=>{if(sp>=d.s0&&sp<=d.cur)m[pid+":"+t]=sp});return m;
