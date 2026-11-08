@@ -26,7 +26,8 @@ window.RADAR={"quando":"sáb 07/11","notas":{
 "Devin Booker":"33 e 30 em dois dias. O Deco agradece."
 }};
 
-window.RADAR.lesoes={"quando":"dom 08/11 15:25","sp":20,"fonte":"Underdog NBA, ESPN e RotoWire","itens":{
+window.RADAR.lesoes={"quando":"dom 08/11 19:20","sp":20,"fonte":"Underdog NBA, ESPN e RotoWire","itens":{
+"VJ Edgecombe":["Q","foi pro vestiário durante o jogo contra o CHI (Underdog, 19:20)"],
 "Luka Doncic":["OUT","costas · DESCARTADO contra o DET (Underdog, 15:10)"],
 "Joel Embiid":["PROV","provável contra o CHI"],
 "Norman Powell":["Q","ombro · entrou no relatório de última hora contra o PHI"],
@@ -48,3 +49,8 @@ window.RADAR.lesoes={"quando":"dom 08/11 15:25","sp":20,"fonte":"Underdog NBA, E
 "Scotty Pippen Jr.":["OUT","fora"],"Jalen Suggs":["OUT","fora"],"Keegan Murray":["OUT","fora"],"Dereck Lively II":["OUT","fora"],
 "Bradley Beal":["OUT","fora"],"Tobias Harris":["OUT","fora"],"Sam Merrill":["OUT","fora"],"Jaylon Tyson":["OUT","fora"],"Steven Adams":["OUT","fora"]
 }};
+
+/* alertas de status ao vivo (Underdog NBA): entram no noticiário com "hope he is ok" */
+window.RADAR.alertas=[
+ {sp:20,quando:"19:20",nome:"VJ Edgecombe",txt:"foi pro vestiário no meio do jogo contra o CHI",fonte:"Underdog NBA"}
+];

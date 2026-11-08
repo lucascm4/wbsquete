@@ -1772,11 +1772,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794176121"></script>
-<script src="radar.js?v=1794176121"></script>
-<script src="midia.js?v=1794176121"></script>
+<script src="hist.js?v=1794176640"></script>
+<script src="radar.js?v=1794176640"></script>
+<script src="midia.js?v=1794176640"></script>
 <script>
-const VERSAO_PAINEL="20261108191521";
+const VERSAO_PAINEL="20261108192400";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1989,7 +1989,7 @@ function prepara(d){
       if(sp===d.cur&&d.nba)(e.rost[t.id]||[]).forEach(p=>{const g=d.nba[p.pro];if(p.slot<12&&p.avx&&p.dl&&p.dl[sp]&&g&&g.live&&g.frac<1){
         // quanto falta: metade pelo relógio do jogo, metade pelos minutos que ele ainda costuma jogar (quem já jogou muito descansa mais)
         const mj=+(p.dl[sp][12]||0),mm=p.mn&&+p.mn.av||0;const pelaHora=1-g.frac;const pelosMin=mm>0?Math.max(0,Math.min(1,(mm-mj)/mm)):pelaHora;
-        const fr=0.5*pelaHora+0.5*pelosMin;if(fr<=0.01)return;const av=p.avx.map(x=>x*fr);av.dnp=0;rem.push(av)}});
+        const fr=0.5*pelaHora+0.5*pelosMin;if(fr<=0.01)return;const av=p.avx.map(x=>x*fr);const nw=noticia(p,sp);av.dnp=nw&&nw.st!=="IN"?(NOT_DNP[nw.st]??0):0;rem.push(av)}});
     }
     e.rem[t.id]=rem;e.jr[t.id]=rem.length;
     // força do elenco: média por jogo dos 10 melhores saudáveis × 3,4 jogos
@@ -2155,8 +2155,14 @@ function noticias(){
   // hoje (se já tem jogo rolando) + ontem completando: assim o ticker não esvazia quando a rodada começa
   const d=DADOS;const hoje=d.P.some(p=>p.dl&&p.dl[d.cur]);window._ZUSO=new Set();
   if(!hoje)return noticiasDe(d.last);
-  const a=noticiasDe(d.cur);const rolando=d.nba&&Object.values(d.nba).some(g=>g.live);if(a.length>=6||(rolando&&a.length))return a;
+  const a=alertasStatus().concat(noticiasDe(d.cur));const rolando=d.nba&&Object.values(d.nba).some(g=>g.live);if(a.length>=6||(rolando&&a.length))return a;
   const ant=d.cur-1>=1?noticiasDe(d.cur-1):[];return a.concat(ant.slice(0,Math.max(0,10-a.length)).map(x=>Object.assign({},x,{t:"<i>Ontem:</i> "+x.t})))}
+/* alertas de status (Underdog NBA / ESPN) com o "hope he is ok" do Loydão */
+const HOPE=["Hope he is ok 🙏","Hope he is ok 🙏 (o {man} não)","Hope he is ok 🙏 — o {mop} já tá acendendo vela, mas pro outro lado","Hope he is ok 🙏 Sério. Mais ou menos.","Hope he is ok 🙏 e que o {man} tenha banco"];
+function alertasStatus(){const d=DADOS;const L=(window.RADAR&&RADAR.alertas)||[];const out=[];
+  L.filter(x=>x.sp===d.cur).forEach((x,i)=>{const p=d.P.find(q=>q.n===x.nome);const man=p?T(p.t)[2]:"o dono";const op=p?d.mt.find(m=>m.includes(p.t)):null;const mop=op?T(op[0]===p.t?op[1]:op[0])[2]:"o rival";
+    out.push({w:999,k:"🚑 STATUS",t:`<b>${esc(x.nome)}</b>${p?` (${esc(T(p.t)[0])})`:""} ${esc(x.txt)}. ${HOPE[(i+d.cur)%HOPE.length].replace("{man}",esc(man)).replace("{mop}",esc(mop))}`})});
+  return out}
 function noticiasDe(sp){
   // só performance de jogador, manchete com a linha real + zoeira variada
   const d=DADOS;const it=[];const nomeT=id=>T(id)[0];
@@ -2202,7 +2208,7 @@ function ticker(){
   if(!it.length){el.hidden=true;return}
   try{const O=ofertasBet();if(O.length){const n=Math.max(1,Math.floor(it.length/5));for(let k=0;k<n&&k<O.length;k++){const of=O[k];it.splice(Math.min(it.length,(k+1)*5-1),0,{k:"PUBLI",t:`BETLOYDE: ${esc(of.t)}: de ${fmtO(of.de)} para ${fmtO(of.para)}`,pub:1})}}}catch(e){}
   const live=DADOS.nba&&Object.values(DADOS.nba).some(g=>g.live);
-  const html=it.map(x=>`<span class="tk-i" ${x.j!=null?`data-jogo="${x.j}"`:""}><b class="${x.pub?"pub":["BANCO","MARTELO","TIJOLO","ENTREGOU","APAGADO","ZERO"].includes(x.k)?"r":""}">${x.k}</b>${x.t.replace(/<\/?b>/g,"")}</span>`).join('<span class="tk-sep">◆</span>');
+  const html=it.map(x=>`<span class="tk-i" ${x.j!=null?`data-jogo="${x.j}"`:""}><b class="${x.pub?"pub":["BANCO","MARTELO","TIJOLO","ENTREGOU","APAGADO","ZERO","🚑 STATUS"].includes(x.k)?"r":""}">${x.k}</b>${x.t.replace(/<\/?b>/g,"")}</span>`).join('<span class="tk-sep">◆</span>');
   el.hidden=false;el.innerHTML=`<span class="tk-tag">${live?'<i class="ao-vivo"></i>AO VIVO':"HOJE"}</span><div class="tk-wrap"><div class="tk-mov${it.length<6?" tk-uma":""}">${html}${it.length<6?"":`<span class="tk-sep">◆</span>${html}`}</div></div>`;
   const mov=el.querySelector(".tk-mov");const dur=mov.classList.contains("tk-uma")?Math.max(12,Math.round((mov.scrollWidth+innerWidth)/60)):Math.max(30,Math.round(mov.scrollWidth/2/60));mov.style.animationDuration=dur+"s";
 }
