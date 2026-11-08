@@ -1075,7 +1075,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108020710";
+const VERSAO_PAINEL="20261108020821";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1344,7 +1344,7 @@ function vazio(){return `<div class="cab-secao"><span class="sobre">PAINEL DO LO
 
 function noticias(){
   // só performance de jogador, em manchete do Loydão
-  const d=DADOS;const sp=d.cur;const it=[];const nomeT=id=>T(id)[0];
+  const d=DADOS;const sp=d.P.some(p=>p.dl&&p.dl[d.cur])?d.cur:d.last;const it=[];const nomeT=id=>T(id)[0];
   const opDe=t=>{const m=d.mt.find(x=>x.includes(t));return m?m[0]===t?m[1]:m[0]:null};
   const RK=rankLiga(sp);const adds=addsSemana();
   const pick={};((HIST.drafts&&HIST.drafts["2026/27"])||[]).forEach(r=>pick[r[3]]=[r[0],r[2]]);
