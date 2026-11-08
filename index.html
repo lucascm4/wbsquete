@@ -1746,11 +1746,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794175300"></script>
-<script src="radar.js?v=1794175300"></script>
-<script src="midia.js?v=1794175300"></script>
+<script src="hist.js?v=1794175407"></script>
+<script src="radar.js?v=1794175407"></script>
+<script src="midia.js?v=1794175407"></script>
 <script>
-const VERSAO_PAINEL="20261108190140";
+const VERSAO_PAINEL="20261108190327";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3502,7 +3502,7 @@ function avDuelo(abas){
   <p class="qd-leg">Placar grande = semana acumulada; "hoje" = só os titulares do dia. Verde = quem está levando a categoria.</p>`}
 function vAoVivoTodos(abas){
   const d=DADOS;const sp=d.cur;const meu=meuTime();
-  const f=UI.avF??(meu||0);const q=UI.avQ||"quadra";
+  const f=UI.avF??0;const q=UI.avQ||"hoje";
   const G=d.nba||{};const jg=jogosAoVivo();
   const jogos=Object.entries(G).filter(([id,g])=>/^vs /.test(g.op)).sort((a,b)=>(b[1].live-a[1].live)||(a[1].fim-b[1].fim)).map(([id,g])=>`<span class="av-j ${g.live?"live":g.fim?"fim":""}"><b>${esc(NBA[id]||"")}</b> ${g.sc?esc(g.sc):""} <b>${esc(g.op.slice(3))}</b><small>${esc(g.st)}</small></span>`).join("");
   const rows=[];d.P.filter(p=>!p.fora&&(!f||p.t===f)).forEach(p=>{const g=G[p.pro];if(!g)return;if(q==="quadra"&&!g.live)return;const v=p.dl&&p.dl[sp];
