@@ -1157,6 +1157,9 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 .car-fa{font:700 10px system-ui;color:var(--apagado);margin-top:3px}
 .qq{width:22px;height:22px;border-radius:50%;border:2px solid var(--amarelo);background:#000;color:var(--amarelo);font:800 13px system-ui;cursor:pointer;margin-left:6px;vertical-align:middle;line-height:1;padding:0}
 .expl{background:#1b1205;border-left:3px solid var(--amarelo);padding:8px 10px;font-size:13px;line-height:1.5;color:#eee;margin-bottom:8px;border-radius:4px}.expl b{color:var(--amarelo)}
+.lei{background:#1b1205;border:2px dashed var(--amarelo);border-radius:8px;padding:10px 12px}
+.lei-t{display:inline-block;font-family:var(--display);font-weight:400;font-size:22px;color:#000;background:var(--amarelo);padding:2px 10px;transform:rotate(-1.5deg);box-shadow:3px 3px 0 #000}
+.lei p{margin:8px 0 0;font-size:15px;line-height:1.45;color:#fff}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1226,7 +1229,7 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108150014";
+const VERSAO_PAINEL="20261108150128";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2019,6 +2022,31 @@ function abrirLegenda(k){
    <p>Na home aparecem os prêmios do dia. Dentro do confronto, aba Prêmios, tem os da semana.</p></div>`;
   el.addEventListener("click",e=>{if(e.target===el||e.target.closest("[data-fecha]"))fecharFicha()});document.body.appendChild(el);
 }
+/* leitura do Loydão: o que o cara É, em tom de zoeira (sem número) */
+function leituraLoydao(p,z,tend,dono){
+  z=z||{};const n=p.nota;const h=[...String(p.id)].reduce((a,c)=>a*31+c.charCodeAt(0)>>>0,7);const um=L=>L[h%L.length];
+  const g=k=>z[k]??0;const inj=p.inj&&p.inj!=="ACTIVE";const outLong=["OUT","INJURY_RESERVE"].includes(p.inj);
+  let t,f;
+  if(outLong){t="ENFERMARIA VIP";f=um(["Tá ganhando salário pra assistir o jogo de moletom. O "+dono+" paga a diária do hospital.","Pacote completo: maca, soro e o "+dono+" rezando. Vaga de IR com cheiro de éter.","Mais tempo no fisioterapeuta que na quadra. Jogador de PowerPoint: só existe na projeção."])}
+  else if(n==null||(p.av&&p.av[11]<3)){t="FANTASMA";f=um(["Ninguém sabe se existe. Aparece na lista, some na quadra.","Jogou menos que o técnico. Dá pra guardar, mas não dá pra contar.","O cara é lenda urbana: o "+dono+" jura que viu ele jogar uma vez."])}
+  else if(n>=6){t="MONSTRO";f=um(["Carrega o "+dono+" nas costas e ainda reclama que tá leve.","Isso não é jogador de fantasy, é cheat code. Os outros 11 times que lutem.","Sozinho ganha categoria que time inteiro não ganha. Nem pensa em trocar, nem por três."])}
+  else if(n>=4){t="ESTRELA DA CASA";f=um(["Titular de olho fechado. Se tirar, o Loydão denuncia no grupo.","Daqueles que fazem o "+dono+" parecer que sabe draftar.","Entrega toda semana. Chato de tão confiável."])}
+  else if(g("BLK")>=1.5&&g("FT%")<=-0.8){t="PAREDÃO DE TIJOLO";f=um(["Toco na defesa, tijolo na linha de lance livre. Ouro pra quem punta FT, veneno pra quem não punta.","Fecha o garrafão e abre uma construtora na linha do lance livre.","Bloqueia tudo, inclusive a própria bola no lance livre."])}
+  else if(g("BLK")>=1.5&&g("REB")>=1){t="ARMÁRIO DO GARRAFÃO";f=um(["Rebote e toco, o resto é figurante. Big man de categoria pura.","Fica parado embaixo da cesta e cobra aluguel de quem entra.","Não arma, não chuta de três, mas o garrafão é dele e ponto."])}
+  else if(g("AST")>=1.5&&g("TO")<=-0.8){t="GARÇOM QUE QUEBRA PRATO";f=um(["Serve todo mundo e derruba metade da bandeja. Assistência e turnover no mesmo pacote.","Distribui o jogo e distribui bola pro adversário também. Generoso com os dois lados.","Ótimo pra AST, péssimo pra TO. Escolhe qual categoria você quer perder."])}
+  else if(g("3PM")>=1.2&&g("FG%")<=-0.6){t="CHUTADOR COMPULSIVO";f=um(["Chuta de qualquer lugar, inclusive do estacionamento. Bola de três sim, FG% nunca.","Arremessa como quem não tem boleto pra pagar. Três pontos e reza pro FG%.","Se a bola encostar na mão dele, ela vai pra cesta — ou pro telão."])}
+  else if(g("STL")>=1.2&&g("PTS")<0.3){t="LADRÃO DE GALINHA";f=um(["Não pontua, mas rouba até a carteira do juiz. Jogador de categoria, não de manchete.","Defesa de carteirinha: rouba bola, não faz cesta. Útil pra quem tá pescando STL.","Mão leve na defesa e mão de pedra no ataque."])}
+  else if(g("PTS")>=1.2&&n<1.5){t="FOMINHA DE PLANILHA";f=um(["Faz ponto, só ponto. O resto da planilha ele deixa pro estagiário.","Pontuador de manchete e de nada mais. Ganha PTS e entrega o resto.","Bonito no box score da TV, feio no 9-cat."])}
+  else if(n>=1.5){t="TITULAR DE RESPEITO";f=um(["Não é estrela, mas não envergonha. O tipo de cara que o "+dono+" esquece que tem e agradece no domingo.","Sólido como reboco. Ninguém elogia, todo mundo precisa.","Faz o arroz com feijão em várias categorias. Ninguém posta, mas ganha semana."])}
+  else if(n>=0){t="GELADEIRA";f=um(["Nem esquenta nem esfria. Ocupa espaço e mantém as coisas na média.","Jogador de Excel: tá lá, não atrapalha, não resolve.","Titular de liga de 12 e olhe lá. Se aparecer coisa melhor na waiver, tchau."])}
+  else if(n>=-1.5){t="ENCOSTO";f=um(["Fica no banco esperando uma lesão alheia pra virar gente. Útil só pra tapar buraco de categoria.","Joga, mas parece que tá de favor. Streaming de desespero.","O "+dono+" segura por apego emocional, não por números."])}
+  else{t="LATA DE LIXO";f=um(["Drop ou útil só pra punt win. Se tá escalado, alguém precisa conversar com o "+dono+".","Reciclável? Talvez. Escalável? Jamais. Melhor servir de moeda de troca pra otário.","Tirar ele do elenco já é um upgrade. A waiver agradece a doação."])}
+  const extra=[];
+  if(!outLong&&inj)extra.push(um(["Tá no departamento médico de olho roxo, joga mancando.","Status duvidoso: chance de aparecer igual chance de chover em Osasco no sábado."]));
+  if(tend!=null&&tend>=1.5)extra.push(um(["E tá pegando fogo: alguém avisa que a fase boa não dura.","Fase de MVP de bairro: aproveita antes que acabe."]));
+  else if(tend!=null&&tend<=-1.5)extra.push(um(["E esfriou bonito: tá jogando de chinelo.","Fase de geladeira de bar: quente só a cerveja, ele não."]));
+  return [t,[f,...extra].join(" ")];
+}
 /* times da WBSQUETE de cada jogador por temporada (draft + trocas + escalados) */
 function timesFantasy(nome){
   if(!window._FTM){const M={};const add=(n,t,lista,drop)=>{const k=M[n]=M[n]||{};const x=k[t]=k[t]||{ts:[],drop:null};lista.forEach(tm=>{if(tm&&!x.ts.includes(tm))x.ts.push(tm)});if(drop)x.drop=drop};
@@ -2074,12 +2102,7 @@ function abrirJogador(id,perF){
   // leitura do Loydão: pontos fortes, fracos e tendência
   const zs=p.zc||c;const fortes=K.filter(k=>zs[k]>=0.8).sort((a,b)=>zs[b]-zs[a]).slice(0,3),fracos=K.filter(k=>zs[k]<=-0.6).sort((a,b)=>zs[a]-zs[b]).slice(0,3);
   const tend=p.nota!=null&&p.nota7!=null?p.nota7-p.nota:null;
-  const frases=[];
-  if(fortes.length)frases.push(`Ganha categoria em <b>${fortes.join(", ")}</b>.`);
-  if(fracos.length)frases.push(`Cobra pedágio em <b>${fracos.join(", ")}</b>${fracos.includes("TO")?" (bola perdida demais)":""}${fracos.includes("FG%")?" — o volume de arremesso errado pesa":""}.`);
-  if(tend!=null)frases.push(tend>=1?`Fase quente: os últimos 7 dias estão <b>${tend.toFixed(1)}</b> acima da temporada.`:tend<=-1?`Esfriou: os últimos 7 dias estão <b>${(-tend).toFixed(1)}</b> abaixo da temporada.`:"Rendendo dentro do esperado.");
-  if(p.inj&&p.inj!=="ACTIVE")frases.push(`Status na ESPN: <b>${esc(p.inj)}</b>.`);
-  if(p.nota!=null)frases.push(p.nota>=4?"Titular absoluto, nem pensa.":p.nota>=1.5?"Titular firme.":p.nota>=0?"Titular de liga de 12, não mais que isso.":p.nota>=-1.5?"Jogador de banco: só joga por necessidade de categoria.":"Se está no seu elenco, alguém precisa conversar com você.");
+  const lei=leituraLoydao(p,zs,tend,T(t)[0]);
   const rks=[["Temporada",p.rk&&p.rk[0]],["7 dias",p.rk&&p.rk[1]],["Projetado",p.rkP],["Loydão",p.rkL]].filter(x=>x[1]);
   fecharFicha();const el=document.createElement("div");el.className="pop-fundo";el.id="popFicha";
   el.innerHTML=`<div class="pop-jog pop-full" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(t)[4]}"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button>
@@ -2088,7 +2111,7 @@ function abrirJogador(id,perF){
    <div class="pj-sec">PERÍODO</div>${filtroPer}
    ${st?`<div class="pj-sub">${esc(rotPer(sp,1))}${(sp==="sem"||ehRange(sp))&&r.g?` · ${r.g} jogos (total)`:(ehMedia(sp)||r.ly)?` · média por jogo · ${r.g} jogos`:""}${r.ly&&CAR[id]&&(CAR[id].find(x=>x.yr===2026)||{}).t?` · jogava no <b>${esc(NBA[CAR[id].find(x=>x.yr===2026).t]||"")}</b>`:""}${r.rk?(r.ly?` · nível de <b>#${r.rk}</b> na régua de hoje`:` · <b>#${r.rk}</b> de ${r.n} no período`):""}</div><div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`:`<p class="pj-txt">${r.carregando?(sp==="ly"?"Buscando a temporada passada…":"Buscando os boxes…"):sp==="ly"?"Não jogou na temporada passada.":"Não jogou nesse período."}</p>`}
    ${barras?`<div class="pj-sec">CATEGORIA POR CATEGORIA <button type="button" class="qq" data-expl aria-label="O que é o + e o −">?</button></div><div class="expl" hidden><b>O que é o + e o −?</b> É a nota 9-cat: compara o jogador com um <b>titular médio da nossa liga</b> (os 156 melhores, 12 times x 13 vagas) em cada categoria.<br><b>0</b> = igual à média. <b>+1</b> = um desvio acima da média (ajuda a ganhar a categoria). <b>−1</b> = um desvio abaixo (atrapalha).<br>No TO é invertido: perder pouca bola dá +, perder muita dá −. FG% e FT% pesam o volume: 60% em 2 arremessos vale menos que 55% em 20.<br>A nota total soma as 9: <b>+4 ou mais</b> é estrela, <b>+1,5</b> titular firme, <b>0</b> mediano, <b>−1,5</b> banco, <b>−3</b> peso morto.</div><div class="pj-zb">${barras}</div>`:""}
-   <div class="pj-sec">LEITURA DO LOYDÃO</div><p class="pj-txt">${frases.join(" ")}</p>
+   <div class="pj-sec">LEITURA DO LOYDÃO</div><div class="lei"><b class="lei-t">${lei[0]}</b><p>${lei[1]}</p></div>
    <div class="pj-sec">MÉDIAS</div><div class="pj-scroll">${medias}</div>
    <div class="pj-sec">TEMPORADAS <button type="button" class="qq" data-expl aria-label="O que é o selo">?</button></div><div class="expl" hidden><b>O que é o + e o −?</b> É a nota 9-cat: compara o jogador com um <b>titular médio da nossa liga</b> (os 156 melhores, 12 times x 13 vagas) em cada categoria.<br><b>0</b> = igual à média. <b>+1</b> = um desvio acima da média (ajuda a ganhar a categoria). <b>−1</b> = um desvio abaixo (atrapalha).<br>No TO é invertido: perder pouca bola dá +, perder muita dá −. FG% e FT% pesam o volume: 60% em 2 arremessos vale menos que 55% em 20.<br>A nota total soma as 9: <b>+4 ou mais</b> é estrela, <b>+1,5</b> titular firme, <b>0</b> mediano, <b>−1,5</b> banco, <b>−3</b> peso morto.</div>${carreira?carreira:`<p class="pj-txt">${typeof LY!=="undefined"&&LY[id]===undefined?"Buscando as temporadas anteriores…":"Sem temporadas anteriores na ESPN (estreante)."}</p>`}
    ${jogos?`<div class="pj-sec">ÚLTIMOS JOGOS</div><div class="pj-scroll">${jogos}</div>`:""}</div>`;
