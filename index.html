@@ -1272,6 +1272,30 @@ b.neg{color:#ff6b6b}
 .moleque li u{text-decoration:none;font-weight:800;color:#fff}.moleque li small{color:var(--apagado);font-size:11px}
 .lei-ml{margin-top:10px!important;padding-top:8px;border-top:1px dashed #5a4a10;font-size:14px!important}
 .lei-ml b{display:block;font-family:var(--display);font-weight:400;color:var(--amarelo);font-size:14px;letter-spacing:.05em;margin-bottom:2px}
+/* ficha: abas + leitura enxuta + trajetória */
+.pj-tabs{position:sticky;top:-14px;z-index:3;display:flex;gap:4px;margin:12px -14px 0;padding:8px 14px;background:#120c0c;border-bottom:2px solid var(--amarelo)}
+.pj-tabs button{flex:1 1 0;all:unset;cursor:pointer;flex:1 1 0;text-align:center;padding:8px 2px;border-radius:8px;background:#000;color:#ddd;font:800 12px system-ui,sans-serif;border:1.5px solid #333}
+.pj-tabs button[aria-selected="true"]{background:var(--amarelo);color:#000;border-color:var(--amarelo)}
+.lei{margin-top:10px}.lei .lei-a{display:block;margin:0 0 4px}.lei-t{font-size:19px}.lei p{font-size:14px}
+.lei-inj{margin-top:6px!important;font-size:12.5px!important;color:#ffb3b3}
+.tj-mais{font-style:normal;font:800 10px system-ui;color:#ddd;background:#333;border-radius:9px;padding:1px 5px}
+.tj-res{display:block;width:100%;font:600 10px system-ui,sans-serif;color:var(--apagado);margin-top:1px}
+.car-ft.tj img,.car-ft.tj .ini{width:18px;height:18px}.car-ft.tj .tj-a{font-size:12px}.car-ft.tj .tj-tr{font-size:12px}
+.tj-lista{margin:0 10px 8px;padding:0;list-style:none;counter-reset:tj;display:flex;flex-direction:column;gap:4px}
+.tj-lista li{counter-increment:tj;display:grid;grid-template-columns:20px 22px auto 1fr;gap:6px;align-items:center;background:#140d0d;border-radius:6px;padding:4px 8px;font-size:12px}
+.tj-lista li:before{content:counter(tj)".";color:var(--apagado);font-weight:800}
+.tj-lista img,.tj-lista .ini{width:20px;height:20px;border-radius:50%;border:1.5px solid #000}.tj-lista b{color:#fff}.tj-lista span{color:#bbb}
+/* mídia antiga */
+.md-times{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+.md-t{padding:10px 12px}.md-th{display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:20px}.md-th img,.md-th .ini{width:30px;height:30px;border-radius:50%;border:2px solid #000}
+.md-ap{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}.md-ap span{background:var(--amarelo);color:#000;font:800 11px system-ui;padding:2px 7px;border-radius:10px}
+.md-t ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:13.5px;line-height:1.4}
+.md-h{padding:6px 12px}.md-hi{display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid #221818}.md-hi:last-child{border-bottom:0}
+.md-hi b{color:var(--amarelo);font-family:var(--display);font-weight:400;font-size:17px}.md-hi span{font-size:13.5px;line-height:1.45;color:#eee}
+/* perfis */
+.pf-lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px}
+.pf-c{display:flex;gap:10px;align-items:center;padding:10px 12px;text-decoration:none;color:inherit}.pf-c .rosto{width:54px;height:54px;flex:0 0 54px}
+.pf-c b{display:block;font-family:var(--display);font-weight:400;font-size:20px}.pf-c small{display:block;color:var(--apagado);font-size:12px}.pf-c span{display:block;font-size:12px;color:#ddd;margin-top:2px}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1338,10 +1362,11 @@ b.neg{color:#ff6b6b}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794165807"></script>
-<script src="radar.js?v=1794165807"></script>
+<script src="hist.js?v=1794167076"></script>
+<script src="radar.js?v=1794167076"></script>
+<script src="midia.js?v=1794167076"></script>
 <script>
-const VERSAO_PAINEL="20261108162327";
+const VERSAO_PAINEL="20261108164436";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1719,7 +1744,7 @@ function vConfrontos(){
   const mais=ordem.slice().sort((x,y)=>Math.abs(x.s.pa-x.s.pb)-Math.abs(y.s.pa-y.s.pb))[0];
   const dia=d.cur-d.s0+1;
   let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
-  <div class="atalhos"><button type="button" class="atalho" data-sel="sem">${ICS.sel} <span>Seleção</span></button><button type="button" class="atalho" data-ir="times">${ICS.rk} <span>Ranking</span></button><button type="button" class="atalho" data-ir="radar">${ICS.radar} <span>Radar</span></button><button type="button" class="atalho" data-ir="museu">${ICS.museu} <span>Museu</span></button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="baixar" data-instalar>📲 Baixar o app</button>`:""}<label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
+  <div class="atalhos"><button type="button" class="atalho" data-sel="sem">${ICS.sel} <span>Seleção</span></button><button type="button" class="atalho" data-ir="times">${ICS.rk} <span>Ranking</span></button><button type="button" class="atalho" data-ir="perfis">${ICS.sel} <span>Perfis</span></button><button type="button" class="atalho" data-ir="radar">${ICS.radar} <span>Radar</span></button><button type="button" class="atalho" data-ir="museu">${ICS.museu} <span>Museu</span></button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="baixar" data-instalar>📲 Baixar o app</button>`:""}<label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
   ordem.forEach(({m,i,sc,s})=>{
     const [a,b]=m,A=T(a),B=T(b);
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
@@ -2377,9 +2402,9 @@ function leituraLoydao(p,z,tend,dono){
   if(!outLong&&inj){const out=(nw&&nw.st==="OUT")||p.inj==="OUT";extra.push(out?`Hoje tá fora${nw?" ("+nw.nota.split("·")[0].trim()+")":""}: o ${dono} assiste de camarote.`:um(["Tá em dúvida pra hoje: chance de aparecer igual chance de chover em Osasco no sábado.","Status duvidoso: escala e reza."]))}
   if(tend!=null&&tend>=1.5)extra.push(um(["E tá pegando fogo: alguém avisa que a fase boa não dura.","Fase de MVP de bairro: aproveita antes que acabe."]));
   else if(tend!=null&&tend<=-1.5)extra.push(um(["E esfriou bonito: tá jogando de chinelo.","Fase de geladeira de bar: quente só a cerveja, ele não."]));
-  const zt=ZOE_TIME[dono];if(zt&&h%3!==0)extra.push(zt[(h>>3)%zt.length]);
-  const ap=APELIDO[p.n];if(ap&&!outLong)return [ap[0],[ap[1],...extra].join(" "),t];
-  return [t,[f,...extra].join(" "),ap?ap[0]:null];
+  const lesao=outLong?f:(inj?((nw&&nw.st==="OUT")||p.inj==="OUT"?`Hoje tá fora${nw?" ("+nw.nota.split("·")[0].trim()+")":""}.`:"Em dúvida pra hoje."):"");
+  const ap=APELIDO[p.n];if(ap)return [ap[0],ap[1],outLong?"ENFERMARIA VIP":"",lesao&&!outLong?lesao:outLong?f:""];
+  const ml=molequeJogador(p,z);return [t,ml||f,"",lesao&&ml?lesao:""];
 }
 /* times da WBSQUETE de cada jogador por temporada (draft + trocas + escalados) */
 function timesFantasy(nome){
@@ -2452,15 +2477,16 @@ function abrirJogador(id,perF){
       return {p:p0,f:d.P.some(q=>q.id===id&&!q.fora)?null:(p0.length?"fa":null)}}
     const T0=(HIST.traj||{})[p.n];if(T0&&T0[k])return T0[k];const x=tmsDe(yr);return x.ts.length?{p:x.ts.map((t,i)=>[t,i===0&&pickDe(yr)?"draft":"fa"]),f:x.drop?"fa":null}:null};
   const curto=n=>{const w=String(n).split(" ");return w.length>1?w.slice(1).join(" "):n};
-  const carinhas=yr=>{const tj=trajDe(yr);if(tj&&tj.p.length&&(tj.p.length>1||tj.p[0][1]!=="draft"||tj.f)){
-      let h2=`<span class="car-ft tj">`;tj.p.forEach((s2,i)=>{const [tm,como,com]=s2;
-        if(i===0&&como==="fa")h2+=`<span class="tj-fa">FA</span><i class="tj-a">→</i>`;
-        if(i>0)h2+=como==="troca"?`<i class="tj-tr" title="troca${com?" por "+esc(com.join(", ")):""}">⇄${com?`<small>${esc(com.slice(0,2).map(curto).join(", "))}${com.length>2?" +"+(com.length-2):""}</small>`:""}</i>`:`<i class="tj-a">→</i><span class="tj-fa">FA</span><i class="tj-a">→</i>`;
-        h2+=logo(tm)});
-      if(tj.f)h2+=`<i class="tj-a">→</i><span class="tj-fa">FA</span>`;
-      if(tj.p.length===1)h2+=`<em>${esc(tj.p[0][0])}</em>`;
-      return h2+`</span>`}
+  const carinhas=yr=>{const tj=trajDe(yr);
+    if(tj&&tj.p.length&&(tj.p.length>1||tj.p[0][1]!=="draft"||tj.f)){const ps=tj.p;const mostra=ps.slice(0,4);
+      const nFA=ps.filter((x,i)=>i>0&&x[1]==="fa").length+(ps[0][1]==="fa"?1:0),nTr=ps.filter(x=>x[1]==="troca").length;
+      return `<span class="car-ft tj">${mostra.map((x,i)=>`${i?(x[1]==="troca"?'<i class="tj-tr">⇄</i>':'<i class="tj-a">›</i>'):""}${logo(x[0])}`).join("")}${ps.length>4?`<i class="tj-mais">+${ps.length-4}</i>`:""}${ps.length===1?`<em>${esc(ps[0][0])}</em>`:""}<small class="tj-res">${ps.length>1?ps.length+" times":""}${nTr?` · ${nTr} troca${nTr>1?"s":""}`:""}${nFA?` · ${nFA}× FA`:""}${tj.f?" · largado":""}</small></span>`}
     const x=tmsDe(yr);if(!x.ts.length)return `<span class="car-fa">livre na liga</span>`;return `<span class="car-ft">${x.ts.map((t,i)=>`${i?'<i>›</i>':""}${logo(t)}`).join("")}${x.ts.length===1?`<em>${esc(x.ts[0])}</em>`:""}${x.drop?'<em class="dp">largado</em>':""}</span>`};
+  const linhaTempo=yr=>{const tj=trajDe(yr);if(!tj||!tj.p.length||(tj.p.length===1&&tj.p[0][1]==="draft"&&!tj.f))return "";
+    const it=tj.p.map((x,i)=>{const [tm,como,com]=x;const como2=como==="draft"?"draftado":como==="troca"?`chegou por troca${com&&com.length?` (foi ${esc(com.map(curto).join(", "))} pro outro lado)`:""}`:"pegou na FA";
+      const saiu=i<tj.p.length-1?(tj.p[i+1][1]==="troca"?"trocado":"largado"):(tj.f?"largado":"terminou o ano");
+      return `<li>${logo(tm)}<b>${esc(tm)}</b><span>${como2} · ${saiu}</span></li>`}).join("");
+    return `<div class="car-sub">CAMINHO NA LIGA</div><ol class="tj-lista">${it}</ol>`};
   const LT=linhasCar.filter(l=>!l.soLiga);const tot=LT.length>1?(()=>{const g=LT.reduce((x,l)=>x+l.a[11],0);const m=zero().map((_,i)=>LT.reduce((x,l)=>x+l.a[i]*l.a[11],0)/Math.max(1,g));return [...m,g]})():null;
   const selo=a=>{const n=notaDe(a);return `<span class="car-n ${corN(n)}">${n==null?"–":(n>0?"+":"")+n.toFixed(1)}</span>`};
   const v4=(a,yr)=>`<span class="car-v"><b>${yr?jp(a[11],p,yr):a[11]}</b><small>J</small></span><span class="car-v"><b>${n1(a[0])}</b><small>PTS</small></span><span class="car-v"><b>${n1(a[1])}</b><small>REB</small></span><span class="car-v"><b>${n1(a[2])}</b><small>AST</small></span>`;
@@ -2473,7 +2499,7 @@ function abrirJogador(id,perF){
         <div class="cc-ap2"><span class="${cor(pj)}"><small>JOGOU</small><b>${c.jog}${c.pos?`/${c.pos}`:""}</b>${pj!=null?`<i>${pj}%</i>`:""}</span><span class="${cor(pe)}"><small>ESCALADO</small><b>${c.g}${c.jog?`/${c.jog}`:""}</b>${pe!=null?`<i>${pe}%</i>`:""}</span>${varios&&c.g?selo(av):""}</div>
         ${varios&&c.g?`<div class="cc-l">${v4(av)}</div>${mais(av,c.min!=null?c.min/g:null)}`:""}</div>`}).join("");
     return `<details class="car-l ${cls||""}"><summary><span class="car-s"><b>${rot}</b>${yr!=null?carinhas(yr)+dr(yr):""}${(cls||"").includes("car-liga")?'<small class="car-t">só jogos na liga</small>':""}</span>${selo(a)}${v4(a,(cls||"").includes("car-liga")?null:yr)}</summary>
-    ${mais(a,mn)}${cortes?`<div class="car-sub">APROVEITAMENTO POR MANAGER <small>jogou = jogos que fez / jogos do time dele na NBA enquanto estava no elenco · escalado = dos que jogou</small></div>${cortes}`:""}</details>`};
+    ${mais(a,mn)}${yr!=null?linhaTempo(yr):""}${cortes?`<div class="car-sub">APROVEITAMENTO POR MANAGER <small>jogou = jogos que fez / jogos do time dele na NBA enquanto estava no elenco · escalado = dos que jogou</small></div>${cortes}`:""}</details>`};
   const carreira=car&&car.length?`<div class="car">${tot?linCar("Total",tot,"car-tot",null,(()=>{const L2=LT.filter(l=>l.mn!=null);const g=L2.reduce((x,l)=>x+l.a[11],0);return g?L2.reduce((x,l)=>x+l.mn*l.a[11],0)/g:null})()):""}${linhasCar.map(l=>linCar(rotA(l.yr),l.a,(l.atual?"car-at":"")+(l.soLiga?" car-liga":""),l.yr,l.mn)).join("")}</div><div class="car-leg">Carinhas = times da WBSQUETE que tiveram ele naquele ano, na ordem. Toque na temporada: aparece o ano todo e o corte de quanto ele fez em cada time. Antes de 25/26 a ESPN só libera o que ele fez como titular na liga.</div>`:"";
   // últimos jogos (boxes guardados)
   const ult=[];if(typeof BOX!=="undefined"){Object.keys(BOX.dias).map(Number).sort((a,b)=>b-a).forEach(x=>{if(ult.length>=6)return;const l=BOX.dias[x].find(l=>l[0]===id);if(l)ult.push([x,l])})}
@@ -2488,14 +2514,14 @@ function abrirJogador(id,perF){
   el.innerHTML=`<div class="pop-jog pop-full" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(t)[4]}"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button>
    <div class="pj-topo">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b>${APELIDO[p.n]?`<em class="pj-ap">“${esc(APELIDO[p.n][0])}”</em>`:""}<small><img src="img/l/${T(t)[1]}.webp" alt=""> ${esc(T(t)[0])} · ${esc(NBA[p.pro]||"")} · ${esc(POS[p.pos]||"")}${p.inj&&p.inj!=="ACTIVE"?` · <u>${esc(p.inj)}</u>`:""}</small></div></div>
    <div class="pj-rks">${rks.map(([k,v])=>`<div><small>${esc(k)}</small><b>#${v}</b></div>`).join("")}</div>
-   <div class="pj-sec">PERÍODO</div>${filtroPer}
-   ${st?`<div class="pj-sub">${esc(rotPer(sp,1))}${(sp==="sem"||ehRange(sp))&&r.g?` · ${r.g?jp(r.g,p,sp):""} jogos (total)`:(ehMedia(sp)||r.ly)?` · média por jogo · ${jp(r.g,p,r.ly?"ly":sp)} jogos`:""}${r.rk?(r.ly?` · nível de <b>#${r.rk}</b> na régua de hoje`:` · <b>#${r.rk}</b> de ${r.n} no período`):""}</div><div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`:`<p class="pj-txt">${r.carregando?(sp==="ly"?"Buscando a temporada passada…":"Buscando os boxes…"):sp==="ly"?"Não jogou na temporada passada.":"Não jogou nesse período."}</p>`}
-   <div class="pj-sec">LEITURA DO LOYDÃO</div><div class="lei"><b class="lei-t">${lei[0]}</b>${lei[2]?`<small class="lei-a">${esc(lei[2])}</small>`:""}<p>${lei[1]}</p>${(()=>{const m=molequeJogador(p,zs);return m?`<p class="lei-ml"><b>ESCALAÇÃO MOLEQUE</b> ${m}</p>`:""})()}</div>
-   <div class="pj-sec">TEMPORADAS <button type="button" class="qq" data-expl aria-label="O que é o selo">?</button></div><div class="expl" hidden><b>O que é o + e o −?</b> É a nota 9-cat: compara o jogador com um <b>titular médio da nossa liga</b> (os 156 melhores, 12 times x 13 vagas) em cada categoria.<br><b>0</b> = igual à média. <b>+1</b> = um desvio acima da média (ajuda a ganhar a categoria). <b>−1</b> = um desvio abaixo (atrapalha).<br>No TO é invertido: perder pouca bola dá +, perder muita dá −. FG% e FT% pesam o volume: 60% em 2 arremessos vale menos que 55% em 20.<br>A nota total soma as 9: <b>+4 ou mais</b> é estrela, <b>+1,5</b> titular firme, <b>0</b> mediano, <b>−1,5</b> banco, <b>−3</b> peso morto.</div>${carreira?carreira:`<p class="pj-txt">${typeof LY!=="undefined"&&LY[id]===undefined?"Buscando as temporadas anteriores…":"Sem temporadas anteriores na ESPN (estreante)."}</p>`}
-   ${jogos?`<div class="pj-sec">ÚLTIMOS JOGOS</div><div class="pj-scroll">${jogos}</div>`:""}</div>`;
+   <div class="lei">${lei[2]?`<small class="lei-a">${esc(lei[2])}</small>`:""}<b class="lei-t">${lei[0]}</b><p>${lei[1]}</p>${lei[3]?`<p class="lei-inj">🩹 ${esc(lei[3])}</p>`:""}</div>
+   <div class="pj-tabs" role="tablist">${[["num","📊 Números"],["car","🏀 Carreira"],["jog","📅 Jogos"]].map(([k,n])=>`<button type="button" role="tab" data-ptab="${k}" aria-selected="${(UI.fichaAba||"num")===k}">${n}</button>`).join("")}</div>
+   <div class="pj-pane" data-pane="num" ${(UI.fichaAba||"num")==="num"?"":"hidden"}><div class="pj-sec">PERÍODO</div>${filtroPer}${st?`<div class="pj-sub">${esc(rotPer(sp,1))}${(sp==="sem"||ehRange(sp))&&r.g?` · ${r.g?jp(r.g,p,sp):""} jogos (total)`:(ehMedia(sp)||r.ly)?` · média por jogo · ${jp(r.g,p,r.ly?"ly":sp)} jogos`:""}${r.rk?(r.ly?` · nível de <b>#${r.rk}</b> na régua de hoje`:` · <b>#${r.rk}</b> de ${r.n} no período`):""}</div><div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`:`<p class="pj-txt">${r.carregando?(sp==="ly"?"Buscando a temporada passada…":"Buscando os boxes…"):sp==="ly"?"Não jogou na temporada passada.":"Não jogou nesse período."}</p>`}</div>
+   <div class="pj-pane" data-pane="car" ${(UI.fichaAba||"num")==="car"?"":"hidden"}><div class="pj-sec">TEMPORADAS <button type="button" class="qq" data-expl aria-label="O que é o selo">?</button></div><div class="expl" hidden><b>O que é o + e o −?</b> É a nota 9-cat: compara o jogador com um <b>titular médio da nossa liga</b> (os 156 melhores, 12 times x 13 vagas) em cada categoria.<br><b>0</b> = igual à média. <b>+1</b> = um desvio acima da média (ajuda a ganhar a categoria). <b>−1</b> = um desvio abaixo (atrapalha).<br>No TO é invertido: perder pouca bola dá +, perder muita dá −. FG% e FT% pesam o volume: 60% em 2 arremessos vale menos que 55% em 20.<br>A nota total soma as 9: <b>+4 ou mais</b> é estrela, <b>+1,5</b> titular firme, <b>0</b> mediano, <b>−1,5</b> banco, <b>−3</b> peso morto.</div>${carreira?carreira:`<p class="pj-txt">${typeof LY!=="undefined"&&LY[id]===undefined?"Buscando as temporadas anteriores…":"Sem temporadas anteriores na ESPN (estreante)."}</p>`}</div>
+   <div class="pj-pane" data-pane="jog" ${(UI.fichaAba||"num")==="jog"?"":"hidden"}>${jogos?`<div class="pj-sec">ÚLTIMOS JOGOS</div><div class="pj-scroll">${jogos}</div>`:""}</div></div>`;
   if(typeof LY!=="undefined"&&LY[id]===undefined)seasonPassada(id).then(()=>{const pop=document.getElementById("popFicha");if(pop&&pop.dataset.id==String(id)){const sc=pop.querySelector(".pop-full").scrollTop;abrirJogador(id,UI.fichaPer);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc}});
   el.dataset.id=id;if(!window.MUSEU){UI._fichaMuseu=id;precisaMuseu()}
-  el.addEventListener("click",e=>{const q=e.target.closest("[data-expl]");if(q){e.stopPropagation();const x=q.parentNode.nextElementSibling;if(x&&x.classList.contains("expl"))x.hidden=!x.hidden;return}const b=e.target.closest("[data-fper]");if(b){e.stopPropagation();const v=b.dataset.fper;const sc=el.querySelector(".pop-full").scrollTop;abrirJogador(id,(v==="sem"||isNaN(+v))?v:+v);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc;return}if(e.target===el||e.target.closest("[data-fecha]"))fecharFicha()});
+  el.addEventListener("click",e=>{const tb=e.target.closest("[data-ptab]");if(tb){e.stopPropagation();UI.fichaAba=tb.dataset.ptab;el.querySelectorAll("[data-ptab]").forEach(b=>b.setAttribute("aria-selected",b===tb));el.querySelectorAll("[data-pane]").forEach(p=>p.hidden=p.dataset.pane!==UI.fichaAba);return}const q=e.target.closest("[data-expl]");if(q){e.stopPropagation();const x=q.parentNode.nextElementSibling;if(x&&x.classList.contains("expl"))x.hidden=!x.hidden;return}const b=e.target.closest("[data-fper]");if(b){e.stopPropagation();const v=b.dataset.fper;const sc=el.querySelector(".pop-full").scrollTop;abrirJogador(id,(v==="sem"||isNaN(+v))?v:+v);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc;return}if(e.target===el||e.target.closest("[data-fecha]"))fecharFicha()});
   document.body.appendChild(el);
 }
 function fecharFicha(){const e=document.getElementById("popFicha");if(e)e.remove()}
@@ -2646,6 +2672,11 @@ function perfilTreinador(id,nome){const d=DADOS;const L=HIST.tab.filter(r=>r[1]=
    ${tile("Trocas",trocas,trocas?"":"nunca trocou")}${big?tile("Maior surra",`${big.o.w}-${big.o.l}`,`no ${esc(big.o.op)} · ${esc(big.m.t)}`):""}
    ${fregues?tile("Maior freguês",`${logo(fregues[0])} ${esc(fregues[0])}`,`${fregues[1].v}-${fregues[1].d}-${fregues[1].e}`):""}${carrasco&&carrasco[1].d>carrasco[1].v?tile("Carrasco",`${logo(carrasco[0])} ${esc(carrasco[0])}`,`${carrasco[1].v}-${carrasco[1].d}-${carrasco[1].e}`):""}
   </div></div>`}
+function vPerfis(){
+  const d=DADOS;precisaMuseu();const ids=(d?d.teams.map(t=>t.id):Object.keys(TIMES).map(Number)).filter(id=>TIMES[id]);
+  return `<div class="cab-secao"><span class="sobre">PERFIS</span><h1 class="manchete">OS TREINADORES</h1><p class="linha-fina">Toque num time pra ver o perfil: números do treinador, freguês, carrasco e o que a mídia dizia.</p></div>
+  <div class="pf-lista">${ids.map(id=>{const Tt=TIMES[id];const nome=Tt[0];const L=HIST.tab.filter(r=>r[1]===nome);const tit=(HIST.campeoes||[]).filter(c=>c[2]===nome).length;const rec=d&&d.teams.find(t=>t.id===id);const ap=window.MIDIA&&window.MIDIA.times[nome];
+    return `<a class="card pf-c" href="#time-${id}">${rostoTime(nome)}<div><b>${esc(nome)}</b><small>${esc(Tt[2])}${ap?` · “${esc(ap.ap[0])}”`:""}</small><span>${tit?"🏆".repeat(tit)+" · ":""}${L.length} temporadas${rec?` · 26/27: ${rec.rec.join("-")}`:""}</span></div></a>`}).join("")}</div>`}
 function vTime(id){
   const Tt=TIMES[id];if(!Tt)return vTimes();precisaMuseu();
   const d=DADOS;const nome=Tt[0];
@@ -2661,6 +2692,7 @@ function vTime(id){
   h+=`<div class="card"><div class="bloco-tit">TEMPORADA 26/27 <small>semana a semana</small></div><div style="padding:12px"><div class="forma">${atual.slice().reverse().map(m=>{const o=doLado(m,nome);return `<span class="fm ${o.res}">${rtxt(o.w,o.l,o.t)}<small>S${m.w} x ${T(IDN[o.op])[3]}</small></span>`}).join("")}${semana}${fut.map(f=>`<span class="fm e" style="opacity:.6">S${f[0]}<small>x ${T(f[1]===id?f[2]:f[1])[3]}</small></span>`).join("")}</div></div></div>`;
   if(d)h+=elencoTabela(id);
   if(window.MUSEU)h+=perfilTreinador(id,nome);
+  {const M=window.MIDIA&&window.MIDIA.times[nome];if(M)h+=`<div class="card md-t"><div class="bloco-tit">O QUE A MÍDIA DIZIA <small>temporada 25/26</small></div><div class="md-ap">${M.ap.map(a=>`<span>${esc(a)}</span>`).join("")}</div><ul>${M.fr.map(q=>`<li>${esc(q)}</li>`).join("")}</ul></div>`}
   const ult=confrontosDe(nome).slice(0,9);
   h+=`<div class="card"><div class="bloco-tit">ÚLTIMOS CONFRONTOS <small>toque para ver o box</small></div>${window.MUSEU?`<div class="sofa">${ult.map(m=>{const o=doLado(m,nome);const [w,l,t]=m.r;
     return `<button class="sf" type="button" ${m.i!=null?`data-mj="${m.i}"`:"disabled"}><div class="qd"><span>${esc(m.t)} · sem ${m.w}${rotulo(m)?" · "+rotulo(m).toLowerCase():""}</span><b style="background:${o.res==="v"?"#22c55e":o.res==="d"?"#ff6b6b":"#bbb"}">${o.res==="v"?"V":o.res==="d"?"D":"E"}</b></div>
@@ -2767,7 +2799,7 @@ function vRadar(){
 
 /* ---------- museu ---------- */
 const ATU={PTS:["Pontos",0,"PTS"],REB:["Rebotes",1,"REB"],AST:["Assistências",2,"AST"],STL:["Roubos",3,"STL"],BLK:["Tocos",4,"BLK"],"3PM":["Bolas de 3",5,"3PM"],TD:["Triplos-duplos",0,"PTS"],FG:["Mão quente",-1,"FG"],BANCO:["Esquecidos no banco",0,"PTS"]};
-const PASTAS=[["campeoes","Campeões","Quem levantou o cinturão, de 2021 a 2026."],["confrontos","Todos os confrontos","Todas as semanas desde 22/23, com box de cada jogador."],["trocas","Todas as trocas","Quem deu, quem recebeu e quem se deu bem."],["tabelas","Classificações","A tabela final de cada temporada."],["frente","Frente a frente","Escolha dois times."],["atuacoes","Atuações marcantes","As maiores noites de um jogador na liga."],["decepcoes","Maiores decepções","Pick alto que não entregou, e quem segurou até o fim."],["escaladas","Achados do draft","Pick do fim do draft que virou craque, e quem ficou com ele."],["drafts","Drafts","Todos os drafts, pick a pick, com o destino de cada jogador."],["marcantes","Finais e 9-0","Toda final e toda varrida."]];
+const PASTAS=[["campeoes","Campeões","Quem levantou o cinturão, de 2021 a 2026."],["confrontos","Todos os confrontos","Todas as semanas desde 22/23, com box de cada jogador."],["trocas","Todas as trocas","Quem deu, quem recebeu e quem se deu bem."],["tabelas","Classificações","A tabela final de cada temporada."],["frente","Frente a frente","Escolha dois times."],["atuacoes","Atuações marcantes","As maiores noites de um jogador na liga."],["decepcoes","Maiores decepções","Pick alto que não entregou, e quem segurou até o fim."],["escaladas","Achados do draft","Pick do fim do draft que virou craque, e quem ficou com ele."],["drafts","Drafts","Todos os drafts, pick a pick, com o destino de cada jogador."],["marcantes","Finais e 9-0","Toda final e toda varrida."],["midia","A mídia antiga","O que a mídia de 25/26 dizia: bordões, dicionário, cada franquia e as melhores histórias."]];
 function destino(c,quem){
   if(!c)return "";
   if(c.drop)return `<div class="dest-l drop">${esc(quem)} largou em ${esc(c.drop)}${c.fim&&c.fim!==quem?` · terminou no ${esc(c.fim)}`:""}${c.n>2?` · passou por ${c.n} times`:""}</div>`;
@@ -2777,6 +2809,7 @@ function destino(c,quem){
 const ICONE={
  campeoes:'<path d="M7 4h10v3a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 12v4M8 20h8M9 16h6l1 4H8z"/>',
  confrontos:'<rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 14h3M13 14h3M8 17h3"/>',
+ midia:'<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 8h3v9a2 2 0 0 1-2 2"/><path d="M7 9h7M7 12h7M7 15h4"/>',
  trocas:'<path d="M4 8h12l-3-3M20 16H8l3 3"/><circle cx="19" cy="8" r="1.6"/><circle cx="5" cy="16" r="1.6"/>',
  tabelas:'<path d="M5 20V9M12 20V4M19 20v-7M3 20h18"/>',
  frente:'<circle cx="7" cy="9" r="3"/><circle cx="17" cy="9" r="3"/><path d="M2 20c0-3 2.2-5 5-5s5 2 5 5M12 20c0-3 2.2-5 5-5s5 2 5 5M10.5 9h3"/>',
@@ -2840,6 +2873,17 @@ function vMuseu(){
     <div class="pilulas" role="group" aria-label="Temporada">${temps.map(x=>`<button class="pil" type="button" data-drt="${x}" aria-pressed="${x===t}">${x}</button>`).join("")}</div>
     <div class="filtros"><label for="drTime">Time</label><select id="drTime"><option value="todos" ${tm==="todos"?"selected":""}>todos</option>${times.map(n2=>`<option ${n2===tm?"selected":""}>${esc(n2)}</option>`).join("")}</select></div>
     <div class="card">${L.map(r=>{const [pk,rd,quem,n,auto]=r;return `<div class="perf" style="grid-template-columns:40px 44px minmax(0,1fr)"><span class="pos" style="font-size:18px">${pk}</span>${face(null,n)}<div><div style="font-weight:700">${esc(n)}${auto?' <span class="tag ir">AUTO</span>':""}</div><div style="font-size:12px;color:var(--apagado)">rodada ${rd} · <span class="lg" style="display:inline-flex;align-items:center;gap:4px">${logo(quem,"width:18px;height:18px;border-radius:50%;background:#fff;border:1px solid #000;object-fit:contain")}${esc(quem)}</span></div>${dest(r)}</div></div>`}).join("")}</div>`;
+    return h;
+  }
+  if(f==="midia"){
+    const M=window.MIDIA;if(!M)return h+'<div class="card vazio">Abrindo o arquivo da mídia…</div>';
+    const ab=UI.midiaAba||"times";const abas=[["times","Franquias"],["hist","Histórias"],["persona","A persona"],["dic","Dicionário"]];
+    h+=`<h1 class="manchete">A MÍDIA ANTIGA</h1><p class="linha-fina">${esc(M.quem)}</p></div>
+    <div class="pilulas" role="group">${abas.map(([k,n])=>`<button class="pil" type="button" data-mda="${k}" aria-pressed="${ab===k}">${n}</button>`).join("")}</div>`;
+    if(ab==="times")h+=`<div class="md-times">${Object.entries(M.times).map(([t,x])=>`<div class="card md-t"><div class="md-th">${logo(t)}<b>${esc(t)}</b></div><div class="md-ap">${x.ap.map(a=>`<span>${esc(a)}</span>`).join("")}</div><ul>${x.fr.map(q=>`<li>${esc(q)}</li>`).join("")}</ul></div>`).join("")}</div>`;
+    if(ab==="hist")h+=`<div class="card md-h">${M.historias.map(([t,x])=>`<div class="md-hi"><b>${esc(t)}</b><span>${esc(x)}</span></div>`).join("")}</div>`;
+    if(ab==="persona")h+=`<div class="card md-h">${M.persona.map(([t,x])=>`<div class="md-hi"><b>${esc(t)}</b><span>${esc(x)}</span></div>`).join("")}<div class="md-hi"><b>Aberturas</b><span>${M.aberturas.map(esc).join(" · ")}</span></div><div class="md-hi"><b>Fechamentos</b><span>${M.fechamentos.map(esc).join(" · ")}</span></div></div>`;
+    if(ab==="dic")h+=`<div class="card md-h">${M.dicionario.map(([t,x])=>`<div class="md-hi"><b>${esc(t)}</b><span>${esc(x)}</span></div>`).join("")}</div>`;
     return h;
   }
   if(f==="trocas"){
@@ -3070,7 +3114,7 @@ async function checarVersao(){
 function rota(){return (location.hash||"#confrontos").slice(1)}
 function render(){
   const r=rota();
-  const base=(r.startsWith("jogo-")||r==="noite"||r==="desempenhos")?"confrontos":(r.startsWith("museu")||r.startsWith("acervo"))?"museu":r.startsWith("time")?"times":r;
+  const base=(r.startsWith("jogo-")||r==="noite"||r==="desempenhos")?"confrontos":(r.startsWith("museu")||r.startsWith("acervo"))?"museu":(r.startsWith("time")||r==="perfis")?"times":r;
   document.querySelectorAll("[data-nav]").forEach(a=>a.setAttribute("aria-current",a.dataset.nav===base?"page":"false"));
   let h;
   try{
@@ -3078,7 +3122,7 @@ function render(){
     else if(r.startsWith("museu-"))h=vMuseuJogo(+r.slice(6));
     else if(r.startsWith("acervo-")){UI.museuFiltro=r.slice(7);h=vMuseu()}
     else if(r.startsWith("time-"))h=vTime(+r.slice(5));
-    else h=({confrontos:vConfrontos,noite:vNoite,desempenhos:vDesempenhos,times:vTimes,radar:vRadar,museu:vMuseuCapa}[r]||vConfrontos)();
+    else h=({confrontos:vConfrontos,perfis:vPerfis,noite:vNoite,desempenhos:vDesempenhos,times:vTimes,radar:vRadar,museu:vMuseuCapa}[r]||vConfrontos)();
   }catch(e){console.error(e);h=`<div class="card vazio">Deu ruim ao montar esta tela (${esc(e.message)}). Manda print pro Loydão.</div>`}
   if(r!=="confrontos"&&r!==""&&!r.startsWith("jogo-"))h=`<div class="barra-inicio"><button type="button" class="inicio" data-ir="confrontos">⌂ Início</button></div>`+h;
   $("#app").innerHTML=h;
@@ -3106,7 +3150,7 @@ function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scr
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
   {const pj=e.target.closest("[data-pj]");if(pj&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){UI.fichaPer=null;abrirJogador(+pj.dataset.pj);return}}
-  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj],[data-dd],[data-leg]");if(!t)return;
+  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-mda],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj],[data-dd],[data-leg]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
   if(ds.jogo!==undefined)ir("jogo-"+ds.jogo);
@@ -3121,6 +3165,7 @@ document.addEventListener("click",e=>{
   else if(ds.atu){UI.atu=ds.atu;render()}
   else if(ds.tt){UI.tabTemp=ds.tt;render()}
   else if(ds.to){UI.trocaOrd=ds.to;render()}
+  else if(ds.mda){UI.midiaAba=ds.mda;render()}
   else if(ds.rko){UI.rkOrd=ds.rko;UI.rkCat=null;render()}
   else if(ds.rkc){UI.rkCat=UI.rkCat===ds.rkc?null:ds.rkc;render()}
   else if(ds.rd){UI.radar=ds.rd;render()}
