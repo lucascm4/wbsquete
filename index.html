@@ -1311,6 +1311,46 @@ b.neg{color:#ff6b6b}
 .cr-2{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;font-size:12px;color:#bbb}
 .cr-2 .car-dr{margin:0;font-size:11px}.cr-st b{color:#fff;font-weight:800}
 .car-l summary.cr{align-items:stretch!important;text-align:left!important;justify-content:flex-start!important}.cr-1{justify-content:flex-start}
+/* ===== ficha: clean ===== */
+.pop-full{padding:12px 14px}
+.pop-full .pj-topo{gap:10px}.pop-full .pj-topo img.face,.pop-full .pj-topo .face{width:56px;height:56px}
+.pop-full .pj-topo b{font-size:22px}.pj-ap{font-size:13px}.pop-full .pj-topo small{font-size:11px}
+.pj-rks{gap:3px;margin-top:8px}.pj-rks div{padding:3px 2px;border-bottom-width:2px}.pj-rks small{font-size:8px}.pj-rks b{font-size:16px}
+.pj-tabs{margin:10px -14px 0;padding:0 14px;background:transparent;border-bottom:1px solid #2a1f1f;gap:0;position:static}
+.pj-tabs button{background:transparent;border:0;border-radius:0;color:var(--apagado);font:800 12px system-ui,sans-serif;padding:8px 2px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.pj-tabs button[aria-selected="true"]{background:transparent;color:var(--amarelo);border-bottom-color:var(--amarelo)}
+.pj-pane .pj-sec{font-size:14px;margin:10px 0 5px}
+.pj-per{gap:3px}.pj-per button{font-size:11px;padding:5px 4px;border-radius:6px;border-width:1px;min-width:0}
+.pj-sub{font-size:11px;margin-top:8px}
+.pop-full .pj-grade{gap:3px;margin-top:8px}.pop-full .pj-grade div{padding:4px 1px}.pop-full .pj-grade small{font-size:8px}.pop-full .pj-grade b{font-size:16px}.pj-grade b small{font-size:9px}
+.qq.mini{width:16px;height:16px;font-size:10px;border-width:1.5px;margin-left:4px}
+.expl{font-size:12px;padding:6px 8px}
+/* leitura: recorte de revista */
+.lei.jornal{background:#f4ead8;color:#141010;border:0;border-radius:2px;padding:10px 12px 12px;position:relative;box-shadow:3px 3px 0 #000;margin-top:10px;transform:rotate(-.4deg)}
+.lei.jornal:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 23px,rgba(0,0,0,.035) 23px 24px);pointer-events:none}
+.lj-cab{display:flex;justify-content:space-between;font:800 9px system-ui,sans-serif;letter-spacing:.14em;color:#d4121c;border-bottom:2px solid #141010;padding-bottom:4px;margin-bottom:6px}
+.lei.jornal .lei-t{display:inline-block;transform:none;box-shadow:none;background:#141010;color:#ffd400;font-size:17px;padding:2px 8px;margin-right:6px}
+.lei.jornal .lei-a{display:inline-block;font:800 10px system-ui;color:#d4121c;letter-spacing:.08em;vertical-align:middle}
+.lei.jornal p{margin:6px 0 0;font-size:13.5px;line-height:1.45;color:#141010;font-family:Georgia,"Times New Roman",serif}
+.lei.jornal .lei-inj{color:#d4121c!important;font-size:12px!important;font-family:system-ui,sans-serif;font-weight:700}
+/* carreira menor */
+.cr-ano{font-size:15px}.cr-2{font-size:11px}.cr-2 .car-dr{font-size:10px}
+.car-mais,.car-corte .car-mais{gap:2px}.car-mais div{padding:2px 1px}.car-mais b{font-size:12px}
+.tr-det{display:flex;flex-wrap:wrap;align-items:flex-start;gap:4px;padding:4px 10px 6px}
+.tr-n{display:inline-flex;flex-direction:column;align-items:center;gap:1px;width:40px}.tr-n img,.tr-n .ini{width:24px;height:24px;border-radius:50%;border:1.5px solid #000;object-fit:cover;font-size:10px}
+.tr-n em{font:800 9px system-ui;color:#fff;font-style:normal}.tr-n small{font:600 8px system-ui;color:var(--apagado);text-transform:uppercase}
+.tr-det .tr-s,.tr-det .tr-x{margin-top:6px}
+.cc-ap2{padding:2px 8px 6px}.cc-ap2>span{flex:0 0 auto;flex-direction:row;gap:5px;padding:3px 8px}.cc-ap2 b{font-size:14px}.cc-ap2 small{font-size:9px}.cc-ap2 i{font-size:10px}
+.car-sub{display:flex;align-items:center}
+/* bio do treinador */
+.bio{padding:10px 12px}.bio-ap{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}.bio-ap span{background:var(--amarelo);color:#000;font:800 10px system-ui;padding:2px 7px;border-radius:10px}
+.bio-tx{margin:0;font-size:13.5px;line-height:1.5;color:#eee}
+.bio-mais{margin-top:8px;font-size:12.5px}.bio-mais summary{cursor:pointer;color:var(--amarelo);font-weight:800;font-size:12px}.bio-mais ul{margin:6px 0 0;padding-left:16px;display:flex;flex-direction:column;gap:3px;color:#ddd}
+/* barra inferior com 6 */
+.nav{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+.nav a{font-size:9.5px;letter-spacing:.02em;padding:6px 1px 7px;gap:1px}.nav a svg{width:24px;height:24px;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.nav a[aria-current="page"] svg{filter:drop-shadow(0 0 4px rgba(255,212,0,.5))}
+.atalho svg{width:18px;height:18px}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1377,11 +1417,11 @@ b.neg{color:#ff6b6b}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794167629"></script>
-<script src="radar.js?v=1794167629"></script>
-<script src="midia.js?v=1794167629"></script>
+<script src="hist.js?v=1794168781"></script>
+<script src="radar.js?v=1794168781"></script>
+<script src="midia.js?v=1794168781"></script>
 <script>
-const VERSAO_PAINEL="20261108165349";
+const VERSAO_PAINEL="20261108171301";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1400,7 +1440,14 @@ const CATS=[
   {k:"3PM",f:a=>a[5],i:5},{k:"REB",f:a=>a[1],i:1},{k:"AST",f:a=>a[2],i:2},{k:"STL",f:a=>a[3],i:3},{k:"BLK",f:a=>a[4],i:4},
   {k:"TO",f:a=>a[6],inv:1,i:6},{k:"PTS",f:a=>a[0],i:0}];
 const MCATS=["PTS","REB","AST","STL","BLK","3PM","FG%","FT%","TO"];
-const NAVS=[["confrontos","Confrontos",'<path d="M4 6h7v12H4zM13 6h7v12h-7z"/>'],["times","Ranking",'<path d="M4 20V10M10 20V4M16 20v-8M20 20H3"/>'],["radar","Radar",'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 12l6-6"/>'],["museu","Museu",'<path d="M3 9l9-5 9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 20h18"/>']];
+const IC={
+ ringue:'<path d="M4 6h16v12H4z"/><path d="M4 10h16M4 14h16"/><path d="M4 4v16M20 4v16"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/>',
+ quadra:'<path d="M3 5h18v14H3zM12 5v14"/><circle cx="12" cy="12" r="3"/><path d="M3 9h3v6H3M21 9h-3v6h3"/>',
+ cinturao:'<path d="M2 12c3-3 7-4 10-4s7 1 10 4c-3 3-7 4-10 4S5 15 2 12z"/><rect x="8.5" y="8.5" width="7" height="7" rx="1.2"/><path d="M12 10.2l.8 1.6 1.7.2-1.3 1.2.4 1.7-1.6-.9-1.6.9.4-1.7-1.3-1.2 1.7-.2z" fill="currentColor" stroke="none"/>',
+ prancheta:'<rect x="5" y="4" width="14" height="17" rx="1.5"/><path d="M9 4V3h6v1"/><path d="M8 10l3 3M11 10l-3 3"/><circle cx="15.5" cy="11.5" r="1.6"/><path d="M8 17h8"/>',
+ binoculo:'<circle cx="7" cy="14" r="4"/><circle cx="17" cy="14" r="4"/><path d="M11 13h2M8 10l1-5h6l1 5"/>',
+ museu:'<path d="M4 20h16M5 17h14M6 10v7M10 10v7M14 10v7M18 10v7M4 10h16"/><path d="M9 7h6l-1-3h-4z"/><path d="M12 4V2"/>'};
+const NAVS=[["confrontos","Início",IC.ringue],["noite","Seleção",IC.quadra],["times","Ranking",IC.cinturao],["perfis","Perfis",IC.prancheta],["radar","Radar",IC.binoculo],["museu","Museu",IC.museu]];
 
 /* ---------- utilidades ---------- */
 const $=s=>document.querySelector(s);
@@ -1745,12 +1792,8 @@ function escolherTime(){
 }
 function precisaEscolher(){let m=null,p=null;try{m=localStorage.getItem("painel.meu");p=sessionStorage.getItem("painel.pulou")}catch(e){return false}return !(m&&+m)&&!p}
 function meuTime(){try{return +localStorage.getItem("painel.meu")||0}catch(e){return 0}}
-const ICS={
- sel:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3zM12 5v14M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0M3 9h3v6H3M21 9h-3v6h3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
- radar:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 12l6-6" stroke="currentColor" stroke-width="1.8"/></svg>',
- fogo:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-6 1 1 2 2 2 3 1-2 1-4 1-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
- rk:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M21 20H3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
- museu:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-5 9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 20h18" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'};
+const svgI=p=>`<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const ICS={sel:svgI(IC.quadra),radar:svgI(IC.binoculo),fogo:svgI(IC.ringue),rk:svgI(IC.cinturao),museu:svgI(IC.museu),perfis:svgI(IC.prancheta)};
 function vConfrontos(){
   const d=DADOS;if(!d)return vazio();
   const meu=meuTime();
@@ -1759,7 +1802,7 @@ function vConfrontos(){
   const mais=ordem.slice().sort((x,y)=>Math.abs(x.s.pa-x.s.pb)-Math.abs(y.s.pa-y.s.pb))[0];
   const dia=d.cur-d.s0+1;
   let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
-  <div class="atalhos"><button type="button" class="atalho" data-sel="sem">${ICS.sel} <span>Seleção</span></button><button type="button" class="atalho" data-ir="times">${ICS.rk} <span>Ranking</span></button><button type="button" class="atalho" data-ir="perfis">${ICS.sel} <span>Perfis</span></button><button type="button" class="atalho" data-ir="radar">${ICS.radar} <span>Radar</span></button><button type="button" class="atalho" data-ir="museu">${ICS.museu} <span>Museu</span></button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="baixar" data-instalar>📲 Baixar o app</button>`:""}<label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
+  <div class="atalhos"><button type="button" class="atalho" data-sel="sem">${ICS.sel} <span>Seleção</span></button><button type="button" class="atalho" data-ir="times">${ICS.rk} <span>Ranking</span></button><button type="button" class="atalho" data-ir="perfis">${ICS.perfis} <span>Perfis</span></button><button type="button" class="atalho" data-ir="radar">${ICS.radar} <span>Radar</span></button><button type="button" class="atalho" data-ir="museu">${ICS.museu} <span>Museu</span></button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="baixar" data-instalar>📲 Baixar o app</button>`:""}<label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
   ordem.forEach(({m,i,sc,s})=>{
     const [a,b]=m,A=T(a),B=T(b);
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
@@ -2501,6 +2544,8 @@ function abrirJogador(id,perF){
     const x=tmsDe(yr);if(!x.ts.length)return `<span class="car-fa">livre na liga</span>`;return `<span class="car-ft">${x.ts.map((t,i)=>`${i?'<i>›</i>':""}${logo(t)}`).join("")}${x.ts.length===1?`<em>${esc(x.ts[0])}</em>`:""}${x.drop?'<em class="dp">largado</em>':""}</span>`};
   const trilha=yr=>{const tj=trajDe(yr);let ps=tj&&tj.p.length?tj.p:null;if(!ps){const x=tmsDe(yr);if(!x.ts.length)return `<span class="tr-livre">livre na liga</span>`;ps=x.ts.map((t,i)=>[t,i?"fa":"draft"])}
     const um=ps.length===1;return ps.map((x,i)=>`${i?(x[1]==="troca"?'<i class="tr-x" title="troca">⇄</i>':'<i class="tr-s">→</i>'):""}<span class="tr-t" title="${esc(x[0])}">${logo(x[0])}${um?`<em>${esc(x[0])}</em>`:""}</span>`).join("")+(tj&&tj.f?'<i class="tr-s">→</i><span class="tr-fa">FA</span>':"")};
+  const trilhaDet=yr=>{const tj=trajDe(yr);if(!tj||!tj.p.length||(tj.p.length===1&&tj.p[0][1]==="draft"&&!tj.f))return "";
+    return `<div class="tr-det">${tj.p.map((x,i)=>`${i?(x[1]==="troca"?'<i class="tr-x">⇄</i>':'<i class="tr-s">→</i>'):""}<span class="tr-n">${logo(x[0])}<em>${esc(T(d.teams.find(q=>T(q.id)[0]===x[0])?.id)?.[3]||x[0].slice(0,3).toUpperCase())}</em><small>${x[1]==="draft"?"draft":x[1]==="troca"?"troca":"FA"}</small></span>`).join("")}${tj.f?'<i class="tr-s">→</i><span class="tr-n"><b class="tr-fa">FA</b><small>largado</small></span>':""}</div>`};
   const linhaTempo=yr=>{const tj=trajDe(yr);if(!tj||!tj.p.length||(tj.p.length===1&&tj.p[0][1]==="draft"&&!tj.f))return "";
     const it=tj.p.map((x,i)=>{const [tm,como,com]=x;const como2=como==="draft"?"draftado":como==="troca"?`chegou por troca${com&&com.length?` (foi ${esc(com.map(curto).join(", "))} pro outro lado)`:""}`:"pegou na FA";
       const saiu=i<tj.p.length-1?(tj.p[i+1][1]==="troca"?"trocado":"largado"):(tj.f?"largado":"terminou o ano");
@@ -2515,13 +2560,13 @@ function abrirJogador(id,perF){
     const cortes=ks.map(t=>{const c=x.sp[t];const g=Math.max(1,c.g);const av=c.s.map(v=>v/g).concat([c.g]);
       const pj=c.pos?Math.round(100*c.jog/c.pos):null,pe=c.jog?Math.round(100*c.g/c.jog):null;const cor=v=>v==null?"":v>=80?"bom":v<55?"ruim":"";
       return `<div class="car-corte ${varios?"":"so1"}"><div class="cc-t">${logo(t)}<b>${esc(t)}</b></div>
-        <div class="cc-ap2"><span class="${cor(pj)}"><small>JOGOU</small><b>${c.jog}${c.pos?`/${c.pos}`:""}</b>${pj!=null?`<i>${pj}%</i>`:""}</span><span class="${cor(pe)}"><small>ESCALADO</small><b>${c.g}${c.jog?`/${c.jog}`:""}</b>${pe!=null?`<i>${pe}%</i>`:""}</span></div>
+        <div class="cc-ap2"><span class="${cor(pj)}"><b>${c.jog}${c.pos?`/${c.pos}`:""}</b><small>jogos</small>${pj!=null?`<i>${pj}%</i>`:""}</span></div>
         ${varios&&c.g?mais(av,c.min!=null?c.min/g:null):""}</div>`}).join("");
     const liga=(cls||"").includes("car-liga");const jj=yr!=null&&!liga?jp(a[11],p,yr):a[11];
     return `<details class="car-l ${cls||""}"><summary class="cr"><div class="cr-1"><b class="cr-ano">${rot}</b>${yr!=null?`<span class="cr-tj">${trilha(yr)}</span>`:""}</div>
       <div class="cr-2">${yr!=null?dr(yr):""}<span class="cr-st"><b>${jj}</b> j${liga?" na liga":""} · <b>${n1(a[0])}</b> pts · <b>${n1(a[1])}</b> reb · <b>${n1(a[2])}</b> ast</span></div></summary>
-    ${mais(a,mn)}${yr!=null?linhaTempo(yr):""}${cortes?`<div class="car-sub">APROVEITAMENTO POR MANAGER <small>jogou = jogos que fez / jogos do time dele na NBA enquanto estava no elenco · escalado = dos que jogou</small></div>${cortes}`:""}</details>`};
-  const carreira=car&&car.length?`<div class="car">${tot?linCar("Total",tot,"car-tot",null,(()=>{const L2=LT.filter(l=>l.mn!=null);const g=L2.reduce((x,l)=>x+l.a[11],0);return g?L2.reduce((x,l)=>x+l.mn*l.a[11],0)/g:null})()):""}${linhasCar.map(l=>linCar(rotA(l.yr),l.a,(l.atual?"car-at":"")+(l.soLiga?" car-liga":""),l.yr,l.mn)).join("")}</div><div class="car-leg">As bolinhas são os times da liga por onde ele passou no ano, na ordem (⇄ = troca, → = largado e pego por outro). Antes de 25/26 os números são só dos jogos como titular na liga.</div>`:"";
+    ${yr!=null?trilhaDet(yr):""}${mais(a,mn)}${cortes?`<div class="car-sub">JOGOS POR MANAGER <button type="button" class="qq mini" data-expl aria-label="explicação">?</button></div><div class="expl" hidden>Jogos que ele fez / jogos que o time dele na NBA teve enquanto estava naquele elenco. Mostra quanto ele faltou por lesão ou descanso com cada dono.</div>${cortes}`:""}</details>`};
+  const carreira=car&&car.length?`<div class="car">${tot?linCar("Total",tot,"car-tot",null,(()=>{const L2=LT.filter(l=>l.mn!=null);const g=L2.reduce((x,l)=>x+l.a[11],0);return g?L2.reduce((x,l)=>x+l.mn*l.a[11],0)/g:null})()):""}${linhasCar.map(l=>linCar(rotA(l.yr),l.a,(l.atual?"car-at":"")+(l.soLiga?" car-liga":""),l.yr,l.mn)).join("")}</div>`:"";
   // últimos jogos (boxes guardados)
   const ult=[];if(typeof BOX!=="undefined"){Object.keys(BOX.dias).map(Number).sort((a,b)=>b-a).forEach(x=>{if(ult.length>=6)return;const l=BOX.dias[x].find(l=>l[0]===id);if(l)ult.push([x,l])})}
   if(!ult.length&&p.dl)Object.keys(p.dl).map(Number).sort((a,b)=>b-a).slice(0,6).forEach(x=>{const v=p.dl[x];ult.push([x,[id,p.t,v[11],...v.slice(0,11),v[12]]])});
@@ -2535,10 +2580,10 @@ function abrirJogador(id,perF){
   el.innerHTML=`<div class="pop-jog pop-full" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(t)[4]}"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button>
    <div class="pj-topo">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b>${APELIDO[p.n]?`<em class="pj-ap">“${esc(APELIDO[p.n][0])}”</em>`:""}<small><img src="img/l/${T(t)[1]}.webp" alt=""> ${esc(T(t)[0])} · ${esc(NBA[p.pro]||"")} · ${esc(POS[p.pos]||"")}${p.inj&&p.inj!=="ACTIVE"?` · <u>${esc(p.inj)}</u>`:""}</small></div></div>
    <div class="pj-rks">${rks.map(([k,v])=>`<div><small>${esc(k)}</small><b>#${v}</b></div>`).join("")}</div>
-   <div class="lei">${lei[2]?`<small class="lei-a">${esc(lei[2])}</small>`:""}<b class="lei-t">${lei[0]}</b><p>${lei[1]}</p>${lei[3]?`<p class="lei-inj">🩹 ${esc(lei[3])}</p>`:""}</div>
+   <div class="lei jornal"><div class="lj-cab"><span>REVISTA DO LOYDÃO</span><span>${esc(T(t)[0]).toUpperCase()} · ${esc(NBA[p.pro]||"")}</span></div><b class="lei-t">${lei[0]}</b>${lei[2]?`<small class="lei-a">${esc(lei[2])}</small>`:""}<p>${lei[1]}</p>${lei[3]?`<p class="lei-inj">${esc(lei[3])}</p>`:""}</div>
    <div class="pj-tabs" role="tablist">${[["num","📊 Números"],["car","🏀 Carreira"],["jog","📅 Jogos"]].map(([k,n])=>`<button type="button" role="tab" data-ptab="${k}" aria-selected="${(UI.fichaAba||"num")===k}">${n}</button>`).join("")}</div>
    <div class="pj-pane" data-pane="num" ${(UI.fichaAba||"num")==="num"?"":"hidden"}><div class="pj-sec">PERÍODO</div>${filtroPer}${st?`<div class="pj-sub">${esc(rotPer(sp,1))}${(sp==="sem"||ehRange(sp))&&r.g?` · ${r.g?jp(r.g,p,sp):""} jogos (total)`:(ehMedia(sp)||r.ly)?` · média por jogo · ${jp(r.g,p,r.ly?"ly":sp)} jogos`:""}${r.rk?(r.ly?` · nível de <b>#${r.rk}</b> na régua de hoje`:` · <b>#${r.rk}</b> de ${r.n} no período`):""}</div><div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`:`<p class="pj-txt">${r.carregando?(sp==="ly"?"Buscando a temporada passada…":"Buscando os boxes…"):sp==="ly"?"Não jogou na temporada passada.":"Não jogou nesse período."}</p>`}</div>
-   <div class="pj-pane" data-pane="car" ${(UI.fichaAba||"num")==="car"?"":"hidden"}><div class="pj-sec">TEMPORADAS <small>toque no ano para abrir</small></div>${carreira?carreira:`<p class="pj-txt">${typeof LY!=="undefined"&&LY[id]===undefined?"Buscando as temporadas anteriores…":"Sem temporadas anteriores na ESPN (estreante)."}</p>`}</div>
+   <div class="pj-pane" data-pane="car" ${(UI.fichaAba||"num")==="car"?"":"hidden"}><div class="pj-sec">TEMPORADAS <button type="button" class="qq mini" data-expl aria-label="explicação">?</button></div><div class="expl" hidden>Toque no ano para abrir. As bolinhas são os times da liga por onde ele passou, na ordem: → largado e pego por outro, ⇄ troca. Antes de 25/26 os números são só dos jogos como titular na liga.</div>${carreira?carreira:`<p class="pj-txt">${typeof LY!=="undefined"&&LY[id]===undefined?"Buscando as temporadas anteriores…":"Sem temporadas anteriores na ESPN (estreante)."}</p>`}</div>
    <div class="pj-pane" data-pane="jog" ${(UI.fichaAba||"num")==="jog"?"":"hidden"}>${jogos?`<div class="pj-sec">ÚLTIMOS JOGOS</div><div class="pj-scroll">${jogos}</div>`:""}</div></div>`;
   if(typeof LY!=="undefined"&&LY[id]===undefined)seasonPassada(id).then(()=>{const pop=document.getElementById("popFicha");if(pop&&pop.dataset.id==String(id)){const sc=pop.querySelector(".pop-full").scrollTop;abrirJogador(id,UI.fichaPer);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc}});
   el.dataset.id=id;if(!window.MUSEU){UI._fichaMuseu=id;precisaMuseu()}
@@ -2712,8 +2757,8 @@ function vTime(id){
   const fut=(d&&d.fut||[]).filter(f=>f[0]>d.wk&&(f[1]===id||f[2]===id)).slice(0,4);
   h+=`<div class="card"><div class="bloco-tit">TEMPORADA 26/27 <small>semana a semana</small></div><div style="padding:12px"><div class="forma">${atual.slice().reverse().map(m=>{const o=doLado(m,nome);return `<span class="fm ${o.res}">${rtxt(o.w,o.l,o.t)}<small>S${m.w} x ${T(IDN[o.op])[3]}</small></span>`}).join("")}${semana}${fut.map(f=>`<span class="fm e" style="opacity:.6">S${f[0]}<small>x ${T(f[1]===id?f[2]:f[1])[3]}</small></span>`).join("")}</div></div></div>`;
   if(d)h+=elencoTabela(id);
+  {const M=window.MIDIA&&window.MIDIA.times[nome];if(M)h+=`<div class="card bio"><div class="bio-ap">${M.ap.slice(0,4).map(a=>`<span>${esc(a)}</span>`).join("")}</div>${M.bio?`<p class="bio-tx">${esc(M.bio)}</p>`:""}<details class="bio-mais"><summary>O que a mídia dizia em 25/26</summary><ul>${M.fr.map(q=>`<li>${esc(q)}</li>`).join("")}</ul></details></div>`}
   if(window.MUSEU)h+=perfilTreinador(id,nome);
-  {const M=window.MIDIA&&window.MIDIA.times[nome];if(M)h+=`<div class="card md-t"><div class="bloco-tit">O QUE A MÍDIA DIZIA <small>temporada 25/26</small></div><div class="md-ap">${M.ap.map(a=>`<span>${esc(a)}</span>`).join("")}</div><ul>${M.fr.map(q=>`<li>${esc(q)}</li>`).join("")}</ul></div>`}
   const ult=confrontosDe(nome).slice(0,9);
   h+=`<div class="card"><div class="bloco-tit">ÚLTIMOS CONFRONTOS <small>toque para ver o box</small></div>${window.MUSEU?`<div class="sofa">${ult.map(m=>{const o=doLado(m,nome);const [w,l,t]=m.r;
     return `<button class="sf" type="button" ${m.i!=null?`data-mj="${m.i}"`:"disabled"}><div class="qd"><span>${esc(m.t)} · sem ${m.w}${rotulo(m)?" · "+rotulo(m).toLowerCase():""}</span><b style="background:${o.res==="v"?"#22c55e":o.res==="d"?"#ff6b6b":"#bbb"}">${o.res==="v"?"V":o.res==="d"?"D":"E"}</b></div>
