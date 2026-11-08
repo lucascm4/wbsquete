@@ -1780,11 +1780,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794177787"></script>
-<script src="radar.js?v=1794177787"></script>
-<script src="midia.js?v=1794177787"></script>
+<script src="hist.js?v=1794177800"></script>
+<script src="radar.js?v=1794177800"></script>
+<script src="midia.js?v=1794177800"></script>
 <script>
-const VERSAO_PAINEL="20261108194307";
+const VERSAO_PAINEL="20261108194320";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4002,7 +4002,7 @@ if(window.visualViewport){visualViewport.addEventListener("resize",posDoca);visu
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="avTime"){UI.avF=+e.target.value||0;render()}if(e.target&&e.target.id==="avDuelo"){UI.avDuelo=+e.target.value||0;try{if(UI.avDuelo&&!meuTime())localStorage.setItem("painel.meu",UI.avDuelo)}catch(x){}render()}});
 
 /* anúncios: cartão no meio das páginas + tarja pop-up de vez em quando (estilo TV) */
-function montarPubli(r){try{const app=document.getElementById("app");if(!app||app.querySelector(".publi")||!DADOS)return;
+function montarPubli(r){try{if(semPubli())return;const app=document.getElementById("app");if(!app||app.querySelector(".publi")||!DADOS)return;
   const O=ofertasBet();if(!O.length)return;const cards=[...app.querySelectorAll(":scope > .card, :scope > .jogo, :scope > .grade > *, :scope > .tabela-wrap")].filter(c=>!c.classList.contains("publi"));
   const div=document.createElement("div");div.innerHTML=publiCard(O[0]);const el=div.firstElementChild;
   if(!cards.length){app.appendChild(el);return}
@@ -4017,7 +4017,7 @@ function tarja(){try{if(semPubli()||_tarjas>=4||document.hidden||document.getEle
   el.querySelector(".tarja-x").onclick=ev=>{ev.stopPropagation();el.remove()};document.body.appendChild(el);setTimeout(()=>{el.classList.add("sai");setTimeout(()=>el.remove(),400)},11000)}catch(e){}}
 setTimeout(tarja,60*1000);setInterval(tarja,60*1000);
 
-new MutationObserver(()=>{const f=document.querySelector("#popFicha .pop-full");if(f&&!f.querySelector(".publi")&&typeof ofertasBet==="function"){try{const O=ofertasBet();if(O.length){const d=document.createElement("div");d.innerHTML=publiCard(O[0]);f.appendChild(d.firstElementChild)}}catch(e){}}}).observe(document.body,{childList:true});
+new MutationObserver(()=>{const f=document.querySelector("#popFicha .pop-full");if(f&&!f.querySelector(".publi")&&typeof ofertasBet==="function"&&!semPubli()){try{const O=ofertasBet();if(O.length){const d=document.createElement("div");d.innerHTML=publiCard(O[0]);f.appendChild(d.firstElementChild)}}catch(e){}}}).observe(document.body,{childList:true});
 
 /* alertas de lesão automáticos (sem X): relatório de lesões e notícias da ESPN, filtrados pelos jogadores da liga */
 AO.alertas=(lerCache("wbs.lesAlert")||[]);
