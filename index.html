@@ -1116,6 +1116,21 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .pilulas.vis{margin-top:-4px}
 .dias .dia.per.big{min-width:0}
 @media (max-width:560px){.dias:has(.per.big){display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.dias:has(.per.big) .rg{grid-column:span 3}}
+/* ficha completa do jogador */
+tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
+.pop-full{width:min(560px,100%);max-height:88vh;overflow-y:auto;overscroll-behavior:contain}
+.pj-grade b small{display:block;font:600 12px system-ui,sans-serif;color:#fff;opacity:.8}
+.pj-rks{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px}.pj-rks div{flex:1 1 0;min-width:64px;background:#000;text-align:center;padding:5px 2px;border-bottom:3px solid var(--amarelo)}
+.pj-rks small{display:block;font-size:10px;color:var(--apagado);letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pj-rks b{font-family:var(--display);font-weight:400;font-size:22px;color:#fff}
+.pj-sec{margin:14px 0 6px;font-family:var(--display);font-size:17px;letter-spacing:.04em;color:var(--amarelo)}.pj-sec small{font:500 11px system-ui,sans-serif;color:var(--apagado);letter-spacing:0;margin-left:4px}
+.pj-zb{display:flex;flex-direction:column;gap:4px}.zb{display:grid;grid-template-columns:40px 1fr 42px;gap:8px;align-items:center;font-size:12px}
+.zb small{color:var(--apagado);font-weight:700}.zb-t{position:relative;height:10px;background:#000;border-radius:5px}.zb-t:after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#555}
+.zb-t span{position:absolute;top:0;bottom:0;border-radius:5px}.zb-t .pos{background:#3ddc84}.zb-t .neg{background:#ff5a5a}
+.zb b{text-align:right;font-weight:800}.zb b.pos{color:#3ddc84}.zb b.neg{color:#ff5a5a}
+.pj-txt{margin:0;font-size:14px;line-height:1.5;color:#eee}.pj-txt b{color:var(--amarelo)}
+.pj-scroll{overflow-x:auto}.pj-tab{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
+.pj-tab th,.pj-tab td{padding:5px 6px;text-align:center;border-bottom:1px solid #2a1f1f}.pj-tab tbody th{text-align:left;color:var(--apagado);font-weight:700}
+.pj-tab td small{display:block;font-size:10px;color:var(--apagado)}.pj-tab thead th{color:var(--amarelo);font-size:11px}.pj-tab tr.fora{opacity:.55}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1185,7 +1200,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108144300";
+const VERSAO_PAINEL="20261108144651";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1895,7 +1910,8 @@ function tabelaDes(L,sp,RKV){
     return Ls.sort((a,b)=>b[2]-a[2]).slice(0,3).map(([t,k])=>`<span class="dz ${k}">${t}</span>`).join("")};
   const cel=(r,k,i,txt,cls)=>`<td class="${cls||""} ${nivel(k==="TO"?(r.c&&r.c.TO<0?r.c.TO:0):r.c&&r.c[k])}">${txt??n1(r.s[i])}</td>`;
   const linha=r=>{const p=r.p,st=r.s;const varios=sp==="sem"||ehRange(sp)||ehMedia(sp);
-    return `<tr style="--cor:${T(r.t)[4]}" class="${r.slot>=12?"fora":""}" data-nome="${esc(semAcento(p.n+" "+T(r.t)[0]))}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RKV,p.id)}${esc(p.n)}</b><small>${subJog(r.t,null,`${varios&&r.g?`<span>${r.g} j</span>`:""}${r.slot>=12&&!varios?'<span class="tag banco">BANCO</span>':""}`)}</small><small class="dzs">${destaque(r)}</small></div></div></td>
+    window._LJ=window._LJ||{};window._LJ[p.id]=r;
+    return `<tr style="--cor:${T(r.t)[4]}" class="clic ${r.slot>=12?"fora":""}" data-pj="${p.id}" data-nome="${esc(semAcento(p.n+" "+T(r.t)[0]))}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RKV,p.id)}${esc(p.n)}</b><small>${subJog(r.t,null,`${varios&&r.g?`<span>${r.g} j</span>`:""}${r.slot>=12&&!varios?'<span class="tag banco">BANCO</span>':""}`)}</small><small class="dzs">${destaque(r)}</small></div></div></td>
    ${MAP.map(([k,i])=>cel(r,k,i,null,k==="PTS"?"pts":"")).join("")}${cel(r,"FG%",7,fgc(st[7],st[8]),"fgft")}${cel(r,"FT%",9,fgc(st[9],st[10]),"fgft")}</tr>`};
   return `<div class="card lj-wrap"><table class="lj des">${cabLj()}<tbody>${L.map(linha).join("")||`<tr><td colspan="10" class="esp">Ninguém jogou ainda.</td></tr>`}</tbody></table></div>`;
 }
@@ -1976,6 +1992,44 @@ function abrirLegenda(k){
    ${PRINCIPAIS.concat(["PACOCA","TRAB","CULPADO"]).map(x=>`<div class="lg-i ${x===k?"ativo":""}">${selo(x)}<div><b>${PREMIO[x].n}</b><small>${PREMIO[x].d}${["PACOCA","TRAB","CULPADO"].includes(x)?" · só na semana, dentro do confronto":""}</small></div></div>`).join("")}
    <p>Na home aparecem os prêmios do dia. Dentro do confronto, aba Prêmios, tem os da semana.</p></div>`;
   el.addEventListener("click",e=>{if(e.target===el||e.target.closest("[data-fecha]"))fecharFicha()});document.body.appendChild(el);
+}
+/* ficha completa do jogador: toque na linha */
+function abrirJogador(id){
+  const d=DADOS;const r=(window._LJ||{})[id]||{};const p=d.P.find(q=>q.id===id&&!q.fora)||r.p||d.P.find(q=>q.id===id)||(d.fa||[]).find(q=>q.id===id);if(!p)return;
+  const t=r.t||p.t;const sp=UI.noiteDia??diaPadrao();const n1=x=>x==null?"–":Number.isInteger(x)?x:Math.round(x*10)/10;
+  const pc=(a,b)=>b?(100*a/b).toFixed(1)+"%":"–";const st=r.s;
+  const cel=st?[["PTS",n1(st[0])],["REB",n1(st[1])],["AST",n1(st[2])],["STL",n1(st[3])],["BLK",n1(st[4])],["3PM",n1(st[5])],["TO",n1(st[6])],["FG",`${pc(st[7],st[8])}<small>${n1(st[7])}/${n1(st[8])}</small>`],["FT",`${pc(st[9],st[10])}<small>${n1(st[9])}/${n1(st[10])}</small>`]]:[];
+  // barras por categoria (z do período)
+  const K=["PTS","REB","AST","STL","BLK","3PM","FG%","FT%","TO"];const c=r.c||p.zc||{};
+  const barras=K.map(k=>{const z=c[k];if(z==null)return "";const w=Math.min(50,Math.abs(z)*16);return `<div class="zb"><small>${k}</small><span class="zb-t"><span class="${z>=0?"pos":"neg"}" style="${z>=0?"left:50%":"right:50%"};width:${w}%"></span></span><b class="${z>=0.5?"pos":z<=-0.5?"neg":""}">${z>0?"+":""}${z.toFixed(1)}</b></div>`}).join("");
+  // comparativo de médias
+  const lin=(nome,a)=>a?`<tr><th>${nome}</th><td>${n1(a[0])}</td><td>${n1(a[1])}</td><td>${n1(a[2])}</td><td>${n1(a[3])}</td><td>${n1(a[4])}</td><td>${n1(a[5])}</td><td>${n1(a[6])}</td><td>${pc(a[7],a[8])}<small>${n1(a[7])}/${n1(a[8])}</small></td><td>${pc(a[9],a[10])}<small>${n1(a[9])}/${n1(a[10])}</small></td><td>${a[11]!=null?a[11]:""}</td></tr>`:"";
+  const medias=`<table class="pj-tab"><thead><tr><th></th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th>FG</th><th>FT</th><th>J</th></tr></thead><tbody>${lin("Temporada",p.av)}${lin("30 dias",p.l30)}${lin("7 dias",p.l7)}${lin("Projeção",p.pj)}</tbody></table>`;
+  // últimos jogos (boxes guardados)
+  const ult=[];if(typeof BOX!=="undefined"){Object.keys(BOX.dias).map(Number).sort((a,b)=>b-a).forEach(x=>{if(ult.length>=6)return;const l=BOX.dias[x].find(l=>l[0]===id);if(l)ult.push([x,l])})}
+  if(!ult.length&&p.dl)Object.keys(p.dl).map(Number).sort((a,b)=>b-a).slice(0,6).forEach(x=>{const v=p.dl[x];ult.push([x,[id,p.t,v[11],...v.slice(0,11)]])});
+  const jogos=ult.length?`<table class="pj-tab"><thead><tr><th>Dia</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th>FG</th><th>FT</th></tr></thead><tbody>${ult.map(([x,l])=>{const v=l.slice(3,14);return `<tr class="${l[2]>=12?"fora":""}"><th>${esc(spRot(x))}${l[2]>=12?" <u>banco</u>":""}</th><td>${v[0]}</td><td>${v[1]}</td><td>${v[2]}</td><td>${v[3]}</td><td>${v[4]}</td><td>${v[5]}</td><td>${v[6]}</td><td>${v[7]}/${v[8]}</td><td>${v[9]}/${v[10]}</td></tr>`}).join("")}</tbody></table>`:"";
+  // leitura do Loydão: pontos fortes, fracos e tendência
+  const zs=p.zc||c;const fortes=K.filter(k=>zs[k]>=0.8).sort((a,b)=>zs[b]-zs[a]).slice(0,3),fracos=K.filter(k=>zs[k]<=-0.6).sort((a,b)=>zs[a]-zs[b]).slice(0,3);
+  const tend=p.nota!=null&&p.nota7!=null?p.nota7-p.nota:null;
+  const frases=[];
+  if(fortes.length)frases.push(`Ganha categoria em <b>${fortes.join(", ")}</b>.`);
+  if(fracos.length)frases.push(`Cobra pedágio em <b>${fracos.join(", ")}</b>${fracos.includes("TO")?" (bola perdida demais)":""}${fracos.includes("FG%")?" — o volume de arremesso errado pesa":""}.`);
+  if(tend!=null)frases.push(tend>=1?`Fase quente: os últimos 7 dias estão <b>${tend.toFixed(1)}</b> acima da temporada.`:tend<=-1?`Esfriou: os últimos 7 dias estão <b>${(-tend).toFixed(1)}</b> abaixo da temporada.`:"Rendendo dentro do esperado.");
+  if(p.inj&&p.inj!=="ACTIVE")frases.push(`Status na ESPN: <b>${esc(p.inj)}</b>.`);
+  if(p.nota!=null)frases.push(p.nota>=4?"Titular absoluto, nem pensa.":p.nota>=1.5?"Titular firme.":p.nota>=0?"Titular de liga de 12, não mais que isso.":p.nota>=-1.5?"Jogador de banco: só joga por necessidade de categoria.":"Se está no seu elenco, alguém precisa conversar com você.");
+  const rks=[["Temporada",p.rk&&p.rk[0]],["7 dias",p.rk&&p.rk[1]],["Projetado",p.rkP],["Loydão",p.rkL],[rotPer(sp,1),r.val!=null&&UI._rkVer?UI._rkVer[id]:null]].filter(x=>x[1]);
+  fecharFicha();const el=document.createElement("div");el.className="pop-fundo";el.id="popFicha";
+  el.innerHTML=`<div class="pop-jog pop-full" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(t)[4]}"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button>
+   <div class="pj-topo">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small><img src="img/l/${T(t)[1]}.webp" alt=""> ${esc(T(t)[0])} · ${esc(NBA[p.pro]||"")} · ${esc(POS[p.pos]||"")}${p.inj&&p.inj!=="ACTIVE"?` · <u>${esc(p.inj)}</u>`:""}</small></div></div>
+   <div class="pj-rks">${rks.map(([k,v])=>`<div><small>${esc(k)}</small><b>#${v}</b></div>`).join("")}</div>
+   ${st?`<div class="pj-sec">${esc(rotPer(sp,1))}${r.g&&(sp==="sem"||ehRange(sp))?` · ${r.g} jogos (total)`:ehMedia(sp)?` · média por jogo`:""}</div><div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`:""}
+   ${barras?`<div class="pj-sec">CATEGORIA POR CATEGORIA <small>acima (+) ou abaixo (−) de um titular médio</small></div><div class="pj-zb">${barras}</div>`:""}
+   <div class="pj-sec">LEITURA DO LOYDÃO</div><p class="pj-txt">${frases.join(" ")}</p>
+   <div class="pj-sec">MÉDIAS</div><div class="pj-scroll">${medias}</div>
+   ${jogos?`<div class="pj-sec">ÚLTIMOS JOGOS</div><div class="pj-scroll">${jogos}</div>`:""}</div>`;
+  el.addEventListener("click",e=>{if(e.target===el||e.target.closest("[data-fecha]"))fecharFicha()});
+  document.body.appendChild(el);
 }
 function fecharFicha(){const e=document.getElementById("popFicha");if(e)e.remove()}
 document.addEventListener("keydown",e=>{if(e.key==="Escape")fecharFicha();if((e.key==="Enter"||e.key===" ")&&e.target.dataset&&e.target.dataset.fj!=null){e.preventDefault();abrirFicha(+e.target.dataset.fj)}});
@@ -2542,6 +2596,7 @@ function montarBusca(r){
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
+  {const pj=e.target.closest("tr[data-pj]");if(pj&&!e.target.closest("a,button,select,th")){abrirJogador(+pj.dataset.pj);return}}
   const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj],[data-dd],[data-leg]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
