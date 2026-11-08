@@ -766,6 +766,10 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 @media (max-width:760px){.ticker{top:calc(env(safe-area-inset-top,0px) + 44px);height:26px}.tk-i{font-size:12px}.tk-tag{font-size:11px;padding:0 8px}}
 @media (prefers-reduced-motion:reduce){.tk-mov{animation:none;position:static;overflow-x:auto}}
 
+.btn-reload{flex:none;width:34px;height:34px;border-radius:50%;background:transparent;border:1px solid rgba(232,192,102,.45);color:var(--ouro);font-size:18px;cursor:pointer;display:grid;place-items:center;margin-left:-4px}
+.btn-reload:hover{border-color:var(--ouro)}
+@media (max-width:760px){.btn-reload{width:28px;height:28px;font-size:15px}}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -809,7 +813,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
       <div class="mast-sub" id="status">carregando…</div>
     </div>
     <nav class="nav-top" id="navTop" aria-label="Seções"></nav>
-    <button class="btn-atualiza" id="btnAtualiza" type="button">Atualizar</button>
+    <button class="btn-atualiza" id="btnAtualiza" type="button" title="Buscar dados novos na ESPN">Atualizar</button><button class="btn-reload" id="btnReload" type="button" title="Recarregar o site" aria-label="Recarregar o site">&#x21bb;</button>
   </div>
 </header>
 <div id="ticker" class="ticker" hidden></div>
@@ -827,7 +831,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108004503";
+const VERSAO_PAINEL="20261108004737";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1745,6 +1749,7 @@ document.addEventListener("click",e=>{
 document.addEventListener("change",e=>{if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
 window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0)});
 $("#btnAtualiza").onclick=()=>atualizarAoVivo();
+$("#btnReload").onclick=()=>{try{localStorage.removeItem("painel.cache")}catch(e){}location.replace(location.pathname+"?b="+Date.now()+location.hash)};
 $("#nav").innerHTML=NAVS.map(([k,n,ic])=>`<a href="#${k}" data-nav="${k}"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg>${n}</a>`).join("");
 $("#navTop").innerHTML=NAVS.map(([k,n])=>`<a href="#${k}" data-nav="${k}">${n}</a>`).join("");
 
