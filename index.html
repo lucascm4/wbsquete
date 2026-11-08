@@ -921,7 +921,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108013405";
+const VERSAO_PAINEL="20261108013537";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1386,10 +1386,10 @@ function premios(a,b,sp){ // sp="sem" (acumulado da semana) ou número do dia
   const top=(f,k)=>{const L=rows.filter(f);if(!L.length)return null;return L.sort((x,y)=>k(y)-k(x))[0]};
   const out=[];const usado=new Set();const pos=(k,r)=>{if(!r)return;out.push({k,...PREMIO[k],x:r,W:r.W,g:r.g});usado.add(r.p.id)};
   pos("MVP",top(r=>r.bom>0,r=>r.bom));
-  pos("PIPOQUEIRO",top(r=>r.base!=null&&r.base>=18&&r.base-r.pg>=(dia?10:7)&&!usado.has(r.p.id),r=>r.base-r.pg));
+  pos("PIPOQUEIRO",top(r=>(dia||r.g>=2)&&r.base!=null&&r.base>=18&&r.base-r.pg>=(dia?10:7)&&!usado.has(r.p.id),r=>r.base-r.pg));
   pos("RUI",top(r=>r.W[8]>=(dia?10:30)&&r.dmg/r.g>=3&&r.pg<18&&!usado.has(r.p.id),r=>r.dmg));
   pos("BELEZINHA",top(r=>pego(r)&&r.pg>=14,r=>r.pg));
-  pos("URGH",top(r=>pego(r)&&r.pg<=6&&!usado.has(r.p.id),r=>-r.pg));
+  pos("URGH",top(r=>pego(r)&&(dia||r.g>=2)&&r.pg<=6&&!usado.has(r.p.id),r=>-r.pg));
   if(!dia){
     pos("PACOCA",top(r=>r.g>=2&&r.ruim>0.8&&!usado.has(r.p.id),r=>r.ruim));
     pos("TRAB",top(r=>r.g>=2,r=>r.g*10+r.val/100));
