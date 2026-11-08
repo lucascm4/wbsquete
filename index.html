@@ -1718,7 +1718,7 @@ svg.cad{width:18px;height:18px;display:block}
       <div class="mast-sub" id="status">carregando…</div>
     </div>
     <nav class="nav-top" id="navTop" aria-label="Seções"></nav>
-    <button class="btn-atualiza" id="btnAtualiza" type="button" title="Buscar dados novos na ESPN">Atualizar</button><button class="btn-reload" id="btnReload" type="button" title="Recarregar o site" aria-label="Recarregar o site">&#x21bb;</button><button class="btn-ajuda" id="btnAjuda" type="button" title="Como usar o painel" aria-label="Como usar o painel">?</button>
+    <button class="btn-atualiza" id="btnAtualiza" type="button" title="Buscar dados novos e a versão mais nova do app">&#x21bb; Atualizar</button>
   </div>
 </header>
 <div id="ticker" class="ticker" hidden></div>
@@ -1734,11 +1734,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794174738"></script>
-<script src="radar.js?v=1794174738"></script>
-<script src="midia.js?v=1794174738"></script>
+<script src="hist.js?v=1794174807"></script>
+<script src="radar.js?v=1794174807"></script>
+<script src="midia.js?v=1794174807"></script>
 <script>
-const VERSAO_PAINEL="20261108185218";
+const VERSAO_PAINEL="20261108185327";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3733,10 +3733,16 @@ document.addEventListener("click",e=>{
 });
 document.addEventListener("change",e=>{if(e.target.id==="rkVis"){UI.rkVis=e.target.value;UI.rkCat=null;render();return}if(e.target.id==="noiteTime"){UI.noiteTime=+e.target.value;render()}if(e.target.id==="perSel"&&e.target.value){const v=e.target.value;UI.noiteDia=v==="range"?"r:1-"+DADOS.last:(isNaN(+v)?v:+v);render()}if(e.target.id==="rgA"||e.target.id==="rgB"){const A=document.getElementById("rgA").value,B=document.getElementById("rgB").value;UI.noiteDia="r:"+A+"-"+B;render()}if(e.target.id==="rkModo"){UI.rkModo=e.target.value;try{localStorage.setItem("painel.rk",e.target.value)}catch(x){}render()}if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
 window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0)});
-$("#btnAtualiza").onclick=()=>atualizarAoVivo();
+$("#btnAtualiza").onclick=async()=>{const b=$("#btnAtualiza");b.disabled=true;b.textContent="Atualizando…";
+  // 1) tem versão nova do app? recarrega já (features novas); 2) senão, busca os dados na ESPN
+  let nova=false;try{const t=await fetch(location.pathname+"?b="+Date.now(),{cache:"no-store"}).then(r=>r.text());const m=t.match(/VERSAO_PAINEL="([^"]+)"/);if(m&&m[1]!==VERSAO_PAINEL){nova=true;try{localStorage.removeItem("painel.cache")}catch(e){}
+    try{if(window.caches)for(const k of await caches.keys())await caches.delete(k)}catch(e){}location.replace(location.pathname+"?b="+m[1]+location.hash);return}}catch(e){}
+  try{await atualizarAoVivo()}finally{b.disabled=false;b.innerHTML="&#x21bb; Atualizar"}};
+setInterval(()=>{if(!document.hidden)checarVersao()},5*60*1000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)checarVersao()});
 function tourAuto(){let visto=null;try{visto=localStorage.getItem("painel.tour")}catch(e){}if(!visto){const espera=setInterval(()=>{if(DADOS&&document.querySelector(".jogo")){clearInterval(espera);tourInicio()}},800);setTimeout(()=>clearInterval(espera),30000)}}
 (function(){const espera=setInterval(()=>{if(DADOS&&document.querySelector(".grade")){clearInterval(espera);if(precisaEscolher())escolherTime();else tourAuto()}},500);setTimeout(()=>clearInterval(espera),30000)})();
-$("#btnReload").onclick=()=>{try{localStorage.removeItem("painel.cache")}catch(e){}location.replace(location.pathname+"?b="+Date.now()+location.hash)};
+if($("#btnReload"))$("#btnReload").onclick=()=>{try{localStorage.removeItem("painel.cache")}catch(e){}location.replace(location.pathname+"?b="+Date.now()+location.hash)};
 $("#nav").innerHTML=NAVS.map(([k,n,ic])=>`<a href="#${k}" data-nav="${k}"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg>${n}</a>`).join("");
 $("#navTop").innerHTML=NAVS.map(([k,n])=>`<a href="#${k}" data-nav="${k}">${n}</a>`).join("");
 
@@ -3750,7 +3756,7 @@ const PASSOS=[
  {sel:'[data-nav="times"]',t:"Ranking",p:"Classificação projetada para o fim da temporada, categorias, chances de playoffs e de título, playoffs projetados e o Ranking do Loydão."},
  {sel:'[data-nav="radar"]',t:"Radar",p:"Quem está quente, quem está frio, quem pegar no waiver, quem subiu e quem afundou em relação ao draft, e a Página do Lixo."},
  {sel:'[data-nav="museu"]',t:"Museu",p:"A história da liga desde 22/23: campeões, todos os confrontos com box, trocas, drafts, recordes."},
- {sel:"#btnAtualiza",t:"Atualizar",p:"O painel se atualiza sozinho a cada 5 minutos com jogo rolando. Este botão força agora; o ⟳ recarrega o site; o ? repete este guia."}];
+ {sel:"#btnAtualiza",t:"Atualizar",p:"O painel se atualiza sozinho a cada 5 minutos com jogo rolando. Este botão força agora e, se tiver versão nova do app, já carrega ela."}];
 let tourI=0,tourEls=null;
 function tourMostrar(){
   const p=PASSOS[tourI];if(!p){tourFim();return}
@@ -3766,7 +3772,7 @@ function tourMostrar(){
 }
 function tourFim(){if(tourEls){tourEls.foco.remove();tourEls.box.remove();tourEls=null}try{localStorage.setItem("painel.tour","1")}catch(e){}}
 function tourInicio(){if(tourEls)return;if(location.hash&&location.hash!=="#confrontos"){location.hash="#confrontos"}tourI=0;const foco=document.createElement("div");foco.className="tour-foco";const box=document.createElement("div");box.className="tour-box";document.body.append(foco,box);tourEls={foco,box};setTimeout(tourMostrar,400)}
-$("#btnAjuda").onclick=tourInicio;
+if($("#btnAjuda"))$("#btnAjuda").onclick=tourInicio;
 window.addEventListener("resize",()=>{if(tourEls)tourMostrar();topoAltura()});
 function topoAltura(){let h=0;["header.topo","#ticker","#crono"].forEach(q=>{const e=document.querySelector(q);if(e&&!e.hidden)h+=e.getBoundingClientRect().height});document.documentElement.style.setProperty("--topo",h+"px")}
 setInterval(topoAltura,2000);
