@@ -1185,7 +1185,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108143611";
+const VERSAO_PAINEL="20261108144138";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2238,7 +2238,9 @@ const ICONE={
 function trocasAtuais(){ // 26/27: jogador em time diferente do draft sem registro de add = veio por troca
   const d=DADOS;if(!d||!d.tx||!HIST.drafts||!HIST.drafts["2026/27"])return "";
   const adds=new Set(d.tx.adds||[]);const dr={};HIST.drafts["2026/27"].forEach(r=>dr[r[3]]=r[2]);
-  const mov=d.P.filter(p=>!p.fora&&dr[p.n]&&dr[p.n]!==T(p.t)[0]&&!adds.has(p.id)).map(p=>({p,de:dr[p.n],para:T(p.t)[0]}));
+  // só troca de verdade: itens TRADE executados na ESPN (waiver e free agent ficam de fora)
+  const achaP=id=>d.P.find(q=>q.id===id&&!q.fora)||d.P.find(q=>q.id===id)||(d.fa||[]).find(q=>q.id===id)||{id,n:(typeof BOX!=="undefined"&&BOX.meta[id]&&BOX.meta[id].n)||("jogador "+id),fora:1};
+  const mov=(d.tx.tr||[]).map(([id,de,para,sp])=>{const p=achaP(id);return {p,de:T(de)[0],para:T(para)[0],sp,saiu:!d.P.some(q=>q.id===id&&!q.fora&&q.t===para)}});
   if(!mov.length)return "";
   // antes x depois: média por jogo com cada camisa (boxes da temporada), avaliada na mesma régua 9-cat
   const boxOk=typeof BOX!=="undefined"&&Object.keys(BOX.dias).length>=d.last;
@@ -2258,7 +2260,7 @@ function trocasAtuais(){ // 26/27: jogador em time diferente do draft sem regist
     const val=l=>l.reduce((s2,m)=>s2+(m.depois&&m.depois.g?m.depois.z:0),0);
     const l1=lado(t1),l2=lado(t2);const v1=val(l1),v2=val(l2);const venc=v1>=v2?t1:t2;
     const jog=m=>{const a=m.antes,b=m.depois;const sobe=a&&b&&a.g&&b.g?b.z-a.z:null;
-      return `<div class="tj">${face(m.p.id,m.p.n,"")}<span>${esc(m.p.n)}</span><small class="num">${sobe==null?"":sobe>0.3?'<em class="up">▲ melhorou</em>':sobe<-0.3?'<em class="dn">▼ piorou</em>':'<em>= igual</em>'}</small>
+      return `<div class="tj">${face(m.p.id,m.p.n,"")}<span>${esc(m.p.n)}${m.saiu?' <span class="tag banco">já saiu</span>':""}</span><small class="num">${sobe==null?"":sobe>0.3?'<em class="up">▲ melhorou</em>':sobe<-0.3?'<em class="dn">▼ piorou</em>':'<em>= igual</em>'}</small>
         <div class="ad"><span><small>ANTES · ${esc(T(idDe(m.de))[3]||m.de)}</small>${fz(a)}</span><span class="seta">➜</span><span><small>DEPOIS · ${esc(T(idDe(m.para))[3]||m.para)}</small>${fz(b)}</span></div></div>`};
     return `<div class="card troca"><div class="tq">2026/27${ultAnt?" · troca depois de "+esc(spRot(ultAnt)):""} · temporada atual<span>na frente hoje: <b>${esc(venc)}</b></span></div><div class="tl2">${[[t1,l1,v1],[t2,l2,v2]].map(([t,l,v])=>`<div class="tlado ${t===venc?"ganhou":""}"><div class="tt">${logo(t)}<span>${esc(t)} recebeu</span><b class="num">${z1(v)}</b></div>${l.map(jog).join("")||'<div class="tj"><span class="esp">nada (ou jogador já largado)</span></div>'}</div>`).join("")}</div>
     <details class="como-ler"><summary>Como ler esta troca</summary><p><b>O número de cada jogador</b> (ex.: +2,4 ou −1,1) é a nota 9-cat por jogo: quanto ele rende acima (+) ou abaixo (−) de um titular médio da liga, somando as 9 categorias. <b>0 = jogador mediano de fantasy</b>; +3 é estrela, −2 é peso morto.</p><p><b>#</b> = em que posição essa média o colocaria no ranking da temporada. <b>ANTES</b> = o que ele fez com a camisa do time antigo; <b>DEPOIS</b> = o que fez no time novo (<i>j</i> = jogos).</p><p><b>O placar grande de cada lado</b> soma o DEPOIS de quem o time recebeu. Ganha a troca quem recebeu mais produção. Com poucos jogos depois, ainda é cedo pra cravar.</p></details></div>`}).join("");
@@ -2424,11 +2426,12 @@ async function baixarNBA(sp){ // placar dos jogos da NBA do dia (site.api.espn.c
   return out;
 }
 async function baixarTrocas(cur){ // uma vez por dia: adds/drops e aceites de troca da temporada toda
-  const ch="wbs.tx2."+cur;const c=lerCache(ch);if(c)return c;
-  const adds=new Set(),ac=[],lst=[];
+  const ch="wbs.tx3."+cur+"."+Math.floor(Date.now()/36e5);const c=lerCache(ch);if(c)return c;
+  const adds=new Set(),ac=[],lst=[],tr=[],vistos=new Set();
   const lotes=[];for(let sp=1;sp<=cur;sp++)lotes.push(ajson(AO.LG+"?view=mTransactions2&scoringPeriodId="+sp).then(r=>[sp,r]).catch(()=>[sp,{}]));
-  (await Promise.all(lotes)).forEach(([sp,r])=>(r.transactions||[]).forEach(t=>{if(t.status==="EXECUTED"&&["FREEAGENT","WAIVER"].includes(t.type))(t.items||[]).forEach(i=>{if(i.type==="ADD"){adds.add(i.playerId);lst.push([i.playerId,sp,i.toTeamId||t.teamId])}});if(t.type==="TRADE_ACCEPT")ac.push(t.processDate||t.proposedDate)}));
-  const out={adds:[...adds],ac:ac.sort(),lst};gravarCache(ch,out);return out;
+  (await Promise.all(lotes)).forEach(([sp,r])=>(r.transactions||[]).forEach(t=>{if(t.status==="EXECUTED"&&["FREEAGENT","WAIVER"].includes(t.type))(t.items||[]).forEach(i=>{if(i.type==="ADD"){adds.add(i.playerId);lst.push([i.playerId,sp,i.toTeamId||t.teamId])}});if(t.type==="TRADE_ACCEPT")ac.push(t.processDate||t.proposedDate);
+    if(/TRADE/.test(t.type||"")&&t.status==="EXECUTED")(t.items||[]).forEach(i=>{if(i.type!=="TRADE"||!i.playerId)return;const k=i.playerId+"|"+i.fromTeamId+"|"+i.toTeamId;if(vistos.has(k))return;vistos.add(k);tr.push([i.playerId,i.fromTeamId,i.toTeamId,sp,t.processDate||t.proposedDate||0])})}));
+  const out={adds:[...adds],ac:ac.sort(),lst,tr};gravarCache(ch,out);return out;
 }
 async function coletarAoVivo(){
   const cur=spHoje();const wk=cur<=6?1:Math.floor((cur-7)/7)+2;
