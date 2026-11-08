@@ -26,13 +26,16 @@ window.RADAR={"quando":"sáb 07/11","notas":{
 "Devin Booker":"33 e 30 em dois dias. O Deco agradece."
 }};
 
-window.RADAR.lesoes={"quando":"dom 08/11 15:20","sp":20,"fonte":"Underdog NBA (via imprensa), ESPN e RotoWire","itens":{
-"Luka Doncic":["Q","costas · dúvida contra o DET, decisão perto do jogo"],
-"Joel Embiid":["Q","dúvida contra o CHI"],
+window.RADAR.lesoes={"quando":"dom 08/11 15:25","sp":20,"fonte":"Underdog NBA, ESPN e RotoWire","itens":{
+"Luka Doncic":["OUT","costas · DESCARTADO contra o DET (Underdog, 15:10)"],
+"Joel Embiid":["PROV","provável contra o CHI"],
 "Norman Powell":["Q","ombro · entrou no relatório de última hora contra o PHI"],
 "Keyonte George":["Q","virose · rebaixado pra dúvida contra o MIN"],
 "Anthony Davis":["Q","dia a dia"],
 "Draymond Green":["Q","dia a dia"],
+"Mitchell Robinson":["Q","virose · rebaixado pra dúvida (Underdog, 15:06)"],
+"Joan Beringer":["IN","nariz · liberado pra jogar"],
+"Jalen Smith":["PROV","provável contra o PHI"],
 "Brandon Miller":["Q","dia a dia"],
 "De'Andre Hunter":["Q","dia a dia"],
 "Noah Clowney":["Q","dia a dia"],
@@ -40,7 +43,7 @@ window.RADAR.lesoes={"quando":"dom 08/11 15:20","sp":20,"fonte":"Underdog NBA (v
 "Tyrese Haliburton":["OUT","fora"],"Desmond Bane":["OUT","fora"],"Jarrett Allen":["OUT","fora"],"Brandon Ingram":["OUT","fora"],
 "Kristaps Porzingis":["OUT","fora"],"Isaiah Joe":["OUT","fora"],"Kawhi Leonard":["OUT","fora"],"Anthony Edwards":["OUT","fora"],
 "Chet Holmgren":["OUT","fora"],"Jalen Williams":["OUT","fora"],"Paolo Banchero":["OUT","fora"],"Ja Morant":["OUT","fora"],
-"Kon Knueppel":["OUT","fora"],"Dennis Schroder":["OUT","fora"],"Nic Claxton":["OUT","fora"],"Clint Capela":["OUT","fora"],
+"Kon Knueppel":["OUT","fora"],"Dennis Schroder":["OUT","fora"],"Nic Claxton":["Q","dúvida contra o PHI"],"Clint Capela":["OUT","fora"],
 "Jaren Jackson Jr.":["OUT","fora"],"Jusuf Nurkic":["OUT","fora"],"Josh Hart":["OUT","fora"],"Isaiah Stewart":["OUT","fora"],
 "Scotty Pippen Jr.":["OUT","fora"],"Jalen Suggs":["OUT","fora"],"Keegan Murray":["OUT","fora"],"Dereck Lively II":["OUT","fora"],
 "Bradley Beal":["OUT","fora"],"Tobias Harris":["OUT","fora"],"Sam Merrill":["OUT","fora"],"Jaylon Tyson":["OUT","fora"],"Steven Adams":["OUT","fora"]
