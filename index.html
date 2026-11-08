@@ -794,6 +794,11 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .btn-ajuda{flex:none;width:34px;height:34px;border-radius:50%;background:transparent;border:1px solid rgba(232,192,102,.45);color:var(--ouro);font:700 15px var(--ui);cursor:pointer;margin-left:-4px}
 @media (max-width:760px){.btn-ajuda{width:28px;height:28px;font-size:13px}}
 
+.crono{font-size:11px;color:var(--amarelo);letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.crono b{color:#fff}
+.crono i{font-style:normal;margin-right:2px}
+@media (max-width:760px){.crono{font-size:10px}}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -834,7 +839,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
     <img class="belt" src="img/cinturao.webp" alt="Cinturão da WBSQUETE">
     <div class="meio">
       <div class="mast">PAINEL DO LOYDÃO</div>
-      <div class="mast-sub" id="status">carregando…</div>
+      <div class="mast-sub" id="status">carregando…</div><div class="crono" id="crono"></div>
     </div>
     <nav class="nav-top" id="navTop" aria-label="Seções"></nav>
     <button class="btn-atualiza" id="btnAtualiza" type="button" title="Buscar dados novos na ESPN">Atualizar</button><button class="btn-reload" id="btnReload" type="button" title="Recarregar o site" aria-label="Recarregar o site">&#x21bb;</button><button class="btn-ajuda" id="btnAjuda" type="button" title="Como usar o painel" aria-label="Como usar o painel">?</button>
@@ -855,7 +860,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108010150";
+const VERSAO_PAINEL="20261108010232";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1713,10 +1718,19 @@ function janelaDeJogos(){
   return ini===Infinity?null:[ini-5*60000,fim+3*3600000];
 }
 function temJogoAgora(){const j=janelaDeJogos();const n=Date.now();return !!(j&&n>=j[0]&&n<=j[1])}
+function primeiroJogo(sp){if(!AO.sch)return null;let ini=Infinity;AO.sch.settings.proTeams.forEach(pt=>{(pt.proGamesByScoringPeriod&&pt.proGamesByScoringPeriod[sp]||[]).forEach(g=>{if(g.date<ini)ini=g.date})});return ini===Infinity?null:ini}
+function cronometro(){ // próximo trancamento de escalação = primeiro jogo do dia
+  const el=$("#crono");if(!el||!AO.sch)return;const n=Date.now();let sp=spHoje(),ini=primeiroJogo(sp),rot="hoje";
+  if(ini==null||ini<n){for(let k=1;k<=3;k++){const x=primeiroJogo(sp+k);if(x!=null&&x>n){ini=x;rot=k===1?"amanhã":spRot(sp+k);break}}}
+  if(ini==null||ini<n){el.textContent="";return}
+  const ms=ini-n,h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4);const hm=new Date(ini).toLocaleTimeString("pt-BR",{timeZone:"America/Sao_Paulo",hour:"2-digit",minute:"2-digit"});
+  el.innerHTML=`<i>⏱</i> escalação tranca ${rot} às ${hm} · faltam <b>${h?h+"h":""}${dd(m)}min</b>`;
+}
+setInterval(cronometro,30000);
 async function atualizarAoVivo(){
   if(AO.rodando)return;AO.rodando=true;const st=$("#status");
   st.innerHTML=`<span class="ao-vivo">buscando na ESPN…</span>`;
-  try{const d=await coletarAoVivo();AO.ultimo=Date.now();try{lsSet("painel.cache",JSON.stringify(d))}catch(e){}carrega(d);ticker();checarVersao();
+  try{const d=await coletarAoVivo();AO.ultimo=Date.now();try{lsSet("painel.cache",JSON.stringify(d))}catch(e){}carrega(d);ticker();cronometro();checarVersao();
     const j=janelaDeJogos(),agora=temJogoAgora();const hm=ms=>{const x=new Date(ms);return dd(x.getHours())+":"+dd(x.getMinutes())};
     st.innerHTML=(agora?`<span class="ao-vivo">ao vivo</span> · atualiza a cada 5 min`:j&&Date.now()<j[0]?`sem jogo agora · volta às ${hm(j[0])}`:`sem jogo agora`)+` · ${quando(d.gerado).split(" ").slice(2).join(" ")}`;}
   catch(e){console.error(e);st.textContent=(DADOS?"sem conexão com a ESPN agora · mostrando "+quando(DADOS.gerado):"não consegui falar com a ESPN: "+e.message)}
