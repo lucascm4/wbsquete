@@ -972,6 +972,27 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .pt-pula{all:unset;cursor:pointer;margin-top:12px;font-size:13px;color:var(--apagado);text-decoration:underline}
 @media (max-width:420px){.pt-grade img{width:46px;height:46px}.pt-grade b{font-size:14px}}
 
+.subabas{grid-template-columns:repeat(5,minmax(0,1fr))}
+.saldo-h2h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:4px 12px;padding:8px 12px 10px;font-family:var(--display);font-size:20px;color:#ddd}
+.saldo-h2h b{font-size:30px;color:#fff;font-weight:400}.saldo-h2h .lid,.saldo-h2h .lid b{color:var(--amarelo)}
+.saldo-h2h .x{font-size:14px;color:var(--apagado)}
+.saldo-h2h small{flex:1 1 100%;text-align:center;font-family:inherit;font-size:12px;color:var(--apagado);font-family:system-ui,sans-serif}
+.odds-cat{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.odds-cat th{font-size:11px;color:var(--apagado);font-weight:600;padding:6px;text-align:center}
+.odds-cat th img{width:16px;height:16px;border-radius:50%;background:#fff;vertical-align:-3px}
+.odds-cat th:first-child{text-align:left}.odds-cat th:last-child{text-align:right}
+.odds-cat td{padding:6px;border-top:1px solid var(--linha);text-align:center;font-weight:700;width:22%}
+.odds-cat td:first-child{text-align:left}.odds-cat td:last-child{text-align:right}
+.odds-cat td.g{color:var(--amarelo)}
+.odds-cat td.oc-cat{width:56%}
+.oc-cat b{display:block;font-family:var(--display);font-weight:400;font-size:14px;letter-spacing:.04em}
+.oc-bar{display:flex;height:8px;border:1px solid #000;margin:3px 0;background:#000}
+.oc-bar i{display:block;height:100%}
+.oc-cat small{display:flex;justify-content:space-between;font-size:11px;color:var(--apagado);font-weight:600}
+.oc-cat small .f{color:#fff}
+.oc-pe{padding:8px 10px;font-size:12px;color:var(--apagado)}
+@media (max-width:760px){.subabas button{font-size:12px;padding:9px 1px}}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1033,7 +1054,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108015650";
+const VERSAO_PAINEL="20261108020121";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1461,9 +1482,9 @@ function tabelaCategorias(a,b,ta,tb,pa,pb,sim){
   let h=`<table class="tabcat"><colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c2"><col class="c1"></colgroup><thead><tr><th class="lg"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></th><th>${tip("prev","prev.")}</th><th>categoria</th><th>${tip("prev","prev.")}</th><th class="lg"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></th></tr></thead><tbody>`;
   CATS.forEach((c,j)=>{const r=sc.r[j];const px=c.f(pa),py=c.f(pb);let lidA=c.inv?px<py:px>py;const prob=sim?sim.cat[j]:null;const peg=prob!=null&&prob>0.3&&prob<0.7;
     const vira=prob!=null&&((r>0&&prob<0.45)||(r<0&&prob>0.55));
-    h+=`<tr><td class="${r>0?"g":""}"><span class="v">${fmt(c,c.f(ta))}</span></td><td class="pv">${fmt(c,px)}</td><td><span class="cn">${c.k}${vira?'<small class="vira">VIRA</small>':peg?'<small>PEGADO</small>':""}</span></td><td class="pv">${fmt(c,py)}</td><td class="${r<0?"g":""}"><span class="v">${fmt(c,c.f(tb))}</span></td></tr>`});
+    h+=`<tr><td class="${r>0?"g":""}"><span class="v">${fmt(c,c.f(ta))}</span></td><td class="pv">${fmt(c,px)}</td><td><span class="cn">${c.k}</span></td><td class="pv">${fmt(c,py)}</td><td class="${r<0?"g":""}"><span class="v">${fmt(c,c.f(tb))}</span></td></tr>`});
   const ps=placar(pa,pb);
-  h+=`<tr class="resumo"><td colspan="5">Agora <b>${rtxt(sc.w,sc.l,sc.t)}</b> · deve fechar <b>${rtxt(ps.w,ps.l,ps.t)}</b> · faltam ${EST.jr[a]} jogos do ${esc(A[0])} e ${EST.jr[b]} do ${esc(B[0])} · ${tip("vira","VIRA")} · ${tip("pegado","PEGADO")}</td></tr>`;
+  h+=`<tr class="resumo"><td colspan="5">Agora <b>${rtxt(sc.w,sc.l,sc.t)}</b> · deve fechar <b>${rtxt(ps.w,ps.l,ps.t)}</b> · faltam ${EST.jr[a]} jogos do ${esc(A[0])} e ${EST.jr[b]} do ${esc(B[0])}</td></tr>`;
   return h+`</tbody></table>`;
 }
 function betLoyde(a,b,s){
@@ -1588,13 +1609,23 @@ function quadroConfronto(A,B,ta,tb,s){
   <div><span class="k">Pegado</span><span class="vv" style="font-size:17px">${peg.join("<br>")}</span></div></div>`;
 }
 
+function abaOdds(a,b,ta,tb,pa,pb,s){
+  const A=T(a),B=T(b);const sc=placar(ta,tb);
+  const linhas=CATS.map((c,j)=>{const p=s.cat?s.cat[j]:null;if(p==null)return "";const e=s.catE?s.catE[j]:0;const q=Math.max(0,1-p-e);const fa=p>=q;
+    return `<tr><td class="${sc.r[j]>0?"g":""}">${fmt(c,c.f(ta))}</td><td class="oc-cat"><b>${c.k}</b><div class="oc-bar"><i style="width:${(100*p).toFixed(0)}%;background:${A[4]}"></i>${e>0.005?`<i style="width:${(100*e).toFixed(1)}%;background:#666"></i>`:""}<i style="width:${(100*q).toFixed(0)}%;background:${B[4]}"></i></div><small><span class="${fa?"f":""}">${pct(p)}</span><span class="${!fa?"f":""}">${pct(q)}</span></small></td><td class="${sc.r[j]<0?"g":""}">${fmt(c,c.f(tb))}</td></tr>`}).join("");
+  return `${betLoyde(a,b,s)}
+  <div class="card"><div class="bloco-tit">CHANCE EM CADA CATEGORIA <small>${tip("Chance de cada time terminar a semana na frente naquela categoria, pela simulação de 4000 semanas com o que cada elenco ainda tem de jogos.","como calcula")}</small></div>
+  <table class="odds-cat"><thead><tr><th><img src="img/l/${A[1]}.webp" alt=""> ${esc(A[0])}</th><th>agora · chance</th><th>${esc(B[0])} <img src="img/l/${B[1]}.webp" alt=""></th></tr></thead><tbody>${linhas}</tbody></table>
+  <div class="oc-pe">Faltam ${EST.jr[a]} jogos do ${esc(A[0])} e ${EST.jr[b]} do ${esc(B[0])}. Agora ${rtxt(sc.w,sc.l,sc.t)}.</div></div>
+  <div class="card"><div class="bloco-tit">CHANCES DE PLACAR <small>${tip("chances","os 6 mais prováveis")}</small></div>${chancesPlacar(a,b,s)}</div>`;
+}
 function vJogo(i){
   const d=DADOS;if(!d)return vazio();const m=d.mt[i];if(!m)return vConfrontos();
   precisaMuseu();
   const [a,b]=m,A=T(a),B=T(b);const ta=EST.tot[a],tb=EST.tot[b],pa=EST.proj[a],pb=EST.proj[b];
   const sc=placar(ta,tb),s=simula(a,b);const dsel=UI.dia[i]??(d.last===d.cur?d.cur:"sem");const dia=d.cur-d.s0+1;
   const sub=UI.subJogo||"placar";const n=d.mt.length;const prev=(i+n-1)%n,next=(i+1)%n;
-  const abas=[["placar","Placar"],["jogadores","Jogadores"],["destaques","Destaques"],["premios","Prêmios"]];
+  const abas=[["placar","Placar"],["jogadores","Jogadores"],["odds","Odds"],["destaques","Destaques"],["premios","Prêmios"]];
   let h=`<div class="jogo-nav"><button class="voltar" type="button" data-ir="confrontos">← Confrontos</button><span class="jn-set"><button type="button" class="jn-b" data-jogo="${prev}" aria-label="confronto anterior">‹</button><small>${i+1}/${n} · deslize p/ trocar</small><button type="button" class="jn-b" data-jogo="${next}" aria-label="próximo confronto">›</button></span></div>
   <div class="card"><div class="placar-topo">
     <div class="lado"><a href="#time-${a}" style="text-decoration:none;color:inherit">${rostoTime(A[0])}</a><div class="info"><div class="nm">${esc(A[0])}</div><div class="mg">${esc(A[2])}</div></div></div>
@@ -1603,12 +1634,14 @@ function vJogo(i){
   </div>
   <div class="subabas" role="tablist">${abas.map(([k,nm])=>`<button type="button" role="tab" data-sub="${k}" aria-selected="${sub===k}">${nm}</button>`).join("")}</div></div>`;
   if(sub==="placar"){
-    h+=`<div class="card">${tabelaCategorias(a,b,ta,tb,pa,pb,s)}</div>${quadroConfronto(A[0],B[0],ta,tb,s)}
-    ${window.MUSEU?`<div class="card"><div class="bloco-tit">HISTÓRICO DIRETO <small>toque para abrir o box</small></div><div class="hist-lista">${h2hEntre(A[0],B[0]).l.map(m2=>{const [w,lo,t]=m2.r;return `<button type="button" ${m2.atual?"disabled":`data-mj="${m2.i}"`}><span class="qd">${temporadaCurta(m2.t)} · sem ${m2.w}</span><span><span class="${m2.v===m2.a?"w":""}">${esc(m2.a)}</span> x <span class="${m2.v===m2.b?"w":""}">${esc(m2.b)}</span>${seloFase(m2)}</span><span class="rs num">${rtxt(w,lo,t)}</span></button>`}).join("")||'<div class="vazio">Nunca se enfrentaram desde 22/23.</div>'}</div></div>`:""}`;
+    const hh=window.MUSEU?h2hEntre(A[0],B[0]):null;const mm=hh?hh.l.filter(x=>!x.atual&&seloFase(x)).length:0;
+    h+=`<div class="card">${tabelaCategorias(a,b,ta,tb,pa,pb,s)}</div>
+    ${hh?`<div class="card"><div class="bloco-tit">HISTÓRICO DIRETO <small>toque para abrir o box</small></div><div class="saldo-h2h"><span class="${hh.va>hh.vb?"lid":""}">${esc(A[0])} <b>${hh.va}</b></span><span class="x">${hh.e?hh.e+" emp.":"x"}</span><span class="${hh.vb>hh.va?"lid":""}"><b>${hh.vb}</b> ${esc(B[0])}</span><small>desde 22/23${mm?` · ${mm} em mata-mata`:""}</small></div><div class="hist-lista">${hh.l.map(m2=>{const [w,lo,t]=m2.r;return `<button type="button" ${m2.atual?"disabled":`data-mj="${m2.i}"`}><span class="qd">${temporadaCurta(m2.t)} · sem ${m2.w}</span><span><span class="${m2.v===m2.a?"w":""}">${esc(m2.a)}</span> x <span class="${m2.v===m2.b?"w":""}">${esc(m2.b)}</span>${seloFase(m2)}</span><span class="rs num">${rtxt(w,lo,t)}</span></button>`}).join("")||'<div class="vazio">Nunca se enfrentaram desde 22/23.</div>'}</div></div>`:""}`;
   }else if(sub==="jogadores"){
     h+=`<div class="dias" role="group" aria-label="Escolher dia"><button class="dia" type="button" data-dia="sem" aria-pressed="${dsel==="sem"}">SEMANA<small>total</small></button>`;
     for(let sp=d.s0;sp<=d.s1;sp++){const r=spRot(sp).split(" ");h+=`<button class="dia ${sp>d.cur?"fut":""}" type="button" data-dia="${sp}" aria-pressed="${String(dsel)===String(sp)}">${r[0].toUpperCase()}<small>${sp>d.cur?"proj.":r[1]}</small></button>`}
     h+=`</div>${listaJuntos(a,b,dsel)}`;
+  }else if(sub==="odds"){h+=abaOdds(a,b,ta,tb,pa,pb,s)
   }else if(sub==="destaques"){h+=destaques(a,b)||'<div class="card"><div class="vazio">Ainda sem jogos na semana.</div></div>'}
   else{h+=cardPremios(a,b)||'<div class="card"><div class="vazio">Prêmios saem depois do primeiro jogo da semana.</div></div>'}
   return h;
