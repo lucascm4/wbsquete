@@ -1250,6 +1250,19 @@ body:not(.rolou) .jn-mini>:not(small){display:none}
 .tj-a{font-style:normal;color:var(--apagado);font-size:11px}
 .tj-tr{font-style:normal;color:#ff9f1c;font-weight:800;font-size:13px;display:inline-flex;align-items:center;gap:2px}
 .tj-tr small{font:700 9px system-ui,sans-serif;color:#ff9f1c;white-space:nowrap}
+/* perfil do treinador e placar global */
+.pf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:6px;padding:10px}
+.pf-grid>div{background:#000;border-radius:8px;padding:7px 8px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.pf-grid small{font:800 9px system-ui,sans-serif;letter-spacing:.06em;color:var(--apagado);text-transform:uppercase}
+.pf-grid b{font-family:var(--display);font-weight:400;font-size:20px;color:#fff;display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-grid b img,.pf-grid b .ini{width:20px;height:20px;border-radius:50%;border:1.5px solid #000}
+.pf-grid i{font-style:normal;font-size:11px;color:#bbb}
+.pg-cats{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:3px;padding:0 10px 10px}
+.pg-cats>div{background:#000;border-radius:6px;text-align:center;padding:4px 1px;display:flex;flex-direction:column;gap:1px}
+.pg-cats small{font:800 8px system-ui;color:var(--apagado)}.pg-cats b{font:700 10px system-ui;color:#ddd}
+.pg-cats>div.a b:first-of-type{color:var(--amarelo)}.pg-cats>div.b b:last-of-type{color:var(--amarelo)}
+@media (max-width:480px){.pg-cats{grid-template-columns:repeat(5,minmax(0,1fr))}}
+b.neg{color:#ff6b6b}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1316,10 +1329,10 @@ body:not(.rolou) .jn-mini>:not(small){display:none}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794164801"></script>
-<script src="radar.js?v=1794164801"></script>
+<script src="hist.js?v=1794165014"></script>
+<script src="radar.js?v=1794165014"></script>
 <script>
-const VERSAO_PAINEL="20261108160641";
+const VERSAO_PAINEL="20261108161014";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1987,6 +2000,7 @@ function vJogo(i){
     const hh=window.MUSEU?h2hEntre(A[0],B[0]):null;const mm=hh?hh.l.filter(x=>!x.atual&&seloFase(x)&&!/CONSOLA/.test(seloFase(x))).length:0;
     h+=`<div class="card">${tabelaCategorias(a,b,ta,tb,pa,pb,s)}</div>
     ${hh?`<div class="card"><div class="bloco-tit">HISTÓRICO DIRETO <small>toque para abrir o box</small></div><div class="saldo-h2h"><span class="${hh.va>hh.vb?"lid":""}">${esc(A[0])} <b>${hh.va}</b></span><span class="x">${hh.e?hh.e+" emp.":"x"}</span><span class="${hh.vb>hh.va?"lid":""}"><b>${hh.vb}</b> ${esc(B[0])}</span><small>desde 22/23${mm?` · ${mm} em mata-mata`:""}</small></div><div class="hist-lista">${hh.l.map(m2=>{const [w,lo,t]=m2.r;return `<button type="button" ${m2.atual?"disabled":`data-mj="${m2.i}"`}><span class="qd">${temporadaCurta(m2.t)} · sem ${m2.w}</span><span><span class="${m2.v===m2.a?"w":""}">${esc(m2.a)}</span> x <span class="${m2.v===m2.b?"w":""}">${esc(m2.b)}</span>${seloFase(m2)}</span><span class="rs num">${rtxt(w,lo,t)}</span></button>`}).join("")||'<div class="vazio">Nunca se enfrentaram desde 22/23.</div>'}</div></div>`:""}`;
+    if(window.MUSEU)h+=blocoGlobal(A[0],B[0]);
   }else if(sub==="jogadores"){
     // ordem: hoje, total da semana, dias passados do mais recente pro mais antigo, depois os futuros
     const bd=sp=>{const r=spRot(sp).split(" ");const hoje=sp===d.cur;const pd=placarDia(a,b,sp);const pdt=pd?`<em class="pd ${pd.w>pd.l?"ga":pd.l>pd.w?"gb":""}">${pd.w}-${pd.l}${pd.t?"-"+pd.t:""}</em>`:"";
@@ -2554,6 +2568,34 @@ function vTodosBloco(){
   return h+`</div>`;
 }
 function titulos(nome){return HIST.campeoes.filter(c=>c[2]===nome)}
+/* placar global: soma das stats de todos os confrontos entre dois times (museu, desde 22/23) */
+const KG=["PTS","REB","AST","STL","BLK","3PM","FG%","FT%","TO"];
+function placarSomado(A,B){if(!window.MUSEU)return null;const L=window.MUSEU.filter(m=>(m.a===A&&m.b===B)||(m.a===B&&m.b===A));if(!L.length)return null;
+  const sa=Array(9).fill(0),sb=Array(9).fill(0);L.forEach(m=>{const [x,y]=m.a===A?[m.ca,m.cb]:[m.cb,m.ca];for(let i=0;i<9;i++){sa[i]+=+x[i]||0;sb[i]+=+y[i]||0}});
+  [6,7].forEach(i=>{sa[i]/=L.length;sb[i]/=L.length});let w=0,l=0,t=0;const r=KG.map((k,i)=>{let d=sa[i]-sb[i];if(k==="TO")d=-d;if(Math.abs(d)<1e-9){t++;return 0}d>0?w++:l++;return d>0?1:-1});
+  return {n:L.length,sa,sb,w,l,t,r}}
+function blocoGlobal(A,B){const g=placarSomado(A,B);if(!g)return "";const f=(i,v)=>i===6||i===7?(v*100).toFixed(1):Math.round(v).toLocaleString("pt-BR");
+  return `<div class="card"><div class="bloco-tit">PLACAR GLOBAL ENTRE ELES <small>somando as stats dos ${g.n} confrontos desde 22/23 (FG% e FT% = média)</small></div>
+  <div class="saldo-h2h"><span class="${g.w>g.l?"lid":""}">${esc(A)} <b>${g.w}</b></span><span class="x">${g.t?g.t+" emp.":"x"}</span><span class="${g.l>g.w?"lid":""}"><b>${g.l}</b> ${esc(B)}</span><small>como se fosse um confronto só</small></div>
+  <div class="pg-cats">${KG.map((k,i)=>`<div class="${g.r[i]>0?"a":g.r[i]<0?"b":""}"><small>${k}</small><b>${f(i,g.sa[i])}</b><b>${f(i,g.sb[i])}</b></div>`).join("")}</div></div>`}
+/* perfil do treinador */
+function perfilTreinador(id,nome){const d=DADOS;const L=HIST.tab.filter(r=>r[1]===nome);
+  const tit=(HIST.campeoes||[]).filter(c=>c[2]===nome).length;const fin=L.filter(r=>r[6]<=2).length;const po=L.filter(r=>r[7]&&r[7]<=6).length;
+  let v=0,dd=0,e=0,mv=0,md=0,cw=0,cl=0,big=null;const opp={};
+  confrontosDe(nome).forEach(m=>{const f=rotulo(m);if(f==="CONSOLAÇÃO")return;const o=doLado(m,nome);o.res==="v"?v++:o.res==="d"?dd++:e++;if(f){o.res==="v"?mv++:o.res==="d"&&md++}cw+=o.w;cl+=o.l;
+    const x=opp[o.op]=opp[o.op]||{v:0,d:0,e:0};x[o.res==="v"?"v":o.res==="d"?"d":"e"]++;const mg=o.w-o.l;if(o.res==="v"&&(!big||mg>big.mg))big={mg,m,o}});
+  const os=Object.entries(opp).filter(([n,x])=>x.v+x.d+x.e>=2);const fregues=os.slice().sort((p,q)=>(q[1].v-q[1].d)-(p[1].v-p[1].d))[0],carrasco=os.slice().sort((p,q)=>(q[1].d-q[1].v)-(p[1].d-p[1].v))[0];
+  let adds=L.reduce((x,r)=>x+(r[8]||0),0),trocas=L.reduce((x,r)=>x+(r[9]||0),0);
+  const lst=(d&&d.tx&&d.tx.lst)||[];adds+=lst.filter(x=>x[2]===id).length;const tr=(d&&d.tx&&d.tx.tr)||[];trocas+=new Set(tr.filter(x=>x[1]===id||x[2]===id).map(x=>x[4])).size;
+  const anos=L.length+(d?1:0);const pc=(v+e/2)/Math.max(1,v+dd+e);
+  const tile=(k,vv,sub)=>`<div><small>${k}</small><b>${vv}</b>${sub?`<i>${sub}</i>`:""}</div>`;
+  return `<div class="card"><div class="bloco-tit">PERFIL DO TREINADOR <small>${anos} temporadas na liga · desde 22/23 nos números</small></div><div class="pf-grid">
+   ${tile("Títulos",tit?"🏆".repeat(tit):"0",fin?`${fin} final${fin>1?"is":""}`:"nenhuma final")}${tile("Playoffs",`${po}/${L.length}`,"temporadas fechadas")}
+   ${tile("V-D-E",`${v}-${dd}-${e}`,`${(pc*100).toFixed(0)}% de aproveitamento`)}${tile("Mata-mata",`${mv}-${md}`,"vitórias-derrotas")}
+   ${tile("Categorias",`${(100*cw/Math.max(1,cw+cl)).toFixed(0)}%`,`${cw} ganhas · ${cl} perdidas`)}${tile("Adds",adds,`${(adds/Math.max(1,anos)).toFixed(0)} por temporada`)}
+   ${tile("Trocas",trocas,trocas?"":"nunca trocou")}${big?tile("Maior surra",`${big.o.w}-${big.o.l}`,`no ${esc(big.o.op)} · ${esc(big.m.t)}`):""}
+   ${fregues?tile("Maior freguês",`${logo(fregues[0])} ${esc(fregues[0])}`,`${fregues[1].v}-${fregues[1].d}-${fregues[1].e}`):""}${carrasco&&carrasco[1].d>carrasco[1].v?tile("Carrasco",`${logo(carrasco[0])} ${esc(carrasco[0])}`,`${carrasco[1].v}-${carrasco[1].d}-${carrasco[1].e}`):""}
+  </div></div>`}
 function vTime(id){
   const Tt=TIMES[id];if(!Tt)return vTimes();precisaMuseu();
   const d=DADOS;const nome=Tt[0];
@@ -2568,6 +2610,7 @@ function vTime(id){
   const fut=(d&&d.fut||[]).filter(f=>f[0]>d.wk&&(f[1]===id||f[2]===id)).slice(0,4);
   h+=`<div class="card"><div class="bloco-tit">TEMPORADA 26/27 <small>semana a semana</small></div><div style="padding:12px"><div class="forma">${atual.slice().reverse().map(m=>{const o=doLado(m,nome);return `<span class="fm ${o.res}">${rtxt(o.w,o.l,o.t)}<small>S${m.w} x ${T(IDN[o.op])[3]}</small></span>`}).join("")}${semana}${fut.map(f=>`<span class="fm e" style="opacity:.6">S${f[0]}<small>x ${T(f[1]===id?f[2]:f[1])[3]}</small></span>`).join("")}</div></div></div>`;
   if(d)h+=elencoTabela(id);
+  if(window.MUSEU)h+=perfilTreinador(id,nome);
   const ult=confrontosDe(nome).slice(0,9);
   h+=`<div class="card"><div class="bloco-tit">ÚLTIMOS CONFRONTOS <small>toque para ver o box</small></div>${window.MUSEU?`<div class="sofa">${ult.map(m=>{const o=doLado(m,nome);const [w,l,t]=m.r;
     return `<button class="sf" type="button" ${m.i!=null?`data-mj="${m.i}"`:"disabled"}><div class="qd"><span>${esc(m.t)} · sem ${m.w}${rotulo(m)?" · "+rotulo(m).toLowerCase():""}</span><b style="background:${o.res==="v"?"#22c55e":o.res==="d"?"#ff6b6b":"#bbb"}">${o.res==="v"?"V":o.res==="d"?"D":"E"}</b></div>
@@ -2575,7 +2618,7 @@ function vTime(id){
   if(window.MUSEU){
     const rivais=[...new Set(confrontosDe(nome).map(m=>m.a===nome?m.b:m.a))];
     const rows=rivais.map(r=>{const x=h2hEntre(nome,r);let c=[0,0];x.l.forEach(m=>{const eu=m.a===nome;c[0]+=eu?m.r[0]:m.r[1];c[1]+=eu?m.r[1]:m.r[0]});return [r,x,c]}).sort((p,q)=>(q[1].va-q[1].vb)-(p[1].va-p[1].vb));
-    h+=`<div class="card tabela-wrap"><div class="bloco-tit">FRENTE A FRENTE DESDE 22/23</div><table class="t2"><thead><tr><th>Rival</th><th>Jogos</th><th>V</th><th>D</th><th>E</th><th>Categorias</th></tr></thead><tbody>${rows.map(([r,x,c])=>`<tr><td><span class="lg">${logo(r)}${esc(r)}</span></td><td>${x.l.length}</td><td class="${x.va>x.vb?"ouro":""}">${x.va}</td><td>${x.vb}</td><td>${x.e}</td><td>${c[0]}-${c[1]}</td></tr>`).join("")}</tbody></table></div>`;
+    h+=`<div class="card tabela-wrap"><div class="bloco-tit">FRENTE A FRENTE DESDE 22/23</div><table class="t2"><thead><tr><th>Rival</th><th>Jogos</th><th>V</th><th>D</th><th>E</th><th>Categorias</th><th>Somado</th></tr></thead><tbody>${rows.map(([r,x,c])=>`<tr><td><span class="lg">${logo(r)}${esc(r)}</span></td><td>${x.l.length}</td><td class="${x.va>x.vb?"ouro":""}">${x.va}</td><td>${x.vb}</td><td>${x.e}</td><td>${c[0]}-${c[1]}</td><td>${(()=>{const g=placarSomado(nome,r);return g?`<b class="${g.w>g.l?"ouro":g.l>g.w?"neg":""}">${g.w}-${g.l}${g.t?"-"+g.t:""}</b>`:"–"})()}</td></tr>`).join("")}</tbody></table><div class="leg-rh">Somado = todas as stats dos confrontos entre os dois somadas, como se fosse um confronto só</div></div>`;
   }
   h+=`<div class="card tabela-wrap"><div class="bloco-tit">TEMPORADA A TEMPORADA</div><table class="t2"><thead><tr><th>Temporada</th><th>Nome do time</th><th>V-D-E</th><th>Seed</th><th>Final</th><th>Adds</th><th>Trocas</th></tr></thead><tbody>${linhas.slice().reverse().map(r=>`<tr class="${r[6]===1?"top":""}"><td>${esc(r[0])}</td><td style="text-align:left">${esc(r[2])}</td><td>${r[3]}-${r[4]}-${r[5]}</td><td>${r[7]}º</td><td class="${r[6]===1?"ouro":""}">${r[6]===1?"🏆 campeão":r[6]+"º"}</td><td>${r[8]}</td><td>${r[9]}</td></tr>`).join("")}</tbody></table></div>`;
   return h;
