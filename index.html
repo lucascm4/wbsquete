@@ -1680,11 +1680,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794173739"></script>
-<script src="radar.js?v=1794173739"></script>
-<script src="midia.js?v=1794173739"></script>
+<script src="hist.js?v=1794173779"></script>
+<script src="radar.js?v=1794173779"></script>
+<script src="midia.js?v=1794173779"></script>
 <script>
-const VERSAO_PAINEL="20261108183539";
+const VERSAO_PAINEL="20261108183619";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1894,7 +1894,10 @@ function prepara(d){
         }return true});
       c.sort((x,y)=>(y.nota||0)-(x.nota||0));c.slice(0,10).forEach(p=>{const g=hoje&&G[p.pro];const fr=g&&g.live?g.frac:0;const av=p.avx.map(x=>x*(1-fr));const nw=noticia(p,sp);av.dnp=g&&g.live?Math.min(0.9,0.2+fr):(nw?NOT_DNP[nw.st]??0.05:p.inj==="DAY_TO_DAY"?0.35:0.05);rem.push(av)});
       // jogo em andamento: quem já tem linha parcial hoje ainda produz o resto do jogo
-      if(sp===d.cur&&d.nba)(e.rost[t.id]||[]).forEach(p=>{const g=d.nba[p.pro];if(p.slot<12&&p.avx&&p.dl&&p.dl[sp]&&g&&g.live&&g.frac<1){const av=p.avx.map(x=>x*(1-g.frac));av.dnp=0;rem.push(av)}});
+      if(sp===d.cur&&d.nba)(e.rost[t.id]||[]).forEach(p=>{const g=d.nba[p.pro];if(p.slot<12&&p.avx&&p.dl&&p.dl[sp]&&g&&g.live&&g.frac<1){
+        // quanto falta: metade pelo relógio do jogo, metade pelos minutos que ele ainda costuma jogar (quem já jogou muito descansa mais)
+        const mj=+(p.dl[sp][12]||0),mm=p.mn&&+p.mn.av||0;const pelaHora=1-g.frac;const pelosMin=mm>0?Math.max(0,Math.min(1,(mm-mj)/mm)):pelaHora;
+        const fr=0.5*pelaHora+0.5*pelosMin;if(fr<=0.01)return;const av=p.avx.map(x=>x*fr);av.dnp=0;rem.push(av)}});
     }
     e.rem[t.id]=rem;e.jr[t.id]=rem.length;
     // força do elenco: média por jogo dos 10 melhores saudáveis × 3,4 jogos
