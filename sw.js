@@ -1,7 +1,7 @@
 /* WBSQUETE: deixa o app instalável e abre rápido.
    Página e scripts: sempre tenta a rede primeiro (pra pegar versão nova), cai pro cache sem internet.
    Imagens: cache primeiro. Dados da ESPN: nunca passam por aqui. */
-const C="wbsquete-v2";
+const C="wbsquete-v3";
 self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(["./","./index.html","./fotos.js","./hist.js","./radar.js","./img/cinturao.webp"]).catch(()=>{})))});
 self.addEventListener("activate",e=>e.waitUntil(self.clients.claim()));
 self.addEventListener("fetch",e=>{
