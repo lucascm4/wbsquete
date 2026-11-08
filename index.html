@@ -1646,6 +1646,9 @@ svg.cad{width:18px;height:18px;display:block}
 .tc3 .tc-leg{display:block;font:500 9px system-ui;letter-spacing:0;text-transform:none;color:var(--apagado)}
 .tc3 .vr{display:block;font:800 9px system-ui;color:#ff9b4a;letter-spacing:.04em;margin-top:2px}
 
+.pj-em{font-style:normal;font-size:14px;line-height:1;margin:0 2px 0 3px}
+.pj-selo small{font-weight:600;opacity:.7;margin-left:2px}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1711,11 +1714,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794174207"></script>
-<script src="radar.js?v=1794174207"></script>
-<script src="midia.js?v=1794174207"></script>
+<script src="hist.js?v=1794174330"></script>
+<script src="radar.js?v=1794174330"></script>
+<script src="midia.js?v=1794174330"></script>
 <script>
-const VERSAO_PAINEL="20261108184327";
+const VERSAO_PAINEL="20261108184530";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2362,7 +2365,7 @@ const PREMIO={
  CULPADO:{n:"CULPADO",d:"o que o manager deixou no banco ou no IR, em todas as categorias",cls:"ruim"},
  ULTRA:{n:"ULTRA FEZES",d:"o pior titular do confronto: o que menos rendeu por jogo nas 9 categorias",cls:"ruim"}
 };
-const selo=k=>`<svg class="ic-pr" viewBox="0 0 32 32" aria-hidden="true">${SELO[k]}</svg>`;
+const selo=k=>`<svg class="ic-pr" viewBox="0 0 32 32" aria-hidden="true">${SELO[k]}</svg>`;const seloPr=selo;
 const PRINCIPAIS=["MVP","PIPOQUEIRO","RUI","BELEZINHA","URGH"];
 function addsSemana(){ // jogador pego na waiver/FA nesta semana: "id:time" -> sp
   const d=DADOS;const m={};((d.tx&&d.tx.lst)||[]).forEach(([pid,sp,t])=>{if(sp>=d.s0&&sp<=d.cur)m[pid+":"+t]=sp});return m;
@@ -2961,7 +2964,13 @@ function abrirJogador(id,perF){
   const rks=[["Temporada",p.rk&&p.rk[0]],["7 dias",p.rk&&p.rk[1]],["Projetado",p.rkP],["Loydão",p.rkL]].filter(x=>x[1]);
   fecharFicha();const el=document.createElement("div");el.className="pop-fundo";el.id="popFicha";
   el.innerHTML=`<div class="pop-jog pop-full" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(t)[4]}"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button>
-   <div class="pj-topo">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b>${(()=>{try{const m=DADOS.mt.find(x=>x.includes(t));if(!m)return "";const L=premios(m[0],m[1],"sem")||[];const mine=L.filter(x=>x.x&&x.x.p&&x.x.p.id===p.id);return mine.length?`<span class="pj-selos">${mine.map(x=>`<span class="pj-selo ${x.cls||""}" title="${esc(x.d)}">${selo(x.k)}${esc(x.n)}</span>`).join("")}</span>`:""}catch(e){return ""}})()}${APELIDO[p.n]?`<em class="pj-ap">“${esc(APELIDO[p.n][0])}”</em>`:""}<small><img src="img/l/${T(t)[1]}.webp" alt=""> ${esc(T(t)[0])} · ${esc(NBA[p.pro]||"")} · ${esc(POS[p.pos]||"")}${p.inj&&p.inj!=="ACTIVE"?` · <u>${esc(p.inj)}</u>`:""}</small></div></div>
+   <div class="pj-topo">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b>${(()=>{try{const m=DADOS.mt.find(x=>x.includes(t));if(!m)return "";const L=premios(m[0],m[1],"sem")||[];const mine=L.filter(x=>x.x&&x.x.p&&x.x.p.id===p.id);const tp=(()=>{const r=p.rk&&p.rk[0],r7=p.rk&&p.rk[1];const L=[];
+  if(p.inj==="OUT"||(noticia(p)&&noticia(p).st==="OUT"))L.push(["🏥","ENFERMARIA","ruim"]);
+  if(r){L.push(r<=12?["👑","MONSTRO DA TEMPORADA","ouro"]:r<=50?["⭐","TITULAR DE RESPEITO","bom"]:r<=100?["👍","CUMPRE TABELA",""]:r<=150?["😐","MEIA-BOCA",""]:["💩","ULTRA FEZES","ruim"])}
+  if(r&&r7){if(r-r7>=40)L.push(["🔥","PEGANDO FOGO","bom"]);else if(r7-r>=60)L.push(["🧊","ESFRIOU","ruim"])}
+  return L})();
+  const todos=tp.map(([e,n,c])=>`<span class="pj-selo ${c}" title="temporada"><i class="pj-em">${e}</i>${n}</span>`).concat(mine.map(x=>`<span class="pj-selo ${x.cls||""}" title="semana: ${esc(x.d)}">${seloPr(x.k)}${esc(x.n)} <small>sem.</small></span>`));
+  return todos.length?`<span class="pj-selos">${todos.join("")}</span>`:""}catch(e){return ""}})()}${APELIDO[p.n]?`<em class="pj-ap">“${esc(APELIDO[p.n][0])}”</em>`:""}<small><img src="img/l/${T(t)[1]}.webp" alt=""> ${esc(T(t)[0])} · ${esc(NBA[p.pro]||"")} · ${esc(POS[p.pos]||"")}${p.inj&&p.inj!=="ACTIVE"?` · <u>${esc(p.inj)}</u>`:""}</small></div></div>
    <div class="pj-rks">${rks.map(([k,v])=>`<div><small>${esc(k)}</small><b>#${v}</b></div>`).join("")}</div>
    <div class="lei"><b class="lei-t">${lei[0]}</b>${lei[2]?`<small class="lei-a">${esc(lei[2])}</small>`:""}<p>${lei[1]}</p>${lei[3]?`<p class="lei-inj">${esc(lei[3])}</p>`:""}</div>
    <div class="pj-tabs" role="tablist">${[["num","📊 Números"],["car","🏀 Carreira"],["jog","📅 Jogos"]].map(([k,n])=>`<button type="button" role="tab" data-ptab="${k}" aria-selected="${(UI.fichaAba||"num")===k}">${n}</button>`).join("")}</div>
