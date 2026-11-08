@@ -1068,6 +1068,11 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .tmini tbody th{width:40px}
 @media (max-width:760px){.tmini tbody th{width:34px}}
 
+.flags{display:flex;flex-wrap:wrap;gap:3px;margin:2px 0}
+.flag{font-family:var(--display);font-size:11px;letter-spacing:.05em;padding:1px 6px;background:#2a1c1c;color:var(--amarelo);border:1px solid var(--amarelo)}
+.flag.forte{background:var(--amarelo);color:#000}
+.rd .s b{color:#fff}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1129,7 +1134,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108022403";
+const VERSAO_PAINEL="20261108022538";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2067,10 +2072,14 @@ function vRadar(){
     // para cada FA, os times que ele mais ajuda: categorias fracas do time (estrelas ≤2) onde o jogador tem z alto
     const ajuda=p=>{if(!p.zc)return "";const ts=d.teams.map(t=>t.id).map(id=>{let s=0;CATS.forEach((c,j)=>{if(EST.est[id][j]<=2&&p.zc[c.k]>0.6)s+=p.zc[c.k]});return [id,s]}).filter(x=>x[1]>0).sort((x,y)=>y[1]-x[1]).slice(0,3);
       return ts.length?`<div class="melhora">${tip("ajuda","ajuda:")}${ts.map(([id])=>`<img src="img/l/${T(id)[1]}.webp" alt="${esc(T(id)[0])}" title="${esc(T(id)[0])}">`).join("")}</div>`:""};
-    const forte=p=>p.zc?Object.entries(p.zc).filter(([k])=>k!=="TO").sort((x,y)=>y[1]-x[1]).slice(0,2).map(([k])=>k).join(" e "):"";
-    h+=`<h1 class="manchete">QUEM PEGAR</h1><p class="linha-fina">Livres e no waiver da ESPN agora, com os jogos até domingo. "Ajuda" mostra os times da liga cujas categorias fracas combinam com o que o jogador faz.</p></div>${pills}
-    <div class="radar-grid"><div class="card"><div class="bloco-tit">MELHORES LIVRES <small>${tip("nota","pela nota da temporada")}</small></div>${topo.map(p=>linhaRd(p,"",`${p.nota.toFixed(1)}<small>NOTA · RK ${p.rk?p.rk[0]:"–"}</small>`,`${POS[p.pos]||""} · ${NBA[p.pro]||""} · ${p.gl} jogo${p.gl!==1?"s":""} até dom · forte em ${forte(p)} · ${Math.round(p.own||0)}% das ligas`,`<div class="s">${linhaMedia(p.av)}</div>`+ajuda(p))).join("")}</div>
-    <div class="card"><div class="bloco-tit">ESQUENTANDO <small>pelos últimos 7 dias</small></div>${quentes.map(p=>linhaRd(p,"up",`${p.nota7.toFixed(1)}<small>NOTA 7D · RK7 ${p.rk?p.rk[1]:"–"}</small>`,`${POS[p.pos]||""} · ${NBA[p.pro]||""} · ${p.gl} jogo${p.gl!==1?"s":""} até dom · ${Math.round(p.own||0)}% das ligas`,`<div class="s">${linhaMedia(p.l7)}</div>`+ajuda(p))).join("")}</div></div>`;
+    const FLAG={PTS:"PONTOS",REB:"REBOTE",AST:"ASSIST","STL":"ROUBO",BLK:"TOCO","3PM":"3 PONTOS","FG%":"FG%","FT%":"FT%",TO:"POUCO TO"};
+    const flags=p=>p.zc?Object.entries(p.zc).filter(([k,z])=>k==="TO"?z>=1.2:z>=0.7).sort((x,y)=>y[1]-x[1]).slice(0,3).map(([k,z])=>`<span class="flag ${z>=1.5?"forte":""}">${FLAG[k]}</span>`).join(""):"";
+    const cab=p=>`<div class="flags">${flags(p)}</div><div class="s">${POS[p.pos]||""} · ${NBA[p.pro]||""} · <b>${p.gl}</b> jogo${p.gl!==1?"s":""} até dom · ${Math.round(p.own||0)}% das ligas</div>`;
+    const big=(n,rot,extra)=>`<b class="rk-grande">${n?"#"+n:"–"}</b><small>${rot}</small>${extra?`<small>${extra}</small>`:""}`;
+    const topoL=fa.filter(p=>p.rkL).sort((x,y)=>x.rkL-y.rkL).slice(0,12);
+    h+=`<h1 class="manchete">QUEM PEGAR</h1><p class="linha-fina">Livres e no waiver da ESPN agora. O número grande é o ranking (LOYDÃO ★ na primeira lista, 7 dias na segunda). As etiquetas dizem no que o cara é bom; "ajuda" mostra os times da liga que precisam disso.</p></div>${pills}
+    <div class="radar-grid"><div class="card"><div class="bloco-tit">MELHORES LIVRES <small>${tip("rk","pelo rank LOYDÃO")}</small></div>${topoL.map(p=>linhaRd(p,"",big(p.rkL,"RK LOYDÃO",p.rk&&p.rk[0]?"temp #"+p.rk[0]:""),cab(p),ajuda(p),tabMini(p.l7||p.av,p.av))).join("")}</div>
+    <div class="card"><div class="bloco-tit">ESQUENTANDO <small>pelos últimos 7 dias</small></div>${quentes.map(p=>linhaRd(p,"up",big(p.rk&&p.rk[1],"RK 7 DIAS",p.rk&&p.rk[0]?"temp #"+p.rk[0]:""),cab(p),ajuda(p),tabMini(p.l7,p.av))).join("")}</div></div>`;
     return h;
   }
   // lixo
