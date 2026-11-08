@@ -824,6 +824,14 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .cp-i .ft.ini{font-size:8px}
 @media (max-width:760px){.premios{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:8px}.pr{padding:6px 8px;gap:3px 8px;grid-template-columns:36px minmax(0,1fr)}.pr .ft{width:36px;height:36px}.pr .pk{font-size:10px}.pr .pn b{font-size:12.5px}.pr .pn small{font-size:10px}.cp-i{font-size:11px}}
 
+/* cabeçalho da tabela de jogadores fixo */
+.lj-wrap{overflow-x:auto}
+.lj th{position:sticky;top:var(--topo,100px);z-index:3;background:#0a0707;box-shadow:0 2px 0 #000}
+.lj th:first-child{z-index:4}
+@media (max-width:760px){.lj-wrap{overflow:visible}}
+.nav{grid-template-columns:repeat(5,minmax(0,1fr))}
+.sel{background:#000;color:#fff;border:2px solid var(--amarelo);padding:5px 8px;font:inherit;font-weight:700;font-size:13px}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -853,7 +861,6 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 @media (max-width:760px){.duas{grid-template-columns:minmax(0,1fr)}}
 .lado .nm{font-family:var(--display);font-size:20px;line-height:1.05;overflow-wrap:anywhere}
 @media (max-width:520px){.jogo .lado,.jogo .lado.dir{flex-direction:column;text-align:center;gap:4px}.lado .nm{font-size:18px}}
-.nav{grid-template-columns:repeat(5,minmax(0,1fr))}
 [hidden]{display:none!important}img{max-width:100%}
 </style>
 </head><body>
@@ -886,7 +893,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108011529";
+const VERSAO_PAINEL="20261108011742";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -905,7 +912,7 @@ const CATS=[
   {k:"3PM",f:a=>a[5],i:5},{k:"REB",f:a=>a[1],i:1},{k:"AST",f:a=>a[2],i:2},{k:"STL",f:a=>a[3],i:3},{k:"BLK",f:a=>a[4],i:4},
   {k:"TO",f:a=>a[6],inv:1,i:6},{k:"PTS",f:a=>a[0],i:0}];
 const MCATS=["PTS","REB","AST","STL","BLK","3PM","FG%","FT%","TO"];
-const NAVS=[["confrontos","Confrontos",'<path d="M4 6h7v12H4zM13 6h7v12h-7z"/>'],["times","Ranking",'<path d="M4 20V10M10 20V4M16 20v-8M20 20H3"/>'],["radar","Radar",'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 12l6-6"/>'],["museu","Museu",'<path d="M3 9l9-5 9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 20h18"/>']];
+const NAVS=[["confrontos","Confrontos",'<path d="M4 6h7v12H4zM13 6h7v12h-7z"/>'],["noite","Jogadores",'<circle cx="12" cy="7" r="3.2"/><path d="M5 20c0-4 3-7 7-7s7 3 7 7"/>'],["times","Ranking",'<path d="M4 20V10M10 20V4M16 20v-8M20 20H3"/>'],["radar","Radar",'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 12l6-6"/>'],["museu","Museu",'<path d="M3 9l9-5 9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 20h18"/>']];
 
 /* ---------- utilidades ---------- */
 const $=s=>document.querySelector(s);
@@ -1237,7 +1244,7 @@ function listaJuntos(a,b,sp){
     ${st?`<td class="pts">${n1(st[0])}</td><td>${n1(st[1])}</td><td>${n1(st[2])}</td><td>${n1(st[3])}</td><td>${n1(st[4])}</td><td>${n1(st[5])}</td><td>${n1(st[6])}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td>`:`<td colspan="9" class="esp">${r.pend?"ainda não jogou":"sem média"}</td>`}</tr>`};
   const cab=`<thead><tr><th>Jogador</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th class="fgft">FG</th><th class="fgft">FT</th></tr></thead>`;
   const filtros=`<div class="pilulas mini" role="group" aria-label="Time">${[[0,"Os dois"],[a,T(a)[0]],[b,T(b)[0]]].map(([k,n])=>`<button class="pil" type="button" data-ft="${k}" aria-pressed="${ft===k}">${esc(n)}</button>`).join("")}</div>`;
-  return `<div class="card tabela-wrap"><div class="bloco-tit">JOGADORES <small>${sp==="sem"?"semana toda":futuro?spRot(sp)+" · média da temporada de quem joga":spRot(sp)} · do melhor pro pior</small></div>${filtros}
+  return `<div class="card lj-wrap"><div class="bloco-tit">JOGADORES <small>${sp==="sem"?"semana toda":futuro?spRot(sp)+" · média da temporada de quem joga":spRot(sp)} · do melhor pro pior</small></div>${filtros}
   <table class="lj">${cab}<tbody>${tit.map(linha).join("")||`<tr><td colspan="10" class="esp">${futuro?"Ninguém joga nesse dia.":"Ninguém em quadra nesse dia."}</td></tr>`}${banco.length?`<tr class="sepr"><td colspan="10">Banco e IR${sp==="sem"?" · pontos que ficaram fora":""}</td></tr>`+banco.map(r=>sp==="sem"?`<tr style="--cor:${T(r.t)[4]}" class="fora"><td class="jg"><div class="jg-in">${face(r.p.id,r.p.n,"")}<div><b>${esc(r.p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${r.bg} jogo${r.bg>1?"s":""} no banco</small></div></div></td><td class="pts">${r.bp}</td><td colspan="8" class="esp">no banco</td></tr>`:linha(r)).join(""):""}</tbody></table></div>`;
 }
 function boxTime(tid,sp){
@@ -1347,7 +1354,7 @@ function destaques(a,b){
   const bancos=[];[a,b].forEach(t=>(EST.rost[t]||[]).forEach(p=>{if(p.bp>=15)bancos.push({p,t})}));bancos.sort((x,y)=>y.p.bp-x.p.bp);
   const tr=(x,cls)=>{const p=x.p,W=p.W;return `<tr class="${cls||""}" style="--cor:${T(x.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small><img src="img/l/${T(x.t)[1]}.webp" alt=""> ${p.g} jogo${p.g>1?"s":""} · ${W[7]}/${W[8]} fg · ${W[9]}/${W[10]} ft</small></div></div></td><td class="pts">${W[0]}</td><td>${W[1]}</td><td>${W[2]}</td><td>${W[3]}</td><td>${W[4]}</td><td>${W[5]}</td><td>${W[6]}</td><td class="fgft">${W[7]}/${W[8]}</td><td class="fgft">${W[9]}/${W[10]}</td></tr>`};
   const cab=`<thead><tr><th>Jogador</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th class="fgft">FG</th><th class="fgft">FT</th></tr></thead>`;
-  return `<div class="card tabela-wrap"><div class="bloco-tit">DESTAQUES DA SEMANA <small>totais como titular</small></div><table class="lj">${cab}<tbody>${top.map(x=>tr(x)).join("")}${pior.length?`<tr class="sepr"><td colspan="10">Os que afundaram</td></tr>`+pior.map(x=>tr(x,"ruim")).join(""):""}${bancos.length?`<tr class="sepr"><td colspan="10">Pontos no banco</td></tr>`+bancos.map(x=>`<tr class="fora" style="--cor:${T(x.t)[4]}"><td class="jg"><div class="jg-in">${face(x.p.id,x.p.n,"")}<div><b>${esc(x.p.n)}</b><small><img src="img/l/${T(x.t)[1]}.webp" alt=""> ${x.p.bg} jogo${x.p.bg>1?"s":""} no banco</small></div></div></td><td class="pts">${x.p.bp}</td><td colspan="8" class="esp">no banco</td></tr>`).join(""):""}</tbody></table></div>`;
+  return `<div class="card lj-wrap"><div class="bloco-tit">DESTAQUES DA SEMANA <small>totais como titular</small></div><table class="lj">${cab}<tbody>${top.map(x=>tr(x)).join("")}${pior.length?`<tr class="sepr"><td colspan="10">Os que afundaram</td></tr>`+pior.map(x=>tr(x,"ruim")).join(""):""}${bancos.length?`<tr class="sepr"><td colspan="10">Pontos no banco</td></tr>`+bancos.map(x=>`<tr class="fora" style="--cor:${T(x.t)[4]}"><td class="jg"><div class="jg-in">${face(x.p.id,x.p.n,"")}<div><b>${esc(x.p.n)}</b><small><img src="img/l/${T(x.t)[1]}.webp" alt=""> ${x.p.bg} jogo${x.p.bg>1?"s":""} no banco</small></div></div></td><td class="pts">${x.p.bp}</td><td colspan="8" class="esp">no banco</td></tr>`).join(""):""}</tbody></table></div>`;
 }
 function quadroConfronto(A,B,ta,tb,s){
   const sc=placar(ta,tb);const h2=window.MUSEU?h2hEntre(A,B):null;
@@ -1382,6 +1389,27 @@ function vJogo(i){
   return h;
 }
 
+/* ---------- jogadores da noite ---------- */
+function vNoite(){
+  const d=DADOS;if(!d)return vazio();
+  const sp=UI.noiteDia??d.cur;const ft=UI.noiteTime||0;const modo=UI.noiteModo||"melhores";
+  const rows=[];
+  d.P.filter(p=>!p.fora&&(!ft||p.t===ft)).forEach(p=>{
+    if(sp==="sem"){if(p.g)rows.push({p,t:p.t,s:p.W,g:p.g,slot:0,val:valorJogo(p.W)})}
+    else{const v=p.dl&&p.dl[sp];if(v)rows.push({p,t:p.t,s:v.slice(0,11),slot:v[11],min:v[12]||0,val:valorJogo(v)})}
+  });
+  rows.sort((x,y)=>modo==="piores"?x.val-y.val:y.val-x.val);
+  const L=rows.slice(0,40);
+  const linha=r=>{const p=r.p;const st=r.s;const banco=r.slot>=12;
+    return `<tr class="${banco?"fora":""}" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small><a href="#time-${r.t}"><img src="img/l/${T(r.t)[1]}.webp" alt="${esc(T(r.t)[0])}" title="${esc(T(r.t)[0])}"></a> ${esc(T(r.t)[0])} · ${banco?'<span class="tag banco">BANCO</span>':SLOT[r.slot]||""}${r.min?` · ${r.min}'`:""}${sp==="sem"?` · ${r.g} j`:""} · ${st[7]}/${st[8]} fg · ${st[9]}/${st[10]} ft</small>${sp!=="sem"?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
+    <td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td></tr>`};
+  let h=`<div class="cab-secao"><span class="sobre">JOGADORES · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">${modo==="piores"?"OS PIORES DA NOITE":"OS MELHORES DA NOITE"}</h1><p class="linha-fina">Todos os jogadores da liga, ordenados pelo rendimento (pontos, rebotes, assistências, roubos, tocos, bolas, aproveitamento e turnovers).</p></div>
+  <div class="dias" role="group" aria-label="Dia"><button class="dia" type="button" data-nd="sem" aria-pressed="${sp==="sem"}">SEMANA<small>total</small></button>`;
+  for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++){const r=spRot(x).split(" ");h+=`<button class="dia" type="button" data-nd="${x}" aria-pressed="${String(sp)===String(x)}">${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
+  h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores" aria-pressed="${modo==="melhores"}">Melhores</button><button class="pil" type="button" data-nm="piores" aria-pressed="${modo==="piores"}">Piores</button><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===ft?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
+  <div class="card lj-wrap"><table class="lj"><thead><tr><th>Jogador</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th class="fgft">FG</th><th class="fgft">FT</th></tr></thead><tbody>${L.map(linha).join("")||`<tr><td colspan="10" class="esp">Ninguém jogou ainda.</td></tr>`}</tbody></table></div>`;
+  return h;
+}
 /* ---------- ranking do Loydão + tabela ---------- */
 function catsTemporada(id){ // V-D-E por categoria e totais, semanas fechadas
   const w=Array(9).fill(0),l=Array(9).fill(0),t=Array(9).fill(0),tot=Array(9).fill(0);let n=0;
@@ -1844,14 +1872,14 @@ function render(){
     else if(r.startsWith("museu-"))h=vMuseuJogo(+r.slice(6));
     else if(r.startsWith("acervo-")){UI.museuFiltro=r.slice(7);h=vMuseu()}
     else if(r.startsWith("time-"))h=vTime(+r.slice(5));
-    else h=({confrontos:vConfrontos,times:vTimes,radar:vRadar,museu:vMuseuCapa}[r]||vConfrontos)();
+    else h=({confrontos:vConfrontos,noite:vNoite,times:vTimes,radar:vRadar,museu:vMuseuCapa}[r]||vConfrontos)();
   }catch(e){console.error(e);h=`<div class="card vazio">Deu ruim ao montar esta tela (${esc(e.message)}). Manda print pro Loydão.</div>`}
   $("#app").innerHTML=h;
 }
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
-  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft]");if(!t)return;
+  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
   if(ds.jogo!==undefined)ir("jogo-"+ds.jogo);
@@ -1870,10 +1898,12 @@ document.addEventListener("click",e=>{
   else if(ds.rkc){UI.rkCat=UI.rkCat===ds.rkc?null:ds.rkc;render()}
   else if(ds.rd){UI.radar=ds.rd;render()}
   else if(ds.ft!==undefined){UI.filtroTime=+ds.ft;render()}
+  else if(ds.nd){UI.noiteDia=ds.nd==="sem"?"sem":+ds.nd;render()}
+  else if(ds.nm){UI.noiteModo=ds.nm;render()}
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
   else if(ds.drt){UI.drTemp=ds.drt;UI.drTime="todos";render()}
 });
-document.addEventListener("change",e=>{if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
+document.addEventListener("change",e=>{if(e.target.id==="noiteTime"){UI.noiteTime=+e.target.value;render()}if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
 window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0)});
 $("#btnAtualiza").onclick=()=>atualizarAoVivo();
 (function(){let visto=null;try{visto=localStorage.getItem("painel.tour")}catch(e){}if(!visto){const espera=setInterval(()=>{if(DADOS&&document.querySelector(".jogo")){clearInterval(espera);tourInicio()}},800);setTimeout(()=>clearInterval(espera),30000)}})();
@@ -1908,7 +1938,9 @@ function tourMostrar(){
 function tourFim(){if(tourEls){tourEls.foco.remove();tourEls.box.remove();tourEls=null}try{localStorage.setItem("painel.tour","1")}catch(e){}}
 function tourInicio(){if(tourEls)return;if(location.hash&&location.hash!=="#confrontos"){location.hash="#confrontos"}tourI=0;const foco=document.createElement("div");foco.className="tour-foco";const box=document.createElement("div");box.className="tour-box";document.body.append(foco,box);tourEls={foco,box};setTimeout(tourMostrar,400)}
 $("#btnAjuda").onclick=tourInicio;
-window.addEventListener("resize",()=>{if(tourEls)tourMostrar()});
+window.addEventListener("resize",()=>{if(tourEls)tourMostrar();topoAltura()});
+function topoAltura(){let h=0;["header.topo","#ticker","#crono"].forEach(q=>{const e=document.querySelector(q);if(e&&!e.hidden)h+=e.getBoundingClientRect().height});document.documentElement.style.setProperty("--topo",h+"px")}
+setInterval(topoAltura,2000);
 /* ---------- partida ---------- */
 (function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===8)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}else ticker()})();
 atualizarAoVivo();
