@@ -1244,6 +1244,12 @@ body:not(.rolou) .jn-mini>:not(small){display:none}
 .dia-res>span{flex:1 1 0;display:flex;flex-direction:column;align-items:center;background:#000;border-radius:8px;padding:4px 4px 5px;line-height:1.15;min-width:0}
 .dia-res small{font:800 9px system-ui,sans-serif;letter-spacing:.06em;color:var(--apagado);text-align:center}
 .dia-res b{font-family:var(--display);font-weight:400;font-size:22px;color:#fff}.dia-res i{font-style:normal}.dia-res i.v{color:var(--amarelo)}
+/* trajetória: FA e troca */
+.car-ft.tj{gap:3px}
+.tj-fa{font:800 9px system-ui,sans-serif;color:#000;background:#9a9a9a;border-radius:3px;padding:1px 3px;letter-spacing:.04em}
+.tj-a{font-style:normal;color:var(--apagado);font-size:11px}
+.tj-tr{font-style:normal;color:#ff9f1c;font-weight:800;font-size:13px;display:inline-flex;align-items:center;gap:2px}
+.tj-tr small{font:700 9px system-ui,sans-serif;color:#ff9f1c;white-space:nowrap}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1310,10 +1316,10 @@ body:not(.rolou) .jn-mini>:not(small){display:none}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794164297"></script>
-<script src="radar.js?v=1794164297"></script>
+<script src="hist.js?v=1794164696"></script>
+<script src="radar.js?v=1794164696"></script>
 <script>
-const VERSAO_PAINEL="20261108155817";
+const VERSAO_PAINEL="20261108160456";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2140,107 +2146,147 @@ function abrirLegenda(k){
   el.addEventListener("click",e=>{if(e.target===el||e.target.closest("[data-fecha]"))fecharFicha()});document.body.appendChild(el);
 }
 
-/* apelidos do Loydão: [apelido, frase] (o resto cai no arquétipo) */
+/* apelidos do Loydão: [apelido, frase]. Mídia antiga citada entre aspas; o resto cai no arquétipo */
 const APELIDO={
-"Nikola Jokic":["O CAVALEIRO DO CAVALO","Joker de dia, criador de cavalo na Sérvia de noite. Faz triplo-duplo com a barriga de chope e ainda vai embora antes do hino."],
-"Victor Wembanyama":["O ALIENÍGENA","Desceu da nave pra dar toco em ser humano. Os outros pivôs da liga pedem asilo político."],
-"Luka Doncic":["LUKA MAGIC","Joga andando, de cara amarrada, reclamando com o juiz, e mesmo assim faz 40. O shape é de padeiro, o box score é de deus."],
-"Shai Gilgeous-Alexander":["SHAI DO APITO","Mestre dos lances livres: encosta nele e é falta. Desfila com roupa de desfile de moda e sai com 30 de média."],
-"Jayson Tatum":["JT","Cara de bom moço, arremesso de 'estou com pressa'. Quando está quente, ganha semana; quando está frio, chuta do mesmo jeito."],
-"Giannis Antetokounmpo":["BICHO GREGO","Corre como trem-bala e arremessa lance livre como quem lê um livro: devagar e errando. Punt FT ou sofre."],
-"Cade Cunningham":["CADE CANETA","Assina o jogo inteiro do Detroit. Assistência, ponto e bola perdida em quantidade industrial."],
-"Anthony Edwards":["ANT-MAN","Fala mais que o Loydão e entrega. Quando está fora, o Minnesota vira time de várzea."],
-"Cooper Flagg":["O MENINO DE OURO","Mal saiu da faculdade e já tem cara de franquia. Ainda não sabe que está num time de fantasy de gente amarga."],
-"Tyrese Maxey":["MAXEY TURBO","O mais rápido da liga e o mais sorridente. Arremessa trinta vezes e ninguém reclama porque ele é simpático."],
-"Jalen Johnson":["JJ DO HAWKS","Faz de tudo um pouco e um pouco de tudo. O canivete suíço que ninguém quis acreditar no draft."],
-"Donovan Mitchell":["SPIDA","Homem-aranha do Cleveland: escala o jogo nas costas, mas some de vez em quando pra descansar a teia."],
-"Tyrese Haliburton":["HALI","Óculos de nerd, passe de gênio e um tendão que cobra pedágio. Mais tempo de terno no banco que de uniforme."],
-"Karl-Anthony Towns":["KAT","Pivô que chuta de três e briga com o próprio corpo pra pegar rebote. Gato de sete vidas e seis faltas."],
-"Kevin Durant":["SLIM REAPER","O ceifador magrelo. Velho, ranzinza no Twitter e ainda arremessa melhor que o time inteiro do Loydão."],
-"LaMelo Ball":["MELO","Cabelo colorido, passe de costas e tornozelo de vidro. Quando joga é show; quando não joga, é o normal."],
-"Scottie Barnes":["SCOTTIE PIPPEN DO CANADÁ","Faz tudo menos acertar lance livre. Rebote, roubo, toco — e o FT% de pedreiro."],
-"Austin Reaves":["HILLBILLY KOBE","O caipira que virou ídolo. Ninguém draftou ele na NBA e agora ele escolhe camisa."],
-"Alperen Sengun":["BABY JOKIC","O Jokic turco: passe de pivô, giro bonito e um FT% que ainda está aprendendo a andar."],
-"Jamal Murray":["BLUE ARROW","Arqueiro do Denver. Some na temporada regular e aparece no playoff — azar do fantasy, que acaba antes."],
-"Anthony Davis":["MONOCELHA","O pivô mais talentoso da enfermaria. Toco, rebote e um calendário de lesões que dá inveja a fisioterapeuta."],
-"Stephen Curry":["CHEF CURRY","Cozinha de três a nove metros. Tem 38 anos e ainda chuta como se fosse ilegal."],
-"Josh Giddey":["GIDDEY UP","Triplo-duplo de cavalinho de pau: passa, pega rebote e arremessa com a mão de quem aprendeu ontem."],
-"Bam Adebayo":["BAM BAM","Pedra do Flintstones: duro, confiável e totalmente sem arremesso de três."],
-"James Harden":["O BARBA","Lance livre, step-back e uma barba que já deveria pagar IPTU. Turnover é estilo de vida."],
-"Amen Thompson":["AMÉM","Corre igual cavalo, defende cinco posições e arremessa como quem reza. Amém."],
-"Evan Mobley":["O POLVO","Braço pra todo lado: toco, rebote, roubo. Ofensivamente ainda é um projeto de PowerPoint."],
-"Derrick White":["O CARECA DO TOCO","Armador careca que dá toco em pivô. O jogador mais subestimado do planeta e do seu draft."],
-"Domantas Sabonis":["DOMAS","Rebote, assistência e reclamação. Pivô à moda antiga, de canela fina e mãos de padeiro."],
-"Mikal Bridges":["A PONTE","Liga duas posições e não liga pra estatística nenhuma. Joga todo jogo e some em todos."],
-"Lauri Markkanen":["O FINLANDÊS VOADOR","Sete pés de altura e chute de ala. Joga em time ruim de propósito pra ganhar números."],
-"Jalen Brunson":["CAPITÃO CLUTCH","Pequeno, gordinho e assassino no quarto período. O dono do Madison Square Garden por usucapião."],
-"Jalen Duren":["O TANQUE","Rebote e enterrada. Lance livre e lesão também, pra equilibrar."],
-"Jaylen Brown":["JB","Pontua de tudo que é jeito e passa a bola com a mão que não tem. Turnover sim, assistência talvez."],
-"Devin Booker":["BOOK","Pontuador de novela: bonito, eficiente e totalmente sem defesa."],
-"Brandon Miller":["MILLER DO CHARLOTTE","Pontuador de cara fechada em time que existe pra perder. Quando não machuca, rende."],
-"Pascal Siakam":["SPICY P","O camaronês apimentado. Pontua, pega rebote e não briga com ninguém, nem com a bola de três."],
-"Jalen Williams":["J-DUB","Faz tudo no Oklahoma e ninguém lembra o nome direito porque é o terceiro Jalen da lista."],
-"Dyson Daniels":["O BATEDOR DE CARTEIRA","Rouba bola como quem rouba celular no metrô. Ninguém sabe o que ele faz no ataque, nem ele."],
-"Kawhi Leonard":["O ROBÔ","Garra de ferro e software de gestão de carga. Joga quando quer, fala quando é obrigado."],
-"Trae Young":["ICE TRAE","Passe, ponto e turnover em escala industrial. Defende igual estátua de shopping."],
-"Kyrie Irving":["UNCLE DREW","Drible de outro planeta e opinião de outro planeta também. Joga lindo quando joga."],
-"Paolo Banchero":["PAOLO","Pivô de força com mão de ala. Volume de tijolo grande e potencial maior ainda."],
-"Chet Holmgren":["SLIM CHET","Tem o corpo de um espeto e dá toco em todo mundo. Uma brisa forte coloca ele no IR."],
-"Naz Reid":["NAZ","O sexto homem que vira titular quando alguém machuca — ou seja, toda semana."],
-"Dejounte Murray":["DEJOUNTE","Rouba bola, pega rebote de armador e arremessa com confiança acima do talento."],
-"Nickeil Alexander-Walker":["O PRIMO","Primo do Shai que vive da fama do sobrenome. Chuta de três sem pedir licença."],
-"Trey Murphy III":["TREY TRÊS","Nome com três, joga de três, arremessa três. Simples assim."],
-"Darius Garland":["GARLAND","Armador pequeno de passe bonito e corpo de quem não come direito."],
-"Deni Avdija":["DENI","O israelense que ninguém dava nada e agora entrega linha cheia. Escalada de waiver a titular."],
-"Walker Kessler":["KESSLER DO TOCO","Dá toco e pega rebote. Para todo o resto, chame outro."],
-"Kon Knueppel":["KON","Arremessador de três de cara de seminarista. Se está saudável, é chuva de bola."],
-"Jaren Jackson Jr.":["TRIPLO J","Toco de pivô e rebote de armador. Comete falta até no aquecimento."],
-"Desmond Bane":["BANE","Vilão do Batman com mira de três. Ombros largos, defesa de cartolina."],
-"Matas Buzelis":["BUZELIS","O lituano de Chicago. Toco e três no mesmo pacote, com consistência de loteria."],
-"Joel Embiid":["THE PROCESS","Confia no processo: o processo é ficar machucado metade do ano e dominar a outra metade."],
-"Donovan Clingan":["O POSTE","Dois metros e vinte de pivô raiz. Toco, rebote e passos de dinossauro."],
-"Onyeka Okongwu":["OKONGWU","Pivô que trabalha sem pedir aumento. Toco, rebote e um nome que o narrador erra todo jogo."],
-"Keyonte George":["KEYONTE","Chuta tudo que vê pela frente. FG% de quem acredita demais em si mesmo."],
-"Jarrett Allen":["O CABELUDO","O cabelo tem mais alcance que o arremesso. Rebote, toco e lance livre de igreja."],
-"Tyler Herro":["HERRO","Ponto e mais ponto. Defesa é sugestão."],
-"Franz Wagner":["FRANZ","O alemão engenheiro: tudo funciona, nada brilha. Da linha de três, é Volkswagen com defeito."],
-"Jaden McDaniels":["McDANIELS","Defensor magrelo que pega as faltas mais bobas da liga."],
-"Stephon Castle":["O CASTELO","Fortaleza na defesa e obra inacabada no arremesso."],
-"Ivica Zubac":["ZUBAC","Pivô croata que não faz nada de bonito e tudo de útil. O tijolo que segura a parede."],
-"LeBron James":["O REI","Tem 41 anos e ainda joga mais que metade da liga. Só o filho não está escalado com ele aqui."],
-"De'Aaron Fox":["SWIPA","A raposa veloz. Corre, rouba e arremessa de três como quem paga promessa."],
-"Michael Porter Jr.":["MPJ","Arremessador puro com costas de vidro. Chuta lindo enquanto o fisioterapeuta assiste."],
-"Paul George":["PANDEMIC P","Playoff P virou Pandemic P. Joga quando o corpo deixa, ou seja, às vezes."],
-"OG Anunoby":["OG","Defensor de elite, corpo de lutador. Arremessa três como quem esquece que é ala."],
+"Nikola Jokic":["JOKER, O GORDÃO","A mídia antiga já confessou: \"amo mais o Jokic do que os 11 membros desse grupo + minha família + minha namorada\". Faz triplo-duplo de barriga cheia e vai embora antes do hino. Primeira pick sem discussão — quem discutiu, perdeu."],
+"Victor Wembanyama":["O ALIENÍGENA","\"Wemby até ruim é muito bom\" (mídia antiga). Quando dá 2 tocos parece jogo ruim, e isso diz tudo. \"Caiu no colo um alienígena\" — e o dono ainda acha que foi mérito."],
+"Luka Doncic":["LUKA MAGIC, O GORDINHO SALIENTE","\"Doncic: gordinho saliente\" e, uma semana depois, \"bugou na média de 40\". Shape de padeiro, box score de deus. \"Quem tem Luka, tem muito\" — até o dia em que as costas pedem folga."],
+"Shai Gilgeous-Alexander":["SHAI ULTRA BORING","\"Certezas da vida: a morte e que o Shai vai fazer 30\". Sempre 30-5-5, sempre com cara de quem tá entediado. \"Shai, eu te odeio, mas eu te amo, mesmo te odiando.\""],
+"Jayson Tatum":["JT, O ACIONISTA DO JUDAZZ","O Michel mudou pra Boston e levou o Tatum de lembrancinha. Quando tá quente ganha semana; quando tá frio, chuta igual."],
+"Giannis Antetokounmpo":["BICHO GREGO","\"Giannis é um trator\" — trator que bate lance livre como quem lê bula. \"Giannis voltou? RUA\". Punta FT ou chora."],
+"Cade Cunningham":["CADE CUNIGA","\"Cade Cuniga, o cara!\", \"Lady CADE CADE Lucia\". Ridículo de bom — \"exagerou no TO só\". O Detroit é ele e mais 12 pessoas de terno."],
+"Anthony Edwards":["ANT-MAN","\"Ant carregando morto\" — semana sim, semana também. Quando tá fora, o Minnesota vira time de várzea e o dono vira torcedor do departamento médico."],
+"Cooper Flagg":["COOPER FLOP","A mídia antiga cravou \"Cooper Flop\" e depois jurou: \"Cooper FLOP?? Jamais, nunca critiquei, sempre tentei manipular pra comprar\". Hoje é franquia — engole o Flop."],
+"Tyrese Maxey":["MAXEY TURBO","\"Que jogador, que steal no segundo round\". O mais rápido da liga, o mais sorridente, e chuta 25 vezes sem ninguém reclamar porque ele é simpático."],
+"Jalen Johnson":["JALEN LOVER","\"JJ perdoou o ex\" e depois \"fez a boa pro ex\". Metade da dupla \"Jalen Jokic\". Faz de tudo — inclusive machucar na semana errada."],
+"Donovan Mitchell":["SPIDA","\"Precisamos falar sobre D. Mitchell: mete 40 pontos a cada 4 jogos?\" Homem-aranha do Cleveland, escala o jogo nas costas e some pra descansar a teia."],
+"Tyrese Haliburton":["HALI DA ENFERMARIA","Óculos de nerd, passe de gênio e um tendão que cobra pedágio. Mais tempo de terno no banco que de uniforme. O dono draftou um vídeo do YouTube de 2024."],
+"Karl-Anthony Towns":["KAT 20/20","\"Fecha os olhos. Não olha pro Towns\" num dia; \"Towns monstro\" no outro. Pivô que chuta de três e briga com o próprio corpo pra pegar rebote."],
+"Kevin Durant":["DURANTULA","\"Durantula is back in business\". Velho, ranzinza e ainda arremessa melhor que o time inteiro. Foi moeda de uma das trocas mais polêmicas da história do Della."],
+"LaMelo Ball":["MELO, TORNOZELO DE VIDRO","\"Melo 🥹 ankle 🥹 — muito triste (hope)\". Passe de costas, cabelo colorido e um calendário de lesão que o Hospital Vila Nova Star conhece de cor."],
+"Scottie Barnes":["TARADO DE TORONTO","\"Quick e Barnes = tarados de Toronto\". \"O suposto injury prone que não machucou nenhuma vez\". Faz tudo, inclusive desrespeitar o antigo dono."],
+"Austin Reaves":["HILLBILLY KOBE","\"Carregou morto e morreu na praia\". O caipira que ninguém draftou na NBA e agora escolhe camisa. Sem o LeBron, vira armador de luxo."],
+"Alperen Sengun":["SENGUN COMEDOR DE COCO","\"Sengun come coco\" (mídia antiga, sem explicação, sem necessidade). Baby Jokic turco: passe de pivô e FT ainda aprendendo a andar. \"Monstro sagrado\"."],
+"Jamal Murray":["JAMAL, O CRUEL","\"Jamal, o cruel\", \"Jamal, o fatal\" e \"CRAQUE da redonda (muito melhor que o Bruno)\". Some na temporada regular e aparece no playoff — azar do fantasy, que acaba antes."],
+"Anthony Davis":["NECKSON DAVIS","\"Anthony DAVIS SAUDÁVEL? ESQUECE, CRACK GERACIONAL\" — o problema é o \"saudável\". Monocelha mais talentosa da enfermaria. O Necks sabe."],
+"Stephen Curry":["CHEF CURRY","\"Curry: molho\". 38 anos e chuta como se fosse ilegal. Se tem jogo, o dono ganha 3PM e FT de brinde."],
+"Josh Giddey":["GIDDEY CS","A mídia antiga cansou de escrever \"Giddey CS\" (\"já falei algumas vezes, não gosto de repetir a palavra\"). Triplo-duplo de cavalinho de pau e FT que \"acabou com o matchup\"."],
+"Bam Adebayo":["BAM BANGUER","\"Bam: Bam\". Pedra do Flintstones: duro, confiável e sem bola de três desde a pré-história. Às vezes mete \"6 pêras e 30\" pra ninguém esquecer."],
+"James Harden":["O BARBA","\"Harden, he is the system guys\". 37 anos, \"o gordinho mais gostoso do mundo\" segundo a mídia antiga, e ainda joga todo jogo. Turnover é estilo de vida."],
+"Amen Thompson":["AMÉM","\"AMEM que você pickou o AMEN\". \"Fujam pras colinas\". Corre igual cavalo, defende cinco posições e arremessa como quem reza."],
+"Evan Mobley":["MOBLEY À VENDA","\"Hope Mobley is OK (available to trade)\". O polvo: toco, rebote, roubo — e um eterno anúncio de OLX pendurado no grupo."],
+"Derrick White":["O CARECA INIMIGO DO FG","\"Derrick White inimigo do FG\" — e mesmo assim dá toco em pivô. Armador careca mais subestimado do planeta e do seu draft."],
+"Domantas Sabonis":["SABOR 7º ROUND","\"Sabonis vive! (SaBOR 7º round)\". Rebote, assistência e reclamação. Quando joga, \"isso que é second round\"; quando não joga, é sabor de nada."],
+"Mikal Bridges":["A PONTE PRA LUGAR NENHUM","Pegaram no 3º round — loucura total — e já em cenário de drop. Joga todo jogo e some em todos. Útil só pra quem punta vitória, ou seja: o Baianas."],
+"Lauri Markkanen":["MARKKANEAN","\"Markkanean tava com medo do Seridó\" e depois \"foi descansar pra season 26/27\". Finlandês voador que joga em time ruim de propósito."],
+"Jalen Brunson":["BRUNSON (NUNCA CRITICADO)","\"Brunson (nunca criticado pela mídia) clutch 47 piece\" — uma semana depois de \"Brunson me irrita\". Pequeno, gordinho e assassino no quarto período."],
+"Jalen Duren":["DUREN DOIS PATINHOS","\"Duren dois patinhos na lagoa 2x (22 pts e 22 reb)\". \"Top 50 é realidade, top 20 era ilusão pura\". Agora: posterior de coxa e 2 semanas de molho."],
+"Jaylen Brown":["HARRY STYLES DO BASQUETE","\"Ganhou protagonismo sozinho e tá brilhando\" (mídia antiga). \"Quanto maior, maior a queda\" — e o dono finge que não leu."],
+"Devin Booker":["BOOK","\"Devin Booker está passando por problemas psicológicos. Eu cuido\". Pontuador de novela: bonito, eficiente e totalmente sem defesa."],
+"Brandon Miller":["BM, INIMIGO DO ARO","\"Brandon Miller fez cosplay de Jordan Poole: 1/13 FG\". Quando acerta, \"finalmente pagando o que eu paguei\"."],
+"Pascal Siakam":["SPICY P","\"Siakam é monstro tá? Vende caro!\" — e depois \"me parece que o Siakam já era\". O camaronês apimentado que não briga nem com a bola de três."],
+"Jalen Williams":["JDUB","\"A ver com a volta do JDUB, NESSA SEMANA (FICA ATENTO VAGABUNDO)\". Terceiro Jalen da lista e o que mais some na enfermaria do Oklahoma."],
+"Dyson Daniels":["O BATEDOR DE CARTEIRA","\"Dyson 4 steals. We back!\" Rouba bola como quem rouba celular no metrô. \"Dyson, I love you\" — no ataque, ninguém sabe o que ele faz, nem ele."],
+"Kawhi Leonard":["O ROBÔ DO B2B","\"Kawhi: 'vou jogar b2b' / Clippers: 'vai sim filho, confia'\". Garra de ferro e software de gestão de carga. Quando joga, é vintage."],
+"Trae Young":["ICE TRAE","Passe, ponto e turnover em escala industrial. Defende igual estátua de shopping. \"Necks sobrevive uma semana sem TRAE\" — e às vezes sobrevive melhor."],
+"Kyrie Irving":["UNCLE DREW","Drible de outro planeta e opinião de outro planeta também. Na IR do lado do Dejounte: \"esse tá com medo do stand up\"."],
+"Paolo Banchero":["PAOLO, SEMPRE UMA % PRO SACO","\"Paolo: sempre alguma % vai pro saco\". \"Sou hater do Paolo\", disse a mídia — até ele jogar bem e todo mundo virar fã."],
+"Chet Holmgren":["SLIM CHET","\"Chet desaprendeu a dar BLK? Vtnc\". Tem o corpo de um espeto e dá toco em todo mundo — quando o Hartenstein deixa."],
+"Naz Reid":["NAZ","\"Valorizar o Naz Reid nos dias bons 👏\" — ou seja, quase nunca. O sexto homem que vira titular quando alguém machuca."],
+"Dejounte Murray":["DEJOUNTE","Rouba bola, pega rebote de armador e arremessa com confiança acima do talento. Mais tempo na IR que na quadra."],
+"Nickeil Alexander-Walker":["NAW SAFADINHO","\"NAW safadinho mas 7 TO\", \"NAW gostosinho\". O primo do Shai que rodou metade da liga pela waiver e cada dono jura que descobriu."],
+"Trey Murphy III":["TREY MURPIS DEPAY","\"Murpis Depay fazendo cosplay de Memphis Depay — ruim dimai\" e, na semana seguinte, \"TREY MURPIS DEPAY 40 PIECE!!!\". Valendo o investimento, ao contrário do atleta do Corinthians."],
+"Darius Garland":["GARLÃO","\"Garland alterna season boa com ruim. Essa é a ruim. Eu sempre pego na ruim\". \"Lesão mensal, inimigo da tranquilidade\"."],
+"Deni Avdija":["DENI SUPERSTAR","\"Avdija insano — All Star?\" O israelense que ninguém dava nada e agora entrega linha cheia."],
+"Walker Kessler":["KESSLER","\"Nurkic >>>>> Kessler! Melhorou o time\" — a mídia antiga não perdoa. Dá toco e pega rebote; pra todo o resto, chame outro. \"Desde outubro não supriu a falta do Kessler\" (Verdes)."],
+"Kon Knueppel":["KON, O NOVO KLAY","\"Kon Knueppel joga BOLA — o novo Klay Thompson\". \"Steal of the draft\". Se tá saudável, é chuva de bola de três."],
+"Jaren Jackson Jr.":["TRIPLE J","\"R.I.P. Triple J\", \"JJJ renasceu das cinzas — 5 blks, 30 pts vsf\", \"JJJ jogou 3 jogos bem no ano e todos contra mim\". Montanha-russa com cinto quebrado."],
+"Desmond Bane":["BANE","\"Bane do céu — descontando toda a raiva da mídia\". Vilão do Batman com mira de três e defesa de cartolina."],
+"Matas Buzelis":["BUZA","\"Buza: sometimes maybe shit, sometimes maybe good\". Híbrido de \"5 pêras + 5 blks\" com consistência de loteria."],
+"Joel Embiid":["THE PROCESS","\"Pacientes de luxo: Embiid, LaMelo, Mark\". \"Se livra do Embiid por favor\" — e aí vem \"Vintage Biid, 36 minutos, um PROBLEMA\". O processo é ficar machucado metade do ano."],
+"Donovan Clingan":["CLINGAN CLINGOU","\"Clingan clingou\" e \"reaprendeu a dar blk\". Dois metros e vinte de pivô raiz com passo de dinossauro."],
+"Onyeka Okongwu":["ONYEKA, O COLOSSO","\"Onyeka um colosso. Lembro quando o Tubas revelou a fera que flopou na mão dele\". \"Maior sell high do mundo\" — ninguém vendeu."],
+"Keyonte George":["KEYONTE + 12","\"Keyonte George + 12 é o time\" e \"o menino que EU REVELEI\". Chuta tudo que vê pela frente; o dono acredita mais que o próprio Keyonte."],
+"Jarrett Allen":["JARRETT, NADANDO EM LESÕES","\"Jarrett Allen nadando em lesões. Quando joga completo, complica pra ele\". O cabelo tem mais alcance que o arremesso."],
+"Tyler Herro":["HERRO, FRANCHISE PLAYER","\"Herro insano, franchise player — valerá o hold\". Ponto e mais ponto; defesa é sugestão. \"Hope Herro is ok\" é praticamente um bordão."],
+"Franz Wagner":["FRANZ","Engenheiro alemão: tudo funciona, nada brilha. Da linha de três, é Volkswagen com defeito."],
+"Jaden McDaniels":["McDANIELS, O OPERÁRIO","\"McDaniels: sólido, operário, honesto\" — e \"fraco demais e você não aceita uma trade por ele, vsf\". O Tubas pegou alto; ainda se paga, por enquanto."],
+"Stephon Castle":["O CASTELO","\"Stephon Castle tá BIG\". Fortaleza na defesa e obra inacabada no arremesso. \"Me dá esse Castle\" — ninguém deu."],
+"Ivica Zubac":["ZUBAC, O COLOSSO","\"Zubac — Colosso\". Pivô croata que não faz nada bonito e tudo útil. Foi peça da troca do Durant; o Della até hoje não pede desculpa."],
+"LeBron James":["PAPAI LEBRON","\"Papai LeBron roubou o seu e o nosso coração\" e, na semana seguinte, \"LeBron washed?\". 41 anos e ainda joga mais que metade da liga."],
+"De'Aaron Fox":["WHAT DOES THE FOX SAY","\"FOX — what does the fox say? Dindindin… crack\". Depois: \"Fox nota 6\". A raposa veloz que rouba bola e arremessa de três pagando promessa."],
+"Michael Porter Jr.":["MPJ","\"MPJ vende enquanto pode\" e depois \"MPJ agora é All-Star??\". \"Eu avisei que era pra vender o MPJ\". Arremessador puro com costas de vidro."],
+"Paul George":["PANDEMIC P","\"Paul George mostrando que não é vagabundo! Voltando\" — e \"mais um PG do Mavs que dá esperança e morre progressivamente\". Virou \"trabalhador honesto\"."],
+"OG Anunoby":["OG BEM OG","\"OG bem OG\", \"OG crack das steals\". Defensor de elite, corpo de lutador, zero drama. Ninguém posta, todo mundo precisa."],
 "Damian Lillard":["DAME TIME","Relógio parado no quarto período. Infelizmente o tendão também parou."],
-"Julius Randle":["RANDLE","Força bruta e arremesso duvidoso. O touro que às vezes entra na loja de porcelana."],
-"Rudy Gobert":["TORRE EIFFEL","Francês de toco e rebote. No ataque, só se a bola cair do céu na mão."],
-"Zion Williamson":["ZANOS","Uma força da natureza com tornozelo de porcelana. Quando joga, ninguém para; quando não joga, é terça-feira."],
-"Zach Edey":["O GIGANTE","Dois metros e vinte e quatro de canadense. Pega rebote sem pular."],
-"Josh Hart":["HART","Pega rebote de pivô com corpo de armador. Corre como se estivesse devendo."],
-"Payton Pritchard":["PRITCHARD","O sexto homem que chuta do meio da quadra no fim do quarto. Bola de três de graça."],
-"Ja Morant":["JA","Voa pra enterrar e cai pra lesionar. Fantasy dele é montanha-russa sem cinto."],
-"Fred VanVleet":["STEADY FREDDY","Armador sem draft que vive de bola de três e roubo. Barato e honesto."],
-"Myles Turner":["MYLES","Toco e três de pivô. Em 25/26 virou lenda do Pick 32 ➜ Rk 196."],
-"Coby White":["COBY","Arremessador de volume que alterna entre quente e quentíssimo."],
-"Jalen Green":["JALEN GREEN","Atleta de comercial e FG% de pelada. Quando acerta, viraliza; quando erra, ninguém percebe."],
-"Isaiah Hartenstein":["HARTENSTEIN","Pivô de rebote e passe com cara de engenheiro alemão. Faz o serviço sem barulho."],
+"Julius Randle":["JULIUS FUCKING RANDLE","\"Sell high mais óbvio da história\" — e o dono não vendeu. \"GM Jim Carrey de não tentar sell high!\" Força bruta e arremesso duvidoso."],
+"Rudy Gobert":["GOBERT HONESTO","\"Gobert honesto\". Toco e rebote. \"Olha o FT do Gobert (irrelevante pra um time que punta FT!!!)\"."],
+"Zion Williamson":["ZION MAGRO","\"Rip Zion magro — esse cara nunca mais\". \"Zion é o cabra quando joga; difícil é jogar\". Força da natureza com tornozelo de porcelana."],
+"Zach Edey":["EDEYZÃO","\"Edey do CÉU — 32/17 com 5 blks! Ave Maria\". Dois metros e vinte e quatro de canadense que pega rebote sem pular. \"Edey já era\" — até a próxima volta."],
+"Josh Hart":["JOSH HART, ÁGUA DE SEATTLE","\"Até o Josh Hart foi bem. A água de Seattle é diferente\". Pega rebote de pivô com corpo de armador e corre como se estivesse devendo."],
+"Payton Pritchard":["PRITCHARD","\"Pritchard finalmente matou 2+ pêra — eu quero!\" Sexto homem que chuta do meio da quadra no estouro do relógio."],
+"Ja Morant":["JAMORANGA","\"Jamoranga\", \"Jamorant zé tretinha\", \"Jazinho continua chutando mal, mas 13 assists é lindo\". \"Ja Morant is back, os Avengers estão voltando\" — por uma semana."],
+"Fred VanVleet":["STEADY FREDDY","Armador sem draft que vive de bola de três e roubo. Barato e honesto — quando não tá machucado."],
+"Myles Turner":["MYLES, A DECEPÇÃO","\"Drop Myles Turner (não é zueira)\". Pick 32 ➜ Rk 196 em 25/26. \"Semana passada inteira tentei trocar o Brandon Miller pela bosta do Myles Turner e ainda bem que ele recusou\"."],
+"Coby White":["COBY, WHITE","\"Coby white voltou como se nunca tivesse parado\" e \"Coby White ruim DIMAI\". Arremessador de volume que alterna entre quente e quentíssimo."],
+"Jalen Green":["JALEN GREEN É TRISTE","\"Jalen Green é triste\" (mídia antiga, sem mais). Atleta de comercial e FG% de pelada."],
+"Isaiah Hartenstein":["I HARTEN","\"Hartenstein MONSTER GAME\" e \"Hartenstein volta nunca?\". Pivô de rebote e passe que rouba os tocos do Chet."],
 "Miles Bridges":["MILES","Pula muito e chuta com a confiança do próprio tamanho."],
-"Alex Sarr":["SARR","O francês do toco. Ainda procura onde fica a cesta no ataque."],
-"Dylan Harper":["HARPER","Rookie com cara de veterano. Ainda tem que pedir licença pra pegar a bola."],
-"AJ Dybantsa":["DYBANTSA","O calouro que veio com hype de franquia. Os managers da liga já acenderam vela."],
+"Alex Sarr":["SARR, O ÓTIMO BATEDOR DE FT","\"Sarr espetacular até rima\", \"6 blks do Sarr\", \"Sarr, o ótimo batedor de FT\" (ironia pura). Talvez a melhor pick do Tubas."],
+"Dylan Harper":["HARPER","\"Dillon Harper joga bola. FT ruim ainda — parece casamento perfeito\". Rookie com cara de veterano."],
+"AJ Dybantsa":["DYBANTSA","Calouro com hype de franquia. Os managers da liga já acenderam vela — e a mídia já separou o \"nunca critiquei\"."],
 "Cameron Boozer":["BOOZER","Filho do Carlos Boozer. Herdou o rebote e, por enquanto, o FT% também."],
-"VJ Edgecombe":["VJ","Atleta de enterrada e ainda aprendendo a arremessar. Em fantasy, é aposta."],
-"Kel'el Ware":["WARE","Pivô novo do Miami. Toco e rebote quando o Spoelstra lembra que ele existe."],
-"Norman Powell":["NORM","Pontuador honesto que todo time quer e nenhum time guarda."],
-"Keegan Murray":["KEEGAN","Arremessador de três que some quando o time precisa."],
-"Brandin Podziemski":["PODZ","Nome impossível de soletrar, rebote de pivô e cabelo de surfista."],
-"Ausar Thompson":["AUSAR","O outro gêmeo. Defende tudo e arremessa como o irmão: com fé."],
+"VJ Edgecombe":["EDGECOMBE","\"Estabilizou! É fera, mas também não é o top 30 das primeiras semanas\". \"VJ is back? The goat?\"."],
+"Kel'el Ware":["KEKEL","\"KEKEL\", \"Kel'el sobrevive mais quantas semanas?\" e o pedido de desculpas histórico: \"ME PERDOE GUSTA, ANDRÉ, POR TUDO QUE JÁ FALEI DELE, SEMPRE ESTIVE ERRADO\"."],
+"Norman Powell":["POWELL, LINHA MUITO POWELL","\"Powell com uma linha muito Powell\". Pontuador honesto que todo time quer e nenhum time guarda."],
+"Keegan Murray":["KEEGAN","\"Keegan Murray breakout? A mídia não esperava por essa\". \"Aulas de hold\" — até ele sumir de novo."],
+"Brandin Podziemski":["PODZ, NUNCA CRITICADO","\"Podz QUASE triplo-duplo — consegue ser ruim até assim\". \"Podz, aquele que nunca foi criticado\"."],
+"Ausar Thompson":["AUSAR ALELUIA","\"Jogo ruim do Ausar: 4 stl, 2 blk\". O outro gêmeo: defende tudo e arremessa com fé. \"Ausar aleluia\"."],
 "Collin Murray-Boyles":["CMB","Faz de tudo um pouco e ainda está decidindo o que é."],
-"Reed Sheppard":["REED","Rookie de três pontos e de roubo. Pequeno, branco e perigoso."],
-"Day'Ron Sharpe":["SHARPE","Rebote ofensivo e mais nada, mas faz isso muito bem."],
-"Ty Jerome":["TY","Chuta de três e rouba bola quando ninguém está olhando."],
-"Ryan Rollins":["ROLLINS","Saiu do nada pro elenco de alguém. Ninguém lembra quem pegou."]
+"Reed Sheppard":["REED GERMAN SHEPHERD","\"Reed German Shepherd PIKA — sorte que o Tubas dropou\" e \"Tchau Reed Shepard\". Rodou a waiver mais que panfleto."],
+"Day'Ron Sharpe":["SHARPE DELICIOSO","\"Sharpe delicioso\", \"Sharpe cosplay de Amen\". Rebote ofensivo e mais nada — mas faz isso muito bem."],
+"Ty Jerome":["TY JEROME","\"MANO DROPA ESSE TY JEROME KKKKKK\" — a mídia antiga gritando com o Panam Bay. Chuta de três e rouba bola quando ninguém olha."],
+"Ryan Rollins":["RYAN ROLLING","\"Ryan stopped rolling\", \"Ryan rolled again\", \"Ryan will keep rolling\". Saiu do nada pro elenco de alguém e ninguém lembra quem pegou."],
+"Andrew Wiggins":["WIGGINS, OPERÁRIO DO AMOR","\"Wiggo CLT exemplar\", \"operário Wiggins é o falso ruim\", \"Wiggins operário do amor\". Bate o ponto, não faz hora extra."],
+"Jusuf Nurkic":["NURK","\"Nurk triplo-duplo???? TOP, Kessler is not missed\". \"Aproveitem que tá em promoção\"."],
+"Peyton Watson":["PEYTINHO","\"Não larga esse Peyton. Se for largar, larga no meu peito\". \"Peyton Watson craque geracional\" — a mídia acreditou primeiro."],
+"Derik Queen":["D QUEEN, KING OF THE NIGHTS","\"Derik Queen é o novo Jokic\", depois \"podemos aceitar que flopou né\", depois \"admito: Derik Queen é real\"."],
+"Russell Westbrook":["WESTBROOK EM PLENO 2026","\"Não consigo acreditar que em pleno 2026 o Westbrook tá fazendo isso\". \"Tinha que proibir uma franquia de ter Westbrook de titular\"."],
+"Anthony Black":["BLACK","\"Anthony Black MIP?\" \"Anthony Black for real\". Usage que assusta e dono que se acha gênio."],
+"Saddiq Bey":["SAD-DICK BEY","\"Depressed penis (SAD-DICK Bey) solid\" — a mídia antiga não tinha limites. \"Must roster com Zion out\"."],
+"Jaylen Tyson":["JAYLEN MIKE TYSON","\"KRL Jaylen Mike Tyson\". \"Snipada of the day\". Voa nas ausências e some quando o time tá completo."],
+"Klay Thompson":["KLAY WASHED","\"Roster o Klay é pedir pra perder\", \"quem streama Klay Thompson merece perder\". Se continuar com ele, \"já pode aquecer a voz\" pro stand-up."],
+"Cam Thomas":["CAM THOMAS DA LIXEIRA","\"PELO AMOR DE DEUS DROPA A MERDA DO KELLY E DO CAM THOMAS\". Ponto e só ponto — e lixeiro de FA vindo de franquia boa."],
+"Bilal Coulibaly":["BILAUZINHO","\"Olha o bilauzinho subindo!\" e \"bilauzinho NUM DÁ\". Depois \"Bilau craque — MUST hold\". Ninguém entende o Bilau."],
+"Jordan Poole":["O AMULETO","\"Poole é a pior pessoa do mundo, eu odeio ele com força (não vou dropar o amuleto)\"."],
+"Vince Williams Jr.":["WCJR","\"Nunca mais fale mal de WCJr\" — dito por quem falou mal na semana anterior."],
+"Gui Santos":["GUI PRANTOS","\"O CRAQUE GUI PRANTOS\". \"GUI SANTOS FOR THE KILL\". Ninguém sabe se é piada ou se é sério; a mídia também não."],
+"Dominick Barlow":["DOMINAYTON","\"DOMINAYTON FOR THE KILL\" e \"FALE IMEDIATAMENTE DO DOMINAYTON\"."],
+"Jared McCain":["TIKTOKER","\"TikTok McCain tá voltando (ter ele no time perde muita aura)\". \"Tiktoker 20 pontos!\"."],
+"Jabari Smith Jr.":["JABARÃO","\"Jabarão (porra, Weeds)\", \"Jabarão continua zika\". Faz o ex-dono chorar."],
+"Kristaps Porzingis":["PORZINGÃO","\"Porzingis fica mais doente que criança de 5 anos\" e \"fazendo cosplay de Jordan Poole\". Unicórnio de enfermaria."],
+"Bradley Beal":["BEAL","\"Beal é o cara mais nojento que já vi\" (mídia antiga, sem filtro)."],
+"Jimmy Butler":["JIMMY MANTEIGA","\"Time abalou depois da lesão do Jimmy Manteiga\". \"They stole my joy\" — e o dono também perdeu a alegria."],
+"Aaron Gordon":["AARON GORDON","\"Aaron Gordon quase triplo-duplo kkk\". \"Não vale o hold pra quem vai ter que aguentar o Tatum\"."],
+"Grayson Allen":["GREYSON","\"Greyson ridículo também — volta Book, volta Green\". Faz a festa quando o Suns tá vazio."],
+"Kevin Porter Jr.":["KPJ","\"KPJ é o hold do ano\" — o Baianas segurou enquanto muitos dropariam. \"KPJ voltou na IR — padrão Ymir\"."],
+"Jerami Grant":["JEREMI GRANT, 19 DE GRAÇA","\"O famoso 19 pontos de graça. É isso mesmo e mais nada\". \"A água de Seattle é diferente\"."],
+"CJ McCollum":["CJ WASHED","\"CJ washed — vem conhecer a FA\" e \"CJ > Maxey\" na mesma temporada. \"Fat man gotta gun\"."]
+};
+/* piada interna por time da liga (sai junto com a frase do jogador) */
+const ZOE_TIME={
+"Iguana":["Mora no Hospital Vila Nova Star, ala VIP.","No time do título de 51: vale tanto quanto."],
+"Verdes":["\"Quando o Verdes escala, ESQUECE!!!\"","O Gusta jura que é Pep Gustiola."],
+"Diabo":["O Della achou na FA, claro — \"FA legend\".","Tem o PACTO."],
+"Panam Bay":["Deixa o robô escalar, Alexis, por favor.","Draftado direto da piscina do Fasano."],
+"Necks":["Cheirinho de DESESPERO no ar.","O Deco segura até o fim, com fé e desespero."],
+"Tubas":["\"Vai dropar essa belezinha?\"","O Arthur morre com suas certezas, e esse é uma delas."],
+"Judazz":["No time do eterno médio: não surpreende, não decepciona.","O Michel nem assiste, tá estudando em Harvard."],
+"Icers":["O Gelinho tá estudado este ano. Será?","Carisma puro, resultado nem sempre."],
+"Baianas":["Punt win é estratégia, não acidente.","O Leozão vai esquecer de escalar, relaxa."],
+"Seridó":["\"Sempre mamando na segunda.\"","Bicampeão faz questão de lembrar."],
+"Osasco":["Lixeiro de FA: pega, usa, devolve.","O RB Bragantino da liga."],
+"Pompeia":["Novato na liga e já sofrendo.","O Pompeia ainda tá lendo o regulamento."]
 };
 
 /* leitura do Loydão: o que o cara É, em tom de zoeira (sem número) */
@@ -2267,6 +2313,7 @@ function leituraLoydao(p,z,tend,dono){
   if(!outLong&&inj){const out=(nw&&nw.st==="OUT")||p.inj==="OUT";extra.push(out?`Hoje tá fora${nw?" ("+nw.nota.split("·")[0].trim()+")":""}: o ${dono} assiste de camarote.`:um(["Tá em dúvida pra hoje: chance de aparecer igual chance de chover em Osasco no sábado.","Status duvidoso: escala e reza."]))}
   if(tend!=null&&tend>=1.5)extra.push(um(["E tá pegando fogo: alguém avisa que a fase boa não dura.","Fase de MVP de bairro: aproveita antes que acabe."]));
   else if(tend!=null&&tend<=-1.5)extra.push(um(["E esfriou bonito: tá jogando de chinelo.","Fase de geladeira de bar: quente só a cerveja, ele não."]));
+  const zt=ZOE_TIME[dono];if(zt&&h%3!==0)extra.push(zt[(h>>3)%zt.length]);
   const ap=APELIDO[p.n];if(ap&&!outLong)return [ap[0],[ap[1],...extra].join(" "),t];
   return [t,[f,...extra].join(" "),ap?ap[0]:null];
 }
@@ -2335,7 +2382,21 @@ function abrirJogador(id,perF){
   const rkDe=yr=>yr===2027?(p.rk&&p.rk[0])||null:((((HIST.rkt||{})[rotT(yr)])||{})[p.n]||[])[0]||null;
   const dr=yr=>{const pk=pickDe(yr),rk=rkDe(yr);if(pk===undefined&&!rk)return "";const cls=pk&&rk?(rk<pk-12?"bom":rk>pk+24?"ruim":""):(!pk&&rk&&rk<=100?"bom":"");
     return `<span class="car-dr ${cls}">${pk===undefined?"":pk?`Pick ${pk}`:"Não draftado"}${rk?`${pk!==undefined?" ➜ ":""}<b>Rk ${rk}</b>${yr===2027?" até agora":""}`:""}</span>`};
-  const carinhas=yr=>{const x=tmsDe(yr);if(!x.ts.length)return `<span class="car-fa">livre na liga</span>`;return `<span class="car-ft">${x.ts.map((t,i)=>`${i?'<i>›</i>':""}${logo(t)}`).join("")}${x.ts.length===1?`<em>${esc(x.ts[0])}</em>`:""}${x.drop?'<em class="dp">largado</em>':""}</span>`};
+  const trajDe=yr=>{const k=rotT(yr);if(yr===2027){const tx=(d.tx&&d.tx.tr)||[];const x=tmsDe(yr);const pk=pickDe(yr);const p0=[];
+      x.ts.forEach((tm,i)=>{const tid=(d.teams.find(q=>T(q.id)[0]===tm)||{}).id;const it=tx.find(z=>z[0]===id&&z[2]===tid);let com=null;if(it){com=tx.filter(z=>z[4]===it[4]&&z[1]===tid).map(z=>{const q=d.P.find(w=>w.id===z[0])||(d.fa||[]).find(w=>w.id===z[0]);return q?q.n:null}).filter(Boolean)}
+        p0.push([tm,i===0?(pk?"draft":"fa"):(it?"troca":"fa")].concat(com&&com.length?[com]:[]))});
+      return {p:p0,f:d.P.some(q=>q.id===id&&!q.fora)?null:(p0.length?"fa":null)}}
+    const T0=(HIST.traj||{})[p.n];if(T0&&T0[k])return T0[k];const x=tmsDe(yr);return x.ts.length?{p:x.ts.map((t,i)=>[t,i===0&&pickDe(yr)?"draft":"fa"]),f:x.drop?"fa":null}:null};
+  const curto=n=>{const w=String(n).split(" ");return w.length>1?w.slice(1).join(" "):n};
+  const carinhas=yr=>{const tj=trajDe(yr);if(tj&&tj.p.length&&(tj.p.length>1||tj.p[0][1]!=="draft"||tj.f)){
+      let h2=`<span class="car-ft tj">`;tj.p.forEach((s2,i)=>{const [tm,como,com]=s2;
+        if(i===0&&como==="fa")h2+=`<span class="tj-fa">FA</span><i class="tj-a">→</i>`;
+        if(i>0)h2+=como==="troca"?`<i class="tj-tr" title="troca${com?" por "+esc(com.join(", ")):""}">⇄${com?`<small>${esc(com.slice(0,2).map(curto).join(", "))}${com.length>2?" +"+(com.length-2):""}</small>`:""}</i>`:`<i class="tj-a">→</i><span class="tj-fa">FA</span><i class="tj-a">→</i>`;
+        h2+=logo(tm)});
+      if(tj.f)h2+=`<i class="tj-a">→</i><span class="tj-fa">FA</span>`;
+      if(tj.p.length===1)h2+=`<em>${esc(tj.p[0][0])}</em>`;
+      return h2+`</span>`}
+    const x=tmsDe(yr);if(!x.ts.length)return `<span class="car-fa">livre na liga</span>`;return `<span class="car-ft">${x.ts.map((t,i)=>`${i?'<i>›</i>':""}${logo(t)}`).join("")}${x.ts.length===1?`<em>${esc(x.ts[0])}</em>`:""}${x.drop?'<em class="dp">largado</em>':""}</span>`};
   const LT=linhasCar.filter(l=>!l.soLiga);const tot=LT.length>1?(()=>{const g=LT.reduce((x,l)=>x+l.a[11],0);const m=zero().map((_,i)=>LT.reduce((x,l)=>x+l.a[i]*l.a[11],0)/Math.max(1,g));return [...m,g]})():null;
   const selo=a=>{const n=notaDe(a);return `<span class="car-n ${corN(n)}">${n==null?"–":(n>0?"+":"")+n.toFixed(1)}</span>`};
   const v4=(a,yr)=>`<span class="car-v"><b>${yr?jp(a[11],p,yr):a[11]}</b><small>J</small></span><span class="car-v"><b>${n1(a[0])}</b><small>PTS</small></span><span class="car-v"><b>${n1(a[1])}</b><small>REB</small></span><span class="car-v"><b>${n1(a[2])}</b><small>AST</small></span>`;
