@@ -679,6 +679,26 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
  .st td{font-size:14px;padding:7px 6px}.st .pos{font-size:18px}.st .rec{font-size:17px}
 }
 
+/* notícias */
+.news ul{list-style:none;margin:0;padding:4px 12px 8px;display:flex;flex-direction:column}
+.news li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;padding:8px 0;border-bottom:1px solid var(--linha);font-size:14px;line-height:1.3;align-items:start}
+.news li:last-child{border-bottom:0}
+.news li.link{cursor:pointer}
+.news li b{color:var(--amarelo)}
+.news .ico{font-family:var(--display);font-size:11px;letter-spacing:.06em;background:var(--amarelo);color:#000;padding:2px 6px;border:2px solid #000;white-space:nowrap;margin-top:1px}
+.news .ico.r{background:var(--vermelho);color:#fff}
+.meu{display:inline-flex;align-items:center;gap:6px;margin-left:8px;font-size:13px}
+.meu select{background:#000;color:#fff;border:2px solid var(--amarelo);padding:3px 6px;font:inherit;font-weight:700;font-size:13px}
+.jogo.meu-jogo{border-color:var(--amarelo);box-shadow:5px 5px 0 var(--amarelo)}
+/* título compacto no celular */
+@media (max-width:760px){
+ .cab-secao{flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px 10px}
+ .sobre{font-size:11px;padding:2px 8px;transform:none;order:1}
+ .manchete{font-size:20px;line-height:1;text-shadow:2px 2px 0 #000;-webkit-text-stroke:1.5px #000;order:2;flex:1 1 100%}
+ .linha-fina{font-size:12px;order:3;flex:1 1 100%;margin:0}
+ .meu{margin-left:0;display:flex;margin-top:4px}
+}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -984,18 +1004,52 @@ function h2hEntre(A,B){const l=confrontosDe(A).filter(m=>m.a===B||m.b===B);let v
 /* ---------- views ---------- */
 function vazio(){return `<div class="cab-secao"><span class="sobre">PAINEL DO LOYDÃO</span><h1 class="manchete">BUSCANDO A ESPN…</h1><p class="linha-fina">Se não carregar em alguns segundos, toque em Atualizar. O Museu já funciona.</p></div>`}
 
+function noticias(){
+  const d=DADOS;const sp=d.cur;const it=[];const nomeT=id=>T(id)[0];
+  const jogo=m=>d.mt.findIndex(x=>x.includes(m));
+  const opDe=t=>{const m=d.mt.find(x=>x.includes(t));return m?m[0]===t?m[1]:m[0]:null};
+  // jogadores do dia
+  d.P.forEach(p=>{const v=p.dl&&p.dl[sp];if(!v||p.fora)return;const [pts,reb,ast,stl,blk,tp,to]=v;const slot=v[11];const dd2=[pts,reb,ast,stl,blk].filter(x=>x>=10).length;
+    const quem=`<b>${esc(p.n)}</b> (${esc(nomeT(p.t))})`;const g=d.nba&&d.nba[p.pro];const live=g&&g.live?" e o jogo ainda rola":"";
+    if(slot>=12&&pts>=20)it.push({w:pts+30,k:"BANCO",t:`${quem} fez ${pts} pontos… no banco do ${esc(T(p.t)[2])}.`});
+    else if(pts>=50)it.push({w:pts+40,k:"BOMBA",t:`${quem} tá com ${pts} pontos${live}. Contra o ${esc(nomeT(opDe(p.t)))}.`});
+    else if(dd2>=3)it.push({w:60,k:"TRIPLO-DUPLO",t:`${quem}: ${pts}-${reb}-${ast}${stl>=10?"-"+stl+" rb":""}${blk>=10?"-"+blk+" tc":""}${live}.`});
+    else if(pts>=40)it.push({w:pts,k:"NOITE",t:`${quem} com ${pts} pontos${live}.`});
+    else if(blk>=6||stl>=6)it.push({w:35,k:"DEFESA",t:`${quem}: ${blk>=6?blk+" tocos":stl+" roubos"} hoje.`});
+    else if(tp>=8)it.push({w:30,k:"CHUVA",t:`${quem} acertou ${tp} bolas de 3.`});
+    else if(reb>=20)it.push({w:30,k:"VIDRO",t:`${quem} pegou ${reb} rebotes.`});
+    else if(slot<12&&pts===0&&(v[12]||0)>=20)it.push({w:20,k:"ZERO",t:`${quem} jogou ${v[12]} minutos e fez zero ponto.`});
+  });
+  // viradas desde a última vez que esta pessoa abriu
+  let ant=null;try{ant=JSON.parse(localStorage.getItem("painel.snap")||"null")}catch(e){}
+  const agora={g:d.gerado,m:{}};
+  d.mt.forEach((m,i)=>{const sc=placar(EST.tot[m[0]],EST.tot[m[1]]);agora.m[m.join("-")]={r:sc.r,w:sc.w,l:sc.l};
+    if(ant&&ant.m&&ant.m[m.join("-")]&&ant.g!==d.gerado){const a=ant.m[m.join("-")];
+      CATS.forEach((c,j)=>{if(a.r[j]!==sc.r[j]&&sc.r[j]!==0){const quem=sc.r[j]>0?m[0]:m[1];it.push({w:45,k:"VIROU",t:`<b>${esc(nomeT(quem))}</b> passou na frente em <b>${c.k}</b> contra o ${esc(nomeT(quem===m[0]?m[1]:m[0]))} (${fmt(c,c.f(EST.tot[m[0]]))} x ${fmt(c,c.f(EST.tot[m[1]]))}).`,j:i})}});
+      if((a.w>a.l)!==(sc.w>sc.l)&&sc.w!==sc.l)it.push({w:80,k:"VIROU O JOGO",t:`<b>${esc(nomeT(sc.w>sc.l?m[0]:m[1]))}</b> virou o confronto: ${rtxt(sc.w,sc.l,sc.t)} contra ${esc(nomeT(sc.w>sc.l?m[1]:m[0]))}.`,j:i});}
+    if(Math.abs(sc.w-sc.l)<=1&&d.cur>=d.s1-1)it.push({w:25,k:"PEGADO",t:`${esc(nomeT(m[0]))} x ${esc(nomeT(m[1]))} está ${rtxt(sc.w,sc.l,sc.t)}. Decide no domingo.`,j:i});
+    if(Math.max(sc.w,sc.l)>=8)it.push({w:28,k:"ATROPELO",t:`${esc(nomeT(sc.w>sc.l?m[0]:m[1]))} aplicando ${rtxt(Math.max(sc.w,sc.l),Math.min(sc.w,sc.l),sc.t)} no ${esc(nomeT(sc.w>sc.l?m[1]:m[0]))}.`,j:i});
+  });
+  try{localStorage.setItem("painel.snap",JSON.stringify(agora))}catch(e){}
+  it.sort((x,y)=>y.w-x.w);
+  if(!it.length)return "";
+  return `<div class="card news"><div class="bloco-tit">ACONTECENDO <small>${d.nba&&Object.values(d.nba).some(g=>g.live)?'<span class="ao-vivo">jogos rolando</span>':esc(spRot(sp))}</small></div><ul>${it.slice(0,7).map(x=>`<li ${x.j!=null?`data-jogo="${x.j}" class="link"`:""}><span class="ico ${x.k==="VIROU"||x.k==="VIROU O JOGO"||x.k==="BANCO"?"r":""}">${x.k}</span><span>${x.t}</span></li>`).join("")}</ul></div>`;
+}
+function meuTime(){try{return +localStorage.getItem("painel.meu")||0}catch(e){return 0}}
 function vConfrontos(){
   const d=DADOS;if(!d)return vazio();
-  const ordem=d.mt.map((m,i)=>({m,i,sc:placar(EST.tot[m[0]],EST.tot[m[1]]),s:simula(m[0],m[1])}));
+  const meu=meuTime();
+  let ordem=d.mt.map((m,i)=>({m,i,sc:placar(EST.tot[m[0]],EST.tot[m[1]]),s:simula(m[0],m[1])}));
+  if(meu)ordem=ordem.slice().sort((x,y)=>(y.m.includes(meu)?1:0)-(x.m.includes(meu)?1:0));
   const mais=ordem.slice().sort((x,y)=>Math.abs(x.s.pa-x.s.pb)-Math.abs(y.s.pa-y.s.pb))[0];
   const dia=d.cur-d.s0+1;
   let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
   <h1 class="manchete">${esc(T(mais.m[0])[0].toUpperCase())} x ${esc(T(mais.m[1])[0].toUpperCase())} TÁ NO CARA OU COROA</h1>
-  <p class="linha-fina">Amarelo = quem está na frente. Toque para abrir.</p></div><div class="grade">`;
+  <p class="linha-fina">Amarelo = quem está na frente. Toque para abrir. <label class="meu">Meu time: <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></p></div>${noticias()}<div class="grade">`;
   ordem.forEach(({m,i,sc,s})=>{
     const [a,b]=m,A=T(a),B=T(b);
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
-    h+=`<button class="card jogo" type="button" data-jogo="${i}">
+    h+=`<button class="card jogo ${meu&&m.includes(meu)?"meu-jogo":""}" type="button" data-jogo="${i}">
       <div class="jogo-topo">
         <div class="lado">${rostoTime(A[0])}<div class="info"><div class="nm">${esc(A[0])}</div><div class="mg">${esc(A[2])} · ${ra.join("-")}</div></div></div>
         <div class="placar num"><span class="${sc.w>sc.l?"v":""}">${sc.w}</span>-<span class="${sc.l>sc.w?"v":""}">${sc.l}</span>${sc.t?`-${sc.t}`:""}<small>agora</small></div>
@@ -1569,7 +1623,7 @@ function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scr
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
   const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc]");if(!t)return;
-  if(e.target.closest("a"))return;
+  if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
   if(ds.jogo!==undefined)ir("jogo-"+ds.jogo);
   else if(ds.ir)ir(ds.ir);
@@ -1589,7 +1643,7 @@ document.addEventListener("click",e=>{
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
   else if(ds.drt){UI.drTemp=ds.drt;UI.drTime="todos";render()}
 });
-document.addEventListener("change",e=>{if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
+document.addEventListener("change",e=>{if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
 window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0)});
 $("#btnAtualiza").onclick=()=>atualizarAoVivo();
 $("#nav").innerHTML=NAVS.map(([k,n,ic])=>`<a href="#${k}" data-nav="${k}"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg>${n}</a>`).join("");
