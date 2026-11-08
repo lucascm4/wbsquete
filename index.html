@@ -1310,6 +1310,7 @@ b.neg{color:#ff6b6b}
 .tr-fa{font:800 9px system-ui;color:#000;background:#888;border-radius:3px;padding:1px 3px;flex:0 0 auto}.tr-livre{font:600 11px system-ui;color:var(--apagado)}
 .cr-2{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;font-size:12px;color:#bbb}
 .cr-2 .car-dr{margin:0;font-size:11px}.cr-st b{color:#fff;font-weight:800}
+.car-l summary.cr{align-items:stretch!important;text-align:left!important;justify-content:flex-start!important}.cr-1{justify-content:flex-start}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1376,11 +1377,11 @@ b.neg{color:#ff6b6b}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794167550"></script>
-<script src="radar.js?v=1794167550"></script>
-<script src="midia.js?v=1794167550"></script>
+<script src="hist.js?v=1794167629"></script>
+<script src="radar.js?v=1794167629"></script>
+<script src="midia.js?v=1794167629"></script>
 <script>
-const VERSAO_PAINEL="20261108165230";
+const VERSAO_PAINEL="20261108165349";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2490,7 +2491,7 @@ function abrirJogador(id,perF){
   const trajDe=yr=>{const k=rotT(yr);if(yr===2027){const tx=(d.tx&&d.tx.tr)||[];const x=tmsDe(yr);const pk=pickDe(yr);const p0=[];
       x.ts.forEach((tm,i)=>{const tid=(d.teams.find(q=>T(q.id)[0]===tm)||{}).id;const it=tx.find(z=>z[0]===id&&z[2]===tid);let com=null;if(it){com=tx.filter(z=>z[4]===it[4]&&z[1]===tid).map(z=>{const q=d.P.find(w=>w.id===z[0])||(d.fa||[]).find(w=>w.id===z[0]);return q?q.n:null}).filter(Boolean)}
         p0.push([tm,i===0?(pk?"draft":"fa"):(it?"troca":"fa")].concat(com&&com.length?[com]:[]))});
-      return {p:p0,f:d.P.some(q=>q.id===id&&!q.fora)?null:(p0.length?"fa":null)}}
+      const naLiga=Object.values(EST.rost||{}).some(L=>L.some(q=>q.id===id))||d.P.some(q=>q.id===id&&!q.fora);return {p:p0,f:naLiga?null:(p0.length?"fa":null)}}
     const T0=(HIST.traj||{})[p.n];if(T0&&T0[k])return T0[k];const x=tmsDe(yr);return x.ts.length?{p:x.ts.map((t,i)=>[t,i===0&&pickDe(yr)?"draft":"fa"]),f:x.drop?"fa":null}:null};
   const curto=n=>{const w=String(n).split(" ");return w.length>1?w.slice(1).join(" "):n};
   const carinhas=yr=>{const tj=trajDe(yr);
