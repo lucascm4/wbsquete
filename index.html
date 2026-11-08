@@ -718,6 +718,8 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
  .lj .nbag{font-size:9px;padding:0 4px}
 }
 
+.lj tr.ruim td{color:#ff9c9c}.lj tr.ruim .pts{color:#ff9c9c}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -879,19 +881,23 @@ function prepara(d){
   d.P.forEach(p=>{e.P[p.id]=p;if(!p.fora)(e.rost[p.t]=e.rost[p.t]||[]).push(p)});
   const ate=Math.min(d.cur,d.s1);
   const nota=notas(d.P.concat(d.fa||[]),p=>p.av);
-  d.P.concat(d.fa||[]).forEach(p=>{const r=nota?nota(p.av):null;p.nota=r?r.n:null;p.zc=r?r.c:null;const r7=nota&&p.l7?nota(p.l7):null;p.nota7=r7?r7.n:null});
+  d.P.concat(d.fa||[]).forEach(p=>{const r=nota?nota(p.av):null;p.nota=r?r.n:null;p.zc=r?r.c:null;const r7=nota&&p.l7?nota(p.l7):null;p.nota7=r7?r7.n:null;
+    // avx: média usada nas projeções. Com poucos jogos, encolhe para a projeção da ESPN (peso de 6 jogos).
+    if(p.av){const g=p.av[11];p.avx=p.pj?p.av.slice(0,11).map((x,i)=>(x*g+p.pj[i]*6)/(g+6)):p.av.slice(0,11)}else if(p.pj)p.avx=p.pj.slice(0,11);else p.avx=null;});
   d.teams.forEach(t=>{
     let a=zero();for(let sp=d.s0;sp<=ate;sp++){const v=d.D[t.id]&&d.D[t.id][sp];if(v)a=soma(a,v)}
     e.tot[t.id]=a;
     const rem=[];
     for(let sp=d.cur;sp<=d.s1;sp++){
-      const c=(e.rost[t.id]||[]).filter(p=>p.slot!==13&&p.inj!=="OUT"&&p.av&&(p.gd||[]).includes(sp)&&!(sp===d.cur&&p.dl&&p.dl[sp]));
-      c.sort((x,y)=>(y.nota||0)-(x.nota||0));c.slice(0,10).forEach(p=>rem.push(p.av.slice(0,11)));
+      const c=(e.rost[t.id]||[]).filter(p=>p.slot!==13&&p.inj!=="OUT"&&p.avx&&(p.gd||[]).includes(sp)&&!(sp===d.cur&&p.dl&&p.dl[sp]));
+      c.sort((x,y)=>(y.nota||0)-(x.nota||0));c.slice(0,10).forEach(p=>rem.push(p.avx));
+      // jogo em andamento: quem já tem linha parcial hoje ainda produz o resto do jogo
+      if(sp===d.cur&&d.nba)(e.rost[t.id]||[]).forEach(p=>{const g=d.nba[p.pro];if(p.slot<12&&p.avx&&p.dl&&p.dl[sp]&&g&&g.live&&g.frac<1)rem.push(p.avx.map(x=>x*(1-g.frac)))});
     }
     e.rem[t.id]=rem;e.jr[t.id]=rem.length;
     // força do elenco: média por jogo dos 10 melhores saudáveis × 3,4 jogos
-    const top=(e.rost[t.id]||[]).filter(p=>p.av&&p.slot!==13&&p.inj!=="OUT").sort((x,y)=>(y.nota||0)-(x.nota||0)).slice(0,10);
-    let f=zero();top.forEach(p=>f=soma(f,p.av.slice(0,11)));e.forca[t.id]=f.map(x=>x*3.4);
+    const top=(e.rost[t.id]||[]).filter(p=>p.avx&&p.slot!==13&&p.inj!=="OUT").sort((x,y)=>(y.nota||0)-(x.nota||0)).slice(0,10);
+    let f=zero();top.forEach(p=>f=soma(p.avx,f));e.forca[t.id]=f.map(x=>x*3.4);
   });
   e.proj={};d.teams.forEach(t=>{let p=e.tot[t.id];e.rem[t.id].forEach(av=>p=soma(p,av));e.proj[t.id]=p});
   e.est={};CATS.forEach((c,j)=>{const ord=d.teams.map(t=>t.id).sort((x,y)=>{const a=c.f(e.tot[x]),b=c.f(e.tot[y]);return c.inv?a-b:b-a});
@@ -931,8 +937,8 @@ function simula(a,b){
 /* ---------- simulação da temporada (ranking, playoffs, título) ---------- */
 const REL={"FG%":0.023,"FT%":0.038,"3PM":0.218,REB:0.182,AST:0.193,STL:0.226,BLK:0.277,TO:0.202,PTS:0.173};
 function forcaSemana(id,wk){ // 10 melhores saudáveis × jogos da semana
-  const gw=DADOS.gw||{};const top=(EST.rost[id]||[]).filter(p=>p.av&&p.slot!==13&&p.inj!=="OUT").sort((x,y)=>(y.nota||0)-(x.nota||0)).slice(0,10);
-  let f=zero(),g=0;top.forEach(p=>{const n=(gw[p.pro]&&gw[p.pro][wk])||3.4;g+=n;f=soma(f,p.av.slice(0,11).map(x=>x*n))});return {f,g};
+  const gw=DADOS.gw||{};const top=(EST.rost[id]||[]).filter(p=>p.avx&&p.slot!==13&&p.inj!=="OUT").sort((x,y)=>(y.nota||0)-(x.nota||0)).slice(0,10);
+  let f=zero(),g=0;top.forEach(p=>{const n=(gw[p.pro]&&gw[p.pro][wk])||3.4;g+=n;f=soma(f,p.avx.map(x=>x*n))});return {f,g};
 }
 function semanasFeitas(id){ // vetores das semanas fechadas, na ordem de CATS
   const out=[];(DADOS.hist||[]).forEach(h=>{const eu=h[1]===id?h[5]:h[2]===id?h[6]:null;if(!eu)return;const [pts,reb,ast,stl,blk,tp,fg,ft,to]=eu;out.push({FG:fg,FT:ft,v:[pts,reb,ast,stl,blk,tp,to]})});return out;
@@ -1174,6 +1180,15 @@ function leitura(a,b,s){
   [a,b].forEach(t=>{(EST.rost[t]||[]).filter(p=>p.slot<12&&p.inj==="OUT").forEach(p=>itens.push([ico("OUT","r"),`<b>${esc(p.n)}</b> está OUT e segue titular do ${esc(T(t)[0])} (${SLOT[p.slot]}). Vaga jogada fora.`]))});
   return `<div class="leitura"><ul>${itens.slice(0,7).map(([i,t])=>`<li>${i}<span>${t}</span></li>`).join("")||"<li>Nada a declarar. Por enquanto.</li>"}</ul></div>`;
 }
+function destaques(a,b){
+  const d=DADOS;const L=[];
+  [a,b].forEach(t=>(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t)).forEach(p=>{if(p.g>0)L.push({p,t,v:valorJogo(p.W)})}));
+  L.sort((x,y)=>y.v-x.v);const top=L.slice(0,6),pior=L.filter(x=>x.p.g>=2).slice(-3).reverse();
+  const bancos=[];[a,b].forEach(t=>(EST.rost[t]||[]).forEach(p=>{if(p.bp>=15)bancos.push({p,t})}));bancos.sort((x,y)=>y.p.bp-x.p.bp);
+  const tr=(x,cls)=>{const p=x.p,W=p.W;return `<tr class="${cls||""}" style="--cor:${T(x.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small><img src="img/l/${T(x.t)[1]}.webp" alt=""> ${p.g} jogo${p.g>1?"s":""} · ${W[7]}/${W[8]} fg · ${W[9]}/${W[10]} ft</small></div></div></td><td class="pts">${W[0]}</td><td>${W[1]}</td><td>${W[2]}</td><td>${W[3]}</td><td>${W[4]}</td><td>${W[5]}</td><td>${W[6]}</td><td class="fgft">${W[7]}/${W[8]}</td><td class="fgft">${W[9]}/${W[10]}</td></tr>`};
+  const cab=`<thead><tr><th>Jogador</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th class="fgft">FG</th><th class="fgft">FT</th></tr></thead>`;
+  return `<div class="card tabela-wrap"><div class="bloco-tit">DESTAQUES DA SEMANA <small>totais como titular</small></div><table class="lj">${cab}<tbody>${top.map(x=>tr(x)).join("")}${pior.length?`<tr class="sepr"><td colspan="10">Os que afundaram</td></tr>`+pior.map(x=>tr(x,"ruim")).join(""):""}${bancos.length?`<tr class="sepr"><td colspan="10">Pontos no banco</td></tr>`+bancos.map(x=>`<tr class="fora" style="--cor:${T(x.t)[4]}"><td class="jg"><div class="jg-in">${face(x.p.id,x.p.n,"")}<div><b>${esc(x.p.n)}</b><small><img src="img/l/${T(x.t)[1]}.webp" alt=""> ${x.p.bg} jogo${x.p.bg>1?"s":""} no banco</small></div></div></td><td class="pts">${x.p.bp}</td><td colspan="8" class="esp">no banco</td></tr>`).join(""):""}</tbody></table></div>`;
+}
 function quadroConfronto(A,B,ta,tb,s){
   const sc=placar(ta,tb);const h2=window.MUSEU?h2hEntre(A,B):null;
   const peg=CATS.map((c,j)=>({c,j,p:s?Math.abs(s.cat[j]-0.5):1})).sort((x,y)=>x.p-y.p).slice(0,2).map(({c})=>`${c.k} ${fmt(c,c.f(ta))} x ${fmt(c,c.f(tb))}`);
@@ -1199,7 +1214,7 @@ function vJogo(i){
   for(let sp=d.s0;sp<=d.s1;sp++){const r=spRot(sp).split(" ");h+=`<button class="dia ${sp>d.cur?"fut":""}" type="button" data-dia="${sp}" aria-pressed="${String(dsel)===String(sp)}">${r[0].toUpperCase()}<small>${sp>d.cur?"proj.":r[1]}</small></button>`}
   h+=`</div>${listaJuntos(a,b,dsel)}
   <div class="duas">${betLoyde(a,b,s)}<div class="card"><div class="bloco-tit">CHANCES DE PLACAR <small>${tip("chances","os 6 mais prováveis")}</small></div>${chancesPlacar(a,b,s)}</div></div>
-  <div class="card"><div class="bloco-tit">LEITURA DO LOYDÃO <small>o que decide, quem carrega, onde buscar</small></div>${leitura(a,b,s)}</div>
+  ${destaques(a,b)}
   ${quadroConfronto(A[0],B[0],ta,tb,s)}
   ${window.MUSEU?`<div class="card"><div class="bloco-tit">HISTÓRICO DIRETO <small>toque para abrir o box</small></div><div class="hist-lista">${h2hEntre(A[0],B[0]).l.map(m2=>{const [w,lo,t]=m2.r;return `<button type="button" ${m2.atual?"disabled":`data-mj="${m2.i}"`}><span class="qd">${temporadaCurta(m2.t)} · sem ${m2.w}</span><span><span class="${m2.v===m2.a?"w":""}">${esc(m2.a)}</span> x <span class="${m2.v===m2.b?"w":""}">${esc(m2.b)}</span>${seloFase(m2)}</span><span class="rs num">${rtxt(w,lo,t)}</span></button>`}).join("")||'<div class="vazio">Nunca se enfrentaram desde 22/23.</div>'}</div></div>`:""}
   `;
@@ -1540,6 +1555,7 @@ function metaDe(p,extra){
   const m={n:p.fullName,pos:p.defaultPositionId,pro:p.proTeamId,inj:p.injuryStatus||"ACTIVE",own:p.ownership&&p.ownership.percentOwned,...extra};
   const med=(id,split)=>{const s=(p.stats||[]).find(x=>x.id===id&&x.statSplitTypeId===split);if(s&&s.stats&&s.stats["42"]){const g=s.stats["42"];return [...AO.K.map(k=>+((s.stats[k]||0)/g).toFixed(1)),g]}};
   m.av=med("002027",0);m.l7=med("012027",1);
+  const pj=(p.stats||[]).find(x=>x.id==="102027"&&x.statSplitTypeId===0&&x.statSourceId===1);if(pj&&pj.stats&&pj.stats["42"]>0){const g=pj.stats["42"];m.pj=AO.K.map(k=>+((pj.stats[k]||0)/g).toFixed(2))}
   if(extra&&extra.ratings)m.rk=[0,1,2,3].map(k=>extra.ratings[k]?extra.ratings[k].totalRanking:null);
   delete m.ratings;return m;
 }
@@ -1564,7 +1580,8 @@ async function baixarNBA(sp){ // placar dos jogos da NBA do dia (site.api.espn.c
   (j.events||[]).forEach(e=>{const c=e.competitions[0];const st=e.status||{};const tp=(st.type||{}).state;const hora=new Date(e.date).toLocaleTimeString("pt-BR",{timeZone:"America/Sao_Paulo",hour:"2-digit",minute:"2-digit"});
     const per=st.period?(st.period>4?"OT"+(st.period-4):st.period+"ºQ"):"";
     const txt=tp==="pre"?hora:tp==="post"?"Final":`${st.displayClock||""} ${per}`.trim();
-    c.competitors.forEach(x=>{const o=c.competitors.find(y=>y!==x);out[+x.team.id]={op:(x.homeAway==="home"?"vs ":"@")+o.team.abbreviation,sc:tp==="pre"?"":`${x.score}-${o.score}`,st:txt,live:tp==="in",fim:tp==="post"}})});
+    let frac=tp==="post"?1:tp==="pre"?0:0.5;if(tp==="in"&&st.period){const [mm,ss]=String(st.displayClock||"0:00").split(":").map(Number);const rest=(mm||0)+(ss||0)/60;const plen=st.period>4?5:12;const done=Math.min(4,st.period-1)*12+Math.max(0,st.period-5)*5+(plen-rest);frac=Math.min(0.98,Math.max(0.02,done/(48+Math.max(0,st.period-4)*5)))}
+    c.competitors.forEach(x=>{const o=c.competitors.find(y=>y!==x);out[+x.team.id]={op:(x.homeAway==="home"?"vs ":"@")+o.team.abbreviation,sc:tp==="pre"?"":`${x.score}-${o.score}`,st:txt,live:tp==="in",fim:tp==="post",frac}})});
   return out;
 }
 async function coletarAoVivo(){
@@ -1599,7 +1616,7 @@ async function coletarAoVivo(){
   const agenda=q=>{let n=0;q.gd=[];for(let sp=cur;sp<=s1;sp++){const g=games[q.pro]&&games[q.pro][sp];if(g&&g.length){q.gd.push(sp);if(!(sp===cur&&q.dl&&q.dl[cur]))n++}}q.gl=n;const g=games[q.pro]&&games[q.pro][cur];q.hoje=g&&g.length?1:0;if(q.fora){q.gl=0;q.hoje=0}};
   Object.values(P).forEach(agenda);fa.forEach(agenda);
   const hist=sb.schedule.filter(m=>m.matchupPeriodId<wk&&m.winner&&m.winner!=="UNDECIDED").map(m=>{const c=x=>[0,6,3,2,1,17,19,20,11].map(id=>{const s=x.cumulativeScore&&x.cumulativeScore.scoreByStat&&x.cumulativeScore.scoreByStat[id];return s?+(+s.score).toFixed(4):0});return [m.matchupPeriodId,m.home.teamId,m.away.teamId,[m.home.cumulativeScore.wins,m.home.cumulativeScore.losses,m.home.cumulativeScore.ties],m.winner==="HOME"?m.home.teamId:m.winner==="AWAY"?m.away.teamId:0,c(m.home),c(m.away)]});
-  return {v:6,gerado:Date.now(),cur,last,wk,s0,s1,teams,mt,fut,gw,D,hist,nba,P:Object.values(P),fa};
+  return {v:7,gerado:Date.now(),cur,last,wk,s0,s1,teams,mt,fut,gw,D,hist,nba,P:Object.values(P),fa};
 }
 function janelaDeJogos(){
   if(!AO.sch)return null;const sp=spHoje();let ini=Infinity,fim=0;
@@ -1669,7 +1686,7 @@ $("#navTop").innerHTML=NAVS.map(([k,n])=>`<a href="#${k}" data-nav="${k}">${n}</
 
 document.addEventListener("click",e=>{const t=e.target.closest(".tip");document.querySelectorAll(".tip.aberta").forEach(x=>{if(x!==t)x.classList.remove("aberta")});if(t){e.preventDefault();e.stopPropagation();t.classList.toggle("aberta");t.classList.toggle("dir",t.getBoundingClientRect().left>window.innerWidth/2)}},true);
 /* ---------- partida ---------- */
-(function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===6)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}})();
+(function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===7)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}})();
 atualizarAoVivo();
 </script>
 </body></html>
