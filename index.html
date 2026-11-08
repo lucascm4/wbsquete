@@ -1649,6 +1649,17 @@ svg.cad{width:18px;height:18px;display:block}
 .pj-em{font-style:normal;font-size:14px;line-height:1;margin:0 2px 0 3px}
 .pj-selo small{font-weight:600;opacity:.7;margin-left:2px}
 
+/* placar estilo ESPN: sem linhas, amarelo cheio pra quem ganha, perdedor apagado, ✓/✗ na previsão */
+.tabcat.tc3 td,.tabcat.tc3 th{border:0!important}
+.tabcat.tc3 tr{border:0!important}
+.tc3 td.g{background:var(--amarelo)!important;box-shadow:none!important;color:#000!important}
+.tc3 td.g .v{color:#000!important}.tc3 td.g .pv2{color:#3a3000!important}
+.tc3 td.p .v{color:#8a8076!important}
+.tc3 .pv2{color:#9db6e8}
+.tc3 .pv2 .ck{color:#22c55e;font-weight:900}.tc3 .pv2 .xx{color:#ff4a4a;font-weight:900}.tc3 .pv2 .eq{color:#aaa}
+.tc3 td.g .pv2 .ck{color:#0a6b2a}.tc3 td.g .pv2 .xx{color:#b3001b}
+.tabcat.tc3 tbody tr+tr td{box-shadow:0 -3px 0 #0d0b0b inset}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1714,11 +1725,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794174339"></script>
-<script src="radar.js?v=1794174339"></script>
-<script src="midia.js?v=1794174339"></script>
+<script src="hist.js?v=1794174516"></script>
+<script src="radar.js?v=1794174516"></script>
+<script src="midia.js?v=1794174516"></script>
 <script>
-const VERSAO_PAINEL="20261108184539";
+const VERSAO_PAINEL="20261108184836";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2303,8 +2314,8 @@ function tabelaCategorias(a,b,ta,tb,pa,pb,sim){
   const sc=placar(ta,tb);const A=T(a),B=T(b);
   let h=`<table class="tabcat tc3"><colgroup><col class="c1"><col class="c3"><col class="c1"></colgroup><thead><tr><th class="lg"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></th><th>categoria <small class="tc-leg">embaixo: ${tip("prev","deve fechar")}</small></th><th class="lg"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></th></tr></thead><tbody>`;
   CATS.forEach((c,j)=>{const r=sc.r[j];const px=c.f(pa),py=c.f(pb);const pr=c.inv?(px<py?1:px>py?-1:0):(px>py?1:px<py?-1:0);
-    const vira=r!==0&&pr!==0&&r!==pr;
-    h+=`<tr${vira?' class="vira"':""}><td class="${r>0?"g":""}"><span class="v">${fmt(c,c.f(ta))}</span><small class="pv2 ${pr>0?"lid":""}">→ ${fmt(c,px)}</small></td><td><span class="cn">${c.k}</span>${vira?'<small class="vr">vira?</small>':""}</td><td class="${r<0?"g":""}"><span class="v">${fmt(c,c.f(tb))}</span><small class="pv2 ${pr<0?"lid":""}">→ ${fmt(c,py)}</small></td></tr>`});
+    const ok=v=>v>0?'<b class="ck">✓</b>':v<0?'<b class="xx">✗</b>':'<b class="eq">=</b>';
+    h+=`<tr><td class="${r>0?"g":r<0?"p":""}"><span class="v">${fmt(c,c.f(ta))}</span><small class="pv2">→ ${fmt(c,px)} ${ok(pr)}</small></td><td><span class="cn">${c.k}</span></td><td class="${r<0?"g":r>0?"p":""}"><span class="v">${fmt(c,c.f(tb))}</span><small class="pv2">→ ${fmt(c,py)} ${ok(-pr)}</small></td></tr>`});
   const ps=placar(pa,pb);
   h+=`<tr class="resumo"><td colspan="3">Agora <b>${rtxt(sc.w,sc.l,sc.t)}</b> · deve fechar <b>${rtxt(ps.w,ps.l,ps.t)}</b> · faltam ${EST.jr[a]} jogos do ${esc(A[0])} e ${EST.jr[b]} do ${esc(B[0])}</td></tr>`;
   return h+`</tbody></table>`;
