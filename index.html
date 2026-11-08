@@ -770,6 +770,8 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .btn-reload:hover{border-color:var(--ouro)}
 @media (max-width:760px){.btn-reload{width:28px;height:28px;font-size:15px}}
 
+.bet-odds .bq em{font-style:normal;font-size:10px;color:#666;font-weight:700}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -831,7 +833,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108004737";
+const VERSAO_PAINEL="20261108004931";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1107,7 +1109,9 @@ function noticias(){
     if(ant&&ant.m&&ant.m[m.join("-")]&&ant.g!==d.gerado){const a=ant.m[m.join("-")];
       CATS.forEach((c,j)=>{if(a.r[j]!==sc.r[j]&&sc.r[j]!==0){const quem=sc.r[j]>0?m[0]:m[1];it.push({w:45,k:"VIROU",t:`<b>${esc(nomeT(quem))}</b> passou na frente em <b>${c.k}</b> contra o ${esc(nomeT(quem===m[0]?m[1]:m[0]))} (${fmt(c,c.f(EST.tot[m[0]]))} x ${fmt(c,c.f(EST.tot[m[1]]))}).`,j:i})}});
       if((a.w>a.l)!==(sc.w>sc.l)&&sc.w!==sc.l)it.push({w:80,k:"VIROU O JOGO",t:`<b>${esc(nomeT(sc.w>sc.l?m[0]:m[1]))}</b> virou o confronto: ${rtxt(sc.w,sc.l,sc.t)} contra ${esc(nomeT(sc.w>sc.l?m[1]:m[0]))}.`,j:i});}
-    if(Math.abs(sc.w-sc.l)<=1&&d.cur>=d.s1-1)it.push({w:25,k:"PEGADO",t:`${esc(nomeT(m[0]))} x ${esc(nomeT(m[1]))} está ${rtxt(sc.w,sc.l,sc.t)}. Decide no domingo.`,j:i});
+    const sm=simula(m[0],m[1]);const fav=Math.max(sm.pa,sm.pb);
+    if(fav<0.7)it.push({w:25,k:"PEGADO",t:`${esc(nomeT(m[0]))} x ${esc(nomeT(m[1]))} está ${rtxt(sc.w,sc.l,sc.t)} e segue aberto: ${pct(sm.pa)} a ${pct(sm.pb)}.`,j:i});
+    else if(Math.abs(sc.w-sc.l)<=1&&fav>=0.9)it.push({w:22,k:"ENGANA",t:`${esc(nomeT(m[0]))} x ${esc(nomeT(m[1]))} está ${rtxt(sc.w,sc.l,sc.t)}, mas ${esc(nomeT(sm.pa>sm.pb?m[0]:m[1]))} tem ${pct(fav)} de chance pelo que falta.`,j:i});
     if(Math.max(sc.w,sc.l)>=8)it.push({w:28,k:"ATROPELO",t:`${esc(nomeT(sc.w>sc.l?m[0]:m[1]))} aplicando ${rtxt(Math.max(sc.w,sc.l),Math.min(sc.w,sc.l),sc.t)} no ${esc(nomeT(sc.w>sc.l?m[1]:m[0]))}.`,j:i});
   });
   try{localStorage.setItem("painel.snap",JSON.stringify(agora))}catch(e){}
@@ -1215,8 +1219,8 @@ function betLoyde(a,b,s){
   const A=T(a),B=T(b);const fav=s.pa>s.pb?1:s.pb>s.pa?2:0;
   return `<div class="bet"><div class="marca"><span class="logo"><b>BET</b>LOYDE<i>COMO FECHA</i></span><small>${tip("odd","o que é a odd")}</small></div>
   <div class="bet-jogo"><div class="bet-times"><span><img src="img/l/${A[1]}.webp" alt="">${esc(A[0])}</span><span><img src="img/l/${B[1]}.webp" alt="">${esc(B[0])}</span></div>
-  <div class="bet-odds"><span class="bq ${fav===1?"fav":""}"><small>1</small><b>${odd(s.pa)}</b></span><span class="bq ${fav===0?"fav":""}"><small>X</small><b>${odd(s.pe)}</b></span><span class="bq ${fav===2?"fav":""}"><small>2</small><b>${odd(s.pb)}</b></span></div></div>
-  <div class="pe">Palpite do Loydão: <b>${esc(fav===2?B[0]:A[0])} ${placarProvavel(s,fav===2?"b":"a")}</b> · 1 = ${esc(A[0])}, 2 = ${esc(B[0])}</div></div>`;
+  <div class="bet-odds"><span class="bq ${fav===1?"fav":""}"><small>1</small><b>${odd(s.pa)}</b><em>${pct(s.pa)}</em></span><span class="bq ${fav===0?"fav":""}"><small>X</small><b>${odd(s.pe)}</b><em>${pct(s.pe)}</em></span><span class="bq ${fav===2?"fav":""}"><small>2</small><b>${odd(s.pb)}</b><em>${pct(s.pb)}</em></span></div></div>
+  <div class="pe">Palpite do Loydão: <b>${esc(fav===2?B[0]:A[0])} ${placarProvavel(s,fav===2?"b":"a")}</b> · odd = 1 ÷ (chance × 1,07)</div></div>`;
 }
 function placarProvavel(s,lado){const e=Object.entries(s.res).filter(([k])=>{const [w,l]=k.split("-").map(Number);return lado==="a"?w>l:l>w}).sort((x,y)=>y[1]-x[1])[0];if(!e)return "";const [w,l,t]=e[0].split("-").map(Number);return lado==="a"?rtxt(w,l,t):rtxt(l,w,t)}
 function chancesPlacar(a,b,s){
