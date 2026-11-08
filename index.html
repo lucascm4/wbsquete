@@ -1417,11 +1417,11 @@ b.neg{color:#ff6b6b}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794168781"></script>
-<script src="radar.js?v=1794168781"></script>
-<script src="midia.js?v=1794168781"></script>
+<script src="hist.js?v=1794168898"></script>
+<script src="radar.js?v=1794168898"></script>
+<script src="midia.js?v=1794168898"></script>
 <script>
-const VERSAO_PAINEL="20261108171301";
+const VERSAO_PAINEL="20261108171458";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2545,7 +2545,7 @@ function abrirJogador(id,perF){
   const trilha=yr=>{const tj=trajDe(yr);let ps=tj&&tj.p.length?tj.p:null;if(!ps){const x=tmsDe(yr);if(!x.ts.length)return `<span class="tr-livre">livre na liga</span>`;ps=x.ts.map((t,i)=>[t,i?"fa":"draft"])}
     const um=ps.length===1;return ps.map((x,i)=>`${i?(x[1]==="troca"?'<i class="tr-x" title="troca">⇄</i>':'<i class="tr-s">→</i>'):""}<span class="tr-t" title="${esc(x[0])}">${logo(x[0])}${um?`<em>${esc(x[0])}</em>`:""}</span>`).join("")+(tj&&tj.f?'<i class="tr-s">→</i><span class="tr-fa">FA</span>':"")};
   const trilhaDet=yr=>{const tj=trajDe(yr);if(!tj||!tj.p.length||(tj.p.length===1&&tj.p[0][1]==="draft"&&!tj.f))return "";
-    return `<div class="tr-det">${tj.p.map((x,i)=>`${i?(x[1]==="troca"?'<i class="tr-x">⇄</i>':'<i class="tr-s">→</i>'):""}<span class="tr-n">${logo(x[0])}<em>${esc(T(d.teams.find(q=>T(q.id)[0]===x[0])?.id)?.[3]||x[0].slice(0,3).toUpperCase())}</em><small>${x[1]==="draft"?"draft":x[1]==="troca"?"troca":"FA"}</small></span>`).join("")}${tj.f?'<i class="tr-s">→</i><span class="tr-n"><b class="tr-fa">FA</b><small>largado</small></span>':""}</div>`};
+    return `<div class="tr-det">${tj.p.map((x,i)=>`${i?(x[1]==="troca"?'<i class="tr-x">⇄</i>':'<i class="tr-s">→</i>'):""}<span class="tr-n">${logo(x[0])}<em>${esc((()=>{const q=d.teams.find(q=>T(q.id)[0]===x[0]);return q?T(q.id)[3]:x[0].replace(/[^A-Za-zÀ-ú]/g,"").slice(0,3).toUpperCase()})())}</em><small>${x[1]==="draft"?"draft":x[1]==="troca"?"troca":"FA"}</small></span>`).join("")}${tj.f?'<i class="tr-s">→</i><span class="tr-n"><b class="tr-fa">FA</b><small>largado</small></span>':""}</div>`};
   const linhaTempo=yr=>{const tj=trajDe(yr);if(!tj||!tj.p.length||(tj.p.length===1&&tj.p[0][1]==="draft"&&!tj.f))return "";
     const it=tj.p.map((x,i)=>{const [tm,como,com]=x;const como2=como==="draft"?"draftado":como==="troca"?`chegou por troca${com&&com.length?` (foi ${esc(com.map(curto).join(", "))} pro outro lado)`:""}`:"pegou na FA";
       const saiu=i<tj.p.length-1?(tj.p[i+1][1]==="troca"?"trocado":"largado"):(tj.f?"largado":"terminou o ano");
