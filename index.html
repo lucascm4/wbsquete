@@ -1,6 +1,13 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<link rel="icon" href="img/cinturao.webp">
+<link rel="icon" href="img/app/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="img/app/apple-180.png">
+<meta name="theme-color" content="#0a0707">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Loydão">
 <title>Painel WBSQUETE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Narrow:wght@500;600;700&display=swap">
@@ -1018,6 +1025,9 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .inicio{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;background:var(--amarelo);color:#000;border:2px solid #000;padding:6px 14px;font-family:var(--display);font-size:16px;letter-spacing:.04em;box-shadow:3px 3px 0 #000}
 .barra-inicio+.voltar,.barra-inicio+a.voltar{margin-top:0}
 
+.atalho.baixar{background:var(--amarelo);color:#000;border-color:#000}
+.lg-i>b{font-family:var(--display);font-weight:400;font-size:24px;color:var(--amarelo);width:28px;text-align:center;flex:none}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1079,7 +1089,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108021403";
+const VERSAO_PAINEL="20261108021608";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1425,7 +1435,7 @@ function vConfrontos(){
   const mais=ordem.slice().sort((x,y)=>Math.abs(x.s.pa-x.s.pb)-Math.abs(y.s.pa-y.s.pb))[0];
   const dia=d.cur-d.s0+1;
   let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
-  <div class="atalhos"><button type="button" class="atalho" data-sel="${d.last}">${ICS.sel} Seleção</button><button type="button" class="atalho" data-ir="desempenhos">${ICS.fogo} Desempenhos hoje</button><button type="button" class="atalho" data-ir="times">${ICS.rk} Ranking</button><button type="button" class="atalho" data-ir="radar">${ICS.radar} Radar</button><button type="button" class="atalho" data-ir="museu">${ICS.museu} Museu</button><label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
+  <div class="atalhos"><button type="button" class="atalho" data-sel="${d.last}">${ICS.sel} Seleção</button><button type="button" class="atalho" data-ir="desempenhos">${ICS.fogo} Desempenhos hoje</button><button type="button" class="atalho" data-ir="times">${ICS.rk} Ranking</button><button type="button" class="atalho" data-ir="radar">${ICS.radar} Radar</button><button type="button" class="atalho" data-ir="museu">${ICS.museu} Museu</button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="atalho baixar" data-instalar>📲 Baixar o app</button>`:""}<label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
   ordem.forEach(({m,i,sc,s})=>{
     const [a,b]=m,A=T(a),B=T(b);
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
@@ -2357,5 +2367,26 @@ atualizarAoVivo();
 
 /* logo e título do topo também voltam para o início */
 document.querySelectorAll(".topo .belt,.topo .mast").forEach(el=>{el.style.cursor="pointer";el.addEventListener("click",()=>ir("confrontos"))});
+
+/* app instalável */
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+let pedidoInstalar=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();pedidoInstalar=e;render()});
+window.addEventListener("appinstalled",()=>{pedidoInstalar=null;render()});
+function jaInstalado(){return window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}
+function instalarApp(){
+  if(pedidoInstalar){pedidoInstalar.prompt();pedidoInstalar.userChoice.finally(()=>{pedidoInstalar=null;render()});return}
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  fecharFicha();const el=document.createElement("div");el.className="pop-fundo";el.id="popFicha";
+  el.innerHTML=`<div class="pop-jog pop-leg" role="dialog" aria-label="Instalar o app"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button><h3>BAIXAR O APP</h3>
+   ${ios?`<div class="lg-i"><b>1</b><div><b>Abra no Safari</b><small>No Chrome do iPhone também funciona pelo menu ⋯</small></div></div>
+   <div class="lg-i"><b>2</b><div><b>Toque em Compartilhar</b><small>o quadradinho com a seta pra cima</small></div></div>
+   <div class="lg-i"><b>3</b><div><b>Adicionar à Tela de Início</b><small>o ícone do Loydão aparece junto dos seus apps</small></div></div>`
+   :`<div class="lg-i"><b>1</b><div><b>Abra o menu do navegador</b><small>os três pontinhos ⋮ no canto</small></div></div>
+   <div class="lg-i"><b>2</b><div><b>Instalar app / Adicionar à tela inicial</b><small>o ícone do Loydão aparece junto dos seus apps</small></div></div>`}
+   <p>Abre em tela cheia, sem barra do navegador, e atualiza sozinho.</p></div>`;
+  el.addEventListener("click",e=>{if(e.target===el||e.target.closest("[data-fecha]"))fecharFicha()});document.body.appendChild(el);
+}
+document.addEventListener("click",e=>{if(e.target.closest("[data-instalar]")){e.preventDefault();instalarApp()}});
 </script>
 </body></html>
