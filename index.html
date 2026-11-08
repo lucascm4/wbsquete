@@ -1075,7 +1075,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108020821";
+const VERSAO_PAINEL="20261108020931";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1358,17 +1358,17 @@ function noticias(){
     if(slot>=12)return;
     const dd=[pts,reb,ast,stl,blk].filter(x=>x>=10).length;
     if(dd>=3)L.push([60,"TRIPLO-DUPLO",`${n} com triplo-duplo (${pts}-${reb}-${ast})${rola}. ${mop} assiste de camarote.`]);
-    const bons=[["STL",c.STL,()=>`${n} tem ${stl} roubos e colocou o ${mop} pra mamar`],
-      ["BLK",c.BLK,()=>`${n} distribuiu ${blk} tocos, ${mop} catando cavaco`],
-      ["3PM",c["3PM"],()=>`${n} chovendo: ${tp} bolas de três. ${mop}, pega o guarda-chuva`],
-      ["REB",c.REB,()=>`${n} limpou o vidro: ${reb} rebotes na cara do ${mop}`],
-      ["AST",c.AST,()=>`${n} de garçom: ${ast} assistências pro ${man} comemorar`],
-      ["PTS",c.PTS,()=>`${n} meteu ${pts} pontos no ${mop}${rola}`],
-      ["FG%",c["FG%"],()=>`${n} cirúrgico: ${fgm}/${fga} de quadra`],
-      ["FT%",c["FT%"],()=>`${n} gelo nas veias: ${ftm}/${fta} na linha`]].filter(x=>x[1]!=null&&x[1]>=2.2).sort((a,b)=>b[1]-a[1]);
-    if(bons[0])L.push([30+bons[0][1]*10,bons[0][0]==="FG%"||bons[0][0]==="FT%"?"MÃO QUENTE":"ESTOURANDO",bons[0][2]()+"."]);
-    if(c["FG%"]!=null&&c["FG%"]<=-2)L.push([30-c["FG%"]*9,"MARTELO",`${comoChegou()} e ele só martelou: ${fgm}/${fga} de quadra. Muito ruim.`]);
-    else if(c["FT%"]!=null&&c["FT%"]<=-2)L.push([26-c["FT%"]*8,"TIJOLO",`${comoChegou()} e ele foi pra linha pra errar: ${ftm}/${fta}.`]);
+    const bons=[["STL",c.STL,stl>=4,"LADRÃO",()=>`${n} tem ${stl} roubos e colocou o ${mop} pra mamar`],
+      ["BLK",c.BLK,blk>=4,"PAREDÃO",()=>`${n} distribuiu ${blk} tocos, ${mop} catando cavaco`],
+      ["3PM",c["3PM"],tp>=5,"CHUVA",()=>`${n} chovendo: ${tp} bolas de três. ${mop}, pega o guarda-chuva`],
+      ["REB",c.REB,reb>=14,"VIDRO",()=>`${n} limpou o vidro: ${reb} rebotes na cara do ${mop}`],
+      ["AST",c.AST,ast>=11,"GARÇOM",()=>`${n} de garçom: ${ast} assistências pro ${man} comemorar`],
+      ["PTS",c.PTS,pts>=35,"BOMBA",()=>`${n} meteu ${pts} pontos no ${mop}${rola}`],
+      ["FG%",c["FG%"],fga>=12,"MÃO QUENTE",()=>`${n} cirúrgico: ${fgm}/${fga} de quadra`],
+      ["FT%",c["FT%"],fta>=10,"GELO",()=>`${n} gelo nas veias: ${ftm}/${fta} na linha`]].filter(x=>x[1]!=null&&x[1]>=2.2&&x[2]).sort((a,b)=>b[1]-a[1]);
+    if(bons[0])L.push([30+bons[0][1]*10,bons[0][3],bons[0][4]()+"."]);
+    if(c["FG%"]!=null&&c["FG%"]<=-1.8&&fga>=10)L.push([30-c["FG%"]*9,"MARTELO",`${comoChegou()} e ele só martelou: ${fgm}/${fga} de quadra. Muito ruim.`]);
+    else if(c["FT%"]!=null&&c["FT%"]<=-1.8&&fta-ftm>=4)L.push([26-c["FT%"]*8,"TIJOLO",`${comoChegou()} e ele foi pra linha pra errar: ${ftm}/${fta}.`]);
     if(to>=6)L.push([24+to*2,"ENTREGOU",`${n} entregou ${to} bolas. ${man} conta os turnovers chorando.`]);
     if(p.av&&p.av[11]>=5){const mp=p.av[0];if(mp>=14&&pts<=0.4*mp&&((v[12]||0)>=15||(g&&g.fim)))L.push([28+(mp-pts),"APAGADO",`${comoChegou()} e ele fez ${pts===0?"zero":"só "+pts} ponto${pts===1?"":"s"}${g&&g.fim?"":" até agora"}. Média de ${mp}.`]);}
     if(pts===0&&(v[12]||0)>=20&&!L.length)L.push([22,"ZERO",`${n} jogou ${v[12]} minutos e fez zero ponto. ${man} agradece.`]);
