@@ -1541,6 +1541,9 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 .du-ct button{all:unset;cursor:pointer;font:800 10px system-ui;letter-spacing:.04em;padding:4px 10px;border-radius:999px;border:1.5px solid #444;color:#ddd}
 .du-ct button[aria-pressed="true"]{background:var(--amarelo);color:#000;border-color:var(--amarelo)}
 
+.fab-doca{position:fixed!important;top:0;left:0;right:0;bottom:auto!important;height:0;align-items:flex-end;padding-bottom:0}
+.fab-doca>*{margin-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1606,11 +1609,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794171612"></script>
-<script src="radar.js?v=1794171612"></script>
-<script src="midia.js?v=1794171612"></script>
+<script src="hist.js?v=1794171718"></script>
+<script src="radar.js?v=1794171718"></script>
+<script src="midia.js?v=1794171718"></script>
 <script>
-const VERSAO_PAINEL="20261108180012";
+const VERSAO_PAINEL="20261108180158";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3661,12 +3664,15 @@ function timeDoClique(el){
 (function(){let y=0,trav=false;new MutationObserver(()=>{const ab=!!document.getElementById("popFicha");if(ab&&!trav){y=scrollY;trav=true;const b=document.body.style;b.position="fixed";b.top=(-y)+"px";b.left="0";b.right="0";b.width="100%"}else if(!ab&&trav){trav=false;const b=document.body.style;b.position=b.top=b.left=b.right=b.width="";scrollTo(0,y)}}).observe(document.body,{childList:true})})();
 
 /* botão flutuante AO VIVO quando tem jogo rolando */
-function doca(){let dk=document.getElementById("fabDoca");if(!dk){dk=document.createElement("div");dk.id="fabDoca";dk.className="fab-doca";dk.innerHTML='<button type="button" id="fabTopo" class="fab-topo" aria-label="voltar ao topo" hidden>↑</button>';document.body.appendChild(dk);dk.querySelector("#fabTopo").onclick=()=>scrollTo({top:0,behavior:"smooth"})}return dk}
+function doca(){let dk=document.getElementById("fabDoca");if(!dk){dk=document.createElement("div");dk.id="fabDoca";dk.className="fab-doca";dk.innerHTML='<button type="button" id="fabTopo" class="fab-topo" aria-label="voltar ao topo" hidden>↑</button>';document.body.appendChild(dk);setTimeout(posDoca,0);dk.querySelector("#fabTopo").onclick=()=>scrollTo({top:0,behavior:"smooth"})}return dk}
 function montarLive(r){const dk=doca();let b=document.getElementById("fabLive");const jg=typeof jogosAoVivo==="function"?jogosAoVivo():{live:0};
   if(!jg.live||r==="aovivo"){if(b)b.remove();return}
   if(!b){b=document.createElement("a");b.id="fabLive";b.className="fab-live";b.href="#aovivo";dk.appendChild(b)}
   b.innerHTML=`<i></i>AO VIVO <small>${jg.live} jogo${jg.live>1?"s":""}</small>`}
-addEventListener("scroll",()=>{const t=document.getElementById("fabTopo")||doca().querySelector("#fabTopo");if(t)t.hidden=scrollY<500},{passive:true});
+addEventListener("scroll",()=>{const t=document.getElementById("fabTopo")||doca().querySelector("#fabTopo");if(t)t.hidden=scrollY<500;posDoca()},{passive:true});
+/* o iPhone (app na tela inicial) erra a altura de position:fixed/sticky ancorado embaixo; ancoramos no topo e calculamos pela área visível real */
+function posDoca(){const dk=document.getElementById("fabDoca");if(!dk)return;const vv=window.visualViewport;const h=vv?vv.height+vv.offsetTop:innerHeight;dk.style.transform=`translateY(${Math.round(h)}px)`}
+if(window.visualViewport){visualViewport.addEventListener("resize",posDoca);visualViewport.addEventListener("scroll",posDoca)}addEventListener("resize",posDoca);setInterval(posDoca,1000);
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="avTime"){UI.avF=+e.target.value||0;render()}if(e.target&&e.target.id==="avDuelo"){UI.avDuelo=+e.target.value||0;try{if(UI.avDuelo&&!meuTime())localStorage.setItem("painel.meu",UI.avDuelo)}catch(x){}render()}});
 </script>
 </body></html>
