@@ -1621,6 +1621,14 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 .cad{font-style:normal;font-size:16px;line-height:1;display:inline-block}
 .bq:has(.cad) em{display:none}
 
+.fab-doca{flex-direction:column!important;align-items:flex-end!important;justify-content:flex-end!important;gap:8px}
+.fab-mini{display:flex;gap:8px;margin-bottom:0!important}
+.fab-mini:not(:has(button:not([hidden]))){display:none}
+.fab-doca>.fab-mini{margin-bottom:0}
+.fab-doca>.fab-live{margin-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+.fab-doca>.fab-mini:last-child{margin-bottom:calc(14px + env(safe-area-inset-bottom,0px))!important}
+.fab-topo{width:40px!important;height:40px!important;font-size:22px!important;touch-action:manipulation}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1686,11 +1694,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794173823"></script>
-<script src="radar.js?v=1794173823"></script>
-<script src="midia.js?v=1794173823"></script>
+<script src="hist.js?v=1794173898"></script>
+<script src="radar.js?v=1794173898"></script>
+<script src="midia.js?v=1794173898"></script>
 <script>
-const VERSAO_PAINEL="20261108183703";
+const VERSAO_PAINEL="20261108183818";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3833,7 +3841,13 @@ function timeDoClique(el){
 (function(){let y=0,trav=false;new MutationObserver(()=>{const ab=!!document.getElementById("popFicha");if(ab&&!trav){y=scrollY;trav=true;const b=document.body.style;b.position="fixed";b.top=(-y)+"px";b.left="0";b.right="0";b.width="100%"}else if(!ab&&trav){trav=false;const b=document.body.style;b.position=b.top=b.left=b.right=b.width="";scrollTo(0,y)}}).observe(document.body,{childList:true})})();
 
 /* botão flutuante AO VIVO quando tem jogo rolando */
-function doca(){let dk=document.getElementById("fabDoca");if(!dk){dk=document.createElement("div");dk.id="fabDoca";dk.className="fab-doca";dk.innerHTML='<button type="button" id="fabTopo" class="fab-topo" aria-label="voltar ao topo" hidden>↑</button>';document.body.appendChild(dk);setTimeout(posDoca,0);dk.querySelector("#fabTopo").onclick=()=>scrollTo({top:0,behavior:"smooth"})}return dk}
+function doca(){let dk=document.getElementById("fabDoca");if(!dk){dk=document.createElement("div");dk.id="fabDoca";dk.className="fab-doca";
+  dk.innerHTML='<div class="fab-mini"><button type="button" id="fabVolta" class="fab-topo" aria-label="voltar uma página">‹</button><button type="button" id="fabTopo" class="fab-topo" aria-label="voltar ao topo" hidden>↑</button></div>';
+  document.body.appendChild(dk);setTimeout(posDoca,0);
+  const topo=e=>{e.preventDefault();e.stopPropagation();const se=document.scrollingElement||document.documentElement;try{window.scrollTo({top:0,behavior:"smooth"})}catch(x){window.scrollTo(0,0)}setTimeout(()=>{if(scrollY>5){se.scrollTop=0;document.body.scrollTop=0}},450)};
+  const volta=e=>{e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha")){fecharFichaU();return}if(history.length>1&&(location.hash||"").length>1)history.back();else{location.hash="confrontos"}};
+  dk.querySelector("#fabTopo").addEventListener("click",topo);dk.querySelector("#fabVolta").addEventListener("click",volta)}
+  const h=(location.hash||"").replace("#","");const v=dk.querySelector("#fabVolta");if(v)v.hidden=(h===""||h==="confrontos");return dk}
 function montarLive(r){const dk=doca();let b=document.getElementById("fabLive");const jg=typeof jogosAoVivo==="function"?jogosAoVivo():{live:0};
   if(!jg.live||r==="aovivo"){if(b)b.remove();return}
   if(!b){b=document.createElement("a");b.id="fabLive";b.className="fab-live";b.href="#aovivo";dk.appendChild(b)}
