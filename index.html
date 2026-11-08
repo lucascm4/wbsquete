@@ -1609,11 +1609,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794171884"></script>
-<script src="radar.js?v=1794171884"></script>
-<script src="midia.js?v=1794171884"></script>
+<script src="hist.js?v=1794172011"></script>
+<script src="radar.js?v=1794172011"></script>
+<script src="midia.js?v=1794172011"></script>
 <script>
-const VERSAO_PAINEL="20261108180444";
+const VERSAO_PAINEL="20261108180651";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1919,6 +1919,8 @@ function vazio(){return `<div class="cab-secao"><span class="sobre">PAINEL DO LO
 const ZOE={
  mamar:["colocou o {mop} pra mamar","o {mop} tá sentado no colo","mandou o {mop} pro chuveiro mais cedo","o {mop} já pode ir pagando a pizza","aula grátis pro {mop}","o {mop} saiu de fininho do grupo","sem dó nem piedade do {mop}","o {mop} vai precisar de terapia","o {mop} tá procurando o controle remoto","CPF do {mop} cancelado","o {mop} pediu pra sair","o {mop} assistiu de camarote"],
  festa:["o {man} já tá printando pro grupo","o {man} dormiu sorrindo","{man} com o peito estufado","o {man} soltou rojão","o {man} vai encher o saco amanhã","o {man} pagou o draft numa noite"],
+ fogo:["o {man} já tá com o print pronto pro grupo, só esperando o intervalo","isso não é estatística, é boletim de ocorrência contra o {mop}","se continuar assim o {mop} vai pedir VAR","quem não tem Wemby caça com esse aí, e o {man} tá caçando","não confunda: o {mop} assistindo o jogo é uma coisa; o {mop} assistindo a semana ir embora é outra","Plano Cruzado ao contrário: os números do {man} subindo e a dignidade do {mop} congelada","o {mop} já tá rezando pro técnico tirar ele de quadra","MVP de bairro em horário nobre, e o {mop} pagando o ingresso","água mole em pedra dura, e o {mop} é a pedra","o {mop} já tá procurando quem dropar pra responder","Maracanazo em andamento e o {mop} na arquibancada","o Loydão já separou a manchete de amanhã, {mop}, sorria pra foto"],
+ entrega:["cada turnover é um Pix que o {man} faz pro {mop}","distribui a bola mais que garçom distribui cardápio, chama o gerente, {man}","o {mop} agradece a doação, com nota fiscal paulista","é o Titanic: o {man} no convés e a água já chegou no TO","quem com turnover fere, com turnover será ferido, {man}","o {man} escalou um caixa eletrônico do adversário"],
  choro:["chora, {man}, chora","choro, neném, choro","{man} abraçado no travesseiro","{man} já tá olhando a waiver","{man} vai fingir que não viu","isso é crime, {man}","{man}, devolve o ingresso","o {mop} agradece de joelhos","{man} vai apagar o app","o grupo já tá rindo do {man}","{man} pede música no Fantástico"]
 };
 function bancoDe(p){ // soma das 11 stats nos dias em que ficou no banco (slot 12) e o valor 9-cat disso
@@ -1953,7 +1955,7 @@ function noticiasDe(sp){
     const c=(RK.c&&RK.c[p.id])||{};const linha=linhaReal(v)+rola;
     const comoChegou=()=>{if(adds[p.id+":"+p.t]!=null)return `${man} pegou ${n} na waiver`;const pk=pick[p.n];if(pk&&pk[1]===nomeT(p.t))return `${man} pickou ${n} no pick ${pk[0]}`;return `${man} escalou ${n}`};
     if(g&&g.live&&slot<12){const mn=v[12]||0;if(mn>0&&mn<=30){const x=[];if(pts>=10)x.push([pts*2.2-mn,`${pts} pontos`]);if(reb>=6)x.push([reb*3-mn,`${reb} rebotes`]);if(ast>=5)x.push([ast*3.5-mn,`${ast} assistências`]);if(stl>=2)x.push([stl*7-mn,`${stl} roubos`]);if(blk>=2)x.push([blk*7-mn,`${blk} tocos`]);if(tp>=3)x.push([tp*6-mn,`${tp} bolas de 3`]);if(to>=3)x.push([to*5-mn,`${to} turnovers`]);
-      x.sort((p,q)=>q[0]-p[0]);if(x[0]&&x[0][0]>0){const top=x.slice(0,2).map(y=>y[1]).join(" e ");const ruim=/turnover/.test(x[0][1]);cand.push({w:50+x[0][0],k:ruim?"ENTREGANDO":"PEGANDO FOGO",f:()=>`${n} já tem ${top} em ${mn} minutos (${esc(g.st)}). ${ruim?zoe("choro",ctx):`O ${man} já tá printando, o ${mop} já tá suando`}.`});return}}}
+      x.sort((p,q)=>q[0]-p[0]);if(x[0]&&x[0][0]>0){const top=x.slice(0,2).map(y=>y[1]).join(" e ");const ruim=/turnover/.test(x[0][1]);const ap=APELIDO[p.n]?` (o ${esc(APELIDO[p.n][0].toLowerCase())})`:"";cand.push({w:50+x[0][0],k:ruim?"ENTREGANDO":"PEGANDO FOGO",f:()=>`${n}${ap} já tem ${top} em ${mn} minutos. ${zoe(ruim?"entrega":"fogo",ctx)}.`});return}}}
     if(slot>=12){const zb=(RK.v&&RK.v[p.id])||0;if(pts>=20||zb>=4||stl>=4||blk>=4||reb>=12||ast>=10||tp>=5)cand.push({w:60+zb*5+pts/3,k:"BANCO",f:()=>`${n} no ${slot===13?"IR":"banco"} do ${man}: ${linhaReal(v)}. ${zoe("choro",ctx)}.`});return}
     const dd=[pts,reb,ast,stl,blk].filter(x=>x>=10).length;
     const L=[];
@@ -3671,7 +3673,7 @@ function montarLive(r){const dk=doca();let b=document.getElementById("fabLive");
   b.innerHTML=`<i></i>AO VIVO <small>${jg.live} jogo${jg.live>1?"s":""}</small>`}
 addEventListener("scroll",()=>{const t=document.getElementById("fabTopo")||doca().querySelector("#fabTopo");if(t)t.hidden=scrollY<500;posDoca()},{passive:true});
 /* o iPhone (app na tela inicial) erra a altura de position:fixed/sticky ancorado embaixo; ancoramos no topo e calculamos pela área visível real */
-function posDoca(){const dk=document.getElementById("fabDoca");if(!dk)return;const vv=window.visualViewport;let h=vv?vv.height+vv.offsetTop:innerHeight;const app=navigator.standalone||matchMedia("(display-mode: standalone)").matches;if(app&&screen.height>h&&Math.abs(screen.width-innerWidth)<4){const pt=parseFloat(getComputedStyle(document.documentElement).paddingTop)||0;h=screen.height-pt-8}dk.style.transform=`translateY(${Math.round(h)}px)`}
+function posDoca(){const dk=document.getElementById("fabDoca");if(!dk)return;const vv=window.visualViewport;let h=vv?vv.height+vv.offsetTop:innerHeight;const app=navigator.standalone||matchMedia("(display-mode: standalone)").matches;if(app&&screen.height>h&&Math.abs(screen.width-innerWidth)<4){const pt=parseFloat(getComputedStyle(document.documentElement).paddingTop)||0;h=screen.height-pt-44}dk.style.transform=`translateY(${Math.round(h)}px)`}
 if(window.visualViewport){visualViewport.addEventListener("resize",posDoca);visualViewport.addEventListener("scroll",posDoca)}addEventListener("resize",posDoca);setInterval(posDoca,1000);
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="avTime"){UI.avF=+e.target.value||0;render()}if(e.target&&e.target.id==="avDuelo"){UI.avDuelo=+e.target.value||0;try{if(UI.avDuelo&&!meuTime())localStorage.setItem("painel.meu",UI.avDuelo)}catch(x){}render()}});
 </script>
