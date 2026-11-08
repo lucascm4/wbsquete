@@ -1082,6 +1082,10 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .dias .dia.per.esc select{background:#000;color:var(--amarelo);border:1px solid var(--amarelo);font:600 12px system-ui,sans-serif;padding:2px;max-width:100%}
 .dias .dia.per.esc.on{background:var(--amarelo);color:#000}.dias .dia.per.esc.on select{background:#fff;color:#000;border-color:#000}
 
+.dias .rg{flex:1 1 100%;display:flex;gap:10px;justify-content:center;align-items:center;margin-top:4px;font-family:var(--display);font-size:15px;color:#fff;text-shadow:1px 1px 0 #000}
+.dias .rg select{background:#000;color:var(--amarelo);border:2px solid var(--amarelo);font:600 13px system-ui,sans-serif;padding:3px 4px;margin-left:4px}
+.dias{flex-wrap:wrap}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1143,7 +1147,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108135240";
+const VERSAO_PAINEL="20261108135554";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1561,21 +1565,30 @@ function subJog(t,st,extra){ // linha de baixo do jogador: time, fg e ft em evid
 const _RK={};
 const MEDIAS={l7:["l7","ÚLTIMOS 7 DIAS","DOS ÚLTIMOS 7 DIAS",2],l30:["l30","ÚLTIMOS 30 DIAS","DOS ÚLTIMOS 30 DIAS",4],temp:["av","TEMPORADA","DA TEMPORADA",0]};
 const ehMedia=sp=>typeof sp==="string"&&MEDIAS[sp]!=null;
+const ehRange=sp=>typeof sp==="string"&&sp.startsWith("r:");
+const rangeDe=sp=>{const [a,b]=sp.slice(2).split("-").map(Number);return [Math.min(a,b),Math.max(a,b)]};
+function rangePronto(sp){const [a,b]=rangeDe(sp);for(let x=a;x<=b;x++)if(!(typeof BOX!=="undefined"&&BOX.dias[x]))return false;return true}
+function linhasRange(sp,filtro){ // totais de cada jogador no intervalo (time = o último em que jogou)
+  const [a,b]=rangeDe(sp);const d=DADOS;const acc={};
+  for(let x=a;x<=b;x++)(BOX.dias[x]||[]).forEach(l=>{const id=l[0];const v=l.slice(3,14);let r=acc[id];if(!r){r=acc[id]={id,t:l[1],s:zero(),g:0}}v.forEach((y,i)=>r.s[i]+=y);r.g++;r.t=l[1]});
+  return Object.values(acc).map(r=>{let p=d.P.find(q=>q.id===r.id)||(d.fa||[]).find(q=>q.id===r.id);if(!p){const m=BOX.meta[r.id]||{};p={id:r.id,n:m.n||("jogador "+r.id),pos:m.pos||0,pro:m.pro||0,el:m.el||[],inj:"ACTIVE"}}return {p,t:r.t,s:r.s,g:r.g,slot:0}}).filter(r=>!filtro||filtro(r))}
 function minMedia(sp){const d=DADOS;if(sp!=="temp")return MEDIAS[sp][3];const g=Math.max(1,...d.P.map(p=>p.av?p.av[11]:0));return Math.max(3,Math.round(g*0.5))}
-function rotPer(sp,curto){const d=DADOS;if(sp==="sem")return curto?"SEMANA "+d.wk:"DA SEMANA";if(ehMedia(sp))return curto?MEDIAS[sp][1]:MEDIAS[sp][2];return curto?spRot(sp).toUpperCase():"DA NOITE"}
+function rotPer(sp,curto){const d=DADOS;if(ehRange(sp)){const [a,b]=rangeDe(sp);const t=spRot(a)+" a "+spRot(b);return curto?t.toUpperCase():"DE "+t.toUpperCase()}if(sp==="sem")return curto?"SEMANA "+d.wk:"DA SEMANA";if(ehMedia(sp))return curto?MEDIAS[sp][1]:MEDIAS[sp][2];return curto?spRot(sp).toUpperCase():"DA NOITE"}
 function botoesPer(sp,attr){const d=DADOS;
   // três períodos grandes + um seletor com cada dia da semana (e os últimos 7 dias)
   const big=[["sem","SEMANA","semana "+d.wk],["l30","MÊS","últimos 30 dias"],["temp","SEASON","temporada"]].map(([k,a,b])=>`<button class="dia per big" type="button" ${attr}="${k}" aria-pressed="${sp===k}">${a}<small>${b}</small></button>`).join("");
   const dias=[];for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++)dias.push(x);
   const escolhido=!["sem","l30","temp"].includes(String(sp));
-  const opt=`<option value="">${escolhido?"":"um dia…"}</option>`+dias.slice().reverse().map(x=>`<option value="${x}" ${String(sp)===String(x)?"selected":""}>${esc(spRot(x))}${x===d.cur?" (hoje)":""}</option>`).join("")+`<option value="l7" ${sp==="l7"?"selected":""}>últimos 7 dias</option>`;
-  return big+`<label class="dia per esc ${escolhido?"on":""}">OUTRO<select id="perSel" data-attr="${attr}" aria-label="Escolher um dia">${opt}</select></label>`}
+  const opt=`<option value="">${escolhido?"":"um dia…"}</option>`+dias.slice().reverse().map(x=>`<option value="${x}" ${String(sp)===String(x)?"selected":""}>${esc(spRot(x))}${x===d.cur?" (hoje)":""}</option>`).join("")+`<option value="l7" ${sp==="l7"?"selected":""}>últimos 7 dias</option><option value="range" ${ehRange(sp)?"selected":""}>intervalo de datas…</option>`;
+  let rg="";if(ehRange(sp)){const [a,b]=rangeDe(sp);const op=v=>{let o="";for(let x=d.cur;x>=1;x--)o+=`<option value="${x}" ${x===v?"selected":""}>${esc(spRot(x))}</option>`;return o};
+    rg=`<div class="rg"><label>De <select id="rgA">${op(a)}</select></label><label>até <select id="rgB">${op(b)}</select></label></div>`}
+  return big+`<label class="dia per esc ${escolhido?"on":""}">OUTRO<select id="perSel" data-attr="${attr}" aria-label="Escolher um dia">${opt}</select></label>`+rg}
 function linhasMedia(sp,filtro){ // jogadores com média no período (por jogo)
   const k=MEDIAS[sp][0];const mg=minMedia(sp);const out=[];
   DADOS.P.filter(p=>!p.fora&&(!filtro||filtro(p))).forEach(p=>{const a=p[k];if(a&&a[11]>=mg)out.push({p,t:p.t,s:a.slice(0,11),g:a[11],slot:0,media:1})});return out}
 function rankLiga(sp){ // posição de cada jogador no rendimento da liga inteira (dia ou semana)
   const d=DADOS;const k=sp+"|"+d.gerado;if(_RK[k])return _RK[k];
-  const L=[];if(ehMedia(sp)){linhasMedia(sp).forEach(r=>L.push({id:r.p.id,a:[...r.s,r.g]}))}else d.P.forEach(p=>{if(sp==="sem"){if(p.g)L.push({id:p.id,a:[...p.W,p.g]})}else{const v=p.dl&&p.dl[sp];if(v)L.push({id:p.id,a:[...v.slice(0,11),1]})}});
+  const L=[];if(ehRange(sp)){linhasRange(sp).forEach(r=>L.push({id:r.p.id,a:[...r.s,r.g]}))}else if(ehMedia(sp)){linhasMedia(sp).forEach(r=>L.push({id:r.p.id,a:[...r.s,r.g]}))}else d.P.forEach(p=>{if(sp==="sem"){if(p.g)L.push({id:p.id,a:[...p.W,p.g]})}else{const v=p.dl&&p.dl[sp];if(v)L.push({id:p.id,a:[...v.slice(0,11),1]})}});
   const f=notas(L,x=>x.a,1);const m={},v={},cz={};
   // todas as categorias pesam igual; só o TO baixo vale menos (não perder bola é pouco mérito; perder muito pesa inteiro)
   if(f)L.forEach(x=>{const r=f(x.a);x.c=r.c;x.z=r.n-(r.c.TO>0?r.c.TO*0.65:0)});else L.forEach(x=>x.z=valorJogo(x.a));
@@ -1814,7 +1827,7 @@ function vDesempenhos(){
     if(c["FT%"]>=1.8)L.push([`${st[9]}/${st[10]} FT`,"bom",c["FT%"]]);if(c["FT%"]<=-1.8)L.push([`${st[9]}/${st[10]} FT`,"ruim",-c["FT%"]]);
     return L.sort((a,b)=>b[2]-a[2]).slice(0,3).map(([t,k])=>`<span class="dz ${k}">${t}</span>`).join("")};
   const cel=(r,k,i,txt)=>`<td class="${nivel(k==="TO"?(r.c&&r.c.TO<0?r.c.TO:0):r.c&&r.c[k])}">${txt??r.s[i]}</td>`;
-  const linha=r=>{const p=r.p,st=r.s;return `<tr style="--cor:${T(r.t)[4]}" class="${r.slot>=12?"fora":""}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RKV,p.id)}${esc(p.n)}</b><small>${subJog(r.t,null,`${sp==="sem"?`<span>${r.g} j</span>`:""}${r.slot>=12?'<span class="tag banco">BANCO</span>':""}`)}</small><small class="dzs">${destaque(r)}</small></div></div></td>
+  const linha=r=>{const p=r.p,st=r.s;return `<tr style="--cor:${T(r.t)[4]}" class="${r.slot>=12?"fora":""}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RKV,p.id)}${esc(p.n)}</b><small>${subJog(r.t,null,`${(sp==="sem"||ehRange(sp))?`<span>${r.g} j</span>`:""}${r.slot>=12?'<span class="tag banco">BANCO</span>':""}`)}</small><small class="dzs">${destaque(r)}</small></div></div></td>
    ${MAP.map(([k,i])=>cel(r,k,i)).join("")}${cel(r,"FG%",7,`${st[7]}/${st[8]}`).replace("<td class=\"","<td class=\"fgft ")}${cel(r,"FT%",9,`${st[9]}/${st[10]}`).replace("<td class=\"","<td class=\"fgft ")}</tr>`};
   const L=ordenaLj(rows.slice(0,60));
   let h=`<div class="cab-secao"><span class="sobre">DESEMPENHOS · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">${sp==="sem"?"DESEMPENHOS DA SEMANA":"DESEMPENHOS DA NOITE"}</h1><p class="linha-fina">Todas as categorias pesam igual: 6 roubos valem tanto quanto 40 pontos. Amarelo = categoria em que o cara foi muito acima do normal; vermelho = afundou. Zero TO quase não conta.</p></div>
@@ -1824,11 +1837,14 @@ function vDesempenhos(){
   <div class="card lj-wrap"><table class="lj des">${cabLj()}<tbody>${L.map(linha).join("")||`<tr><td colspan="10" class="esp">Ninguém jogou ainda.</td></tr>`}</tbody></table></div>`;
   return h;
 }
+function cabRange(sp){const [a,b]=rangeDe(sp);const n=b-a+1;const ok=Object.keys(BOX.dias).filter(x=>+x>=a&&+x<=b).length;
+  return `<div class="cab-secao"><span class="sobre">INTERVALO · ${esc(rotPer(sp,1))}</span><h1 class="manchete">BUSCANDO OS BOXES</h1><p class="linha-fina">Baixando ${n} dia${n>1?"s":""} de jogos da ESPN (${ok} de ${n} prontos). Na próxima vez fica guardado no seu aparelho.</p></div><div class="dias" role="group" aria-label="Período">${botoesPer(sp,"data-nd")}</div>`}
 function vNoite(){
   const d=DADOS;if(!d)return vazio();
   const sp=UI.noiteDia??d.cur;const ft=UI.noiteTime||0;const modo=UI.noiteModo||"melhores";
   const rows=[];
-  if(ehMedia(sp))linhasMedia(sp,p=>!ft||p.t===ft).forEach(r=>rows.push(Object.assign(r,{val:valorJogo(r.s)})));
+  if(ehRange(sp)){if(!rangePronto(sp)){garantirBoxes(rangeDe(sp)[1]);return cabRange(sp)}linhasRange(sp,r=>!ft||r.t===ft).forEach(r=>rows.push(Object.assign(r,{val:valorJogo(r.s)})))}
+  else if(ehMedia(sp))linhasMedia(sp,p=>!ft||p.t===ft).forEach(r=>rows.push(Object.assign(r,{val:valorJogo(r.s)})));
   else d.P.filter(p=>!p.fora&&(!ft||p.t===ft)).forEach(p=>{
     if(sp==="sem"){if(p.g)rows.push({p,t:p.t,s:p.W,g:p.g,slot:0,val:valorJogo(p.W)})}
     else{const v=p.dl&&p.dl[sp];if(v)rows.push({p,t:p.t,s:v.slice(0,11),slot:v[11],min:v[12]||0,val:valorJogo(v)})}
@@ -1837,12 +1853,12 @@ function vNoite(){
   rows.sort((x,y)=>modo==="piores"?x.val-y.val:y.val-x.val);
   if(modo==="selecao")return vSelecao(rows,sp);
   let coco="";
-  if(modo==="piores"){const cand=rows.filter(r=>ehMedia(sp)?true:sp==="sem"?r.g>=2:(r.min||0)>=15).sort((x,y)=>x.val-y.val);const dono=escalaMelhor(cand);
+  if(modo==="piores"){const cand=rows.filter(r=>ehMedia(sp)?true:(sp==="sem"||ehRange(sp))?r.g>=2:(r.min||0)>=15).sort((x,y)=>x.val-y.val);const dono=escalaMelhor(cand);
     const tot=zero();dono.forEach(r=>{if(r)r.s.forEach((x,i)=>tot[i]+=x)});tot.forEach((x,i)=>tot[i]=Math.round(x*10)/10);window._SEL=[];coco=quadraSelecao(dono,tot,sp,true);}
   const L=ordenaLj(rows.slice(0,40));
   const RK=rankLiga(sp);const RKV=rkVer(sp);
   const linha=r=>{const p=r.p;const st=r.s;const banco=r.slot>=12;
-    return `<tr class="${banco?"fora":""}" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RKV,p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,`${sp==="sem"?`<span>${r.g} j</span>`:""}${banco?'<span class="tag banco">BANCO</span>':""}`)}</small>${sp!=="sem"&&!ehMedia(sp)?`<small>${jogoNBA(p,sp)}</small>`:ehMedia(sp)?`<small>média por jogo · ${r.g} jogos</small>`:""}</div></div></td>
+    return `<tr class="${banco?"fora":""}" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RKV,p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,`${(sp==="sem"||ehRange(sp))?`<span>${r.g} j</span>`:""}${banco?'<span class="tag banco">BANCO</span>':""}`)}</small>${sp!=="sem"&&!ehMedia(sp)&&!ehRange(sp)?`<small>${jogoNBA(p,sp)}</small>`:ehMedia(sp)?`<small>média por jogo · ${r.g} jogos</small>`:""}</div></div></td>
     <td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td></tr>`};
   let h=`<div class="cab-secao"><span class="sobre">JOGADORES · ${esc(rotPer(sp,1))}</span><h1 class="manchete">${modo==="piores"?"OS PIORES":"OS MELHORES"} ${rotPer(sp)}</h1><p class="linha-fina">Todos os jogadores da liga, ordenados pelo valor nas 9 categorias da nossa liga (z-score, FG% e FT% pesados pelo volume, TO contra). O <b>#</b> é a posição do cara entre todos os ${rankLiga(sp)._n||0} que jogaram${ft?", mesmo filtrando por time":""}.</p></div>
   <div class="dias" role="group" aria-label="Período">${botoesPer(sp,"data-nd")}`;
@@ -1889,7 +1905,7 @@ function abrirFicha(k){
   const cel=[["PTS",st[0]],["REB",st[1]],["AST",st[2]],["STL",st[3]],["BLK",st[4]],["3PM",st[5]],["TO",st[6]],["FG",`${st[7]}/${st[8]}<small>${pc(st[7],st[8])}</small>`],["FT",`${st[9]}/${st[10]}<small>${pc(st[9],st[10])}</small>`]];
   fecharFicha();const el=document.createElement("div");el.className="pop-fundo";el.id="popFicha";
   el.innerHTML=`<div class="pop-jog" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(r.t)[4]}"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button>
-   <div class="pj-topo">${face(p.id,p.n,"")}<div><span class="slot-sel">${x.slot}</span>${x.rk?`<span class="rk-n">#${x.rk} de ${x.n}</span>`:""}<b>${esc(p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${esc(T(r.t)[0])} · ${esc(T(r.t)[2])}${sp==="sem"?` · ${r.g} jogos`:""}${r.slot>=12?' · <u>estava no banco</u>':""}</small>${sp!=="sem"&&!ehMedia(sp)?`<small>${jogoNBA(p,sp)}</small>`:ehMedia(sp)?`<small>média por jogo · ${r.g} jogos</small>`:""}</div></div>
+   <div class="pj-topo">${face(p.id,p.n,"")}<div><span class="slot-sel">${x.slot}</span>${x.rk?`<span class="rk-n">#${x.rk} de ${x.n}</span>`:""}<b>${esc(p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${esc(T(r.t)[0])} · ${esc(T(r.t)[2])}${(sp==="sem"||ehRange(sp))?` · ${r.g} jogos`:""}${r.slot>=12?' · <u>estava no banco</u>':""}</small>${sp!=="sem"&&!ehMedia(sp)&&!ehRange(sp)?`<small>${jogoNBA(p,sp)}</small>`:ehMedia(sp)?`<small>média por jogo · ${r.g} jogos</small>`:""}</div></div>
    <div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div></div>`;
   el.addEventListener("click",e=>{if(e.target===el||e.target.closest("[data-fecha]"))fecharFicha()});
   document.body.appendChild(el);
@@ -1914,7 +1930,7 @@ function vSelecao(rows,sp){
   h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores">Melhores</button><button class="pil" type="button" data-nm="piores">Piores</button><button class="pil" type="button" data-nm="selecao" aria-pressed="true">Seleção</button>${rkSel(sp)}</div>
   ${quadraSelecao(dono,tot,sp)}
   <div class="card lj-wrap"><table class="lj"><thead><tr><th>Escalação</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th class="fgft">FG</th><th class="fgft">FT</th></tr></thead><tbody>${dono.map(linha).join("")}
-  <tr class="total"><td class="jg"><div class="jg-in"><div><b>TOTAL</b><small>${sp==="sem"?"na semana":ehMedia(sp)?"por jogo":"na noite"}</small></div></div></td><td class="pts">${tot[0]}</td><td>${tot[1]}</td><td>${tot[2]}</td><td>${tot[3]}</td><td>${tot[4]}</td><td>${tot[5]}</td><td>${tot[6]}</td><td class="fgft">${tot[7]}/${tot[8]}<br><small>${tot[8]?(100*tot[7]/tot[8]).toFixed(1):0}%</small></td><td class="fgft">${tot[9]}/${tot[10]}<br><small>${tot[10]?(100*tot[9]/tot[10]).toFixed(1):0}%</small></td></tr></tbody></table></div>`;
+  <tr class="total"><td class="jg"><div class="jg-in"><div><b>TOTAL</b><small>${sp==="sem"||ehRange(sp)?"no período":ehMedia(sp)?"por jogo":"na noite"}</small></div></div></td><td class="pts">${tot[0]}</td><td>${tot[1]}</td><td>${tot[2]}</td><td>${tot[3]}</td><td>${tot[4]}</td><td>${tot[5]}</td><td>${tot[6]}</td><td class="fgft">${tot[7]}/${tot[8]}<br><small>${tot[8]?(100*tot[7]/tot[8]).toFixed(1):0}%</small></td><td class="fgft">${tot[9]}/${tot[10]}<br><small>${tot[10]?(100*tot[9]/tot[10]).toFixed(1):0}%</small></td></tr></tbody></table></div>`;
   return h;
 }
 /* ---------- ranking do Loydão + tabela ---------- */
@@ -2282,6 +2298,19 @@ async function baixarDia(sp){
   }));
   return {quando:Date.now(),linhas,meta};
 }
+/* box de todos os dias da temporada (para intervalos de datas). Dia fechado fica guardado no aparelho. */
+const BOX={dias:{},meta:{},carregando:false,pronto:0};
+async function garantirBoxes(ate){
+  if(BOX.carregando)return;BOX.carregando=true;
+  try{
+    const falta=[];for(let sp=1;sp<=ate;sp++){if(BOX.dias[sp])continue;const c=lerCache("wbs.box."+sp);if(c&&c.linhas&&diaFechado(sp,c.quando)){BOX.dias[sp]=c.linhas;Object.assign(BOX.meta,c.meta||{});continue}falta.push(sp)}
+    for(let k=0;k<falta.length;k+=4){const lote=falta.slice(k,k+4);
+      const res=await Promise.all(lote.map(sp=>baixarDia(sp).catch(()=>null)));
+      res.forEach((r,j)=>{if(!r)return;const sp=lote[j];const m={};r.linhas.forEach(l=>{const x=r.meta[l[0]];if(x)m[l[0]]={n:x.n,pos:x.pos,pro:x.pro,el:x.el}});
+        BOX.dias[sp]=r.linhas;Object.assign(BOX.meta,m);gravarCache("wbs.box."+sp,{quando:r.quando,linhas:r.linhas,meta:m})});
+      BOX.pronto=Object.keys(BOX.dias).length;render()}
+  }finally{BOX.carregando=false;BOX.pronto=Object.keys(BOX.dias).length;render()}
+}
 async function baixarFA(sp){
   const f={players:{filterStatus:{value:["FREEAGENT","WAIVERS"]},filterSlotIds:{value:[0,1,2,3,4,5,6,7,8,9,10,11]},limit:80,offset:0,sortPercOwned:{sortPriority:1,sortAsc:false},filterRanksForScoringPeriodIds:{value:[sp]},filterStatsForTopScoringPeriodIds:{value:2,additionalValue:["002027","012027"]}}};
   const r=await ajson(AO.LG+"?view=kona_player_info&scoringPeriodId="+sp,{"X-Fantasy-Filter":JSON.stringify(f)});
@@ -2422,7 +2451,7 @@ document.addEventListener("click",e=>{
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
   else if(ds.drt){UI.drTemp=ds.drt;UI.drTime="todos";render()}
 });
-document.addEventListener("change",e=>{if(e.target.id==="noiteTime"){UI.noiteTime=+e.target.value;render()}if(e.target.id==="perSel"&&e.target.value){const v=e.target.value;UI.noiteDia=isNaN(+v)?v:+v;render()}if(e.target.id==="rkModo"){UI.rkModo=e.target.value;try{localStorage.setItem("painel.rk",e.target.value)}catch(x){}render()}if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
+document.addEventListener("change",e=>{if(e.target.id==="noiteTime"){UI.noiteTime=+e.target.value;render()}if(e.target.id==="perSel"&&e.target.value){const v=e.target.value;UI.noiteDia=v==="range"?"r:"+DADOS.s0+"-"+Math.min(DADOS.cur,DADOS.s1):(isNaN(+v)?v:+v);render()}if(e.target.id==="rgA"||e.target.id==="rgB"){const A=document.getElementById("rgA").value,B=document.getElementById("rgB").value;UI.noiteDia="r:"+A+"-"+B;render()}if(e.target.id==="rkModo"){UI.rkModo=e.target.value;try{localStorage.setItem("painel.rk",e.target.value)}catch(x){}render()}if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
 window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0)});
 $("#btnAtualiza").onclick=()=>atualizarAoVivo();
 function tourAuto(){let visto=null;try{visto=localStorage.getItem("painel.tour")}catch(e){}if(!visto){const espera=setInterval(()=>{if(DADOS&&document.querySelector(".jogo")){clearInterval(espera);tourInicio()}},800);setTimeout(()=>clearInterval(espera),30000)}}
