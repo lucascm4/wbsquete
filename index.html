@@ -1671,11 +1671,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794172953"></script>
-<script src="radar.js?v=1794172953"></script>
-<script src="midia.js?v=1794172953"></script>
+<script src="hist.js?v=1794173260"></script>
+<script src="radar.js?v=1794173260"></script>
+<script src="midia.js?v=1794173260"></script>
 <script>
-const VERSAO_PAINEL="20261108182232";
+const VERSAO_PAINEL="20261108182740";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1916,7 +1916,11 @@ function simula(a,b){
     if(s.w>s.l)V++;else if(s.w<s.l)L++;else E++;
   }
   Object.keys(res).forEach(k2=>res[k2]/=N);
-  return EST.sim[k]={pa:V/N,pe:E/N,pb:L/N,res,cat:cat.map(x=>x/N),catE:catE.map(x=>x/N)};
+  // calibração (backtest 23/24–25/26, semanas 1–8, 990 pontos; doc 40): com muito jogo pela frente o modelo puro é confiante demais
+  // (streaming, lesão, minutos). Achata a chance conforme os jogos que faltam: T=1 até 25 jogos, caindo até 0,55.
+  const nr=ra.length+rb.length,Tc=Math.max(0.55,Math.min(1,1-0.0085*(nr-25)));const cal=P=>{const q=P.map(x=>Math.pow(Math.max(x,1e-4),Tc));const sq=q.reduce((x,y)=>x+y,0);return q.map(x=>x/sq)};
+  const [cpa,cpe,cpb]=cal([V/N,E/N,L/N]);
+  return EST.sim[k]={pa:cpa,pe:cpe,pb:cpb,cru:[V/N,E/N,L/N],Tc,res,cat:cat.map(x=>x/N),catE:catE.map(x=>x/N)};
 }
 
 /* ---------- simulação da temporada (ranking, playoffs, título) ---------- */
