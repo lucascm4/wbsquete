@@ -552,6 +552,22 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .dest-l.drop{background:#2a0b0b;color:#ff9c9c}
 .dest-l.troca{background:#2a240b;color:var(--amarelo)}
 
+/* box lado a lado sempre */
+.box2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px}
+@media (max-width:760px){
+ .box2 .bloco-tit{font-size:16px;padding:8px}
+ .box2 .bloco-tit small{display:none}
+ .box2 .jog{grid-template-columns:34px minmax(0,1fr) auto;gap:6px;padding:7px 8px}
+ .box2 .jog .ft{width:34px;height:34px}
+ .box2 .jog .nm{font-size:13px}
+ .box2 .jog .sub{font-size:11px}
+ .box2 .jog .lin{display:none}
+ .box2 .jog .pts{font-size:20px}
+ .box2 .jog .pts small{font-size:9px}
+ .box2 .nbag{display:block;margin:2px 0 0;width:max-content;max-width:100%;overflow:hidden;text-overflow:ellipsis;font-size:10px}
+ .box2 .tag{font-size:9px;padding:1px 4px}
+}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -905,7 +921,7 @@ function boxTime(tid,sp){
   const fora=lista.filter(x=>x.slot>=12&&(sp!=="sem"||x.bg)).sort((x,y)=>(y.s?y.s[0]:0)-(x.s?x.s[0]:0));
   const row=x=>{const p=x.p;const st=tagInj(p);
     if(sp==="sem"&&x.slot>=12)return `<div class="jog fora">${face(p.id,p.n)}<div><div class="nm">${esc(p.n)} <span class="tag banco">BANCO</span></div><div class="sub">${NBA[p.pro]||""} · ${x.bg} jogo${x.bg>1?"s":""} no banco</div></div><div class="pts num">${x.bp}<small>PTS PERDIDOS</small></div></div>`;
-    if(x.pend)return `<div class="jog">${face(p.id,p.n)}<div><div class="nm">${esc(p.n)} ${st}<span class="tag hoje">AINDA JOGA</span></div><div class="sub">${SLOT[x.slot]} · ${NBA[p.pro]||""} ${jogoNBA(p,sp)}</div></div><div class="pts">–</div></div>`;
+    if(x.pend)return `<div class="jog">${face(p.id,p.n)}<div><div class="nm">${esc(p.n)} ${st}<span class="tag hoje">JOGA</span></div><div class="sub">${SLOT[x.slot]} · ${NBA[p.pro]||""} ${jogoNBA(p,sp)}</div></div><div class="pts">–</div></div>`;
     const banco=x.slot>=12;
     return `<div class="jog ${banco?"fora":""} ${x.s[0]===0&&!banco?"zero":""}">${face(p.id,p.n)}<div><div class="nm">${esc(p.n)} ${st}${banco?`<span class="tag banco">${SLOT[x.slot]||"FORA"}</span>`:""}${p.fora?'<span class="tag ir">SAIU DO ELENCO</span>':""}</div><div class="sub">${banco?"":SLOT[x.slot]+" · "}${NBA[p.pro]||""}${sp==="sem"?` · ${x.g} jogo${x.g>1?"s":""}`:(x.min?` · ${x.min} min`:"")} ${sp==="sem"?"":jogoNBA(p,sp)}</div><div class="lin">${linhaStats(x.s)}</div></div><div class="pts num">${x.s[0]}<small>${banco?"NO BANCO":"PTS"}</small></div></div>`};
   let h=tit.map(row).join("")||`<div class="vazio">Ninguém em quadra nesse dia.</div>`;
@@ -982,14 +998,15 @@ function vJogo(i){
     <div class="pl num"><span class="${sc.w>sc.l?"v":""}">${sc.w}</span>-<span class="${sc.l>sc.w?"v":""}">${sc.l}</span>${sc.t?"-"+sc.t:""}<small>previsão ${(()=>{const p=placar(pa,pb);return rtxt(p.w,p.l,p.t)})()}</small></div>
     <div class="lado"><a href="#time-${b}" style="text-decoration:none;color:inherit">${rostoTime(B[0])}</a><div class="info"><div class="nm">${esc(B[0])}</div><div class="mg">${esc(B[2])}</div></div></div>
   </div>${tabelaCategorias(a,b,ta,tb,pa,pb,s)}</div>
+  <div class="dias" role="group" aria-label="Escolher dia"><button class="dia" type="button" data-dia="sem" aria-pressed="${dsel==="sem"}">SEMANA<small>total</small></button>`;
+  for(let sp=d.s0;sp<=d.s1;sp++){const r=spRot(sp).split(" ");h+=`<button class="dia" type="button" data-dia="${sp}" aria-pressed="${String(dsel)===String(sp)}" ${sp>d.cur?"disabled":""}>${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
+  h+=`</div><div class="duas box2">${[a,b].map(t=>{const tt=dsel==="sem"?EST.tot[t]:(d.D[t]&&d.D[t][dsel])||zero();
+    return `<div class="card"><div class="bloco-tit">${esc(T(t)[0].toUpperCase())} <small class="num">${tt[0]} pts · ${tt[1]} reb · ${tt[2]} ast</small></div><div class="box">${boxTime(t,dsel)}</div></div>`}).join("")}</div>
   <div class="duas">${betLoyde(a,b,s)}<div class="card"><div class="bloco-tit">CHANCES DE PLACAR <small>${tip("chances","os 6 mais prováveis")}</small></div>${chancesPlacar(a,b,s)}</div></div>
   <div class="card"><div class="bloco-tit">LEITURA DO LOYDÃO <small>o que decide, quem carrega, onde buscar</small></div>${leitura(a,b,s)}</div>
   ${quadroConfronto(A[0],B[0],ta,tb,s)}
   ${window.MUSEU?`<div class="card"><div class="bloco-tit">HISTÓRICO DIRETO <small>toque para abrir o box</small></div><div class="hist-lista">${h2hEntre(A[0],B[0]).l.map(m2=>{const [w,lo,t]=m2.r;return `<button type="button" ${m2.atual?"disabled":`data-mj="${m2.i}"`}><span class="qd">${temporadaCurta(m2.t)} · sem ${m2.w}</span><span><span class="${m2.v===m2.a?"w":""}">${esc(m2.a)}</span> x <span class="${m2.v===m2.b?"w":""}">${esc(m2.b)}</span>${seloFase(m2)}</span><span class="rs num">${rtxt(w,lo,t)}</span></button>`}).join("")||'<div class="vazio">Nunca se enfrentaram desde 22/23.</div>'}</div></div>`:""}
-  <div class="dias" role="group" aria-label="Escolher dia"><button class="dia" type="button" data-dia="sem" aria-pressed="${dsel==="sem"}">SEMANA<small>total</small></button>`;
-  for(let sp=d.s0;sp<=d.s1;sp++){const r=spRot(sp).split(" ");h+=`<button class="dia" type="button" data-dia="${sp}" aria-pressed="${String(dsel)===String(sp)}" ${sp>d.cur?"disabled":""}>${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
-  h+=`</div><div class="duas">${[a,b].map(t=>{const tt=dsel==="sem"?EST.tot[t]:(d.D[t]&&d.D[t][dsel])||zero();
-    return `<div class="card"><div class="bloco-tit">${esc(T(t)[0].toUpperCase())} <small class="num">${tt[0]} pts · ${tt[1]} reb · ${tt[2]} ast</small></div><div class="box">${boxTime(t,dsel)}</div></div>`}).join("")}</div>`;
+  `;
   return h;
 }
 
