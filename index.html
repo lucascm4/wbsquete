@@ -699,6 +699,25 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
  .meu{margin-left:0;display:flex;margin-top:4px}
 }
 
+.pilulas.mini{padding:8px 10px 0;gap:4px}.pilulas.mini .pil{padding:3px 9px;font-size:12px}
+.dia.fut{background:#2a1f1f;color:var(--apagado);border-color:#2a1f1f}
+.dia.fut[aria-pressed="true"]{background:#7fc8ff;color:#000;border-color:#000}
+.lj tr.proj td{color:#7fc8ff}.lj tr.proj td.jg{color:var(--texto)}.lj tr.proj .pts{color:#7fc8ff}
+@media (max-width:760px){
+ .lj{min-width:0;width:100%;table-layout:fixed}
+ .lj .jg-in img.ft,.lj .jg-in .ft.ini{display:none}
+ .lj td.jg{position:static;min-width:0;max-width:none;width:34%;padding:6px 4px 6px 8px;box-shadow:inset 3px 0 0 var(--cor)}
+ .lj th:first-child{position:static;width:34%}
+ .lj th,.lj td{padding:6px 2px;font-size:13px;text-align:center}
+ .lj th{font-size:9px;letter-spacing:0}
+ .lj .jg-in b{font-size:12.5px;white-space:normal;line-height:1.1}
+ .lj .jg-in small{font-size:10px;gap:3px}
+ .lj .jg-in small img{width:11px;height:11px}
+ .lj .pts{font-size:16px}
+ .lj .fgft{display:none}
+ .lj .nbag{font-size:9px;padding:0 4px}
+}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1078,18 +1097,21 @@ function jogoNBA(p,sp){ // "@OKC 55-84 · 2:28 3ºQ"
 }
 function valorJogo(v){return v[0]+1.2*v[1]+1.5*v[2]+3*v[3]+3*v[4]+v[5]-v[6]+(v[7]-0.47*v[8])*1.5+(v[9]-0.78*v[10])}
 function listaJuntos(a,b,sp){
-  const d=DADOS;const rows=[];
-  [a,b].forEach(t=>(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t)).forEach(p=>{
+  const d=DADOS;const rows=[];const futuro=sp!=="sem"&&sp>d.cur;const ft=UI.filtroTime||0;
+  [a,b].filter(t=>!ft||t===ft).forEach(t=>(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t)).forEach(p=>{
     if(sp==="sem"){if(p.g||p.bg)rows.push({p,t,s:p.W,g:p.g,slot:p.g?0:12,bp:p.bp,bg:p.bg,val:p.g?valorJogo(p.W):-1e6})}
+    else if(futuro){if(!p.fora&&p.slot!==13&&(p.gd||[]).includes(sp)){const av=p.av?p.av.slice(0,11):null;rows.push({p,t,s:av,slot:p.slot,proj:1,val:av?valorJogo(av):-1e5})}}
     else{const v=p.dl&&p.dl[sp];if(v)rows.push({p,t,s:v.slice(0,11),slot:v[11],min:v[12]||0,val:valorJogo(v)});else if(sp===d.cur&&p.hoje&&p.slot<12)rows.push({p,t,s:null,slot:p.slot,pend:1,val:-1e5})}
   }));
   const tit=rows.filter(r=>r.slot<12).sort((x,y)=>y.val-x.val),banco=rows.filter(r=>r.slot>=12).sort((x,y)=>(y.s?y.s[0]:0)-(x.s?x.s[0]:0));
-  const linha=r=>{const p=r.p;const st=r.s;const cor=T(r.t)[4];
-    return `<tr class="${r.pend?"pend":""}" style="--cor:${cor}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt="${esc(T(r.t)[0])}"> ${SLOT[r.slot]||""}${r.min?` · ${r.min}'`:""}${r.g!=null&&sp==="sem"?` · ${r.g} j`:""} ${tagInj(p)}${r.pend?'<span class="tag hoje">JOGA</span>':""}</small>${sp!=="sem"?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
-    ${st?`<td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[7]}/${st[8]}</td><td>${st[9]}/${st[10]}</td><td>${st[6]}</td>`:`<td colspan="9" class="esp">ainda não jogou</td>`}</tr>`};
-  const cab=`<thead><tr><th>Jogador</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>FG</th><th>FT</th><th>TO</th></tr></thead>`;
-  return `<div class="card tabela-wrap"><div class="bloco-tit">JOGADORES <small>${sp==="sem"?"semana toda":spRot(sp)} · do melhor pro pior · <span class="cor-a" style="--cor:${T(a)[4]}">${esc(T(a)[0])}</span> e <span class="cor-a" style="--cor:${T(b)[4]}">${esc(T(b)[0])}</span></small></div>
-  <table class="lj">${cab}<tbody>${tit.map(linha).join("")||`<tr><td colspan="10" class="esp">Ninguém em quadra nesse dia.</td></tr>`}${banco.length?`<tr class="sepr"><td colspan="10">Banco e IR${sp==="sem"?" · pontos que ficaram fora":""}</td></tr>`+banco.map(r=>sp==="sem"?`<tr style="--cor:${T(r.t)[4]}" class="fora"><td class="jg"><div class="jg-in">${face(r.p.id,r.p.n,"")}<div><b>${esc(r.p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${r.bg} jogo${r.bg>1?"s":""} no banco</small></div></div></td><td class="pts">${r.bp}</td><td colspan="8" class="esp">no banco</td></tr>`:linha(r)).join(""):""}</tbody></table></div>`;
+  const n1=x=>futuro?(Math.round(x*10)/10).toFixed(1).replace(".0",""):x;
+  const linha=r=>{const p=r.p;const st=r.s;const cor=T(r.t)[4];const g=!futuro&&sp!=="sem"?(d.nba&&d.nba[p.pro]):null;
+    return `<tr class="${r.pend?"pend":""}${r.proj?" proj":""}" style="--cor:${cor}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt="${esc(T(r.t)[0])}"> ${SLOT[r.slot]||""}${r.min?` · ${r.min}'`:""}${r.g!=null&&sp==="sem"?` · ${r.g} j`:""}${st&&!futuro?` · ${st[7]}/${st[8]} fg · ${st[9]}/${st[10]} ft`:""} ${tagInj(p)}${r.pend?'<span class="tag hoje">JOGA</span>':""}${r.proj?'<span class="tag ir">MÉDIA</span>':""}</small>${g?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
+    ${st?`<td class="pts">${n1(st[0])}</td><td>${n1(st[1])}</td><td>${n1(st[2])}</td><td>${n1(st[3])}</td><td>${n1(st[4])}</td><td>${n1(st[5])}</td><td>${n1(st[6])}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td>`:`<td colspan="9" class="esp">${r.pend?"ainda não jogou":"sem média"}</td>`}</tr>`};
+  const cab=`<thead><tr><th>Jogador</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th class="fgft">FG</th><th class="fgft">FT</th></tr></thead>`;
+  const filtros=`<div class="pilulas mini" role="group" aria-label="Time">${[[0,"Os dois"],[a,T(a)[0]],[b,T(b)[0]]].map(([k,n])=>`<button class="pil" type="button" data-ft="${k}" aria-pressed="${ft===k}">${esc(n)}</button>`).join("")}</div>`;
+  return `<div class="card tabela-wrap"><div class="bloco-tit">JOGADORES <small>${sp==="sem"?"semana toda":futuro?spRot(sp)+" · média da temporada de quem joga":spRot(sp)} · do melhor pro pior</small></div>${filtros}
+  <table class="lj">${cab}<tbody>${tit.map(linha).join("")||`<tr><td colspan="10" class="esp">${futuro?"Ninguém joga nesse dia.":"Ninguém em quadra nesse dia."}</td></tr>`}${banco.length?`<tr class="sepr"><td colspan="10">Banco e IR${sp==="sem"?" · pontos que ficaram fora":""}</td></tr>`+banco.map(r=>sp==="sem"?`<tr style="--cor:${T(r.t)[4]}" class="fora"><td class="jg"><div class="jg-in">${face(r.p.id,r.p.n,"")}<div><b>${esc(r.p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${r.bg} jogo${r.bg>1?"s":""} no banco</small></div></div></td><td class="pts">${r.bp}</td><td colspan="8" class="esp">no banco</td></tr>`:linha(r)).join(""):""}</tbody></table></div>`;
 }
 function boxTime(tid,sp){
   const d=DADOS;const lista=[];
@@ -1150,11 +1172,6 @@ function leitura(a,b,s){
   [a,b].forEach(t=>{const l=(EST.rost[t]||[]).filter(p=>p.bp>0).sort((x,y)=>y.bp-x.bp);const bp=l.reduce((s2,p)=>s2+p.bp,0);if(bp>=15)itens.push([ico("BANCO","r"),`${esc(T(t)[0])} deixou <b>${bp} pontos no banco</b> nesta semana (${l.slice(0,3).map(p=>`${p.n} ${p.bp}`).join(", ")}).`])});
   // OUT escalado
   [a,b].forEach(t=>{(EST.rost[t]||[]).filter(p=>p.slot<12&&p.inj==="OUT").forEach(p=>itens.push([ico("OUT","r"),`<b>${esc(p.n)}</b> está OUT e segue titular do ${esc(T(t)[0])} (${SLOT[p.slot]}). Vaga jogada fora.`]))});
-  // waiver: categoria perdendo apertada + FA que ajuda
-  if(d.fa&&d.fa.length){[[a,b,1],[b,a,-1]].forEach(([t,o,sg])=>{
-    const perdendo=CATS.map((c,j)=>({c,j,pr:sg>0?s.cat[j]:1-s.cat[j]-s.catE[j]})).filter(x=>x.pr>0.2&&x.pr<0.5&&!x.c.pct).sort((x,y)=>y.pr-x.pr).slice(0,2);
-    perdendo.forEach(({c,pr})=>{const fa=d.fa.filter(f=>f.av&&f.gl>0&&f.inj!=="OUT").sort((x,y)=>(y.av[c.i]*(c.inv?-1:1))-(x.av[c.i]*(c.inv?-1:1)))[0];
-      if(fa&&!c.inv)itens.push([ico("WAIVER","c"),`Pra ${esc(T(t)[0])} virar <b>${c.k}</b> (${pct(pr)}), o melhor livre é <b>${esc(fa.n)}</b> (${NBA[fa.pro]||""}): ${fa.av[c.i]} por jogo, ${fa.gl} jogo${fa.gl>1?"s":""} até domingo${fa.st==="WAIVERS"?", está no waiver":""}.`])})})}
   return `<div class="leitura"><ul>${itens.slice(0,7).map(([i,t])=>`<li>${i}<span>${t}</span></li>`).join("")||"<li>Nada a declarar. Por enquanto.</li>"}</ul></div>`;
 }
 function quadroConfronto(A,B,ta,tb,s){
@@ -1179,7 +1196,7 @@ function vJogo(i){
     <div class="lado"><a href="#time-${b}" style="text-decoration:none;color:inherit">${rostoTime(B[0])}</a><div class="info"><div class="nm">${esc(B[0])}</div><div class="mg">${esc(B[2])}</div></div></div>
   </div>${tabelaCategorias(a,b,ta,tb,pa,pb,s)}</div>
   <div class="dias" role="group" aria-label="Escolher dia"><button class="dia" type="button" data-dia="sem" aria-pressed="${dsel==="sem"}">SEMANA<small>total</small></button>`;
-  for(let sp=d.s0;sp<=d.s1;sp++){const r=spRot(sp).split(" ");h+=`<button class="dia" type="button" data-dia="${sp}" aria-pressed="${String(dsel)===String(sp)}" ${sp>d.cur?"disabled":""}>${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
+  for(let sp=d.s0;sp<=d.s1;sp++){const r=spRot(sp).split(" ");h+=`<button class="dia ${sp>d.cur?"fut":""}" type="button" data-dia="${sp}" aria-pressed="${String(dsel)===String(sp)}">${r[0].toUpperCase()}<small>${sp>d.cur?"proj.":r[1]}</small></button>`}
   h+=`</div>${listaJuntos(a,b,dsel)}
   <div class="duas">${betLoyde(a,b,s)}<div class="card"><div class="bloco-tit">CHANCES DE PLACAR <small>${tip("chances","os 6 mais prováveis")}</small></div>${chancesPlacar(a,b,s)}</div></div>
   <div class="card"><div class="bloco-tit">LEITURA DO LOYDÃO <small>o que decide, quem carrega, onde buscar</small></div>${leitura(a,b,s)}</div>
@@ -1622,7 +1639,7 @@ function render(){
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
-  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc]");if(!t)return;
+  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
   if(ds.jogo!==undefined)ir("jogo-"+ds.jogo);
@@ -1640,6 +1657,7 @@ document.addEventListener("click",e=>{
   else if(ds.rko){UI.rkOrd=ds.rko;UI.rkCat=null;render()}
   else if(ds.rkc){UI.rkCat=UI.rkCat===ds.rkc?null:ds.rkc;render()}
   else if(ds.rd){UI.radar=ds.rd;render()}
+  else if(ds.ft!==undefined){UI.filtroTime=+ds.ft;render()}
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
   else if(ds.drt){UI.drTemp=ds.drt;UI.drTime="todos";render()}
 });
