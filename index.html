@@ -1210,6 +1210,27 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 .car-corte.so1{border-left-color:#555}
 .car-sub small{display:block;font:500 9px system-ui;letter-spacing:0;color:#888;margin-top:1px;text-transform:none}
 .pj-tab td.adv{color:var(--apagado);font-size:11px}
+/* barra do confronto: início + setas + placar mini, presa no topo */
+.jogo-nav{position:sticky;top:var(--topo,100px);z-index:15;display:flex!important;align-items:center;gap:6px;margin:-4px -4px 8px;padding:6px 4px;background:#0a0707;border-bottom:2px solid var(--amarelo)}
+.jn-home,.jogo-nav .jn-b{all:unset;cursor:pointer;flex:0 0 36px;height:34px;display:flex;align-items:center;justify-content:center;background:#000;color:var(--amarelo);border:2px solid var(--amarelo);border-radius:8px;font-size:20px;font-weight:800}
+.jn-home{background:var(--amarelo);color:#000}
+.jn-mini{flex:1 1 auto;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;font-family:var(--display);color:#fff}
+.jn-mini img{width:24px;height:24px;border-radius:50%;border:1.5px solid #000;object-fit:cover}
+.jn-mini b{font-weight:400;font-size:15px;letter-spacing:.03em}.jn-mini span{font-size:22px;letter-spacing:.02em}.jn-mini em{font-style:normal}.jn-mini em.v{color:var(--amarelo)}
+.jn-mini small{font:700 10px system-ui,sans-serif;color:var(--apagado);margin-left:4px}
+/* botão de início das outras telas: chip pequeno, sem ocupar linha */
+.barra-inicio{float:right;margin:2px 0 4px 8px;position:relative;z-index:2}
+.barra-inicio .inicio{padding:4px 10px;font-size:13px;border-width:1.5px}
+/* pílulas numa linha com rolagem (Ranking, Radar, Museu) */
+.pilulas:not(.mini):not(.vis){flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.pilulas:not(.mini):not(.vis)::-webkit-scrollbar{display:none}
+.pilulas:not(.mini):not(.vis)>.pil:not(.big){flex:0 0 auto;white-space:nowrap}
+.pilulas:not(.mini):not(.vis)>select,.pilulas:not(.mini):not(.vis)>label{flex:0 0 auto}
+@media (max-width:560px){
+ .linha-fina{font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+ .cab-secao{margin-bottom:6px}
+ .placar-topo{padding:8px 6px}.placar-topo .rosto{width:42px;height:42px}.placar-topo .lado .nm{font-size:15px}.placar-topo .lado .mg{font-size:11px}.placar-topo .pl{font-size:32px}
+}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1276,10 +1297,10 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794163664"></script>
-<script src="radar.js?v=1794163664"></script>
+<script src="hist.js?v=1794163739"></script>
+<script src="radar.js?v=1794163739"></script>
 <script>
-const VERSAO_PAINEL="20261108154744";
+const VERSAO_PAINEL="20261108154859";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1934,7 +1955,7 @@ function vJogo(i){
   const sc=placar(ta,tb),s=simula(a,b);const dsel=UI.dia[i]??(d.last===d.cur?d.cur:"sem");const dia=d.cur-d.s0+1;
   const sub=UI.subJogo||"placar";const n=d.mt.length;const prev=(i+n-1)%n,next=(i+1)%n;
   const abas=[["placar","Placar"],["jogadores","Jogadores"],["odds","Odds"],["destaques","Destaques"],["premios","Prêmios"]];
-  let h=`<div class="jogo-nav"><button class="voltar" type="button" data-ir="confrontos">⌂ Início</button><span class="jn-set"><button type="button" class="jn-b" data-jogo="${prev}" aria-label="confronto anterior">‹</button><small>${i+1}/${n} · deslize p/ trocar</small><button type="button" class="jn-b" data-jogo="${next}" aria-label="próximo confronto">›</button></span></div>
+  let h=`<div class="jogo-nav"><button class="jn-home" type="button" data-ir="confrontos" aria-label="Início">⌂</button><button type="button" class="jn-b" data-jogo="${prev}" aria-label="confronto anterior">‹</button><div class="jn-mini"><img src="img/l/${A[1]}.webp" alt=""><b>${esc(A[3]||A[0])}</b><span class="num"><em class="${sc.w>sc.l?"v":""}">${sc.w}</em>-<em class="${sc.l>sc.w?"v":""}">${sc.l}</em>${sc.t?"-"+sc.t:""}</span><b>${esc(B[3]||B[0])}</b><img src="img/l/${B[1]}.webp" alt=""><small>${i+1}/${n}</small></div><button type="button" class="jn-b" data-jogo="${next}" aria-label="próximo confronto">›</button></div>
   <div class="card"><div class="placar-topo">
     <div class="lado"><a href="#time-${a}" style="text-decoration:none;color:inherit">${rostoTime(A[0])}</a><div class="info"><div class="nm">${esc(A[0])}</div><div class="mg">${esc(A[2])}</div></div></div>
     <div class="pl num"><span class="${sc.w>sc.l?"v":""}">${sc.w}</span>-<span class="${sc.l>sc.w?"v":""}">${sc.l}</span>${sc.t?"-"+sc.t:""}<small>sem ${d.wk} · dia ${Math.min(dia,7)}/7 · previsão ${(()=>{const p=placar(pa,pb);return rtxt(p.w,p.l,p.t)})()}</small></div>
