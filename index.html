@@ -526,6 +526,8 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .bet-odds .bq.fav{border-color:#000}
 @media (max-width:460px){.bet-jogo{grid-template-columns:minmax(0,1fr)}.bet-odds{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .bet .pe b{color:var(--amarelo)}
+.jogo .lado .nm{white-space:nowrap;overflow-wrap:normal;font-size:clamp(15px,1.6vw,20px)}
+@media (max-width:900px){.jogo .lado .nm{font-size:clamp(15px,4.2vw,20px)}}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;padding-top:8px}
 .pasta{position:relative;display:flex;flex-direction:column;gap:6px;background:#f2d27a;color:#1d1b18;text-decoration:none;padding:18px 16px 14px;border:3px solid #000;box-shadow:5px 5px 0 #000;border-radius:0 8px 8px 8px;min-height:130px;transition:transform .12s}
