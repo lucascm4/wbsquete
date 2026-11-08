@@ -1136,6 +1136,22 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 .pj-sub{margin:10px 0 0;font-size:12px;color:var(--apagado);letter-spacing:.03em}.pj-sub b{color:var(--amarelo)}
 .rd.clic,.tj.clic{cursor:pointer}
 .pj-tab tr.atual th,.pj-tab tr.atual td{color:var(--amarelo)}
+/* carreira na ficha */
+.car{display:flex;flex-direction:column;background:#000;border-radius:10px;overflow:hidden}
+.car-l{border-bottom:1px solid #221818}.car-l:last-child{border-bottom:0}
+.car-l summary{list-style:none;display:grid;grid-template-columns:minmax(0,1.3fr) 52px repeat(4,minmax(0,1fr));gap:6px;align-items:center;padding:9px 10px;cursor:pointer}
+.car-l summary::-webkit-details-marker{display:none}
+.car-s{display:flex;flex-direction:column;gap:2px;min-width:0}.car-s b{font-family:var(--display);font-weight:400;font-size:19px;color:#fff;line-height:1}
+.car-s b:before{content:"› ";color:var(--apagado);font-family:system-ui}.car-l[open] .car-s b:before{content:"⌄ "}
+.car-t{font:700 11px system-ui,sans-serif;color:var(--apagado);letter-spacing:.05em}
+.car-n{font-family:var(--display);font-size:17px;text-align:center;padding:5px 0;border-radius:4px;color:#000;background:#555}
+.n-el{background:#2fb8e6}.n-bo{background:#22c55e}.n-ok{background:#ffd400}.n-fr{background:#f59e0b}.n-ru{background:#ef4444;color:#fff}
+.car-v{display:flex;flex-direction:column;align-items:center;line-height:1}.car-v b{font-family:var(--display);font-weight:400;font-size:18px;color:#fff}.car-v small{font-size:9px;color:var(--apagado);letter-spacing:.06em;margin-top:2px}
+.car-tot{background:#1b1205}.car-tot .car-s b:before{content:""}.car-at .car-s b{color:var(--amarelo)}
+.car-mais{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding:0 10px 10px}.car-mais div{background:#140d0d;text-align:center;padding:5px 2px;border-radius:4px}
+.car-mais small{display:block;font-size:9px;color:var(--apagado)}.car-mais b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--amarelo)}.car-mais b small{font:600 10px system-ui;color:#ccc}
+.car-leg{font-size:11px;color:var(--apagado);margin-top:6px}
+@media (max-width:420px){.car-mais{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1205,7 +1221,7 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108145643";
+const VERSAO_PAINEL="20261108145721";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2028,7 +2044,14 @@ function abrirJogador(id,perF){
   const lin=(nome,a)=>a?`<tr><th>${nome}</th><td>${n1(a[0])}</td><td>${n1(a[1])}</td><td>${n1(a[2])}</td><td>${n1(a[3])}</td><td>${n1(a[4])}</td><td>${n1(a[5])}</td><td>${n1(a[6])}</td><td>${pc(a[7],a[8])}<small>${n1(a[7])}/${n1(a[8])}</small></td><td>${pc(a[9],a[10])}<small>${n1(a[9])}/${n1(a[10])}</small></td><td>${a[11]!=null?a[11]:""}</td></tr>`:"";
   const medias=`<table class="pj-tab"><thead><tr><th></th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th>FG</th><th>FT</th><th>J</th></tr></thead><tbody>${lin("Temporada",p.av)}${lin("30 dias",p.l30)}${lin("7 dias",p.l7)}${lin("Projeção",p.pj)}</tbody></table>`;
   const car=(typeof CAR!=="undefined"&&CAR[id])||null;const rotA=y=>String(y-1).slice(2)+"/"+String(y).slice(2);
-  const carreira=car&&car.length?`<table class="pj-tab"><thead><tr><th>Temp.</th><th>Time</th><th>J</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th>FG</th><th>FT</th></tr></thead><tbody>${p.av?`<tr class="atual"><th>26/27</th><td>${esc(NBA[p.pro]||"")}</td><td>${p.av[11]}</td>${[0,1,2,3,4,5,6].map(i=>`<td>${n1(p.av[i])}</td>`).join("")}<td>${pc(p.av[7],p.av[8])}<small>${n1(p.av[7])}/${n1(p.av[8])}</small></td><td>${pc(p.av[9],p.av[10])}<small>${n1(p.av[9])}/${n1(p.av[10])}</small></td></tr>`:""}${car.map(x=>{const a=x.a;return `<tr><th>${rotA(x.yr)}</th><td>${esc(x.t?NBA[x.t]||"":"–")}</td><td>${a[11]}</td>${[0,1,2,3,4,5,6].map(i=>`<td>${n1(a[i])}</td>`).join("")}<td>${pc(a[7],a[8])}<small>${n1(a[7])}/${n1(a[8])}</small></td><td>${pc(a[9],a[10])}<small>${n1(a[9])}/${n1(a[10])}</small></td></tr>`}).join("")}</tbody></table>`:"";
+  window._NAV=window._NAV||notas(d.P.concat(d.fa||[]),x=>x.av);
+  const notaDe=a=>{const z=window._NAV?window._NAV(a):null;return z?z.n:null};
+  const corN=n=>n==null?"":n>=4?"n-el":n>=1.5?"n-bo":n>=0?"n-ok":n>=-1.5?"n-fr":"n-ru";
+  const linhasCar=(p.av?[{yr:2027,t:p.pro,a:p.av,atual:1}]:[]).concat(car||[]);
+  const tot=linhasCar.length?(()=>{const g=linhasCar.reduce((x,l)=>x+l.a[11],0);const m=zero().map((_,i)=>linhasCar.reduce((x,l)=>x+l.a[i]*l.a[11],0)/Math.max(1,g));return [...m,g]})():null;
+  const linCar=(rot,tm,a,cls)=>{const n=notaDe(a);return `<details class="car-l ${cls||""}"><summary><span class="car-s"><b>${rot}</b>${tm!=null?`<small class="car-t">${esc(tm)}</small>`:""}</span><span class="car-n ${corN(n)}">${n==null?"–":(n>0?"+":"")+n.toFixed(1)}</span><span class="car-v"><b>${a[11]}</b><small>J</small></span><span class="car-v"><b>${n1(a[0])}</b><small>PTS</small></span><span class="car-v"><b>${n1(a[1])}</b><small>REB</small></span><span class="car-v"><b>${n1(a[2])}</b><small>AST</small></span></summary>
+    <div class="car-mais">${[["STL",n1(a[3])],["BLK",n1(a[4])],["3PM",n1(a[5])],["TO",n1(a[6])],["FG",`${pc(a[7],a[8])}<small>${n1(a[7])}/${n1(a[8])}</small>`],["FT",`${pc(a[9],a[10])}<small>${n1(a[9])}/${n1(a[10])}</small>`]].map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div></details>`};
+  const carreira=car&&car.length?`<div class="car">${tot?linCar("Total",null,tot,"car-tot"):""}${linhasCar.map(l=>linCar(rotA(l.yr),l.t?(NBA[l.t]||"–"):"–",l.a,l.atual?"car-at":"")).join("")}</div><div class="car-leg">Selo = nota 9-cat por jogo (0 = titular médio da liga). Toque na temporada para ver o resto.</div>`:"";
   // últimos jogos (boxes guardados)
   const ult=[];if(typeof BOX!=="undefined"){Object.keys(BOX.dias).map(Number).sort((a,b)=>b-a).forEach(x=>{if(ult.length>=6)return;const l=BOX.dias[x].find(l=>l[0]===id);if(l)ult.push([x,l])})}
   if(!ult.length&&p.dl)Object.keys(p.dl).map(Number).sort((a,b)=>b-a).slice(0,6).forEach(x=>{const v=p.dl[x];ult.push([x,[id,p.t,v[11],...v.slice(0,11)]])});
@@ -2052,7 +2075,7 @@ function abrirJogador(id,perF){
    ${barras?`<div class="pj-sec">CATEGORIA POR CATEGORIA <small>acima (+) ou abaixo (−) de um titular médio</small></div><div class="pj-zb">${barras}</div>`:""}
    <div class="pj-sec">LEITURA DO LOYDÃO</div><p class="pj-txt">${frases.join(" ")}</p>
    <div class="pj-sec">MÉDIAS</div><div class="pj-scroll">${medias}</div>
-   <div class="pj-sec">TEMPORADAS <small>time na NBA e médias por jogo</small></div>${carreira?`<div class="pj-scroll">${carreira}</div>`:`<p class="pj-txt">${typeof LY!=="undefined"&&LY[id]===undefined?"Buscando as temporadas anteriores…":"Sem temporadas anteriores na ESPN (estreante)."}</p>`}
+   <div class="pj-sec">TEMPORADAS <small>time na NBA e médias por jogo</small></div>${carreira?carreira:`<p class="pj-txt">${typeof LY!=="undefined"&&LY[id]===undefined?"Buscando as temporadas anteriores…":"Sem temporadas anteriores na ESPN (estreante)."}</p>`}
    ${jogos?`<div class="pj-sec">ÚLTIMOS JOGOS</div><div class="pj-scroll">${jogos}</div>`:""}</div>`;
   if(typeof LY!=="undefined"&&LY[id]===undefined)seasonPassada(id).then(()=>{const pop=document.getElementById("popFicha");if(pop&&pop.dataset.id==String(id)){const sc=pop.querySelector(".pop-full").scrollTop;abrirJogador(id,UI.fichaPer);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc}});
   el.dataset.id=id;
