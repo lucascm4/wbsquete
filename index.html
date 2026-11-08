@@ -355,13 +355,14 @@ main+.rod{margin-top:0}
 .placar-topo .pl .v{color:var(--amarelo)}
 .placar-topo .pl small{display:block;font-family:var(--ui);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--apagado);margin-top:6px}
 .tabcat{width:100%;border-collapse:collapse;table-layout:fixed}
-.tabcat col.c1{width:26%}.tabcat col.c2{width:13%}.tabcat col.c3{width:22%}
+.tabcat col.c1{width:24%}.tabcat col.c2{width:17%}.tabcat col.c3{width:18%}
+.tabcat th .tip{color:#7fc8ff}
 .tabcat th{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--apagado);padding:8px 4px;border-bottom:2px solid #000;background:#0a0707;font-weight:700}
 .tabcat td{padding:0;border-bottom:2px solid #000;height:50px;vertical-align:middle;text-align:center;font-variant-numeric:tabular-nums}
 .tabcat .v{font-family:var(--display);font-size:24px;line-height:1;color:var(--texto)}
 .tabcat td.g{background:var(--amarelo)}
 .tabcat td.g .v{color:#000}
-.tabcat .pv{font-size:12px;color:var(--apagado)}
+.tabcat .pv{font-family:var(--display);font-size:22px;line-height:1;color:#7fc8ff}
 .tabcat td.g+.pvc,.tabcat .pvc{color:var(--apagado)}
 .tabcat .cn{font-family:var(--display);font-size:16px;letter-spacing:.04em;color:var(--amarelo)}
 .tabcat .cn small{display:block;font-family:var(--ui);font-size:10px;letter-spacing:.06em;color:#fff;background:var(--vermelho);padding:1px 5px;margin:3px auto 0;width:max-content;border:1px solid #000}
@@ -369,7 +370,7 @@ main+.rod{margin-top:0}
 .tabcat th.lg img{width:34px;height:34px;border-radius:50%;object-fit:contain;background:#fff;border:2px solid #000}
 .tabcat tr.resumo td{height:auto;padding:8px 4px;font-size:12px;color:var(--apagado);border-bottom:0;background:#0a0707}
 .tabcat tr.resumo b{color:var(--texto)}
-@media (max-width:420px){.tabcat .v{font-size:20px}.tabcat .cn{font-size:14px}.tabcat .pv{font-size:11px}}
+@media (max-width:420px){.tabcat .v{font-size:19px}.tabcat .cn{font-size:14px}.tabcat .pv{font-size:17px}}
 
 /* BetLoyde */
 .bet{background:#000;border:3px solid var(--amarelo);box-shadow:5px 5px 0 #000;padding:12px}
@@ -498,6 +499,33 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .rkc.corte{border-bottom:5px dashed var(--ouro)}
 @media (max-width:420px){.rkc{grid-template-columns:28px 26px 40px minmax(0,1fr) auto;padding:8px}.rkc .dest b{font-size:22px}.rkc .mini3{grid-template-columns:52px auto 52px auto}}
 .selo.cz{background:#8d8580;color:#000}
+
+/* mini tabela do card */
+.mt{display:grid;grid-template-columns:26px repeat(9,minmax(0,1fr));gap:3px 2px;align-items:center}
+.mt-c{font-size:10px;font-weight:700;letter-spacing:.02em;text-align:center;color:var(--apagado);text-transform:uppercase}
+.mt-l{width:22px;height:22px;border-radius:50%;object-fit:contain;background:#fff;border:1px solid #000}
+.mt-v{font-family:var(--display);font-size:15px;text-align:center;padding:4px 0;background:#1d1414;border:1px solid #000;color:var(--texto);font-variant-numeric:tabular-nums;line-height:1}
+.mt-v.g{background:var(--amarelo);color:#000}
+@media (max-width:380px){.mt-v{font-size:13px}.mt-c{font-size:9px}}
+/* faixa de aposta */
+.bf{display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:6px;align-items:center;margin-top:2px}
+.bf-m{font-family:var(--display);font-size:15px;color:#fff;letter-spacing:.02em;padding-right:4px}
+.bf-m b{color:var(--amarelo);font-weight:400}
+.bq{display:flex;justify-content:space-between;align-items:center;background:#fff;color:#000;border:2px solid #000;border-radius:6px;padding:5px 8px;font-variant-numeric:tabular-nums}
+.bq small{font-size:12px;font-weight:700;color:#555}
+.bq b{font-family:var(--display);font-weight:400;font-size:18px;color:#0a7a2e}
+.bq.fav{background:var(--amarelo)}
+.bq.fav b{color:#000}
+.bet-jogo{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;background:#fff;color:#000;border-radius:10px;padding:10px 12px}
+.bet-times{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:15px;min-width:0}
+.bet-times span{display:flex;align-items:center;gap:8px}
+.bet-times img{width:24px;height:24px;border-radius:50%;object-fit:contain;border:1px solid #000}
+.bet-odds{display:grid;grid-template-columns:repeat(3,72px);gap:6px}
+.bet-odds .bq{flex-direction:column;gap:2px;padding:6px 4px;border-color:#ccc}
+.bet-odds .bq b{font-size:22px}
+.bet-odds .bq.fav{border-color:#000}
+@media (max-width:460px){.bet-jogo{grid-template-columns:minmax(0,1fr)}.bet-odds{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.bet .pe b{color:var(--amarelo)}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;padding-top:8px}
 .pasta{position:relative;display:flex;flex-direction:column;gap:6px;background:#f2d27a;color:#1d1b18;text-decoration:none;padding:18px 16px 14px;border:3px solid #000;box-shadow:5px 5px 0 #000;border-radius:0 8px 8px 8px;min-height:130px;transition:transform .12s}
@@ -820,14 +848,23 @@ function vConfrontos(){
         <div class="placar num"><span class="${sc.w>sc.l?"v":""}">${sc.w}</span>-<span class="${sc.l>sc.w?"v":""}">${sc.l}</span>${sc.t?`-${sc.t}`:""}<small>agora</small></div>
         <div class="lado dir">${rostoTime(B[0])}<div class="info"><div class="nm">${esc(B[0])}</div><div class="mg">${esc(B[2])} · ${rb.join("-")}</div></div></div>
       </div>
-      <div class="chips">${CATS.map((c,j)=>`<span class="chip ${sc.r[j]>0?"a":sc.r[j]<0?"b":"e"}" title="${c.k}">${c.k}</span>`).join("")}</div>
-      <div class="oddbar" aria-hidden="true"><span style="width:${s.pa*100}%;background:${A[4]}"></span><span style="width:${s.pe*100}%;background:#8d8580"></span><span style="width:${s.pb*100}%;background:${B[4]}"></span></div>
-      <div class="oddtxt"><span>BetLoyde <b>${odd(s.pa)}</b></span><span>X <b>${odd(s.pe)}</b></span><span><b>${odd(s.pb)}</b></span></div>
+      ${miniTabela(a,b,sc)}
+      ${betFaixa(a,b,s)}
     </button>`;
   });
   return h+`</div>`;
 }
 
+function miniTabela(a,b,sc){
+  const ta=EST.tot[a],tb=EST.tot[b];const A=T(a),B=T(b);
+  return `<div class="mt"><span class="mt-c"></span>${CATS.map(c=>`<span class="mt-c">${c.k}</span>`).join("")}
+  <img class="mt-l" src="img/l/${A[1]}.webp" alt="${esc(A[0])}">${CATS.map((c,j)=>`<span class="mt-v ${sc.r[j]>0?"g":""}">${fmt(c,c.f(ta))}</span>`).join("")}
+  <img class="mt-l" src="img/l/${B[1]}.webp" alt="${esc(B[0])}">${CATS.map((c,j)=>`<span class="mt-v ${sc.r[j]<0?"g":""}">${fmt(c,c.f(tb))}</span>`).join("")}</div>`;
+}
+function betFaixa(a,b,s){
+  const A=T(a),B=T(b);const fav=s.pa>s.pb?1:s.pb>s.pa?2:0;
+  return `<div class="bf"><span class="bf-m"><b>BET</b>LOYDE</span><span class="bq ${fav===1?"fav":""}"><small>1</small><b>${odd(s.pa)}</b></span><span class="bq ${fav===0?"fav":""}"><small>X</small><b>${odd(s.pe)}</b></span><span class="bq ${fav===2?"fav":""}"><small>2</small><b>${odd(s.pb)}</b></span></div>`;
+}
 function boxTime(tid,sp){
   const d=DADOS;const lista=[];
   (EST.rost[tid]||[]).concat(d.P.filter(p=>p.fora&&p.t===tid)).forEach(p=>{
@@ -858,10 +895,11 @@ function tabelaCategorias(a,b,ta,tb,pa,pb,sim){
   return h+`</tbody></table>`;
 }
 function betLoyde(a,b,s){
-  const A=T(a),B=T(b);const fav=s.pa>s.pb?"a":"b";
-  return `<div class="bet"><div class="marca"><span class="logo"><b>BET</b>LOYDE<i>COMO FECHA</i></span><small>${tip("odd","o que é a odd")}<br>semana ${DADOS.wk}</small></div>
-  <div class="quad"><div class="q ${fav==="a"?"fav":""}"><span class="k">1</span><span class="n">${esc(A[0])}</span><span class="o">${odd(s.pa)}</span></div><div class="q x"><span class="k">X</span><span class="n">empate</span><span class="o">${odd(s.pe)}</span></div><div class="q ${fav==="b"?"fav":""}"><span class="k">2</span><span class="n">${esc(B[0])}</span><span class="o">${odd(s.pb)}</span></div></div>
-  <div class="pe">Palpite do Loydão: ${esc(fav==="a"?A[0]:B[0])} ${placarProvavel(s,fav)}</div></div>`;
+  const A=T(a),B=T(b);const fav=s.pa>s.pb?1:s.pb>s.pa?2:0;
+  return `<div class="bet"><div class="marca"><span class="logo"><b>BET</b>LOYDE<i>COMO FECHA</i></span><small>${tip("odd","o que é a odd")}</small></div>
+  <div class="bet-jogo"><div class="bet-times"><span><img src="img/l/${A[1]}.webp" alt="">${esc(A[0])}</span><span><img src="img/l/${B[1]}.webp" alt="">${esc(B[0])}</span></div>
+  <div class="bet-odds"><span class="bq ${fav===1?"fav":""}"><small>1</small><b>${odd(s.pa)}</b></span><span class="bq ${fav===0?"fav":""}"><small>X</small><b>${odd(s.pe)}</b></span><span class="bq ${fav===2?"fav":""}"><small>2</small><b>${odd(s.pb)}</b></span></div></div>
+  <div class="pe">Palpite do Loydão: <b>${esc(fav===2?B[0]:A[0])} ${placarProvavel(s,fav===2?"b":"a")}</b> · 1 = ${esc(A[0])}, 2 = ${esc(B[0])}</div></div>`;
 }
 function placarProvavel(s,lado){const e=Object.entries(s.res).filter(([k])=>{const [w,l]=k.split("-").map(Number);return lado==="a"?w>l:l>w}).sort((x,y)=>y[1]-x[1])[0];if(!e)return "";const [w,l,t]=e[0].split("-").map(Number);return lado==="a"?rtxt(w,l,t):rtxt(l,w,t)}
 function chancesPlacar(a,b,s){
