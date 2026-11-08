@@ -886,6 +886,43 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .cp-i .ic-pr{width:16px;height:16px}
 @media (max-width:760px){.cp-i{font-size:11px}.cp-i .ic-pr{width:15px;height:15px}}
 
+/* atalhos da home */
+.atalhos{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.atalho{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;background:#000;color:var(--amarelo);border:2px solid var(--amarelo);padding:6px 12px;font-family:var(--display);font-size:15px;letter-spacing:.04em;box-shadow:3px 3px 0 #000}
+.atalho svg{width:18px;height:18px}
+.atalhos .meu{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-weight:700;color:#fff;text-shadow:1px 1px 0 #000;font-size:14px}
+/* quadra da seleção */
+.quadra-card{padding:10px}
+.quadra{position:relative;aspect-ratio:100/94;max-width:620px;margin:0 auto;background:repeating-linear-gradient(90deg,#b8783f 0 9%,#c4844a 9% 18%);border:3px solid #000;overflow:hidden}
+.q-linhas{position:absolute;inset:0;width:100%;height:100%}
+.q-linhas *{fill:none;stroke:#fff;stroke-width:.7;opacity:.85}
+.q-linhas rect:nth-of-type(2){fill:rgba(212,18,28,.55)}
+.q-pos{position:absolute;transform:translate(-50%,-50%);width:30%}
+.fj{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1px;position:relative}
+.fj .ft{width:52px;height:52px;border:3px solid var(--cor,#000);box-shadow:2px 2px 0 #000}
+.fj .slot-sel{position:absolute;top:-4px;left:calc(50% + 14px);font-size:10px;padding:0 4px;min-width:0}
+.fj b{font-family:var(--display);font-size:15px;letter-spacing:.02em;color:#fff;background:#000;padding:1px 6px;margin-top:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:400}
+.fj small{display:flex;align-items:center;gap:3px;font-size:10px;color:#000;font-weight:700;background:var(--amarelo);padding:0 5px}
+.fj small img{width:12px;height:12px;border-radius:50%;background:#fff}
+.fj em{font-style:normal;display:flex;gap:4px;background:rgba(0,0,0,.82);color:#fff;padding:1px 6px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.fj em i{font-style:normal;color:var(--amarelo);font-size:9px;margin-left:1px}
+.fj u{text-decoration:none;font-size:9px;font-weight:700;background:var(--vermelho);color:#fff;padding:0 4px;text-transform:uppercase}
+.q-banco{margin-top:10px;background:#140e0e;border:2px solid #000;padding:8px 6px}
+.q-rot{display:block;font-family:var(--display);font-size:12px;letter-spacing:.08em;color:var(--apagado);margin-bottom:6px;padding-left:4px}
+.q-bl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.fj.mini .ft{width:40px;height:40px}.fj.mini b{font-size:13px}.fj.mini .slot-sel{left:calc(50% + 8px)}
+.q-tot{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:3px;margin-top:10px}
+.q-tot div{background:#000;border:1px solid #000;text-align:center;padding:4px 0}
+.q-tot small{display:block;font-size:9px;color:var(--apagado);letter-spacing:.04em}
+.q-tot b{font-family:var(--display);font-size:17px;color:var(--amarelo);font-weight:400}
+@media (max-width:760px){
+ .atalho{font-size:13px;padding:5px 9px}.atalhos .meu{margin-left:0;font-size:13px}
+ .fj .ft{width:40px;height:40px;border-width:2px}.fj b{font-size:12px;padding:0 4px}.fj em{font-size:10.5px;gap:3px;padding:0 4px}.fj small{font-size:9px}
+ .fj.mini .ft{width:34px;height:34px}.fj.mini b{font-size:11px}.fj.mini em{font-size:9.5px}
+ .q-tot b{font-size:13px}.q-tot small{font-size:8px}
+ .quadra-card{padding:6px}
+}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -947,7 +984,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108014510";
+const VERSAO_PAINEL="20261108014825";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1246,6 +1283,9 @@ function ticker(){
   const mov=el.querySelector(".tk-mov");const dur=Math.max(30,Math.round(mov.scrollWidth/2/60));mov.style.animationDuration=dur+"s";
 }
 function meuTime(){try{return +localStorage.getItem("painel.meu")||0}catch(e){return 0}}
+const ICS={
+ sel:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3zM12 5v14M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0M3 9h3v6H3M21 9h-3v6h3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
+ radar:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 12l6-6" stroke="currentColor" stroke-width="1.8"/></svg>'};
 function vConfrontos(){
   const d=DADOS;if(!d)return vazio();
   const meu=meuTime();
@@ -1254,8 +1294,7 @@ function vConfrontos(){
   const mais=ordem.slice().sort((x,y)=>Math.abs(x.s.pa-x.s.pb)-Math.abs(y.s.pa-y.s.pb))[0];
   const dia=d.cur-d.s0+1;
   let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
-  <h1 class="manchete">${esc(T(mais.m[0])[0].toUpperCase())} x ${esc(T(mais.m[1])[0].toUpperCase())} TÁ NO CARA OU COROA</h1>
-  <p class="linha-fina">Amarelo = quem está na frente. Toque para abrir. <label class="meu">Meu time: <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></p></div><div class="grade">`;
+  <div class="atalhos"><button type="button" class="atalho" data-sel="sem">${ICS.sel} Seleção da semana</button><button type="button" class="atalho" data-ir="radar">${ICS.radar} Radar</button><label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
   ordem.forEach(({m,i,sc,s})=>{
     const [a,b]=m,A=T(a),B=T(b);
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
@@ -1533,6 +1572,25 @@ function escalaMelhor(rows){
   rows.forEach(r=>{r.el=elegiveis(r.p);tenta(r,[])});
   return dono;
 }
+const POS_Q={0:[50,83],1:[16,60],2:[84,60],3:[25,26],4:[75,26]}; // PG SG SF PF C na quadra
+function fichaJog(r,k,RK,cls){
+  if(!r)return `<div class="fj vazio ${cls||""}"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span><b>—</b></div>`;
+  const p=r.p,st=r.s;const ext=[[st[3],"rb"],[st[4],"tc"],[st[5],"3pt"]].filter(x=>x[0]>=2).sort((a,b)=>b[0]-a[0]).slice(0,1);
+  const sob=p.n.split(" ");const nm=sob.length>1?sob.slice(1).join(" "):p.n;
+  return `<div class="fj ${cls||""} ${r.slot>=12?"nobanco":""}" style="--cor:${T(r.t)[4]}">${face(p.id,p.n,"")}<span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>
+   <b>${esc(nm)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt="${esc(T(r.t)[0])}">${RK[p.id]?"#"+RK[p.id]:""}</small>
+   <em><span>${st[0]}<i>p</i></span><span>${st[1]}<i>r</i></span><span>${st[2]}<i>a</i></span>${ext.map(x=>`<span>${x[0]}<i>${x[1]}</i></span>`).join("")}</em>${r.slot>=12?'<u>banco</u>':""}</div>`}
+function quadraSelecao(dono,tot,sp){
+  const RK=rankLiga(sp);
+  const linhas='<svg class="q-linhas" viewBox="0 0 100 94" preserveAspectRatio="none" aria-hidden="true"><rect x="1" y="1" width="98" height="92"/><rect x="34" y="1" width="32" height="38"/><circle cx="50" cy="39" r="12"/><path d="M6 1v27A45 45 0 0 0 94 28V1"/><path d="M44 8h12"/><circle cx="50" cy="11" r="1.8"/><path d="M38 93a12 12 0 0 1 24 0"/></svg>';
+  const quadra=[0,1,2,3,4].map(k=>`<div class="q-pos" style="left:${POS_Q[k][0]}%;top:${POS_Q[k][1]}%">${fichaJog(dono[k],k,RK)}</div>`).join("");
+  const banco=[5,6,7,8].map(k=>fichaJog(dono[k],k,RK,"mini")).join("");
+  const pc=(a,b)=>b?(100*a/b).toFixed(1):"0";
+  const cats=[["PTS",tot[0]],["REB",tot[1]],["AST",tot[2]],["STL",tot[3]],["BLK",tot[4]],["3PM",tot[5]],["TO",tot[6]],["FG%",pc(tot[7],tot[8])],["FT%",pc(tot[9],tot[10])]];
+  return `<div class="card quadra-card"><div class="quadra">${linhas}${quadra}</div>
+  <div class="q-banco"><span class="q-rot">SEGUNDA UNIDADE</span><div class="q-bl">${banco}</div></div>
+  <div class="q-tot">${cats.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div></div>`;
+}
 function vSelecao(rows,sp){
   const d=DADOS;const ord=rows.slice().sort((x,y)=>y.val-x.val);const dono=escalaMelhor(ord);
   const tot=zero();dono.forEach(r=>{if(r)r.s.forEach((x,i)=>tot[i]+=x)});
@@ -1543,6 +1601,7 @@ function vSelecao(rows,sp){
   <div class="dias" role="group" aria-label="Dia"><button class="dia" type="button" data-nd="sem" aria-pressed="${sp==="sem"}">SEMANA<small>total</small></button>`;
   for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++){const r=spRot(x).split(" ");h+=`<button class="dia" type="button" data-nd="${x}" aria-pressed="${String(sp)===String(x)}">${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
   h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores">Melhores</button><button class="pil" type="button" data-nm="piores">Piores</button><button class="pil" type="button" data-nm="selecao" aria-pressed="true">Seleção</button></div>
+  ${quadraSelecao(dono,tot,sp)}
   <div class="card lj-wrap"><table class="lj"><thead><tr><th>Escalação</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th class="fgft">FG</th><th class="fgft">FT</th></tr></thead><tbody>${dono.map(linha).join("")}
   <tr class="total"><td class="jg"><div class="jg-in"><div><b>TOTAL</b><small>${sp==="sem"?"na semana":"na noite"}</small></div></div></td><td class="pts">${tot[0]}</td><td>${tot[1]}</td><td>${tot[2]}</td><td>${tot[3]}</td><td>${tot[4]}</td><td>${tot[5]}</td><td>${tot[6]}</td><td class="fgft">${tot[7]}/${tot[8]}<br><small>${tot[8]?(100*tot[7]/tot[8]).toFixed(1):0}%</small></td><td class="fgft">${tot[9]}/${tot[10]}<br><small>${tot[10]?(100*tot[9]/tot[10]).toFixed(1):0}%</small></td></tr></tbody></table></div>`;
   return h;
@@ -2016,7 +2075,7 @@ function render(){
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
-  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col]");if(!t)return;
+  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
   if(ds.jogo!==undefined)ir("jogo-"+ds.jogo);
@@ -2039,6 +2098,7 @@ document.addEventListener("click",e=>{
   else if(ds.nm){UI.noiteModo=ds.nm;render()}
   else if(ds.sub){UI.subJogo=ds.sub;window.scrollTo(0,0);render()}
   else if(ds.prm){UI.prModo=ds.prm;render()}
+  else if(ds.sel){UI.noiteModo="selecao";UI.noiteDia=ds.sel==="sem"?"sem":+ds.sel;ir("noite")}
   else if(ds.col!=null){const c=ds.col===""?null:(isNaN(+ds.col)?ds.col:+ds.col);const o=(UI.ljSort&&UI.ljSort.c!=null)?UI.ljSort:{c:"rk",asc:false};UI.ljSort=c==null?{c:null}:(String(o.c)===String(c)?{c,asc:!o.asc}:{c,asc:false});render()}
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
   else if(ds.drt){UI.drTemp=ds.drt;UI.drTime="todos";render()}
