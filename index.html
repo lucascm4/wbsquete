@@ -1678,6 +1678,9 @@ svg.cad{width:18px;height:18px;display:block}
 .bola.vd{background:#22c55e;box-shadow:0 0 0 1.5px rgba(0,0,0,.35)}.bola.vm{background:#ef4444;box-shadow:0 0 0 1.5px rgba(0,0,0,.35)}.bola.cz{background:#9ca3af}
 .tc3 .pv2.ganha,.tc3 .pv2{font-weight:600!important}
 
+.av-nav{display:flex;align-items:center;gap:6px;margin:6px 0 8px;padding:6px;background:#0a0707;border-radius:10px;border-bottom:2px solid var(--amarelo)}
+.av-nav-m{flex:1;text-align:center;line-height:1.15}.av-nav-m b{display:block;font-family:var(--display);font-weight:400;font-size:18px;color:#fff;letter-spacing:.03em}.av-nav-m small{font-size:11px;color:var(--apagado)}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1743,11 +1746,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794174882"></script>
-<script src="radar.js?v=1794174882"></script>
-<script src="midia.js?v=1794174882"></script>
+<script src="hist.js?v=1794175300"></script>
+<script src="radar.js?v=1794175300"></script>
+<script src="midia.js?v=1794175300"></script>
 <script>
-const VERSAO_PAINEL="20261108185442";
+const VERSAO_PAINEL="20261108190140";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3487,7 +3490,9 @@ function avDuelo(abas){
   const card=x=>{const p=x.p,v=x.v,g=x.g;const st=g?(g.live?`<em class="lv">● ${esc(g.st)}</em>`:g.fim?`<em>final</em>`:`<em>${esc(g.st)}</em>`):"";
     const ln=v?`<span class="du-l"><b>${v[0]}</b>p <b>${v[1]}</b>r <b>${v[2]}</b>a${v[3]?` <b>${v[3]}</b>s`:""}${v[4]?` <b>${v[4]}</b>b`:""}${v[5]?` <b>${v[5]}</b>3pt`:""}${v[6]?` <i>${v[6]}to</i>`:""} · ${v[7]}/${v[8]}</span>`:`<span class="du-l vz">${g&&g.live?"ainda não entrou":"não jogou"}</span>`;
     return `<div class="du-p ${g&&g.live?"on":""} ${x.tit?"":"bn"}" data-pj="${p.id}">${face(p.id,p.n,"")}<div><b class="du-n">${esc(p.n.replace(/^(\S)\S*\s/,"$1. "))}${x.tit?"":' <u>banco</u>'}</b>${ln}<small>${st}${v&&v[12]?` · ${v[12]}min`:""}</small></div></div>`};
-  return topo+`<div class="pilulas sel-c av-f">${sel}</div>
+  const mi=d.mt.findIndex(x=>x.includes(me));const n=d.mt.length;const pv=d.mt[(mi+n-1)%n],nx=d.mt[(mi+1)%n];const meu=meuTime();
+  const nav=`<div class="av-nav"><button type="button" class="jn-b" data-avd="${pv[0]}" aria-label="confronto anterior">‹</button><div class="av-nav-m"><b>${esc(A[3]||A[0])} x ${esc(B[3]||B[0])}</b><small>${mi+1}/${n}${meu&&m.includes(meu)?" · seu confronto":""}</small></div><button type="button" class="jn-b" data-avd="${nx[0]}" aria-label="próximo confronto">›</button></div>`;
+  return topo+nav+`
   <div class="card du"><div class="du-top"><a href="#time-${a}" class="du-t">${rostoTime(A[0])}<b>${esc(A[3]||A[0])}</b></a>
     <div class="du-pl"><small>SEMANA</small><b><i class="${sem.w>sem.l?"v":""}">${sem.w}</i>-<i class="${sem.l>sem.w?"v":""}">${sem.l}</i>${sem.t?"-"+sem.t:""}</b><small>hoje ${dia.w}-${dia.l}${dia.t?"-"+dia.t:""}</small></div>
     <a href="#time-${b}" class="du-t">${rostoTime(B[0])}<b>${esc(B[3]||B[0])}</b></a></div>
@@ -3701,6 +3706,7 @@ document.addEventListener("click",e=>{
   if(e.target.closest("[data-h2hlista]")&&UI._h2h){const el=document.createElement("div");el.className="pop-fundo";el.id="popLista";el.innerHTML=`<div class="inst"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button><div class="inst-cab"><div><b>HISTÓRICO DIRETO</b><small>${esc(UI._h2h.t)} · toque para abrir o box</small></div></div>${UI._h2h.h}</div>`;
     el.addEventListener("click",ev=>{if(ev.target===el||ev.target.closest("[data-fecha]")){el.remove();return}if(ev.target.closest("[data-mj]"))el.remove()},true);document.body.appendChild(el);return}
   if(e.target.closest(".topo .belt,.topo .mast")){location.hash="confrontos";scrollTo(0,0);return}
+  {const ad=e.target.closest("[data-avd]");if(ad){UI.avDuelo=+ad.dataset.avd;render();return}}
   {const dc=e.target.closest("[data-duc]");if(dc){UI.duCat=dc.dataset.duc;render();return}}
   {const mm=e.target.closest("[data-avm]");if(mm){UI.avModo=mm.dataset.avm;render();return}}
   {const q=e.target.closest("[data-avq]");if(q){UI.avQ=q.dataset.avq;render();return}const f=e.target.closest("[data-avf]");if(f){UI.avF=+f.dataset.avf;render();return}}
