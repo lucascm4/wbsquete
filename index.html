@@ -1454,6 +1454,18 @@ b.neg{color:#ff6b6b}
  .nav a svg{width:20px!important;height:20px!important}
 }
 
+/* ficha: cobre a tela inteira, fundo escuro opaco, folha até o fim */
+#popFicha.pop-fundo{top:0;bottom:auto;height:100vh;height:100dvh;background:rgba(0,0,0,.82);overscroll-behavior:contain;touch-action:none}
+#popFicha .pop-full{touch-action:pan-y pan-x}
+@media (max-width:640px){#popFicha .pop-full{height:94%;max-height:none}}
+/* abas da ficha com cara de botão */
+.pj-tabs{gap:6px!important}
+.pj-tabs button{background:#000!important;border:2px solid #3a2a2a!important;border-radius:10px!important;color:#fff!important;padding:8px 2px!important;margin:0!important;box-shadow:0 2px 0 #000}
+.pj-tabs button[aria-selected="true"]{background:var(--amarelo)!important;color:#000!important;border-color:#000!important}
+.pj-tabs button:active{transform:translateY(1px)}
+/* logos de time clicáveis */
+img[src*="img/l/"]{cursor:pointer}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1519,11 +1531,11 @@ b.neg{color:#ff6b6b}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794170176"></script>
-<script src="radar.js?v=1794170176"></script>
-<script src="midia.js?v=1794170176"></script>
+<script src="hist.js?v=1794170429"></script>
+<script src="radar.js?v=1794170429"></script>
+<script src="midia.js?v=1794170429"></script>
 <script>
-const VERSAO_PAINEL="20261108173616";
+const VERSAO_PAINEL="20261108174029";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3336,6 +3348,7 @@ function montarBusca(r){
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
+  {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();location.hash="time-"+tid;return}}
   {const pn=e.target.closest("[data-pjn]");if(pn&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){UI.fichaPer=null;abrirJogadorNome(pn.dataset.pjn);return}}
   {const pj=e.target.closest("[data-pj]");if(pj&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){UI.fichaPer=null;abrirJogador(+pj.dataset.pj);return}}
   const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-mda],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj],[data-dd],[data-leg]");if(!t)return;
@@ -3479,5 +3492,15 @@ function montarAtalhos(r){
   secs.forEach(([c,t],i)=>{const id="sec-"+i;c.id=c.id||id;const nm=(t.childNodes[0]&&t.childNodes[0].textContent||t.textContent).trim().replace(/\s*·.*$/,"");const b=document.createElement("button");b.type="button";b.className="pil";b.textContent=nm.charAt(0)+nm.slice(1).toLowerCase();b.onclick=()=>c.scrollIntoView({behavior:"smooth",block:"start"});nav.appendChild(b)});
   const ref=secs[0][0].previousElementSibling&&secs[0][0].previousElementSibling.classList.contains("thero")?secs[0][0]:(app.querySelector(".thero")?app.querySelector(".thero").nextSibling:secs[0][0]);
   app.insertBefore(nav,ref)}
+
+/* logo ou nome de time da liga = abre o perfil do time */
+function timeDoClique(el){
+  if(!el||el.closest("button[data-ft],[data-sub],[data-jogo],.pilulas,select,input,.nav,.jogo-nav .jn-b,.atalhos"))return 0;
+  const img=el.closest("img");if(img){const m=/img\/l\/([a-z0-9_-]+)\.webp/i.exec(img.getAttribute("src")||"");if(m){const id=Object.keys(TIMES).find(k=>TIMES[k][1]===m[1]);if(id&&!(location.hash==="#time-"+id))return +id}}
+  const r=el.closest(".rosto");if(r){const i=r.querySelector("img");if(i&&i!==img)return timeDoClique(i)}
+  let x=el;for(let k=0;k<2&&x;k++,x=x.parentElement){if(x.children.length>1||x.matches("tr,td,table,.card,a[href],button"))break;const t=(x.textContent||"").trim();if(IDN[t]&&location.hash!=="#time-"+IDN[t])return IDN[t]}
+  return 0}
+/* trava o fundo enquanto a ficha está aberta (o fundo não mexe) */
+(function(){let y=0,trav=false;new MutationObserver(()=>{const ab=!!document.getElementById("popFicha");if(ab&&!trav){y=scrollY;trav=true;const b=document.body.style;b.position="fixed";b.top=(-y)+"px";b.left="0";b.right="0";b.width="100%"}else if(!ab&&trav){trav=false;const b=document.body.style;b.position=b.top=b.left=b.right=b.width="";scrollTo(0,y)}}).observe(document.body,{childList:true})})();
 </script>
 </body></html>
