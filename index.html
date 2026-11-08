@@ -993,6 +993,18 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .oc-pe{padding:8px 10px;font-size:12px;color:var(--apagado)}
 @media (max-width:760px){.subabas button{font-size:12px;padding:9px 1px}}
 
+.nav{grid-template-columns:repeat(4,minmax(0,1fr))}
+.atalhos{gap:6px}
+@media (max-width:760px){.atalhos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.atalho{justify-content:center}.atalhos .meu{grid-column:1/-1}}
+/* desempenhos: célula colorida pelo z da categoria */
+.lj.des td.z2{background:rgba(255,212,0,.22);color:var(--amarelo);font-weight:700}
+.lj.des td.z3{background:var(--amarelo);color:#000;font-weight:700}
+.lj.des td.n1{background:rgba(212,18,28,.25);color:#ff9c9c}
+.lj.des td.n2{background:var(--vermelho);color:#fff;font-weight:700}
+.dzs{margin-top:3px!important;gap:3px!important}
+.dz{font-size:10px;font-weight:700;padding:0 4px;border:1px solid #000}
+.dz.bom{background:var(--amarelo);color:#000}.dz.ruim{background:var(--vermelho);color:#fff}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1054,7 +1066,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108020230";
+const VERSAO_PAINEL="20261108020459";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1073,7 +1085,7 @@ const CATS=[
   {k:"3PM",f:a=>a[5],i:5},{k:"REB",f:a=>a[1],i:1},{k:"AST",f:a=>a[2],i:2},{k:"STL",f:a=>a[3],i:3},{k:"BLK",f:a=>a[4],i:4},
   {k:"TO",f:a=>a[6],inv:1,i:6},{k:"PTS",f:a=>a[0],i:0}];
 const MCATS=["PTS","REB","AST","STL","BLK","3PM","FG%","FT%","TO"];
-const NAVS=[["confrontos","Confrontos",'<path d="M4 6h7v12H4zM13 6h7v12h-7z"/>'],["noite","Jogadores",'<circle cx="12" cy="7" r="3.2"/><path d="M5 20c0-4 3-7 7-7s7 3 7 7"/>'],["times","Ranking",'<path d="M4 20V10M10 20V4M16 20v-8M20 20H3"/>'],["radar","Radar",'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 12l6-6"/>'],["museu","Museu",'<path d="M3 9l9-5 9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 20h18"/>']];
+const NAVS=[["confrontos","Confrontos",'<path d="M4 6h7v12H4zM13 6h7v12h-7z"/>'],["times","Ranking",'<path d="M4 20V10M10 20V4M16 20v-8M20 20H3"/>'],["radar","Radar",'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 12l6-6"/>'],["museu","Museu",'<path d="M3 9l9-5 9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 20h18"/>']];
 
 /* ---------- utilidades ---------- */
 const $=s=>document.querySelector(s);
@@ -1381,7 +1393,10 @@ function precisaEscolher(){let m=null,p=null;try{m=localStorage.getItem("painel.
 function meuTime(){try{return +localStorage.getItem("painel.meu")||0}catch(e){return 0}}
 const ICS={
  sel:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3zM12 5v14M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0M3 9h3v6H3M21 9h-3v6h3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
- radar:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 12l6-6" stroke="currentColor" stroke-width="1.8"/></svg>'};
+ radar:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 12l6-6" stroke="currentColor" stroke-width="1.8"/></svg>',
+ fogo:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-6 1 1 2 2 2 3 1-2 1-4 1-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+ rk:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M21 20H3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
+ museu:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-5 9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 20h18" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'};
 function vConfrontos(){
   const d=DADOS;if(!d)return vazio();
   const meu=meuTime();
@@ -1390,7 +1405,7 @@ function vConfrontos(){
   const mais=ordem.slice().sort((x,y)=>Math.abs(x.s.pa-x.s.pb)-Math.abs(y.s.pa-y.s.pb))[0];
   const dia=d.cur-d.s0+1;
   let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
-  <div class="atalhos"><button type="button" class="atalho" data-sel="${d.last}">${ICS.sel} Seleção da noite</button><button type="button" class="atalho" data-ir="radar">${ICS.radar} Radar</button><label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
+  <div class="atalhos"><button type="button" class="atalho" data-sel="${d.last}">${ICS.sel} Seleção</button><button type="button" class="atalho" data-ir="desempenhos">${ICS.fogo} Desempenhos hoje</button><button type="button" class="atalho" data-ir="times">${ICS.rk} Ranking</button><button type="button" class="atalho" data-ir="radar">${ICS.radar} Radar</button><button type="button" class="atalho" data-ir="museu">${ICS.museu} Museu</button><label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
   ordem.forEach(({m,i,sc,s})=>{
     const [a,b]=m,A=T(a),B=T(b);
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
@@ -1435,8 +1450,10 @@ const _RK={};
 function rankLiga(sp){ // posição de cada jogador no rendimento da liga inteira (dia ou semana)
   const d=DADOS;const k=sp+"|"+d.gerado;if(_RK[k])return _RK[k];
   const L=[];d.P.forEach(p=>{if(sp==="sem"){if(p.g)L.push({id:p.id,a:[...p.W,p.g]})}else{const v=p.dl&&p.dl[sp];if(v)L.push({id:p.id,a:[...v.slice(0,11),1]})}});
-  const f=notas(L,x=>x.a,1);const m={},v={};if(f)L.forEach(x=>x.z=f(x.a).n);else L.forEach(x=>x.z=valorJogo(x.a));
-  L.sort((x,y)=>y.z-x.z);L.forEach((x,i)=>{m[x.id]=i+1;v[x.id]=x.z});m._n=L.length;m.v=v;return _RK[k]=m;
+  const f=notas(L,x=>x.a,1);const m={},v={},cz={};
+  // todas as categorias pesam igual; só o TO baixo vale menos (não perder bola é pouco mérito; perder muito pesa inteiro)
+  if(f)L.forEach(x=>{const r=f(x.a);x.c=r.c;x.z=r.n-(r.c.TO>0?r.c.TO*0.65:0)});else L.forEach(x=>x.z=valorJogo(x.a));
+  L.sort((x,y)=>y.z-x.z);L.forEach((x,i)=>{m[x.id]=i+1;v[x.id]=x.z;cz[x.id]=x.c});m._n=L.length;m.v=v;m.c=cz;return _RK[k]=m;
 }
 const rkTag=(m,id)=>m[id]?`<span class="rk-n">#${m[id]}</span>`:"";
 function listaJuntos(a,b,sp){
@@ -1648,6 +1665,30 @@ function vJogo(i){
 }
 
 /* ---------- jogadores da noite ---------- */
+function vDesempenhos(){
+  const d=DADOS;if(!d)return vazio();
+  const sp=UI.desDia??d.last;const ft=UI.noiteTime||0;const RK=rankLiga(sp);
+  const rows=[];d.P.filter(p=>!p.fora&&(!ft||p.t===ft)).forEach(p=>{const v=sp==="sem"?(p.g?p.W:null):(p.dl&&p.dl[sp]);if(!v)return;
+    rows.push({p,t:p.t,s:v.slice(0,11),slot:sp==="sem"?0:v[11],g:sp==="sem"?p.g:1,val:RK.v[p.id]??0,c:RK.c&&RK.c[p.id]})});
+  rows.sort((x,y)=>y.val-x.val);
+  const nivel=z=>z==null?"":z>=2.2?"z3":z>=1.3?"z2":z<=-2?"n2":z<=-1.2?"n1":"";
+  const MAP=[["PTS",0],["REB",1],["AST",2],["STL",3],["BLK",4],["3PM",5],["TO",6]];
+  const destaque=r=>{const c=r.c||{};const L=[];const st=r.s;
+    MAP.forEach(([k,i])=>{const z=c[k];if(k==="TO"){if(z<=-1.5)L.push([`${st[6]} TO`,"ruim",-z]);return}if(z>=1.8)L.push([`${st[i]} ${k}`,"bom",z])});
+    if(c["FG%"]>=1.8)L.push([`${st[7]}/${st[8]} FG`,"bom",c["FG%"]]);if(c["FG%"]<=-1.8)L.push([`${st[7]}/${st[8]} FG`,"ruim",-c["FG%"]]);
+    if(c["FT%"]>=1.8)L.push([`${st[9]}/${st[10]} FT`,"bom",c["FT%"]]);if(c["FT%"]<=-1.8)L.push([`${st[9]}/${st[10]} FT`,"ruim",-c["FT%"]]);
+    return L.sort((a,b)=>b[2]-a[2]).slice(0,3).map(([t,k])=>`<span class="dz ${k}">${t}</span>`).join("")};
+  const cel=(r,k,i,txt)=>`<td class="${nivel(k==="TO"?(r.c&&r.c.TO<0?r.c.TO:0):r.c&&r.c[k])}">${txt??r.s[i]}</td>`;
+  const linha=r=>{const p=r.p,st=r.s;return `<tr style="--cor:${T(r.t)[4]}" class="${r.slot>=12?"fora":""}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RK,p.id)}${esc(p.n)}</b><small>${subJog(r.t,null,`${sp==="sem"?`<span>${r.g} j</span>`:""}${r.slot>=12?'<span class="tag banco">BANCO</span>':""}`)}</small><small class="dzs">${destaque(r)}</small></div></div></td>
+   ${MAP.map(([k,i])=>cel(r,k,i)).join("")}${cel(r,"FG%",7,`${st[7]}/${st[8]}`).replace("<td class=\"","<td class=\"fgft ")}${cel(r,"FT%",9,`${st[9]}/${st[10]}`).replace("<td class=\"","<td class=\"fgft ")}</tr>`};
+  const L=ordenaLj(rows.slice(0,60));
+  let h=`<div class="cab-secao"><span class="sobre">DESEMPENHOS · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">${sp==="sem"?"DESEMPENHOS DA SEMANA":"DESEMPENHOS DA NOITE"}</h1><p class="linha-fina">Todas as categorias pesam igual: 6 roubos valem tanto quanto 40 pontos. Amarelo = categoria em que o cara foi muito acima do normal; vermelho = afundou. Zero TO quase não conta.</p></div>
+  <div class="dias" role="group" aria-label="Dia"><button class="dia" type="button" data-dd="sem" aria-pressed="${sp==="sem"}">SEMANA<small>total</small></button>`;
+  for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++){const r=spRot(x).split(" ");h+=`<button class="dia" type="button" data-dd="${x}" aria-pressed="${String(sp)===String(x)}">${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
+  h+=`</div><div class="pilulas"><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===ft?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
+  <div class="card lj-wrap"><table class="lj des">${cabLj()}<tbody>${L.map(linha).join("")||`<tr><td colspan="10" class="esp">Ninguém jogou ainda.</td></tr>`}</tbody></table></div>`;
+  return h;
+}
 function vNoite(){
   const d=DADOS;if(!d)return vazio();
   const sp=UI.noiteDia??d.cur;const ft=UI.noiteTime||0;const modo=UI.noiteModo||"melhores";
@@ -1667,7 +1708,7 @@ function vNoite(){
   const linha=r=>{const p=r.p;const st=r.s;const banco=r.slot>=12;
     return `<tr class="${banco?"fora":""}" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RK,p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,`${sp==="sem"?`<span>${r.g} j</span>`:""}${banco?'<span class="tag banco">BANCO</span>':""}`)}</small>${sp!=="sem"?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
     <td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td></tr>`};
-  let h=`<div class="cab-secao"><span class="sobre">JOGADORES · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">${modo==="piores"?"OS PIORES DA NOITE":"OS MELHORES DA NOITE"}</h1><p class="linha-fina">Todos os jogadores da liga, ordenados pelo valor nas 9 categorias da nossa liga (z-score, FG% e FT% pesados pelo volume, TO contra). O <b>#</b> é a posição do cara entre todos os ${rankLiga(sp)._n||0} que jogaram${ft?", mesmo filtrando por time":""}.</p></div>
+  let h=`<div class="cab-secao"><span class="sobre">JOGADORES · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">${modo==="piores"?"OS PIORES":"OS MELHORES"} ${sp==="sem"?"DA SEMANA":"DA NOITE"}</h1><p class="linha-fina">Todos os jogadores da liga, ordenados pelo valor nas 9 categorias da nossa liga (z-score, FG% e FT% pesados pelo volume, TO contra). O <b>#</b> é a posição do cara entre todos os ${rankLiga(sp)._n||0} que jogaram${ft?", mesmo filtrando por time":""}.</p></div>
   <div class="dias" role="group" aria-label="Dia"><button class="dia" type="button" data-nd="sem" aria-pressed="${sp==="sem"}">SEMANA<small>total</small></button>`;
   for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++){const r=spRot(x).split(" ");h+=`<button class="dia" type="button" data-nd="${x}" aria-pressed="${String(sp)===String(x)}">${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
   h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores" aria-pressed="${modo==="melhores"}">Melhores</button><button class="pil" type="button" data-nm="piores" aria-pressed="${modo==="piores"}">Piores</button><button class="pil" type="button" data-nm="selecao" aria-pressed="${modo==="selecao"}">Seleção ${tip("A melhor escalação possível com todo mundo da liga naquele dia: PG, SG, SF, PF, C, G, F e 2 UTIL, respeitando as posições da ESPN.","da noite")}</button><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===ft?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
@@ -2189,7 +2230,7 @@ async function checarVersao(){
 function rota(){return (location.hash||"#confrontos").slice(1)}
 function render(){
   const r=rota();
-  const base=r.startsWith("jogo-")?"confrontos":(r.startsWith("museu")||r.startsWith("acervo"))?"museu":r.startsWith("time")?"times":r;
+  const base=(r.startsWith("jogo-")||r==="noite"||r==="desempenhos")?"confrontos":(r.startsWith("museu")||r.startsWith("acervo"))?"museu":r.startsWith("time")?"times":r;
   document.querySelectorAll("[data-nav]").forEach(a=>a.setAttribute("aria-current",a.dataset.nav===base?"page":"false"));
   let h;
   try{
@@ -2197,14 +2238,14 @@ function render(){
     else if(r.startsWith("museu-"))h=vMuseuJogo(+r.slice(6));
     else if(r.startsWith("acervo-")){UI.museuFiltro=r.slice(7);h=vMuseu()}
     else if(r.startsWith("time-"))h=vTime(+r.slice(5));
-    else h=({confrontos:vConfrontos,noite:vNoite,times:vTimes,radar:vRadar,museu:vMuseuCapa}[r]||vConfrontos)();
+    else h=({confrontos:vConfrontos,noite:vNoite,desempenhos:vDesempenhos,times:vTimes,radar:vRadar,museu:vMuseuCapa}[r]||vConfrontos)();
   }catch(e){console.error(e);h=`<div class="card vazio">Deu ruim ao montar esta tela (${esc(e.message)}). Manda print pro Loydão.</div>`}
   $("#app").innerHTML=h;
 }
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
-  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj]");if(!t)return;
+  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj],[data-dd]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
   if(ds.jogo!==undefined)ir("jogo-"+ds.jogo);
@@ -2227,6 +2268,7 @@ document.addEventListener("click",e=>{
   else if(ds.nm){UI.noiteModo=ds.nm;render()}
   else if(ds.sub){UI.subJogo=ds.sub;window.scrollTo(0,0);render()}
   else if(ds.prm){UI.prModo=ds.prm;render()}
+  else if(ds.dd){UI.desDia=ds.dd==="sem"?"sem":+ds.dd;render()}
   else if(ds.fj!=null){abrirFicha(+ds.fj)}
   else if(ds.sel){UI.noiteModo="selecao";UI.noiteDia=ds.sel==="sem"?"sem":+ds.sel;ir("noite")}
   else if(ds.col!=null){const c=ds.col===""?null:(isNaN(+ds.col)?ds.col:+ds.col);const o=(UI.ljSort&&UI.ljSort.c!=null)?UI.ljSort:{c:"rk",asc:false};UI.ljSort=c==null?{c:null}:(String(o.c)===String(c)?{c,asc:!o.asc}:{c,asc:false});render()}
