@@ -1609,11 +1609,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794171718"></script>
-<script src="radar.js?v=1794171718"></script>
-<script src="midia.js?v=1794171718"></script>
+<script src="hist.js?v=1794171820"></script>
+<script src="radar.js?v=1794171820"></script>
+<script src="midia.js?v=1794171820"></script>
 <script>
-const VERSAO_PAINEL="20261108180158";
+const VERSAO_PAINEL="20261108180340";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3671,7 +3671,7 @@ function montarLive(r){const dk=doca();let b=document.getElementById("fabLive");
   b.innerHTML=`<i></i>AO VIVO <small>${jg.live} jogo${jg.live>1?"s":""}</small>`}
 addEventListener("scroll",()=>{const t=document.getElementById("fabTopo")||doca().querySelector("#fabTopo");if(t)t.hidden=scrollY<500;posDoca()},{passive:true});
 /* o iPhone (app na tela inicial) erra a altura de position:fixed/sticky ancorado embaixo; ancoramos no topo e calculamos pela área visível real */
-function posDoca(){const dk=document.getElementById("fabDoca");if(!dk)return;const vv=window.visualViewport;const h=vv?vv.height+vv.offsetTop:innerHeight;dk.style.transform=`translateY(${Math.round(h)}px)`}
+function posDoca(){const dk=document.getElementById("fabDoca");if(!dk)return;const vv=window.visualViewport;let h=vv?vv.height+vv.offsetTop:innerHeight;const app=navigator.standalone||matchMedia("(display-mode: standalone)").matches;if(app&&screen.height>h&&Math.abs(screen.width-innerWidth)<4)h=screen.height;dk.style.transform=`translateY(${Math.round(h)}px)`}
 if(window.visualViewport){visualViewport.addEventListener("resize",posDoca);visualViewport.addEventListener("scroll",posDoca)}addEventListener("resize",posDoca);setInterval(posDoca,1000);
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="avTime"){UI.avF=+e.target.value||0;render()}if(e.target&&e.target.id==="avDuelo"){UI.avDuelo=+e.target.value||0;try{if(UI.avDuelo&&!meuTime())localStorage.setItem("painel.meu",UI.avDuelo)}catch(x){}render()}});
 </script>
