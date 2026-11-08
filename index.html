@@ -1233,6 +1233,9 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 }
 body:not(.rolou) .jn-mini>:not(small){display:none}
 .jn-mini small{font-size:12px;color:#fff}body:not(.rolou) .jn-mini small:after{content:" · deslize pra trocar";color:var(--apagado);font-weight:500}
+#app{position:relative}
+.barra-inicio{float:none;position:absolute;right:max(10px,env(safe-area-inset-right,0px));top:10px;margin:0;z-index:5}
+.pilulas.vis{margin-top:4px}.pilulas.vis .rk-sel{font-size:13px}.pilulas.vis select{padding:4px 8px;font-size:13px}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1299,10 +1302,10 @@ body:not(.rolou) .jn-mini>:not(small){display:none}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794163816"></script>
-<script src="radar.js?v=1794163816"></script>
+<script src="hist.js?v=1794163883"></script>
+<script src="radar.js?v=1794163883"></script>
 <script>
-const VERSAO_PAINEL="20261108155016";
+const VERSAO_PAINEL="20261108155123";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
