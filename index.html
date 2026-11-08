@@ -1629,6 +1629,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 .fab-doca>.fab-mini:last-child{margin-bottom:calc(14px + env(safe-area-inset-bottom,0px))!important}
 .fab-topo{width:40px!important;height:40px!important;font-size:22px!important;touch-action:manipulation}
 
+.tk-mov.tk-uma{animation-name:tkUma}
+@keyframes tkUma{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
+svg.cad{width:18px;height:18px;display:block}
+.bq:has(.cad){overflow:hidden}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1694,11 +1699,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794173898"></script>
-<script src="radar.js?v=1794173898"></script>
-<script src="midia.js?v=1794173898"></script>
+<script src="hist.js?v=1794173996"></script>
+<script src="radar.js?v=1794173996"></script>
+<script src="midia.js?v=1794173996"></script>
 <script>
-const VERSAO_PAINEL="20261108183818";
+const VERSAO_PAINEL="20261108183956";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1813,7 +1818,7 @@ function maisMercados(a,b,s){const A=T(a),B=T(b);const M=momento(a,b);if(!M.rem)
    <div class="mk-sec">CATEGORIA A CATEGORIA</div>${cats}
    <div class="mk-sec">PLACAR EXATO <small>(${esc(a3)} primeiro · margem de 20%, como nas casas)</small></div>${exato}
    <p class="mk-nota">Margem da casa: até ${Math.round((M.margem+0.01-1)*100)}% nos mercados equilibrados, menos quando um lado é muito favorito${M.vivo?" · jogo rolando, ao vivo a casa cobra mais":M.pre?" · pré-semana":""}. Linha decidida some da escada, como na Sportingbet.</p></details>`}
-let _ODM=null;function oddS(k,p,pronto){const v=pronto!=null?pronto:odd(p);if(v==="🔒")return '<i class="cad" aria-label="fechado">🔒</i>';if(v==="—"||v==="✓"||v==="✗")return v;const dk="wbs.odds."+(DADOS?DADOS.cur:0);
+let _ODM=null;function oddS(k,p,pronto){const v=pronto!=null?pronto:odd(p);if(v==="🔒")return '<svg class="cad" viewBox="0 0 16 16" aria-label="fechado"><rect x="3" y="7" width="10" height="7.5" rx="1.5" fill="#c9a227"/><path d="M5.2 7V5.2a2.8 2.8 0 0 1 5.6 0V7" fill="none" stroke="#c9a227" stroke-width="1.7"/><circle cx="8" cy="10.6" r="1.1" fill="#1a1205"/></svg>';if(v==="—"||v==="✓"||v==="✗")return v;const dk="wbs.odds."+(DADOS?DADOS.cur:0);
   if(!_ODM||_ODM._k!==dk){_ODM=null;try{_ODM=JSON.parse(localStorage.getItem(dk)||"null")}catch(e){}_ODM=_ODM||{};_ODM._k=dk}
   let m=_ODM[k];if(!m){m=_ODM[k]={v,prev:v}}else if(m.v!==v){m.prev=m.v;m.v=v}try{localStorage.setItem(dk,JSON.stringify(_ODM))}catch(e){}
   const a=+m.v,b=+m.prev;return v+(a>b?'<i class="od-up">▲</i>':a<b?'<i class="od-dn">▼</i>':"")}
@@ -2075,7 +2080,7 @@ function linhaReal(v){const [pts,reb,ast,stl,blk,tp,to,fgm,fga,ftm,fta]=v;const 
   return L.slice(0,6).join(", ")}
 function noticias(){
   // hoje (se já tem jogo rolando) + ontem completando: assim o ticker não esvazia quando a rodada começa
-  const d=DADOS;const hoje=d.P.some(p=>p.dl&&p.dl[d.cur]);
+  const d=DADOS;const hoje=d.P.some(p=>p.dl&&p.dl[d.cur]);window._ZUSO=new Set();
   if(!hoje)return noticiasDe(d.last);
   const a=noticiasDe(d.cur);const rolando=d.nba&&Object.values(d.nba).some(g=>g.live);if(a.length>=6||(rolando&&a.length))return a;
   const ant=d.cur-1>=1?noticiasDe(d.cur-1):[];return a.concat(ant.slice(0,Math.max(0,10-a.length)).map(x=>Object.assign({},x,{t:"<i>Ontem:</i> "+x.t})))}
@@ -2085,8 +2090,11 @@ function noticiasDe(sp){
   const opDe=t=>{const m=d.mt.find(x=>x.includes(t));return m?m[0]===t?m[1]:m[0]:null};
   const RK=rankLiga(sp);const adds=addsSemana();
   const pick={};((HIST.drafts&&HIST.drafts["2026/27"])||[]).forEach(r=>pick[r[3]]=[r[0],r[2]]);
-  const usados=new Set();let semente=sp*7;
-  const zoe=(tipo,ctx)=>{const P=ZOE[tipo];for(let k=0;k<P.length;k++){const f=P[(semente+k)%P.length];if(!usados.has(f)){usados.add(f);semente+=5;return f.replace("{man}",ctx.man).replace("{mop}",ctx.mop)}}return P[0].replace("{man}",ctx.man).replace("{mop}",ctx.mop)};
+  const usados=window._ZUSO||new Set();let semente=sp*7;
+  const zoe=(tipo,ctx)=>{const P=ZOE[tipo];for(let k=0;k<P.length;k++){const f=P[(semente+k)%P.length];if(!usados.has(f)){usados.add(f);semente+=5;return f.replace("{man}",ctx.man).replace("{mop}",ctx.mop)}}
+    const grupo=["fogo","festa","mamar"].includes(tipo)?["fogo","festa","mamar"]:["choro","entrega"];
+    for(const tp of grupo)for(const f of (ZOE[tp]||[]))if(!usados.has(f)){usados.add(f);return f.replace("{man}",ctx.man).replace("{mop}",ctx.mop)}
+    return P[0].replace("{man}",ctx.man).replace("{mop}",ctx.mop)};
   const cand=[];
   d.P.forEach(p=>{const v=p.dl&&p.dl[sp];if(!v||p.fora)return;const [pts,reb,ast,stl,blk,tp,to,fgm,fga,ftm,fta]=v;const slot=v[11];
     const g=sp===d.cur&&d.nba&&d.nba[p.pro];const rola=g&&g.live?" (e o jogo ainda rola)":"";
@@ -2121,8 +2129,8 @@ function ticker(){
   if(!it.length){el.hidden=true;return}
   const live=DADOS.nba&&Object.values(DADOS.nba).some(g=>g.live);
   const html=it.map(x=>`<span class="tk-i" ${x.j!=null?`data-jogo="${x.j}"`:""}><b class="${["BANCO","MARTELO","TIJOLO","ENTREGOU","APAGADO","ZERO"].includes(x.k)?"r":""}">${x.k}</b>${x.t.replace(/<\/?b>/g,"")}</span>`).join('<span class="tk-sep">◆</span>');
-  el.hidden=false;el.innerHTML=`<span class="tk-tag">${live?'<i class="ao-vivo"></i>AO VIVO':"HOJE"}</span><div class="tk-wrap"><div class="tk-mov">${html}<span class="tk-sep">◆</span>${html}</div></div>`;
-  const mov=el.querySelector(".tk-mov");const dur=Math.max(30,Math.round(mov.scrollWidth/2/60));mov.style.animationDuration=dur+"s";
+  el.hidden=false;el.innerHTML=`<span class="tk-tag">${live?'<i class="ao-vivo"></i>AO VIVO':"HOJE"}</span><div class="tk-wrap"><div class="tk-mov${it.length<6?" tk-uma":""}">${html}${it.length<6?"":`<span class="tk-sep">◆</span>${html}`}</div></div>`;
+  const mov=el.querySelector(".tk-mov");const dur=mov.classList.contains("tk-uma")?Math.max(12,Math.round((mov.scrollWidth+innerWidth)/60)):Math.max(30,Math.round(mov.scrollWidth/2/60));mov.style.animationDuration=dur+"s";
 }
 function escolherTime(){
   if(document.getElementById("popTime"))return;
