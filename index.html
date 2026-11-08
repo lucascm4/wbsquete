@@ -1564,6 +1564,48 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 .mk-t tbody th{font:600 12px system-ui;color:#ddd;width:22%;background:#0a0707}
 .mk-t td{font-family:var(--display);font-size:15px;color:#9ff0b0;background:#000}
 
+/* convite e tutorial de instalação */
+.conv{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 96px);z-index:60;width:min(420px,calc(100% - 24px));display:flex;align-items:center;gap:10px;padding:10px 10px 10px 12px;background:#0a0707;border:2px solid var(--amarelo);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.6);animation:convIn .3s ease-out}
+@keyframes convIn{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}
+.conv img{width:42px;height:42px;border-radius:10px;flex:0 0 auto}
+.conv>div{flex:1 1 auto;min-width:0}.conv b{display:block;font-family:var(--display);font-size:16px;color:#fff;letter-spacing:.02em}.conv small{font-size:11px;color:var(--apagado)}
+.conv-v{all:unset;cursor:pointer;flex:0 0 auto;background:var(--amarelo);color:#000;font-weight:800;font-size:12px;padding:8px 10px;border-radius:8px}
+.conv-x{all:unset;cursor:pointer;flex:0 0 auto;color:#aaa;font-size:16px;padding:4px 6px}
+#popInst{z-index:300;align-items:flex-start;overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 24px}
+.inst{position:relative;width:min(480px,100%);margin:0 auto;background:#120c0c;border:2px solid var(--amarelo);border-radius:16px;padding:14px}
+.inst-cab{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-right:30px}.inst-cab img{width:48px;height:48px;border-radius:11px}
+.inst-cab b{display:block;font-family:var(--display);font-size:18px;color:var(--amarelo);letter-spacing:.02em}.inst-cab small{color:var(--apagado);font-size:12px}
+.inst-ab{display:flex;gap:6px;margin-bottom:10px}.inst-ab button{all:unset;cursor:pointer;flex:1;text-align:center;padding:7px;border-radius:8px;border:2px solid #333;color:#ddd;font-weight:800;font-size:13px}
+.inst-ab button[aria-pressed="true"]{background:var(--amarelo);color:#000;border-color:var(--amarelo)}
+.ip{display:flex;gap:10px;margin:12px 0}.ip-n{flex:0 0 26px;height:26px;border-radius:50%;background:var(--amarelo);color:#000;font-family:var(--display);font-size:16px;display:flex;align-items:center;justify-content:center}
+.ip-c{flex:1;min-width:0}.ip-c b{color:#fff;font-size:14px}.ip-c p{margin:2px 0 6px;font-size:12.5px;color:#ccc;line-height:1.4}
+.ip-ou{margin:-4px 0 8px 36px;font-size:12px;color:#ccc;line-height:1.4}
+.inst-ok{all:unset;cursor:pointer;display:block;text-align:center;margin-top:12px;padding:10px;border-radius:10px;background:var(--amarelo);color:#000;font-family:var(--display);font-size:17px}
+/* telinhas desenhadas */
+.tl{position:relative;background:#f2f2f7;border-radius:14px;border:3px solid #222;padding:8px;color:#111;font:500 12px -apple-system,system-ui,sans-serif;max-width:280px;margin-top:4px}
+.tl-site{background:#d4121c;color:#ffd400;font:400 13px var(--display);text-align:center;padding:16px 4px;border-radius:6px}
+.tl-bar{display:flex;justify-content:space-around;align-items:center;padding:8px 2px 2px;font-size:16px;color:#0a84ff}
+.tl-bar.tl-cima{position:absolute;top:6px;right:8px;left:auto;padding:0;background:#fff;border-radius:8px}.tl-bar.tl-cima span:not(.alvo){display:none}
+.tl-url{text-align:center;font-size:10px;color:#666;background:#fff;border-radius:8px;padding:5px;margin-top:4px}
+.tl-url2{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:8px;padding:6px 8px;margin-top:6px;font-size:11px;color:#666}
+.tl-menu{background:#fff;border-radius:10px;margin-top:6px;overflow:hidden}.tl-menu div{display:flex;gap:6px;align-items:center;padding:7px 9px;border-top:1px solid #eee}
+.alvo,.alvo3{position:relative;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;box-shadow:0 0 0 3px #ff2d55;animation:alvo 1.2s infinite}
+.alvo3{color:#0a84ff;font-weight:700;padding:2px 6px}
+.alvo2{box-shadow:inset 0 0 0 3px #ff2d55;border-radius:8px;animation:alvo 1.2s infinite}
+@keyframes alvo{50%{box-shadow:0 0 0 6px rgba(255,45,85,.25)}}
+.tl-sheet .sh-top{display:flex;gap:8px;align-items:center;background:#fff;border-radius:10px;padding:8px}.tl-sheet img{width:36px;height:36px;border-radius:8px}
+.tl-sheet small{display:block;color:#888;font-size:10px}
+.sh-row{display:flex;gap:8px;align-items:center;background:#fff;border-radius:8px;padding:8px;margin-top:5px}.sh-row svg{background:#555;border-radius:5px;padding:1px}
+.sh-nav{display:flex;justify-content:space-between;align-items:center;padding:4px 2px 8px;font-size:11px}.sh-nav span:first-child{color:#0a84ff}
+.sh-opt{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:8px;padding:8px;margin-top:6px}
+.tg{width:30px;height:18px;border-radius:9px;background:#34c759;position:relative}.tg:after{content:"";position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff}
+.tl-home{background:linear-gradient(160deg,#1e3a8a,#7c3aed)}.hm{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:6px}
+.hm i{aspect-ratio:1;border-radius:10px}.hm-l{display:flex;flex-direction:column;align-items:center;gap:2px}.hm-l img{width:100%;aspect-ratio:1;border-radius:10px;box-shadow:0 0 0 3px #ff2d55}.hm-l small{color:#fff;font-size:8px}
+@media (prefers-reduced-motion:reduce){.alvo,.alvo2,.alvo3,.conv{animation:none}}
+.tl b{color:#111!important;font-size:12px!important}.tl small{font-size:10px}
+.sh-nav b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46%;font-size:11px!important}
+.tl-home .hm{grid-template-columns:repeat(4,minmax(0,1fr))}.hm i,.hm-l img{max-width:46px;justify-self:center}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1629,11 +1671,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794172786"></script>
-<script src="radar.js?v=1794172786"></script>
-<script src="midia.js?v=1794172786"></script>
+<script src="hist.js?v=1794172953"></script>
+<script src="radar.js?v=1794172953"></script>
+<script src="midia.js?v=1794172953"></script>
 <script>
-const VERSAO_PAINEL="20261108181946";
+const VERSAO_PAINEL="20261108182232";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3654,17 +3696,48 @@ window.addEventListener("appinstalled",()=>{pedidoInstalar=null;render()});
 function jaInstalado(){return window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}
 function instalarApp(){
   if(pedidoInstalar){pedidoInstalar.prompt();pedidoInstalar.userChoice.finally(()=>{pedidoInstalar=null;render()});return}
-  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  fecharFicha();const el=document.createElement("div");el.className="pop-fundo";el.id="popFicha";
-  el.innerHTML=`<div class="pop-jog pop-leg" role="dialog" aria-label="Instalar o app"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button><h3>BAIXAR O APP</h3>
-   ${ios?`<div class="lg-i"><b>1</b><div><b>Abra no Safari</b><small>No Chrome do iPhone também funciona pelo menu ⋯</small></div></div>
-   <div class="lg-i"><b>2</b><div><b>Toque em Compartilhar</b><small>o quadradinho com a seta pra cima</small></div></div>
-   <div class="lg-i"><b>3</b><div><b>Adicionar à Tela de Início</b><small>o ícone do Loydão aparece junto dos seus apps</small></div></div>`
-   :`<div class="lg-i"><b>1</b><div><b>Abra o menu do navegador</b><small>os três pontinhos ⋮ no canto</small></div></div>
-   <div class="lg-i"><b>2</b><div><b>Instalar app / Adicionar à tela inicial</b><small>o ícone do Loydão aparece junto dos seus apps</small></div></div>`}
-   <p>Abre em tela cheia, sem barra do navegador, e atualiza sozinho.</p></div>`;
-  el.addEventListener("click",e=>{if(e.target===el||e.target.closest("[data-fecha]"))fecharFichaU()});document.body.appendChild(el);
+  fecharConvite();const ua=navigator.userAgent;const ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);const crios=/CriOS/i.test(ua);
+  const SHARE='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+  const PLUS='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
+  const ICO='<img src="img/app/apple-180.png" alt="">';
+  // "fotinhos": a tela do iPhone desenhada, com o lugar exato pra tocar marcado
+  const f1=`<div class="tl"><div class="tl-site">PAINEL DO LOYDÃO</div><div class="tl-bar"><span>‹</span><span>›</span><span class="alvo">${SHARE}</span><span>📖</span><span>⋯</span></div><div class="tl-url">lucascm4.github.io</div></div>`;
+  const f1b=`<div class="tl"><div class="tl-site">PAINEL DO LOYDÃO</div><div class="tl-url2">lucascm4.github.io <span class="alvo">⋯</span></div><div class="tl-menu"><div class="alvo2">${SHARE} Compartilhar</div><div>⭐ Favoritos</div><div>🔖 Adicionar marcador</div></div></div>`;
+  const f2=`<div class="tl tl-sheet"><div class="sh-top">${ICO}<div><b>Painel WBSQUETE</b><small>lucascm4.github.io</small></div></div><div class="sh-row">📋 Copiar</div><div class="sh-row">📑 Adicionar à Lista de Leitura</div><div class="sh-row alvo2">${PLUS} <b>Adicionar à Tela de Início</b></div><div class="sh-row">⭐ Adicionar aos Favoritos</div></div>`;
+  const f3=`<div class="tl tl-sheet"><div class="sh-nav"><span>Cancelar</span><b>Adicionar à Tela de Início</b><span class="alvo3">Adicionar</span></div><div class="sh-top">${ICO}<div><b>WBSQUETE</b><small>lucascm4.github.io/wbsquete</small></div></div><div class="sh-opt"><span>Abrir como App da Web</span><i class="tg"></i></div></div>`;
+  const f4=`<div class="tl tl-home"><div class="hm">${["#3b82f6","#22c55e","#f59e0b","#a855f7","#ef4444","#14b8a6","#64748b"].map(c=>`<i style="background:${c}"></i>`).join("")}<span class="hm-l">${ICO}<small>WBSQUETE</small></span></div></div>`;
+  const passo=(n,t,d,img)=>`<div class="ip"><div class="ip-n">${n}</div><div class="ip-c"><b>${t}</b><p>${d}</p>${img||""}</div></div>`;
+  const iosPassos=crios?
+     passo(1,"Toque em Compartilhar","No Chrome do iPhone, o botão fica <b>lá em cima</b>, ao lado do endereço do site.",f1.replace("tl-bar","tl-bar tl-cima"))
+    +passo(2,"Role e toque em “Adicionar à Tela de Início”","Fica na lista de baixo. Se não aparecer, role até o fim e toque em <b>Editar ações</b>.",f2)
+    +passo(3,"Toque em “Adicionar”","No canto de cima à direita.",f3)
+    +passo(4,"Pronto!","O ícone do cinturão aparece junto dos seus apps. Abra sempre por ele.",f4)
+   : passo(1,"Abra este site no Safari","Se você abriu pelo WhatsApp ou Instagram, toque em <b>⋯</b> e escolha <b>Abrir no Safari</b>. O iPhone só instala pelo Safari (ou pelo Chrome).")
+    +passo(2,"Toque no botão Compartilhar","O <b>quadradinho com a seta pra cima</b>, na barra de baixo do Safari.",f1)
+    +`<div class="ip-ou">Não achou o quadradinho? No iOS novo ele fica dentro do <b>⋯</b>: toque em ⋯ e depois em <b>Compartilhar</b>.${f1b}</div>`
+    +passo(3,"Toque em “Adicionar à Tela de Início”","Role a lista pra baixo até achar. Se não aparecer, role até o fim e toque em <b>Editar ações</b> pra ativar.",f2)
+    +passo(4,"Toque em “Adicionar”","No canto de cima à direita. Deixe ligado “Abrir como App da Web”.",f3)
+    +passo(5,"Pronto!","O ícone do cinturão aparece junto dos seus apps. Abra sempre por ele: tela cheia, sem barra do navegador, e atualiza sozinho.",f4);
+  const andPassos=passo(1,"Abra o menu do navegador","Os <b>três pontinhos ⋮</b> no canto de cima à direita do Chrome.")
+    +passo(2,"Toque em “Instalar app” ou “Adicionar à tela inicial”","O nome muda conforme o celular.")
+    +passo(3,"Confirme em “Instalar”","O ícone do cinturão aparece junto dos seus apps.",f4);
+  const el=document.createElement("div");el.className="pop-fundo";el.id="popInst";
+  el.innerHTML=`<div class="inst" role="dialog" aria-label="Baixar o app"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button>
+   <div class="inst-cab">${ICO}<div><b>BAIXAR O APP DO LOYDÃO</b><small>${ios?"iPhone · leva 20 segundos":"Android · leva 10 segundos"}</small></div></div>
+   <div class="inst-ab"><button type="button" data-so="ios" aria-pressed="${ios}">iPhone</button><button type="button" data-so="and" aria-pressed="${!ios}">Android</button></div>
+   <div data-pane="ios" ${ios?"":"hidden"}>${iosPassos}</div><div data-pane="and" ${ios?"hidden":""}>${andPassos}</div>
+   <button type="button" class="inst-ok" data-fecha>Entendi</button></div>`;
+  el.addEventListener("click",e=>{const so=e.target.closest("[data-so]");if(so){el.querySelectorAll("[data-so]").forEach(b=>b.setAttribute("aria-pressed",b===so));el.querySelectorAll("[data-pane]").forEach(p=>p.hidden=p.dataset.pane!==so.dataset.so);return}
+    if(e.target===el||e.target.closest("[data-fecha]"))el.remove()});document.body.appendChild(el);
 }
+/* convite pra baixar: pop-up pequeno, dá pra fechar; volta só depois de 7 dias */
+function fecharConvite(){const c=document.getElementById("convApp");if(c)c.remove()}
+function convidarApp(){try{if(jaInstalado())return;const t=+localStorage.getItem("wbs.convite")||0;if(Date.now()-t<7*864e5)return}catch(e){return}
+  if(document.getElementById("convApp"))return;const c=document.createElement("div");c.id="convApp";c.className="conv";
+  c.innerHTML=`<img src="img/app/apple-180.png" alt=""><div><b>Baixe o app do Loydão</b><small>Tela cheia, sem barra do navegador, abre num toque.</small></div><button type="button" class="conv-v" data-instalar>Como baixar</button><button type="button" class="conv-x" aria-label="agora não">✕</button>`;
+  c.querySelector(".conv-x").onclick=()=>{try{localStorage.setItem("wbs.convite",Date.now())}catch(e){}c.remove()};
+  document.body.appendChild(c)}
+setTimeout(convidarApp,5000);
 document.addEventListener("click",e=>{if(e.target.closest("[data-instalar]")){e.preventDefault();instalarApp()}});
 /* mostra o placar mini na barra do confronto só depois de rolar */
 window.addEventListener("scroll",()=>{document.body.classList.toggle("rolou",window.scrollY>230)},{passive:true});
