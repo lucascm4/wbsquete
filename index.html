@@ -744,6 +744,12 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
  .bf .bq small{font-size:9px}
  .bf-m{font-size:11px}
 }
+/* favorito: só um contorno, sem amarelo */
+.bf .bq.fav{background:#1d1414;color:#fff;border-color:var(--amarelo);box-shadow:inset 0 0 0 1px var(--amarelo)}
+.bf .bq.fav small{color:var(--apagado)}
+.bf .bq.fav b{color:#fff}
+.bet-odds .bq.fav{background:#fff;border-color:#000;box-shadow:inset 0 0 0 1px #000}
+.bet-odds .bq.fav b{color:#0a7a2e}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
