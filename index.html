@@ -1707,6 +1707,14 @@ svg.cad{width:18px;height:18px;display:block}
 .tarja-leg{display:block;background:#052016;color:rgba(255,255,255,.6);font-size:8px;padding:2px 10px 3px;border:2px solid #ffd400;border-top:0;border-radius:0 0 10px 10px}
 @media (prefers-reduced-motion:reduce){.tarja{animation:none}}
 
+.publi-x{all:unset;cursor:pointer;position:absolute;top:3px;right:6px;color:#d8f7e2;font-size:13px;padding:2px 4px}
+.publi-nunca{all:unset;cursor:pointer;position:absolute;right:8px;bottom:2px;font:600 8.5px system-ui;color:#ffd400;text-decoration:underline}
+.publi-leg{right:110px!important}
+.publi-r{margin-right:14px}
+.tarja-nunca{all:unset;cursor:pointer;display:block;margin:3px auto 0;font:700 10px system-ui;color:#fff;background:rgba(0,0,0,.7);padding:3px 10px;border-radius:999px;width:max-content}
+.publi-on{all:unset;cursor:pointer;display:block;margin-top:4px;font:600 11px system-ui;color:var(--apagado);text-decoration:underline}
+.aviso-rap{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 100px);z-index:400;background:#000;color:#fff;border:2px solid var(--amarelo);padding:8px 14px;border-radius:10px;font-size:13px;max-width:90%}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1772,11 +1780,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794177014"></script>
-<script src="radar.js?v=1794177014"></script>
-<script src="midia.js?v=1794177014"></script>
+<script src="hist.js?v=1794177787"></script>
+<script src="radar.js?v=1794177787"></script>
+<script src="midia.js?v=1794177787"></script>
 <script>
-const VERSAO_PAINEL="20261108193014";
+const VERSAO_PAINEL="20261108194307";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2206,7 +2214,7 @@ function ticker(){
   const el=$("#ticker");if(!el)return;if(!DADOS){el.hidden=true;return}
   let it=[];try{it=noticias()}catch(e){console.error(e)}
   if(!it.length){el.hidden=true;return}
-  try{const O=ofertasBet();if(O.length){const n=Math.max(1,Math.floor(it.length/5));for(let k=0;k<n&&k<O.length;k++){const of=O[k];it.splice(Math.min(it.length,(k+1)*5-1),0,{k:"PUBLI",t:`BETLOYDE: ${esc(of.t)}: de ${fmtO(of.de)} para ${fmtO(of.para)}`,pub:1})}}}catch(e){}
+  try{const O=semPubli()?[]:ofertasBet();if(O.length){const n=Math.max(1,Math.floor(it.length/5));for(let k=0;k<n&&k<O.length;k++){const of=O[k];it.splice(Math.min(it.length,(k+1)*5-1),0,{k:"PUBLI",t:`BETLOYDE: ${esc(of.t)}: de ${fmtO(of.de)} para ${fmtO(of.para)}`,pub:1})}}}catch(e){}
   const live=DADOS.nba&&Object.values(DADOS.nba).some(g=>g.live);
   const html=it.map(x=>`<span class="tk-i" ${x.j!=null?`data-jogo="${x.j}"`:""}><b class="${x.pub?"pub":["BANCO","MARTELO","TIJOLO","ENTREGOU","APAGADO","ZERO","🚑 STATUS"].includes(x.k)?"r":""}">${x.k}</b>${x.t.replace(/<\/?b>/g,"")}</span>`).join('<span class="tk-sep">◆</span>');
   el.hidden=false;el.innerHTML=`<span class="tk-tag">${live?'<i class="ao-vivo"></i>AO VIVO':"HOJE"}</span><div class="tk-wrap"><div class="tk-mov${it.length<6?" tk-uma":""}">${html}${it.length<6?"":`<span class="tk-sep">◆</span>${html}`}</div></div>`;
@@ -3574,7 +3582,8 @@ function ofertasBet(){const d=DADOS;if(!d||!EST||!EST.tot)return [];const O=[];c
     if(x.po>0.2&&x.po<0.6){const o=oddDe(1-x.po);if(o)O.push({t:`${man(id)} fica fora dos playoffs`,de:o,para:turbo(o),s:"mercado da temporada"})}})}catch(e){}
   return O.filter(o=>o.de>=1.4&&o.de<=60).sort(()=>Math.random()-0.5)}
 const PUBLI_SLOGAN=["BETLOYDE: a casa que torce contra você","Aposte com responsabilidade. Perca com dignidade.","Odd turbinada é igual promessa de manager: confie desconfiando","Não é dinheiro de verdade. A vergonha é.","BETLOYDE · patrocinadora oficial do choro de segunda-feira"];
-function publiCard(of){if(!of)return "";return `<div class="publi" ${of.j!=null?`data-jogo="${of.j}"`:""}><div class="publi-l"><span class="publi-tag">PUBLICIDADE</span><b class="publi-m"><i>BET</i>LOYDE</b></div><div class="publi-c"><span class="publi-sup">${esc(of.s)}</span><b class="publi-t">${esc(of.t)}:</b><span class="publi-o">de <s>${fmtO(of.de)}</s> para <b>${fmtO(of.para)}</b></span></div><div class="publi-r"><span class="publi-18">+18</span><small>${esc(PUBLI_SLOGAN[Math.floor(Math.random()*PUBLI_SLOGAN.length)])}</small></div><small class="publi-leg">Odds de mentira calculadas pelo modelo do Loydão. Ninguém aposta nada aqui.</small></div>`}
+function semPubli(){try{return localStorage.getItem("wbs.semPubli")==="1"}catch(e){return false}}
+function publiCard(of){if(!of||semPubli())return "";return `<div class="publi" ${of.j!=null?`data-jogo="${of.j}"`:""}><div class="publi-l"><span class="publi-tag">PUBLICIDADE</span><b class="publi-m"><i>BET</i>LOYDE</b></div><div class="publi-c"><span class="publi-sup">${esc(of.s)}</span><b class="publi-t">${esc(of.t)}:</b><span class="publi-o">de <s>${fmtO(of.de)}</s> para <b>${fmtO(of.para)}</b></span></div><div class="publi-r"><span class="publi-18">+18</span><small>${esc(PUBLI_SLOGAN[Math.floor(Math.random()*PUBLI_SLOGAN.length)])}</small></div><small class="publi-leg">Odds de mentira calculadas pelo modelo do Loydão. Ninguém aposta nada aqui.</small><button type="button" class="publi-x" data-publix aria-label="fechar anúncio">✕</button><button type="button" class="publi-nunca" data-publinunca>não quero mais ver</button></div>`}
 
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
@@ -3764,6 +3773,9 @@ document.addEventListener("click",e=>{
   if(e.target.closest("[data-h2hlista]")&&UI._h2h){const el=document.createElement("div");el.className="pop-fundo";el.id="popLista";el.innerHTML=`<div class="inst"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button><div class="inst-cab"><div><b>HISTÓRICO DIRETO</b><small>${esc(UI._h2h.t)} · toque para abrir o box</small></div></div>${UI._h2h.h}</div>`;
     el.addEventListener("click",ev=>{if(ev.target===el||ev.target.closest("[data-fecha]")){el.remove();return}if(ev.target.closest("[data-mj]"))el.remove()},true);document.body.appendChild(el);return}
   if(e.target.closest(".topo .belt,.topo .mast")){location.hash="confrontos";scrollTo(0,0);return}
+  if(e.target.closest("[data-publix]")){e.stopPropagation();const p=e.target.closest(".publi");if(p)p.remove();return}
+  if(e.target.closest("[data-publinunca]")){e.stopPropagation();try{localStorage.setItem("wbs.semPubli","1")}catch(x){}document.querySelectorAll(".publi,#tarjaBet").forEach(x=>x.remove());ticker();mostrarAviso&&mostrarAviso("Pronto: sem anúncios da BETLOYDE neste aparelho. Dá pra ligar de novo no rodapé.");return}
+  if(e.target.closest("[data-publion]")){try{localStorage.removeItem("wbs.semPubli")}catch(x){}render();ticker();return}
   {const ad=e.target.closest("[data-avd]");if(ad){UI.avDuelo=+ad.dataset.avd;render();return}}
   {const dc=e.target.closest("[data-duc]");if(dc){UI.duCat=dc.dataset.duc;render();return}}
   {const mm=e.target.closest("[data-avm]");if(mm){UI.avModo=mm.dataset.avm;render();return}}
@@ -3998,10 +4010,10 @@ function montarPubli(r){try{const app=document.getElementById("app");if(!app||ap
   // páginas longas ganham um segundo anúncio mais embaixo
   if(cards.length>=7&&O[1]){const d2=document.createElement("div");d2.innerHTML=publiCard(O[1]);cards[Math.min(cards.length-1,6)].after(d2.firstElementChild)}}catch(e){}}
 let _tarjas=0,_ultTarja=0;
-function tarja(){try{if(_tarjas>=4||document.hidden||document.getElementById("popFicha")||document.getElementById("popInst")||document.getElementById("popLista")||document.getElementById("tarjaBet"))return;
+function tarja(){try{if(semPubli()||_tarjas>=4||document.hidden||document.getElementById("popFicha")||document.getElementById("popInst")||document.getElementById("popLista")||document.getElementById("tarjaBet"))return;
   if(Date.now()-_ultTarja<4*60*1000)return;const O=ofertasBet();if(!O.length)return;const of=O[0];_tarjas++;_ultTarja=Date.now();
   const el=document.createElement("div");el.id="tarjaBet";el.className="tarja";
-  el.innerHTML=`<div class="tarja-in" ${of.j!=null?`data-jogo="${of.j}"`:""}><span class="tarja-m"><i>BET</i>LOYDE</span><div class="tarja-c"><small>${esc(of.s)}</small><b>${esc(of.t)}: de ${fmtO(of.de)} para <u>${fmtO(of.para)}</u></b></div><span class="tarja-18">+18</span><button type="button" class="tarja-x" aria-label="fechar anúncio">✕</button></div><small class="tarja-leg">Publicidade de mentira · odds do modelo do Loydão · aposte com responsabilidade (aqui ninguém aposta nada)</small>`;
+  el.innerHTML=`<div class="tarja-in" ${of.j!=null?`data-jogo="${of.j}"`:""}><span class="tarja-m"><i>BET</i>LOYDE</span><div class="tarja-c"><small>${esc(of.s)}</small><b>${esc(of.t)}: de ${fmtO(of.de)} para <u>${fmtO(of.para)}</u></b></div><span class="tarja-18">+18</span><button type="button" class="tarja-x" aria-label="fechar anúncio">✕</button></div><button type="button" class="tarja-nunca" data-publinunca>não quero mais ver anúncios</button><small class="tarja-leg">Publicidade de mentira · odds do modelo do Loydão · aposte com responsabilidade (aqui ninguém aposta nada)</small>`;
   el.querySelector(".tarja-x").onclick=ev=>{ev.stopPropagation();el.remove()};document.body.appendChild(el);setTimeout(()=>{el.classList.add("sai");setTimeout(()=>el.remove(),400)},11000)}catch(e){}}
 setTimeout(tarja,60*1000);setInterval(tarja,60*1000);
 
@@ -4027,5 +4039,10 @@ async function buscarAlertasESPN(){if(!DADOS)return 0;const nomes={};DADOS.P.for
   if(novos.length){const vistos=new Set(AO.alertas.map(x=>x.nome+x.txt));novos.forEach(x=>{if(!vistos.has(x.nome+x.txt))AO.alertas.unshift(Object.assign(x,{sp:DADOS.cur}))});AO.alertas=AO.alertas.filter(x=>x.sp===DADOS.cur).sort((a,b)=>(b.t||0)-(a.t||0)).slice(0,8);gravarCache("wbs.lesAlert",AO.alertas)}
   return novos.length}
 setTimeout(()=>buscarAlertasESPN().then(n=>{if(n)ticker()}),8000);
+
+function mostrarAviso(t){const a=document.createElement("div");a.className="aviso-rap";a.textContent=t;document.body.appendChild(a);setTimeout(()=>a.remove(),3500)}
+/* rodapé: religar anúncios */
+(function(){const r=document.getElementById("rodape");if(!r)return;const b=document.createElement("button");b.type="button";b.className="publi-on";b.dataset.publion="1";b.textContent="ligar anúncios da BETLOYDE";r.after(b);
+  const at=()=>{b.hidden=!semPubli()};at();setInterval(at,3000)})();
 </script>
 </body></html>
