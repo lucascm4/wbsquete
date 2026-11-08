@@ -1134,7 +1134,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108022538";
+const VERSAO_PAINEL="20261108022642";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2073,7 +2073,7 @@ function vRadar(){
     const ajuda=p=>{if(!p.zc)return "";const ts=d.teams.map(t=>t.id).map(id=>{let s=0;CATS.forEach((c,j)=>{if(EST.est[id][j]<=2&&p.zc[c.k]>0.6)s+=p.zc[c.k]});return [id,s]}).filter(x=>x[1]>0).sort((x,y)=>y[1]-x[1]).slice(0,3);
       return ts.length?`<div class="melhora">${tip("ajuda","ajuda:")}${ts.map(([id])=>`<img src="img/l/${T(id)[1]}.webp" alt="${esc(T(id)[0])}" title="${esc(T(id)[0])}">`).join("")}</div>`:""};
     const FLAG={PTS:"PONTOS",REB:"REBOTE",AST:"ASSIST","STL":"ROUBO",BLK:"TOCO","3PM":"3 PONTOS","FG%":"FG%","FT%":"FT%",TO:"POUCO TO"};
-    const flags=p=>p.zc?Object.entries(p.zc).filter(([k,z])=>k==="TO"?z>=1.2:z>=0.7).sort((x,y)=>y[1]-x[1]).slice(0,3).map(([k,z])=>`<span class="flag ${z>=1.5?"forte":""}">${FLAG[k]}</span>`).join(""):"";
+    const flags=p=>p.zc?Object.entries(p.zc).filter(([k,z])=>k!=="TO"&&z>=0.35).sort((x,y)=>y[1]-x[1]).slice(0,3).map(([k,z])=>`<span class="flag ${z>=1.5?"forte":""}">${FLAG[k]}</span>`).join(""):"";
     const cab=p=>`<div class="flags">${flags(p)}</div><div class="s">${POS[p.pos]||""} · ${NBA[p.pro]||""} · <b>${p.gl}</b> jogo${p.gl!==1?"s":""} até dom · ${Math.round(p.own||0)}% das ligas</div>`;
     const big=(n,rot,extra)=>`<b class="rk-grande">${n?"#"+n:"–"}</b><small>${rot}</small>${extra?`<small>${extra}</small>`:""}`;
     const topoL=fa.filter(p=>p.rkL).sort((x,y)=>x.rkL-y.rkL).slice(0,12);
