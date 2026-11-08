@@ -529,6 +529,24 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .jogo .lado .nm{white-space:nowrap;overflow-wrap:normal;font-size:clamp(15px,1.6vw,20px)}
 @media (max-width:900px){.jogo .lado .nm{font-size:clamp(15px,4.2vw,20px)}}
 
+.nbag{display:inline-block;font-size:11px;font-weight:700;color:var(--apagado);background:#000;border:1px solid #333;padding:1px 6px;border-radius:4px;margin-left:4px}
+.nbag.live{color:#fff;border-color:var(--perigo)}
+.nbag.live::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--perigo);margin-right:5px;vertical-align:1px}
+.nbag.fim{color:var(--apagado)}
+.chave{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:12px;align-items:start}
+.chave h4{margin:0 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--apagado);font-weight:700}
+.chave .col{display:flex;flex-direction:column;gap:10px;min-width:0}
+.chave .par{display:flex;flex-direction:column;gap:4px;border-left:3px solid var(--ouro);padding-left:8px}
+.ch-t{display:grid;grid-template-columns:18px 28px minmax(0,1fr) auto;gap:6px;align-items:center;background:#1d1414;border:1px solid #000;padding:5px 8px;font-weight:700;font-size:13px}
+.ch-t small{color:var(--amarelo);font-family:var(--display);font-size:14px}
+.ch-t img{width:28px;height:28px;border-radius:50%;object-fit:contain;background:#fff;border:1px solid #000}
+.ch-t span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ch-t em{font-style:normal;color:var(--apagado);font-size:11px;font-weight:600}
+.ch-t.vago{display:block;text-align:center;color:var(--apagado);font-size:12px;font-weight:600;padding:10px 8px;border-style:dashed;border-color:#444}
+.ch-t.pequeno{opacity:.75}
+.chave .fora{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+@media (max-width:640px){.chave{grid-template-columns:minmax(0,1fr)}}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;padding-top:8px}
 .pasta{position:relative;display:flex;flex-direction:column;gap:6px;background:#f2d27a;color:#1d1b18;text-decoration:none;padding:18px 16px 14px;border:3px solid #000;box-shadow:5px 5px 0 #000;border-radius:0 8px 8px 8px;min-height:130px;transition:transform .12s}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000}
@@ -867,19 +885,23 @@ function betFaixa(a,b,s){
   const A=T(a),B=T(b);const fav=s.pa>s.pb?1:s.pb>s.pa?2:0;
   return `<div class="bf"><span class="bf-m"><b>BET</b>LOYDE</span><span class="bq ${fav===1?"fav":""}"><small>1</small><b>${odd(s.pa)}</b></span><span class="bq ${fav===0?"fav":""}"><small>X</small><b>${odd(s.pe)}</b></span><span class="bq ${fav===2?"fav":""}"><small>2</small><b>${odd(s.pb)}</b></span></div>`;
 }
+function jogoNBA(p,sp){ // "@OKC 55-84 · 2:28 3ºQ"
+  const d=DADOS;if(sp!==d.cur||!d.nba)return "";const g=d.nba[p.pro];if(!g)return "";
+  return `<span class="nbag ${g.live?"live":g.fim?"fim":""}">${esc(g.op)}${g.sc?" "+esc(g.sc):""} · ${esc(g.st)}</span>`;
+}
 function boxTime(tid,sp){
   const d=DADOS;const lista=[];
   (EST.rost[tid]||[]).concat(d.P.filter(p=>p.fora&&p.t===tid)).forEach(p=>{
     if(sp==="sem"){if(p.g||p.bg)lista.push({p,s:p.W,slot:p.g?0:12,g:p.g,bp:p.bp,bg:p.bg})}
-    else{const v=p.dl&&p.dl[sp];if(v)lista.push({p,s:v.slice(0,11),slot:v[11]});else if(sp===d.cur&&p.hoje&&p.slot<12)lista.push({p,s:null,slot:p.slot,pend:1})}
+    else{const v=p.dl&&p.dl[sp];if(v)lista.push({p,s:v.slice(0,11),slot:v[11],min:v[12]||0});else if(sp===d.cur&&p.hoje&&p.slot<12)lista.push({p,s:null,slot:p.slot,pend:1})}
   });
   const tit=lista.filter(x=>x.slot<12).sort((x,y)=>(y.s?y.s[0]:-1)-(x.s?x.s[0]:-1));
   const fora=lista.filter(x=>x.slot>=12&&(sp!=="sem"||x.bg)).sort((x,y)=>(y.s?y.s[0]:0)-(x.s?x.s[0]:0));
   const row=x=>{const p=x.p;const st=tagInj(p);
     if(sp==="sem"&&x.slot>=12)return `<div class="jog fora">${face(p.id,p.n)}<div><div class="nm">${esc(p.n)} <span class="tag banco">BANCO</span></div><div class="sub">${NBA[p.pro]||""} · ${x.bg} jogo${x.bg>1?"s":""} no banco</div></div><div class="pts num">${x.bp}<small>PTS PERDIDOS</small></div></div>`;
-    if(x.pend)return `<div class="jog">${face(p.id,p.n)}<div><div class="nm">${esc(p.n)} ${st}<span class="tag hoje">AINDA JOGA</span></div><div class="sub">${SLOT[x.slot]} · ${NBA[p.pro]||""}</div></div><div class="pts">–</div></div>`;
+    if(x.pend)return `<div class="jog">${face(p.id,p.n)}<div><div class="nm">${esc(p.n)} ${st}<span class="tag hoje">AINDA JOGA</span></div><div class="sub">${SLOT[x.slot]} · ${NBA[p.pro]||""} ${jogoNBA(p,sp)}</div></div><div class="pts">–</div></div>`;
     const banco=x.slot>=12;
-    return `<div class="jog ${banco?"fora":""} ${x.s[0]===0&&!banco?"zero":""}">${face(p.id,p.n)}<div><div class="nm">${esc(p.n)} ${st}${banco?`<span class="tag banco">${SLOT[x.slot]||"FORA"}</span>`:""}${p.fora?'<span class="tag ir">SAIU DO ELENCO</span>':""}</div><div class="sub">${banco?"":SLOT[x.slot]+" · "}${NBA[p.pro]||""}${sp==="sem"?` · ${x.g} jogo${x.g>1?"s":""}`:""}</div><div class="lin">${linhaStats(x.s)}</div></div><div class="pts num">${x.s[0]}<small>${banco?"NO BANCO":"PTS"}</small></div></div>`};
+    return `<div class="jog ${banco?"fora":""} ${x.s[0]===0&&!banco?"zero":""}">${face(p.id,p.n)}<div><div class="nm">${esc(p.n)} ${st}${banco?`<span class="tag banco">${SLOT[x.slot]||"FORA"}</span>`:""}${p.fora?'<span class="tag ir">SAIU DO ELENCO</span>':""}</div><div class="sub">${banco?"":SLOT[x.slot]+" · "}${NBA[p.pro]||""}${sp==="sem"?` · ${x.g} jogo${x.g>1?"s":""}`:(x.min?` · ${x.min} min`:"")} ${sp==="sem"?"":jogoNBA(p,sp)}</div><div class="lin">${linhaStats(x.s)}</div></div><div class="pts num">${x.s[0]}<small>${banco?"NO BANCO":"PTS"}</small></div></div>`};
   let h=tit.map(row).join("")||`<div class="vazio">Ninguém em quadra nesse dia.</div>`;
   if(fora.length)h+=`<div class="sep">${sp==="sem"?"Pontos que ficaram no banco":"Banco e IR"}</div>`+fora.map(row).join("");
   return h;
@@ -946,7 +968,7 @@ function vJogo(i){
   const d=DADOS;if(!d)return vazio();const m=d.mt[i];if(!m)return vConfrontos();
   precisaMuseu();
   const [a,b]=m,A=T(a),B=T(b);const ta=EST.tot[a],tb=EST.tot[b],pa=EST.proj[a],pb=EST.proj[b];
-  const sc=placar(ta,tb),s=simula(a,b);const dsel=UI.dia[i]??"sem";const dia=d.cur-d.s0+1;
+  const sc=placar(ta,tb),s=simula(a,b);const dsel=UI.dia[i]??(d.last===d.cur?d.cur:"sem");const dia=d.cur-d.s0+1;
   let h=`<button class="voltar" type="button" data-ir="confrontos">← Confrontos</button>
   <div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span></div>
   <div class="card"><div class="placar-topo">
@@ -989,9 +1011,22 @@ function vTimes(){
       <span class="dest"><b>${dest[0]}</b><small>${dest[1]}</small></span>
       <span class="mini3"><span><i style="width:${x.s.po*100}%"></i></span><small>playoffs ${pct(x.s.po)}</small><span><i style="width:${Math.min(100,x.s.tit*250)}%"></i></span><small>título ${pct(x.s.tit)}</small></span>
     </button>`});
-  h+=`</div><div class="legenda">${tip("rating","Rating")} · ${tip("playoffs","Playoffs")} · ${tip("titulo","Título")} · ${tip("lanterna","Lanterna")} · ${tip("forma","Forma")} · linha tracejada = corte dos 6 playoffs</div>`;
+  if(ord==="rec")h+=`</div>${divisoes()}<div class="legenda">`;else h+=`</div>${chaveamento(sim)}<div class="legenda">${tip("rating","Rating")} · ${tip("playoffs","Playoffs")} · ${tip("titulo","Título")} · ${tip("lanterna","Lanterna")} · ${tip("forma","Forma")} · linha tracejada = corte dos 6 playoffs</div>`;
   h+=vTodosBloco();
   return h;
+}
+function chaveamento(sim){
+  const d=DADOS;const ids=d.teams.map(t=>t.id);const ord=ids.slice().sort((x,y)=>sim[y].w-sim[x].w);const [s1,s2,s3,s4,s5,s6]=ord;
+  const box=(id,seed)=>`<div class="ch-t"><small>${seed}</small><img src="img/l/${T(id)[1]}.webp" alt=""><span>${esc(T(id)[0])}</span><em>${sim[id].w.toFixed(1)} V</em></div>`;
+  return `<div class="card"><div class="bloco-tit">PLAYOFFS PROJETADOS <small>pela projeção de hoje · 6 classificados</small></div>
+  <div class="chave"><div class="col"><h4>Quartas · semana 19</h4><div class="par">${box(s3,3)}${box(s6,6)}</div><div class="par">${box(s4,4)}${box(s5,5)}</div></div>
+  <div class="col"><h4>Semifinais · semana 20</h4><div class="par">${box(s1,1)}<div class="ch-t vago">vence 4 x 5<br>ou 3 x 6</div></div><div class="par">${box(s2,2)}<div class="ch-t vago">vence 3 x 6<br>ou 4 x 5</div></div></div>
+  <div class="col"><h4>Final · semana 21</h4><div class="par"><div class="ch-t vago">🏆</div></div><div class="fora"><h4>De fora</h4>${ord.slice(6).map((id,i)=>`<div class="ch-t pequeno"><small>${i+7}</small><img src="img/l/${T(id)[1]}.webp" alt=""><span>${esc(T(id)[0])}</span><em>${sim[id].w.toFixed(1)} V</em></div>`).join("")}</div></div></div></div>`;
+}
+function divisoes(){
+  const d=DADOS;const nomes={0:"Petistas Trans",1:"Bolsonaristas Golpistas"};const rk=rankingLoydao(d.wk-1);
+  return `<div class="duas">${[0,1].map(dv=>{const ts=d.teams.filter(t=>t.div===dv).sort((x,y)=>(y.rec[0]+y.rec[2]/2)-(x.rec[0]+x.rec[2]/2)||(rk[y.id].cw-rk[y.id].cl)-(rk[x.id].cw-rk[x.id].cl));const lider=ts[0];
+    return `<div class="card tabela-wrap"><div class="bloco-tit">${esc(nomes[dv]||"Divisão "+(dv+1))}</div><table class="t2" style="min-width:0"><thead><tr><th>#</th><th style="text-align:left">Time</th><th>V-D-E</th><th>Categorias</th><th>Atrás</th></tr></thead><tbody>${ts.map((t,i)=>{const gb=((lider.rec[0]-lider.rec[1])-(t.rec[0]-t.rec[1]))/2;return `<tr><td>${i+1}</td><td style="text-align:left"><span class="lg">${logo(T(t.id)[0])}${esc(T(t.id)[0])}</span></td><td>${t.rec.join("-")}</td><td>${rk[t.id].cw}-${rk[t.id].cl}</td><td>${gb?gb:"–"}</td></tr>`}).join("")}</tbody></table></div>`}).join("")}</div>`;
 }
 function vTodosBloco(){
   const d=DADOS;const ids=d.teams.map(t=>t.id);
@@ -1236,7 +1271,7 @@ async function baixarDia(sp){
   r.teams.forEach(t=>t.roster.entries.forEach(e=>{const p=e.playerPoolEntry.player;
     meta[p.id]=metaDe(p,{t:t.id,slot:e.lineupSlotId,ratings:e.playerPoolEntry.ratings});
     const st=(p.stats||[]).find(s=>s.scoringPeriodId===sp&&s.statSourceId===0&&s.statSplitTypeId===5);
-    if(st&&st.stats&&st.stats["42"])linhas.push([p.id,t.id,e.lineupSlotId,...AO.K.map(k=>st.stats[k]||0)]);
+    if(st&&st.stats&&st.stats["42"])linhas.push([p.id,t.id,e.lineupSlotId,...AO.K.map(k=>st.stats[k]||0),Math.round(st.stats["40"]||0)]);
   }));
   return {quando:Date.now(),linhas,meta};
 }
@@ -1245,22 +1280,31 @@ async function baixarFA(sp){
   const r=await ajson(AO.LG+"?view=kona_player_info&scoringPeriodId="+sp,{"X-Fantasy-Filter":JSON.stringify(f)});
   return (r.players||[]).map(o=>({id:o.player.id,st:o.status,...metaDe(o.player,{ratings:o.ratings})}));
 }
+async function baixarNBA(sp){ // placar dos jogos da NBA do dia (site.api.espn.com, público)
+  const d=spData(sp);const ymd=`${d.getFullYear()}${dd(d.getMonth()+1)}${dd(d.getDate())}`;
+  const j=await ajson("https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates="+ymd);const out={};
+  (j.events||[]).forEach(e=>{const c=e.competitions[0];const st=e.status||{};const tp=(st.type||{}).state;const hora=new Date(e.date).toLocaleTimeString("pt-BR",{timeZone:"America/Sao_Paulo",hour:"2-digit",minute:"2-digit"});
+    const per=st.period?(st.period>4?"OT"+(st.period-4):st.period+"ºQ"):"";
+    const txt=tp==="pre"?hora:tp==="post"?"Final":`${st.displayClock||""} ${per}`.trim();
+    c.competitors.forEach(x=>{const o=c.competitors.find(y=>y!==x);out[+x.team.id]={op:(x.homeAway==="home"?"vs ":"@")+o.team.abbreviation,sc:tp==="pre"?"":`${x.score}-${o.score}`,st:txt,live:tp==="in",fim:tp==="post"}})});
+  return out;
+}
 async function coletarAoVivo(){
   const cur=spHoje();const wk=cur<=6?1:Math.floor((cur-7)/7)+2;
   const s0=wk==1?1:7+(wk-2)*7,s1=wk==1?6:s0+6,ate=Math.min(cur,s1);
   const chave="wbs3.sem."+wk;const C=lerCache(chave)||{dias:{}};
-  const [base,sch,sb,fa]=await Promise.all([
+  const [base,sch,sb,fa,nba]=await Promise.all([
     ajson(AO.LG+"?view=mTeam&view=mMatchupScore&scoringPeriodId="+cur),
     AO.sch?Promise.resolve(AO.sch):ajson(AO.L+"?view=proTeamSchedules_wl"),
     AO.sb?Promise.resolve(AO.sb):ajson(AO.LG+"?view=mMatchupScore&view=mScoreboard"),
-    baixarFA(cur).catch(()=>[])]);
+    baixarFA(cur).catch(()=>[]),baixarNBA(cur).catch(()=>({}))]);
   AO.sch=sch;AO.sb=sb;
   const pend=[];for(let sp=s0;sp<=ate;sp++){const d=C.dias[sp];if(sp===ate||!d||!diaFechado(sp,d.quando))pend.push(sp)}
   const novos=await Promise.all(pend.map(baixarDia));pend.forEach((sp,i)=>C.dias[sp]=novos[i]);
   const leve={dias:{}};Object.entries(C.dias).forEach(([sp,d])=>{const m={};if(+sp===ate)Object.assign(m,d.meta);else (d.linhas||[]).forEach(l=>{const x=d.meta[l[0]];if(x)m[l[0]]={n:x.n,pos:x.pos,pro:x.pro}});leve.dias[sp]={quando:d.quando,linhas:d.linhas,meta:m}});
   gravarCache(chave,leve);
   const games={},gw={};sch.settings.proTeams.forEach(pt=>{games[pt.id]=pt.proGamesByScoringPeriod||{};gw[pt.id]={};Object.keys(games[pt.id]).forEach(sp=>{const n=+sp;const w=n<=6?1:Math.floor((n-7)/7)+2;if(games[pt.id][sp].length)gw[pt.id][w]=(gw[pt.id][w]||0)+1})});
-  const teams=base.teams.map(t=>({id:t.id,ab:t.abbrev,rec:[t.record.overall.wins,t.record.overall.losses,t.record.overall.ties]}));
+  const teams=base.teams.map(t=>({id:t.id,ab:t.abbrev,div:t.divisionId,rec:[t.record.overall.wins,t.record.overall.losses,t.record.overall.ties]}));
   const mt=base.schedule.filter(m=>m.matchupPeriodId===wk).map(m=>[m.home.teamId,m.away.teamId]);
   const fut=sb.schedule.filter(m=>m.matchupPeriodId>wk&&m.home&&m.away).map(m=>[m.matchupPeriodId,m.home.teamId,m.away.teamId]);
   const D={};teams.forEach(t=>D[t.id]={});
@@ -1269,15 +1313,15 @@ async function coletarAoVivo(){
   let last=s0;
   for(let sp=s0;sp<=ate;sp++){
     teams.forEach(t=>D[t.id][sp]=zero());
-    (C.dias[sp].linhas||[]).forEach(l=>{const [id,tm,slot,...v]=l;last=Math.max(last,sp);
+    (C.dias[sp].linhas||[]).forEach(l=>{const [id,tm,slot,...vv]=l;const v=vv.slice(0,11),min=vv[11]||0;last=Math.max(last,sp);
       let q=P[id];if(!q){const mm=C.dias[sp].meta[id]||{};q=P[id]={id,n:mm.n||"jogador "+id,t:tm,pos:mm.pos||0,pro:mm.pro||0,slot:12,inj:"ACTIVE",W:zero(),g:0,bp:0,bg:0,dl:{},fora:1}}
-      q.dl[sp]=[...v,slot];
+      q.dl[sp]=[...v,slot,min];
       if(slot<12){q.g++;q.W=soma(q.W,v);D[tm][sp]=soma(D[tm][sp],v)}else if(slot===12){q.bg++;q.bp+=v[0]}});
   }
   const agenda=q=>{let n=0;q.gd=[];for(let sp=cur;sp<=s1;sp++){const g=games[q.pro]&&games[q.pro][sp];if(g&&g.length){q.gd.push(sp);if(!(sp===cur&&q.dl&&q.dl[cur]))n++}}q.gl=n;const g=games[q.pro]&&games[q.pro][cur];q.hoje=g&&g.length?1:0;if(q.fora){q.gl=0;q.hoje=0}};
   Object.values(P).forEach(agenda);fa.forEach(agenda);
   const hist=sb.schedule.filter(m=>m.matchupPeriodId<wk&&m.winner&&m.winner!=="UNDECIDED").map(m=>{const c=x=>[0,6,3,2,1,17,19,20,11].map(id=>{const s=x.cumulativeScore&&x.cumulativeScore.scoreByStat&&x.cumulativeScore.scoreByStat[id];return s?+(+s.score).toFixed(4):0});return [m.matchupPeriodId,m.home.teamId,m.away.teamId,[m.home.cumulativeScore.wins,m.home.cumulativeScore.losses,m.home.cumulativeScore.ties],m.winner==="HOME"?m.home.teamId:m.winner==="AWAY"?m.away.teamId:0,c(m.home),c(m.away)]});
-  return {v:5,gerado:Date.now(),cur,last,wk,s0,s1,teams,mt,fut,gw,D,hist,P:Object.values(P),fa};
+  return {v:6,gerado:Date.now(),cur,last,wk,s0,s1,teams,mt,fut,gw,D,hist,nba,P:Object.values(P),fa};
 }
 function janelaDeJogos(){
   if(!AO.sch)return null;const sp=spHoje();let ini=Infinity,fim=0;
@@ -1343,7 +1387,7 @@ $("#navTop").innerHTML=NAVS.map(([k,n])=>`<a href="#${k}" data-nav="${k}">${n}</
 
 document.addEventListener("click",e=>{const t=e.target.closest(".tip");document.querySelectorAll(".tip.aberta").forEach(x=>{if(x!==t)x.classList.remove("aberta")});if(t){e.preventDefault();e.stopPropagation();t.classList.toggle("aberta")}},true);
 /* ---------- partida ---------- */
-(function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===5)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}})();
+(function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===6)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}})();
 atualizarAoVivo();
 </script>
 </body></html>
