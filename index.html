@@ -1355,11 +1355,11 @@ async function atualizarAoVivo(){
   st.innerHTML=`<span class="ao-vivo">buscando na ESPN…</span>`;
   try{const d=await coletarAoVivo();AO.ultimo=Date.now();try{lsSet("painel.cache",JSON.stringify(d))}catch(e){}carrega(d);
     const j=janelaDeJogos(),agora=temJogoAgora();const hm=ms=>{const x=new Date(ms);return dd(x.getHours())+":"+dd(x.getMinutes())};
-    st.innerHTML=(agora?`<span class="ao-vivo">ao vivo</span> · atualiza a cada 2 min`:j&&Date.now()<j[0]?`sem jogo agora · volta às ${hm(j[0])}`:`sem jogo agora`)+` · ${quando(d.gerado).split(" ").slice(2).join(" ")}`;}
+    st.innerHTML=(agora?`<span class="ao-vivo">ao vivo</span> · atualiza a cada 10 min`:j&&Date.now()<j[0]?`sem jogo agora · volta às ${hm(j[0])}`:`sem jogo agora`)+` · ${quando(d.gerado).split(" ").slice(2).join(" ")}`;}
   catch(e){console.error(e);st.textContent=(DADOS?"sem conexão com a ESPN agora · mostrando "+quando(DADOS.gerado):"não consegui falar com a ESPN: "+e.message)}
   finally{AO.rodando=false}
 }
-const INTERVALO=120000;
+const INTERVALO=600000;
 setInterval(()=>{if(document.visibilityState==="visible"&&temJogoAgora()&&Date.now()-AO.ultimo>INTERVALO-5000)atualizarAoVivo()},20000);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&Date.now()-AO.ultimo>(temJogoAgora()?60000:30*60000))atualizarAoVivo()});
 
