@@ -355,6 +355,7 @@ main+.rod{margin-top:0}
 .placar-topo .pl .v{color:var(--amarelo)}
 .placar-topo .pl small{display:block;font-family:var(--ui);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--apagado);margin-top:6px}
 .tabcat{width:100%;border-collapse:collapse;table-layout:fixed}
+.tabcat col.c1{width:26%}.tabcat col.c2{width:13%}.tabcat col.c3{width:22%}
 .tabcat th{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--apagado);padding:8px 4px;border-bottom:2px solid #000;background:#0a0707;font-weight:700}
 .tabcat td{padding:0;border-bottom:2px solid #000;height:50px;vertical-align:middle;text-align:center;font-variant-numeric:tabular-nums}
 .tabcat .v{font-family:var(--display);font-size:24px;line-height:1;color:var(--texto)}
@@ -644,7 +645,7 @@ function simTemporada(){
   const fut=(d.fut||[]).filter(f=>f[0]>d.wk&&f[0]<=SEMANAS);
   // probabilidade de uma categoria numa semana futura: diferença de força com ruído
   const F=EST.forca;
-  const pCat=(a,b)=>CATS.map(c=>{const x=c.f(F[a]),y=c.f(F[b]);let dlt=c.inv?y-x:x-y;const sd=c.pct?0.016:Math.sqrt(Math.max(1,(Math.abs(x)+Math.abs(y))/2))*1.25;const z=dlt/sd;return 0.5*(1+erf(z/Math.SQRT2))});
+  const pCat=(a,b)=>CATS.map(c=>{const x=c.f(F[a]),y=c.f(F[b]);let dlt=c.inv?y-x:x-y;const sd=c.pct?0.024:0.17*((Math.abs(x)+Math.abs(y))/2)+3;const z=dlt/sd;return 0.5*(1+erf(z/Math.SQRT2))});
   const pc={};fut.forEach(([w,a,b])=>{pc[a+"-"+b]=pCat(a,b)});
   const cont={};ids.forEach(id=>cont[id]={po:0,s1:0,tit:0,fin:0,lant:0,w:0});
   for(let n=0;n<N;n++){
@@ -758,7 +759,7 @@ function boxTime(tid,sp){
 /* placar aberto das 9 categorias, com previsão de fechamento */
 function tabelaCategorias(a,b,ta,tb,pa,pb,sim){
   const sc=placar(ta,tb);const A=T(a),B=T(b);
-  let h=`<table class="tabcat"><thead><tr><th class="lg"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></th><th>prev.</th><th>categoria</th><th>prev.</th><th class="lg"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></th></tr></thead><tbody>`;
+  let h=`<table class="tabcat"><colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c2"><col class="c1"></colgroup><thead><tr><th class="lg"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></th><th>prev.</th><th>categoria</th><th>prev.</th><th class="lg"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></th></tr></thead><tbody>`;
   CATS.forEach((c,j)=>{const r=sc.r[j];const px=c.f(pa),py=c.f(pb);let lidA=c.inv?px<py:px>py;const prob=sim?sim.cat[j]:null;const peg=prob!=null&&prob>0.3&&prob<0.7;
     const vira=prob!=null&&((r>0&&prob<0.45)||(r<0&&prob>0.55));
     h+=`<tr><td class="${r>0?"g":""}"><span class="v">${fmt(c,c.f(ta))}</span></td><td class="pv">${fmt(c,px)}</td><td><span class="cn">${c.k}${vira?'<small class="vira">VIRA</small>':peg?'<small>PEGADO</small>':""}</span></td><td class="pv">${fmt(c,py)}</td><td class="${r<0?"g":""}"><span class="v">${fmt(c,c.f(tb))}</span></td></tr>`});
@@ -1062,7 +1063,7 @@ function vMuseuJogo(i){
   <div class="card"><div class="placar-topo"><div class="lado">${rostoTime(m.a)}<div class="info"><div class="nm">${esc(m.a)}</div><div class="mg">${m.ga} jogos</div></div></div>
     <div class="pl num"><span class="${w>l?"v":""}">${w}</span>-<span class="${l>w?"v":""}">${l}</span>${t?"-"+t:""}<small>${m.v&&m.v!=="TIE"?"venceu "+esc(m.v):"empate"}</small></div>
     <div class="lado">${rostoTime(m.b)}<div class="info"><div class="nm">${esc(m.b)}</div><div class="mg">${m.gb} jogos</div></div></div></div>
-    <table class="tabcat"><thead><tr><th class="lg">${logo(m.a,"width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #000;object-fit:contain")}</th><th></th><th>categoria</th><th></th><th class="lg">${logo(m.b,"width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #000;object-fit:contain")}</th></tr></thead><tbody>${rows}</tbody></table>
+    <table class="tabcat"><colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c2"><col class="c1"></colgroup><thead><tr><th class="lg">${logo(m.a,"width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #000;object-fit:contain")}</th><th></th><th>categoria</th><th></th><th class="lg">${logo(m.b,"width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #000;object-fit:contain")}</th></tr></thead><tbody>${rows}</tbody></table>
     ${m.selos.length?`<div style="text-align:center;padding:10px">${m.selos.map(s=>`<span class="selo">${s}</span>`).join(" ")}</div>`:""}</div>
   <div class="duas">${[[m.a,m.pa],[m.b,m.pb]].map(([nm,ps])=>{
     const tit=ps.filter(p=>p[1]>0),ban=ps.filter(p=>p[13]>0&&p[14]>0);
