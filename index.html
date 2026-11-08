@@ -568,6 +568,29 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
  .box2 .tag{font-size:9px;padding:1px 4px}
 }
 
+/* classificação estilo app */
+.st{width:100%;border-collapse:collapse}
+.st th{font-size:11px;letter-spacing:.06em;color:var(--apagado);text-transform:uppercase;text-align:right;padding:9px 8px;border-bottom:2px solid #000;background:#0a0707;white-space:nowrap}
+.st th:nth-child(-n+2),.st td:nth-child(-n+2){text-align:left}
+.st th button{all:unset;cursor:pointer}
+.st th button[aria-sort]{color:var(--amarelo)}
+.st td{padding:8px;border-bottom:1px solid var(--linha);text-align:right;font-variant-numeric:tabular-nums;font-size:15px;white-space:nowrap}
+.st tr{cursor:pointer}.st tr:hover td{background:#1d1212}
+.st .pos{font-family:var(--display);font-size:20px;color:var(--amarelo);width:30px}
+.st .tm{display:flex;align-items:center;gap:8px;font-weight:700;min-width:0}
+.st .tm img{width:30px;height:30px;border-radius:50%;object-fit:contain;background:#fff;border:2px solid #000;flex:none}
+.st .tm small{display:block;font-weight:500;color:var(--apagado);font-size:11px}
+.st .rec{font-family:var(--display);font-size:20px}
+.st .mov{font-weight:700;font-size:12px}.st .mov.up{color:var(--verde)}.st .mov.dn{color:var(--perigo)}.st .mov.eq{color:var(--cinza)}
+.st .bom{color:var(--amarelo);font-weight:700}.st .ruim{color:#ff8a8a}
+.st tr.corte td{border-bottom:3px dashed var(--ouro)}
+.st .pb{position:relative;display:inline-block;width:46px;height:12px;background:#2a1f1f;border:1px solid #000;vertical-align:middle;margin-left:6px}
+.st .pb span{position:absolute;inset:0 auto 0 0;background:var(--amarelo)}.st .pb span.r{background:var(--perigo)}
+.ensaio{display:inline-flex;align-items:center;gap:4px;font-family:var(--display);font-size:10px;letter-spacing:.06em;background:#ff2e8a;color:#fff;padding:2px 6px;border:1px solid #000;vertical-align:middle;transform:rotate(-2deg)}
+.ensaio::before{content:"";width:10px;height:10px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4'><path d='M4 8h3l2-3h6l2 3h3v11H4z'/><circle cx='12' cy='13' r='3.5'/></svg>") center/contain no-repeat}
+.ch-t.ensaio-t{border-color:#ff2e8a}
+@media (max-width:420px){.st td{padding:7px 5px;font-size:14px}.st th{padding:8px 5px}.st .tm small{display:none}.st .rec{font-size:18px}.st .pb{display:none}}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1011,32 +1034,61 @@ function vJogo(i){
 }
 
 /* ---------- ranking do Loydão + tabela ---------- */
+function catsTemporada(id){ // V-D-E por categoria e totais, semanas fechadas
+  const w=Array(9).fill(0),l=Array(9).fill(0),t=Array(9).fill(0),tot=Array(9).fill(0);let n=0;
+  (DADOS.hist||[]).forEach(h=>{const eu=h[1]===id?[h[5],h[6]]:h[2]===id?[h[6],h[5]]:null;if(!eu)return;n++;const [a,b]=eu;
+    a.forEach((x,k)=>{tot[k]+=x;const inv=k===8;const y=b[k];if(x===y)t[k]++;else if(inv?x<y:x>y)w[k]++;else l[k]++})});
+  return {w,l,t,tot:tot.map((x,k)=>(k===6||k===7)?(n?x/n:0):x),n};
+}
 function vTimes(){
   const d=DADOS;if(!d)return vazio();
-  const ids=d.teams.map(t=>t.id);const rk=rankingLoydao(d.wk-1),ant=rankingLoydao(d.wk-2);const sim=simTemporada();
-  const posDe=Rr=>ids.slice().sort((x,y)=>Rr[y].r-Rr[x].r);const pAnt=posDe(ant),pNow=posDe(rk);
-  const ord=UI.rkOrd;
-  const linhas=ids.map(id=>{const rec=d.teams.find(t=>t.id===id).rec;return {id,rec,s:sim[id],r:rk[id],ptsW:rec[0]+rec[2]/2}});
-  const chave={rating:x=>x.r.r,rec:x=>x.ptsW*100+(x.r.cw-x.r.cl),tit:x=>x.s.tit,po:x=>x.s.po,lant:x=>x.s.lant}[ord]||(x=>x.r.r);
-  linhas.sort((x,y)=>chave(y)-chave(x));
-  const top=linhas[0];
-  const tit={rating:`${esc(T(top.id)[0].toUpperCase())} É O Nº 1`,rec:"A CLASSIFICAÇÃO",tit:`${esc(T(top.id)[0].toUpperCase())} É O FAVORITO`,po:"QUEM VAI AOS PLAYOFFS",lant:`${esc(T(top.id)[0].toUpperCase())} CORRE RISCO`}[ord];
-  let h=`<div class="cab-secao"><span class="sobre">RANKING DO LOYDÃO · SEMANA ${d.wk}</span><h1 class="manchete">${tit}</h1>
-  <p class="linha-fina">${ord==="rating"?"Como o ranking da FIFA: quem está jogando melhor agora, com o peso da história. Toque no time para ver tudo dele.":ord==="rec"?"Vitórias e derrotas desta temporada. Os 6 primeiros vão aos playoffs.":"Chances calculadas por 1.200 simulações do resto da temporada."}</p></div>
-  <div class="pilulas" role="group" aria-label="Ordenar">${[["rating","Ranking"],["rec","Classificação"],["tit","Título"],["po","Playoffs"],["lant","Lanterna"]].map(([k,n])=>`<button class="pil" type="button" data-rko="${k}" aria-pressed="${ord===k}">${n}</button>`).join("")}</div>
-  <div class="rkl">`;
-  linhas.forEach((x,i)=>{const Tt=T(x.id);const mv=pAnt.indexOf(x.id)-pNow.indexOf(x.id);const corte=(ord==="rating"||ord==="rec")&&i===PLAYOFFS-1;
-    const dest=ord==="tit"?[pct(x.s.tit),"título"]:ord==="po"?[pct(x.s.po),"playoffs"]:ord==="lant"?[pct(x.s.lant),"lanterna"]:ord==="rec"?[x.rec.join("-"),"26/27"]:[x.r.r,"rating"];
-    h+=`<button class="card rkc ${corte?"corte":""}" type="button" data-time="${x.id}">
-      <span class="pos">${i+1}</span><span class="mov ${mv>0?"up":mv<0?"dn":"eq"}" title="posição na semana passada">${mv>0?"▲"+mv:mv<0?"▼"+(-mv):"="}</span>
-      <img src="img/l/${Tt[1]}.webp" alt="">
-      <span class="tm"><b>${esc(Tt[0])}${x.r.tit?` <span class="taca">${"🏆".repeat(x.r.tit)}</span>`:""}</b><small>${esc(Tt[2])} · ${x.rec.join("-")} · <span class="forma3">${x.r.ult.slice(-4).map(r=>`<i class="${r}"></i>`).join("")}</span></small></span>
-      <span class="dest"><b>${dest[0]}</b><small>${dest[1]}</small></span>
-      <span class="mini3"><span><i style="width:${x.s.po*100}%"></i></span><small>playoffs ${pct(x.s.po)}</small><span><i style="width:${Math.min(100,x.s.tit*250)}%"></i></span><small>título ${pct(x.s.tit)}</small></span>
-    </button>`});
-  if(ord==="rec")h+=`</div>${divisoes()}<div class="legenda">`;else h+=`</div>${chaveamento(sim)}<div class="legenda">${tip("rating","Rating")} · ${tip("playoffs","Playoffs")} · ${tip("titulo","Título")} · ${tip("lanterna","Lanterna")} · ${tip("forma","Forma")} · linha tracejada = corte dos 6 playoffs</div>`;
-  h+=vTodosBloco();
-  return h;
+  const ids=d.teams.map(t=>t.id);const sim=simTemporada();const ord=UI.rkOrd||"proj";
+  const rk=rankingLoydao(d.wk-1),ant=rankingLoydao(d.wk-2);
+  const pills=[["proj","Projetado"],["atual","Atual"],["cats","Categorias V-D-E"],["tot","Totais"],["chance","Chances"],["loydao","Ranking do Loydão"]];
+  const cab=t=>`<div class="cab-secao"><span class="sobre">CLASSIFICAÇÃO · SEMANA ${d.wk}</span><h1 class="manchete">${t[0]}</h1><p class="linha-fina">${t[1]}</p></div>
+  <div class="pilulas" role="group" aria-label="Ver">${pills.map(([k,n])=>`<button class="pil" type="button" data-rko="${k}" aria-pressed="${ord===k}">${n}</button>`).join("")}</div>`;
+  const recDe=id=>d.teams.find(t=>t.id===id).rec;
+  const ptsAtual=id=>{const r=recDe(id);return r[0]+r[2]/2};
+  const ordAtual=ids.slice().sort((x,y)=>ptsAtual(y)-ptsAtual(x)||(rk[y].cw-rk[y].cl)-(rk[x].cw-rk[x].cl));
+  const ordProj=ids.slice().sort((x,y)=>sim[y].w-sim[x].w);
+  const linhaTime=(id,i,corte)=>`<td class="pos">${i+1}</td><td><div class="tm"><img src="img/l/${T(id)[1]}.webp" alt=""><div>${esc(T(id)[0])}${i===11?' <span class="ensaio">ENSAIO SENSUAL</span>':""}<small>${esc(T(id)[2])}</small></div></div></td>`;
+  let h="";
+  if(ord==="proj"||ord==="atual"){
+    const L=ord==="proj"?ordProj:ordAtual;const lider=L[0];
+    h+=cab(ord==="proj"?["COMO DEVE TERMINAR",`Vitórias e derrotas projetadas para as ${SEMANAS} semanas, pela simulação do resto da temporada. A seta compara com a posição de hoje. O 12º faz o ensaio sensual.`]:["COMO ESTÁ HOJE","Vitórias e derrotas de agora. Os 6 primeiros vão aos playoffs; o 12º faz o ensaio sensual."]);
+    h+=`<div class="card tabela-wrap"><table class="st"><thead><tr><th>#</th><th>Time</th><th>V-D-E</th><th>%</th><th>${tip("Atrás: jogos de diferença para o líder","Atrás")}</th>${ord==="proj"?`<th>Hoje</th><th>${tip("playoffs","Playoffs")}</th>`:`<th>${tip("cat","Categorias")}</th>`}</tr></thead><tbody>`;
+    L.forEach((id,i)=>{const s2=sim[id];const r=recDe(id);const W=ord==="proj"?Math.round(s2.w):r[0],Lo=ord==="proj"?SEMANAS-Math.round(s2.w)-r[2]:r[1],E=r[2];
+      const pt=(W+E/2)/Math.max(1,W+Lo+E);const lid=ord==="proj"?sim[lider].w:ptsAtual(lider);const gb=ord==="proj"?(lid-s2.w):(ptsAtual(lider)-ptsAtual(id));
+      const mv=ord==="proj"?ordAtual.indexOf(id)-i:0;
+      h+=`<tr data-time="${id}" class="${i===PLAYOFFS-1?"corte":""}">${linhaTime(id,i)}<td class="rec">${W}-${Lo}-${E}</td><td>${pt.toFixed(3).replace(/^0/,"")}</td><td>${gb<0.05?"–":gb.toFixed(1).replace(".0","")}</td>${ord==="proj"?`<td class="mov ${mv>0?"up":mv<0?"dn":"eq"}">${mv>0?"▲"+mv:mv<0?"▼"+(-mv):"="}</td><td>${pct(s2.po)}</td>`:`<td>${rk[id].cw}-${rk[id].cl}</td>`}</tr>`});
+    h+=`</tbody></table></div>`+(ord==="proj"?chaveamento(sim):divisoes());
+  }
+  else if(ord==="cats"||ord==="tot"){
+    const C=ids.map(id=>({id,c:catsTemporada(id)}));const K=["PTS","REB","AST","STL","BLK","3PM","FG%","FT%","TO"];
+    const sortK=UI.rkCat||null;
+    if(ord==="cats"){C.sort((x,y)=>{if(sortK!=null){const k=K.indexOf(sortK);return (y.c.w[k]-y.c.l[k])-(x.c.w[k]-x.c.l[k])}return ptsAtual(y.id)-ptsAtual(x.id)})}
+    else{C.sort((x,y)=>{if(sortK!=null){const k=K.indexOf(sortK);const inv=k===8;return inv?x.c.tot[k]-y.c.tot[k]:y.c.tot[k]-x.c.tot[k]}return ptsAtual(y.id)-ptsAtual(x.id)})}
+    h+=cab(ord==="cats"?["CATEGORIA POR CATEGORIA","Vitórias e derrotas em cada categoria nas semanas fechadas. Toque no nome da categoria para ordenar."]:["TOTAIS DA TEMPORADA","Soma de cada categoria nas semanas fechadas (FG% e FT% são a média). Toque na categoria para ordenar."]);
+    h+=`<div class="card tabela-wrap"><table class="st"><thead><tr><th>#</th><th>Time</th>${K.map(k=>`<th><button type="button" data-rkc="${k}" ${sortK===k?'aria-sort="descending"':""}>${k}</button></th>`).join("")}</tr></thead><tbody>`;
+    C.forEach(({id,c},i)=>{h+=`<tr data-time="${id}">${linhaTime(id,i)}${K.map((k,kk)=>ord==="cats"?`<td class="${c.w[kk]>c.l[kk]?"bom":c.w[kk]<c.l[kk]?"ruim":""}">${c.w[kk]}-${c.l[kk]}${c.t[kk]?"-"+c.t[kk]:""}</td>`:`<td>${kk===6||kk===7?(c.tot[kk]*100).toFixed(1):Math.round(c.tot[kk])}</td>`).join("")}</tr>`});
+    h+=`</tbody></table></div>`;
+  }
+  else if(ord==="chance"){
+    const L=ids.slice().sort((x,y)=>sim[y].tit-sim[x].tit);
+    h+=cab(["CHANCES",`Playoffs, título e ensaio sensual (12º), em 1.200 simulações do resto da temporada.`]);
+    h+=`<div class="card tabela-wrap"><table class="st"><thead><tr><th>#</th><th>Time</th><th>${tip("playoffs","Playoffs")}</th><th>${tip("titulo","Título")}</th><th>Final</th><th>${tip("lanterna","Ensaio")}</th><th>${tip("proj","Proj.")}</th></tr></thead><tbody>`;
+    L.forEach((id,i)=>{const s2=sim[id];h+=`<tr data-time="${id}">${linhaTime(id,i)}<td>${pct(s2.po)}<span class="pb"><span style="width:${s2.po*100}%"></span></span></td><td>${pct(s2.tit)}<span class="pb"><span style="width:${Math.min(100,s2.tit*250)}%"></span></span></td><td>${pct(s2.fin)}</td><td>${pct(s2.lant)}<span class="pb"><span class="r" style="width:${Math.min(100,s2.lant*250)}%"></span></span></td><td>${s2.w.toFixed(1)}-${(SEMANAS-s2.w).toFixed(1)}</td></tr>`});
+    h+=`</tbody></table></div>`;
+  }
+  else{
+    const posDe=Rr=>ids.slice().sort((x,y)=>Rr[y].r-Rr[x].r);const pAnt=posDe(ant),pNow=posDe(rk);
+    h+=cab([`${esc(T(pNow[0])[0].toUpperCase())} É O Nº 1`,"Ranking do Loydão, como o da FIFA: quem está jogando melhor agora, com o peso da história e dos títulos. Toque no time para ver tudo dele."]);
+    h+=`<div class="rkl">`;
+    pNow.forEach((id,i)=>{const Tt=T(id);const mv=pAnt.indexOf(id)-i;const x=rk[id];const rec=recDe(id);const s2=sim[id];
+      h+=`<button class="card rkc ${i===PLAYOFFS-1?"corte":""}" type="button" data-time="${id}"><span class="pos">${i+1}</span><span class="mov ${mv>0?"up":mv<0?"dn":"eq"}">${mv>0?"▲"+mv:mv<0?"▼"+(-mv):"="}</span><img src="img/l/${Tt[1]}.webp" alt=""><span class="tm"><b>${esc(Tt[0])}${x.tit?` <span class="taca">${"🏆".repeat(x.tit)}</span>`:""}</b><small>${esc(Tt[2])} · ${rec.join("-")} · <span class="forma3">${x.ult.slice(-4).map(r=>`<i class="${r}"></i>`).join("")}</span></small></span><span class="dest"><b>${x.r}</b><small>rating</small></span><span class="mini3"><span><i style="width:${s2.po*100}%"></i></span><small>playoffs ${pct(s2.po)}</small><span><i style="width:${Math.min(100,s2.tit*250)}%"></i></span><small>título ${pct(s2.tit)}</small></span></button>`});
+    h+=`</div><div class="legenda">${tip("rating","Rating")} · ${tip("forma","Forma")} · linha tracejada = corte dos 6 playoffs</div>`;
+  }
+  return h+vTodosBloco();
 }
 function chaveamento(sim){
   const d=DADOS;const ids=d.teams.map(t=>t.id);const ord=ids.slice().sort((x,y)=>sim[y].w-sim[x].w);const [s1,s2,s3,s4,s5,s6]=ord;
@@ -1044,7 +1096,7 @@ function chaveamento(sim){
   return `<div class="card"><div class="bloco-tit">PLAYOFFS PROJETADOS <small>pela projeção de hoje · 6 classificados</small></div>
   <div class="chave"><div class="col"><h4>Quartas · semana 19</h4><div class="par">${box(s3,3)}${box(s6,6)}</div><div class="par">${box(s4,4)}${box(s5,5)}</div></div>
   <div class="col"><h4>Semifinais · semana 20</h4><div class="par">${box(s1,1)}<div class="ch-t vago">vence 4 x 5<br>ou 3 x 6</div></div><div class="par">${box(s2,2)}<div class="ch-t vago">vence 3 x 6<br>ou 4 x 5</div></div></div>
-  <div class="col"><h4>Final · semana 21</h4><div class="par"><div class="ch-t vago">🏆</div></div><div class="fora"><h4>De fora</h4>${ord.slice(6).map((id,i)=>`<div class="ch-t pequeno"><small>${i+7}</small><img src="img/l/${T(id)[1]}.webp" alt=""><span>${esc(T(id)[0])}</span><em>${sim[id].w.toFixed(1)} V</em></div>`).join("")}</div></div></div></div>`;
+  <div class="col"><h4>Final · semana 21</h4><div class="par"><div class="ch-t vago">🏆</div></div><div class="fora"><h4>De fora</h4>${ord.slice(6).map((id,i)=>`<div class="ch-t pequeno ${i===5?"ensaio-t":""}"><small>${i+7}</small><img src="img/l/${T(id)[1]}.webp" alt=""><span>${esc(T(id)[0])}${i===5?' <span class="ensaio">ENSAIO SENSUAL</span>':""}</span><em>${sim[id].w.toFixed(1)} V</em></div>`).join("")}</div></div></div></div>`;
 }
 function divisoes(){
   const d=DADOS;const nomes={0:"Petistas Trans",1:"Bolsonaristas Golpistas"};const rk=rankingLoydao(d.wk-1);
@@ -1410,7 +1462,8 @@ function render(){
 }
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
-  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt]");if(!t)return;
+  if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
+  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc]");if(!t)return;
   if(e.target.closest("a"))return;
   const ds=t.dataset;
   if(ds.jogo!==undefined)ir("jogo-"+ds.jogo);
@@ -1425,7 +1478,8 @@ document.addEventListener("click",e=>{
   else if(ds.atu){UI.atu=ds.atu;render()}
   else if(ds.tt){UI.tabTemp=ds.tt;render()}
   else if(ds.to){UI.trocaOrd=ds.to;render()}
-  else if(ds.rko){UI.rkOrd=ds.rko;render()}
+  else if(ds.rko){UI.rkOrd=ds.rko;UI.rkCat=null;render()}
+  else if(ds.rkc){UI.rkCat=UI.rkCat===ds.rkc?null:ds.rkc;render()}
   else if(ds.rd){UI.radar=ds.rd;render()}
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
   else if(ds.drt){UI.drTemp=ds.drt;UI.drTime="todos";render()}
