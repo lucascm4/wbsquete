@@ -1163,7 +1163,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108140533";
+const VERSAO_PAINEL="20261108140645";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1980,10 +1980,10 @@ function vTimes(){
     (d.hist||[]).forEach(x=>{const [w,a,b,r,v]=x;conta(T(a)[0],T(b)[0],r,v?T(v)[0]:"TIE",false,"2026/27")});
     (HIST.campeoes||[]).forEach(c=>{if(ag[c[2]])ag[c[2]].tit++});
     const pc=a=>(a.v+a.e/2)/Math.max(1,a.v+a.d+a.e);
-    const L=Object.values(ag).sort((x,y)=>(y.ult==="2026/27")-(x.ult==="2026/27")||pc(y)-pc(x));
+    const L=Object.values(ag).sort((x,y)=>(y.ult==="2026/27")-(x.ult==="2026/27")||(y.v+y.e/2)-(x.v+x.e/2)||pc(y)-pc(x));
     h+=`<div class="card tabela-wrap"><table class="st gl"><thead><tr><th>#</th><th>Time</th><th>V-D-E</th><th>%</th><th>${tip("Mata-mata: vitórias e derrotas em quartas, semi e final","MM")}</th><th>${tip("Aproveitamento nas categorias de todos os confrontos","Cat %")}</th></tr></thead><tbody>${L.map((a,i)=>{const ex=a.ult!=="2026/27";
       return `<tr class="${ex?"ex":""}"><td class="pos">${ex?"–":i+1}</td><td><div class="tm">${logo(a.n)}<div>${esc(a.n)}${a.tit?` <span class="tt">${"🏆".repeat(a.tit)}</span>`:""}${ex?"<small>fora da liga</small>":""}</div></div></td><td class="vde"><b>${a.v}-${a.d}-${a.e}</b></td><td>${pc(a).toFixed(3).replace(/^0/,"")}</td><td>${a.mv}-${a.md}</td><td>${((a.cw+a.ct/2)/Math.max(1,a.cw+a.cl+a.ct)*100).toFixed(1)}</td></tr>`}).join("")}</tbody></table>
-      <div class="leg-rh">V-D-E = confrontos (semana a semana) · MM = mata-mata · Cat % = aproveitamento nas 9 categorias · ordem por %</div></div>`;
+      <div class="leg-rh">V-D-E = confrontos (semana a semana) · MM = mata-mata · Cat % = aproveitamento nas 9 categorias · ordem por vitórias acumuladas</div></div>`;
     return h;
   }
   if(ord==="proj"||ord==="atual"){
