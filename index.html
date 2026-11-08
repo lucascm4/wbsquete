@@ -1558,6 +1558,12 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 .mk-nota{font-size:11px;color:var(--apagado);margin:8px 0 2px}
 .mk-x{justify-content:center;color:var(--apagado);font-size:11px;font-style:italic}
 
+.mk-t{width:100%;border-collapse:collapse;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.mk-t th,.mk-t td{border:1px solid #2c2020;padding:5px 4px;text-align:center}
+.mk-t thead th{font:700 10px system-ui;color:var(--apagado);background:#0a0707}
+.mk-t tbody th{font:600 12px system-ui;color:#ddd;width:22%;background:#0a0707}
+.mk-t td{font-family:var(--display);font-size:15px;color:#9ff0b0;background:#000}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1623,11 +1629,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794172494"></script>
-<script src="radar.js?v=1794172494"></script>
-<script src="midia.js?v=1794172494"></script>
+<script src="hist.js?v=1794172657"></script>
+<script src="radar.js?v=1794172657"></script>
+<script src="midia.js?v=1794172657"></script>
 <script>
-const VERSAO_PAINEL="20261108181454";
+const VERSAO_PAINEL="20261108181737";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1701,17 +1707,20 @@ const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 const odd=p=>p<=0.001?"—":Math.max(1.01,1/(p*MARGEM)).toFixed(2);
 /* casa de apostas: como uma bet de verdade precifica (ver doc 39) */
-const ESCADA=[[2,0.01],[3,0.02],[4,0.05],[6,0.1],[10,0.2],[20,0.5],[30,1],[50,2],[1e9,5]];
+const ESCADA=[[2,0.01],[4,0.05],[6,0.1],[10,0.25],[20,0.5],[30,1],[50,2.5],[1e9,5]];
 function degrau(o){for(const [ate,pas] of ESCADA)if(o<ate)return Math.round(o/pas)*pas;return o}
-function precifica(P,margem,T,mx,mn){let q=P.map(p=>Math.pow(Math.max(p,1e-4),T));let sq=q.reduce((x,y)=>x+y,0);q=q.map(x=>x/sq);
+function precifica(P,margem,T,mx,mn){
+  // margem como a Sportingbet: ~8% no mercado equilibrado, caindo até ~4,5% quando um lado é muito favorito (o 1.01 não tem onde absorver margem)
+  if(margem==null||margem<1.15){const pm=Math.max(...P);margem=(margem||1.07)+0.01-0.035*Math.max(0,(pm-0.5)/0.5)}
+  let q=P.map(p=>Math.pow(Math.max(p,1e-4),T));let sq=q.reduce((x,y)=>x+y,0);q=q.map(x=>x/sq);
   const piso=1/(mx*1.02);q=q.map(x=>Math.max(x,piso));sq=q.reduce((x,y)=>x+y,0);q=q.map(x=>x/sq);
   let lo=0.3,hi=1;for(let it=0;it<40;it++){const c=(lo+hi)/2;const t=q.reduce((x,y)=>x+Math.pow(y,c),0);if(t>margem)lo=c;else hi=c}
-  const c=(lo+hi)/2;return q.map(x=>{const v=degrau(Math.min(mx,Math.max(mn,1/Math.pow(x,c))));return v.toFixed(v>=10?(v%1?1:0):2)})}
+  const c=(lo+hi)/2;return q.map(x=>{const v=degrau(Math.min(mx,Math.max(mn,1/Math.pow(x,c))));return v.toFixed(2)})}
 function momento(a,b){const d=DADOS;const rem=(EST.rem[a]||[]).length+(EST.rem[b]||[]).length;const G=d.nba||{};
   const vivo=d.P.some(p=>(p.t===a||p.t===b)&&p.slot<12&&G[p.pro]&&G[p.pro].live);
   const pre=d.cur===d.s0&&!d.P.some(p=>p.dl&&p.dl[d.cur]);
   // pré-semana: margem menor (mercado principal); durante a semana 7%; com jogo rolando 8% (ao vivo as casas cobram mais)
-  return {rem,vivo,pre,margem:pre?1.05:vivo?1.08:1.07,T:rem>=20?0.8:rem>=8?0.85:0.9,mx:rem>8?41:51,mn:rem<=2?1.01:1.03}}
+  return {rem,vivo,pre,margem:pre?1.06:vivo?1.08:1.07,T:rem>=20?0.9:rem>=8?0.93:0.95,mx:rem>8?41:51,mn:1.01}}
 function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];const M=momento(a,b);
   if(!M.rem)return sm[k]=[sm.pa,sm.pe,sm.pb].map(p=>p>0.5?"✓":"✗"); // acabou: mercado liquidado
   return sm[k]=precifica([sm.pa,sm.pe,sm.pb],M.margem,M.T,M.mx,M.mn)}
@@ -1719,22 +1728,21 @@ function maisMercados(a,b,s){const A=T(a),B=T(b);const M=momento(a,b);if(!M.rem)
   const R=Object.entries(s.res).map(([k,p])=>{const [w,l,t]=k.split("-").map(Number);return {w,l,t,p}});
   const soma=f=>R.filter(f).reduce((x,r)=>x+r.p,0);
   const linha=(rot,ops)=>{const fechado=ops.some(x=>x[2]!=null&&x[2]<0.006);return `<div class="mk-l ${fechado?"fech":""}"><span class="mk-r">${rot}</span>${fechado?'<span class="mk-o mk-x">mercado fechado · já está decidido</span>':ops.map(([n,o,pp])=>`<span class="mk-o"><small>${n}</small><b>${o}</b>${pp!=null?`<em>${pct(pp)}</em>`:""}</span>`).join("")}</div>`};
-  // handicap de categorias (diferença no placar)
-  const hc=[1.5,2.5].map(h=>{const pA=soma(r=>r.w-r.l>h);const o=precifica([pA,1-pA],M.margem-0.01,M.T,M.mx,M.mn);return linha(`${esc(a3)} −${h} cat.`,[["sim",o[0],pA],["não",o[1],1-pA]])}).join("");
-  // total de categorias do time A
-  const tt=[4.5,5.5].map(h=>{const pO=soma(r=>r.w>h);const o=precifica([pO,1-pO],M.margem-0.01,M.T,M.mx,M.mn);return linha(`${esc(a3)} leva +${h} cat.`,[["mais",o[0],pO],["menos",o[1],1-pO]])}).join("");
+  // escadas de linhas, como o Mais/Menos de gols da Sportingbet
+  const escada=(tit,col1,col2,linhas,f)=>{const rows=linhas.map(h=>{const p1=f(h);if(p1<0.006||p1>0.994)return "";const o=precifica([p1,1-p1],M.margem,1,M.mx,M.mn);return `<tr><th>${h}</th><td>${o[0]}</td><td>${o[1]}</td></tr>`}).join("");return rows?`<div class="mk-sec">${tit}</div><table class="mk-t"><thead><tr><th></th><th>${col1}</th><th>${col2}</th></tr></thead><tbody>${rows}</tbody></table>`:""};
+  const hc=escada(`HANDICAP DE CATEGORIAS · ${esc(a3)}`,`${esc(a3)} cobre`,`${esc(b3)} cobre`,[-2.5,-1.5,-0.5,0.5,1.5,2.5],h=>soma(r=>r.w-r.l+h>0));
+  const tt=escada(`CATEGORIAS DO ${esc(a3)}: MAIS/MENOS`,"Mais","Menos",[2.5,3.5,4.5,5.5,6.5],h=>soma(r=>r.w>h))+escada(`CATEGORIAS DO ${esc(b3)}: MAIS/MENOS`,"Mais","Menos",[2.5,3.5,4.5,5.5,6.5],h=>soma(r=>r.l>h));
   // categoria a categoria
-  const cats=CATS.map((c,j)=>{const pa=s.cat[j],pe=s.catE[j],pb=Math.max(0,1-pa-pe);const P=pe>0.02?[pa,pe,pb]:[pa+pe/2,pb+pe/2];const o=precifica(P,M.margem+0.01,M.T,M.mx,M.mn);
+  const cats=CATS.map((c,j)=>{const pa=s.cat[j],pe=s.catE[j],pb=Math.max(0,1-pa-pe);const P=pe>0.02?[pa,pe,pb]:[pa+pe/2,pb+pe/2];const o=precifica(P,M.margem,M.T,M.mx,M.mn);
     return linha(c.k,P.length===3?[[a3,o[0],pa],["X",o[1],pe],[b3,o[2],pb]]:[[a3,o[0],P[0]],[b3,o[1],P[1]]])}).join("");
   // placar exato: margem alta, como nas casas
   const top=R.slice().sort((x,y)=>y.p-x.p).slice(0,8);const oE=precifica(top.map(r=>r.p).concat([Math.max(0.001,1-top.reduce((x,r)=>x+r.p,0))]),1.2,M.T,M.mx===41?81:101,1.5);
   const exato=`<div class="mk-g">${top.map((r,i)=>`<span class="mk-o"><small>${r.w}-${r.l}${r.t?"-"+r.t:""}</small><b>${oE[i]}</b></span>`).join("")}</div>`;
   return `<details class="mk"><summary>Mais mercados ${M.vivo?'<span class="mk-live">● AO VIVO</span>':""}</summary>
-   <div class="mk-sec">HANDICAP DE CATEGORIAS</div>${hc}
-   <div class="mk-sec">TOTAL DE CATEGORIAS</div>${tt}
+   ${tt}${hc}
    <div class="mk-sec">CATEGORIA A CATEGORIA</div>${cats}
    <div class="mk-sec">PLACAR EXATO <small>(${esc(a3)} primeiro · margem de 20%, como nas casas)</small></div>${exato}
-   <p class="mk-nota">Margem da casa agora: ${Math.round((M.margem-1)*100)}%${M.vivo?" (jogo rolando, ao vivo a casa cobra mais)":M.pre?" (pré-semana)":""}. Odd entre ${M.mn.toFixed(2)} e ${M.mx}.</p></details>`}
+   <p class="mk-nota">Margem da casa: até ${Math.round((M.margem+0.01-1)*100)}% nos mercados equilibrados, menos quando um lado é muito favorito${M.vivo?" · jogo rolando, ao vivo a casa cobra mais":M.pre?" · pré-semana":""}. Linha decidida some da escada, como na Sportingbet.</p></details>`}
 let _ODM=null;function oddS(k,p,pronto){const v=pronto!=null?pronto:odd(p);if(v==="—"||v==="✓"||v==="✗")return v;const dk="wbs.odds."+(DADOS?DADOS.cur:0);
   if(!_ODM||_ODM._k!==dk){_ODM=null;try{_ODM=JSON.parse(localStorage.getItem(dk)||"null")}catch(e){}_ODM=_ODM||{};_ODM._k=dk}
   let m=_ODM[k];if(!m){m=_ODM[k]={v,prev:v}}else if(m.v!==v){m.prev=m.v;m.v=v}try{localStorage.setItem(dk,JSON.stringify(_ODM))}catch(e){}
