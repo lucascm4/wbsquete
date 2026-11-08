@@ -1054,7 +1054,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108020121";
+const VERSAO_PAINEL="20261108020230";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1634,7 +1634,7 @@ function vJogo(i){
   </div>
   <div class="subabas" role="tablist">${abas.map(([k,nm])=>`<button type="button" role="tab" data-sub="${k}" aria-selected="${sub===k}">${nm}</button>`).join("")}</div></div>`;
   if(sub==="placar"){
-    const hh=window.MUSEU?h2hEntre(A[0],B[0]):null;const mm=hh?hh.l.filter(x=>!x.atual&&seloFase(x)).length:0;
+    const hh=window.MUSEU?h2hEntre(A[0],B[0]):null;const mm=hh?hh.l.filter(x=>!x.atual&&seloFase(x)&&!/CONSOLA/.test(seloFase(x))).length:0;
     h+=`<div class="card">${tabelaCategorias(a,b,ta,tb,pa,pb,s)}</div>
     ${hh?`<div class="card"><div class="bloco-tit">HISTÓRICO DIRETO <small>toque para abrir o box</small></div><div class="saldo-h2h"><span class="${hh.va>hh.vb?"lid":""}">${esc(A[0])} <b>${hh.va}</b></span><span class="x">${hh.e?hh.e+" emp.":"x"}</span><span class="${hh.vb>hh.va?"lid":""}"><b>${hh.vb}</b> ${esc(B[0])}</span><small>desde 22/23${mm?` · ${mm} em mata-mata`:""}</small></div><div class="hist-lista">${hh.l.map(m2=>{const [w,lo,t]=m2.r;return `<button type="button" ${m2.atual?"disabled":`data-mj="${m2.i}"`}><span class="qd">${temporadaCurta(m2.t)} · sem ${m2.w}</span><span><span class="${m2.v===m2.a?"w":""}">${esc(m2.a)}</span> x <span class="${m2.v===m2.b?"w":""}">${esc(m2.b)}</span>${seloFase(m2)}</span><span class="rs num">${rtxt(w,lo,t)}</span></button>`}).join("")||'<div class="vazio">Nunca se enfrentaram desde 22/23.</div>'}</div></div>`:""}`;
   }else if(sub==="jogadores"){
