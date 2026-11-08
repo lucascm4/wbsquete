@@ -831,6 +831,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 @media (max-width:760px){.lj-wrap{overflow:visible}}
 .nav{grid-template-columns:repeat(5,minmax(0,1fr))}
 .sel{background:#000;color:#fff;border:2px solid var(--amarelo);padding:5px 8px;font:inherit;font-weight:700;font-size:13px}
+@media (max-width:760px){.lj th:first-child{position:sticky;top:var(--topo,100px);left:auto;width:34%}}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -893,7 +894,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108011742";
+const VERSAO_PAINEL="20261108011827";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
