@@ -1174,6 +1174,8 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 @media (max-width:480px){.nt-l{grid-template-columns:26px 1fr auto}.nt-l small{grid-column:2/-1}}
 .lei-a{display:inline-block;margin-left:10px;font:800 11px system-ui,sans-serif;letter-spacing:.06em;color:var(--apagado);vertical-align:middle}
 .pj-ap{display:block;font-style:normal;font-family:var(--display);color:var(--amarelo);font-size:16px;letter-spacing:.04em;margin:2px 0}
+.cc-ap{margin-left:auto;font:600 11px system-ui,sans-serif;color:var(--apagado)}.cc-ap b{font-family:var(--display);font-weight:400;font-size:17px;color:#fff;margin-right:2px}
+.cc-ap.bom b{color:#3ddc84}.cc-ap.ruim b{color:#ff5a5a}.cc-0{margin:4px 8px 8px;font-size:13px;color:#ccc}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1243,7 +1245,7 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108153253";
+const VERSAO_PAINEL="20261108153331";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2197,7 +2199,9 @@ function timesFantasy(nome){
 function splitsFantasy(nome,id){
   if(!window._SPL&&window.MUSEU){const M={};window.MUSEU.forEach(m=>{[[m.a,m.pa],[m.b,m.pb]].forEach(([tm,pa])=>(pa||[]).forEach(x=>{const n=x[0],g=x[1];if(!g)return;const k=M[n]=M[n]||{};const y=k[m.t]=k[m.t]||{};const c=y[tm]=y[tm]||{g:0,s:zero(),w1:m.w};c.g+=g;for(let i=0;i<11;i++)c.s[i]+=x[i+2]||0;c.w1=Math.min(c.w1,m.w)}))});window._SPL=M}
   const out=Object.assign({},(window._SPL||{})[nome]||{});
-  if(typeof BOX!=="undefined"&&id!=null){const y={};Object.entries(BOX.dias).forEach(([sp,L])=>L.forEach(l=>{if(l[0]!==id||l[2]>=12)return;const tm=T(l[1])[0];if(!tm)return;const c=y[tm]=y[tm]||{g:0,s:zero(),w1:+sp};c.g++;l.slice(3,14).forEach((v,i)=>c.s[i]+=v);c.w1=Math.min(c.w1,+sp)}));if(Object.keys(y).length)out["2026/27"]=y}
+  // banco de dados diário: jogos no elenco x como titular, com minutos (mais completo que o museu)
+  const HC=(HIST.cortes||{})[nome]||{};Object.entries(HC).forEach(([t,tms])=>{const y={};Object.entries(tms).forEach(([tm,c])=>{y[tm]={el:c[0],g:c[1],min:c[2],s:c.slice(3,14),w1:c[14]}});out[t]=y});
+  if(typeof BOX!=="undefined"&&id!=null){const y={};Object.entries(BOX.dias).forEach(([sp,L])=>L.forEach(l=>{if(l[0]!==id)return;const tm=T(l[1])[0];if(!tm)return;const c=y[tm]=y[tm]||{g:0,el:0,min:0,s:zero(),w1:+sp};c.el++;c.w1=Math.min(c.w1,+sp);if(l[2]>=12)return;c.g++;c.min+=l[14]||0;l.slice(3,14).forEach((v,i)=>c.s[i]+=v)}));if(Object.keys(y).length)out["2026/27"]=y}
   return out}
 /* ficha completa do jogador: toque na linha */
 function linhaPer(p,per){ // números do jogador no período escolhido na ficha
@@ -2253,7 +2257,8 @@ function abrirJogador(id,perF){
   const v4=(a,yr)=>`<span class="car-v"><b>${yr?jp(a[11],p,yr):a[11]}</b><small>J</small></span><span class="car-v"><b>${n1(a[0])}</b><small>PTS</small></span><span class="car-v"><b>${n1(a[1])}</b><small>REB</small></span><span class="car-v"><b>${n1(a[2])}</b><small>AST</small></span>`;
   const mais=(a,mn)=>`<div class="car-mais">${[["MIN",mn==null?"–":n1(mn)],["STL",n1(a[3])],["BLK",n1(a[4])],["3PM",n1(a[5])],["TO",n1(a[6])],["FG",`${pc(a[7],a[8])}<small>${n1(a[7])}/${n1(a[8])}</small>`],["FT",`${pc(a[9],a[10])}<small>${n1(a[9])}/${n1(a[10])}</small>`]].map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`;
   const linCar=(rot,a,cls,yr,mn)=>{const x=yr!=null?tmsDe(yr):{ts:[],sp:{}};
-    const cortes=x.ts.filter(t=>x.sp[t]).length<2?"":x.ts.filter(t=>x.sp[t]).map(t=>{const c=x.sp[t];const av=c.s.map(v=>v/c.g).concat([c.g]);return `<div class="car-corte"><div class="cc-t">${logo(t)}<b>${esc(t)}</b><small>como titular</small></div><div class="cc-l">${selo(av)}${v4(av)}</div>${mais(av)}</div>`}).join("");
+    const cortes=x.ts.filter(t=>x.sp[t]).length<2?"":x.ts.filter(t=>x.sp[t]).map(t=>{const c=x.sp[t];const g=Math.max(1,c.g);const av=c.s.map(v=>v/g).concat([c.g]);const el=c.el;const ap=el?Math.round(100*c.g/el):null;
+      return `<div class="car-corte"><div class="cc-t">${logo(t)}<b>${esc(t)}</b>${el?`<span class="cc-ap ${ap>=80?"bom":ap<50?"ruim":""}"><b>${c.g}/${el}</b> escalado · ${ap}%</span>`:`<small>como titular</small>`}</div>${c.g?`<div class="cc-l">${selo(av)}${v4(av)}</div>${mais(av,c.min!=null?c.min/g:null)}`:`<p class="cc-0">Jogou ${el} jogo${el>1?"s":""} no elenco e nunca foi escalado.</p>`}</div>`}).join("");
     return `<details class="car-l ${cls||""}"><summary><span class="car-s"><b>${rot}</b>${yr!=null?carinhas(yr)+dr(yr):""}${(cls||"").includes("car-liga")?'<small class="car-t">só jogos na liga</small>':""}</span>${selo(a)}${v4(a,(cls||"").includes("car-liga")?null:yr)}</summary>
     ${cortes?`<div class="car-sub">NO ANO TODO</div>`:""}${mais(a,mn)}${cortes?`<div class="car-sub">POR TIME DA LIGA</div>${cortes}`:""}</details>`};
   const carreira=car&&car.length?`<div class="car">${tot?linCar("Total",tot,"car-tot",null,(()=>{const L2=LT.filter(l=>l.mn!=null);const g=L2.reduce((x,l)=>x+l.a[11],0);return g?L2.reduce((x,l)=>x+l.mn*l.a[11],0)/g:null})()):""}${linhasCar.map(l=>linCar(rotA(l.yr),l.a,(l.atual?"car-at":"")+(l.soLiga?" car-liga":""),l.yr,l.mn)).join("")}</div><div class="car-leg">Carinhas = times da WBSQUETE que tiveram ele naquele ano, na ordem. Toque na temporada: aparece o ano todo e o corte de quanto ele fez em cada time. Antes de 25/26 a ESPN só libera o que ele fez como titular na liga.</div>`:"";
