@@ -1780,11 +1780,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794177849"></script>
-<script src="radar.js?v=1794177849"></script>
-<script src="midia.js?v=1794177849"></script>
+<script src="hist.js?v=1794180289"></script>
+<script src="radar.js?v=1794180289"></script>
+<script src="midia.js?v=1794180289"></script>
 <script>
-const VERSAO_PAINEL="20261108194409";
+const VERSAO_PAINEL="20261108202449";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3193,9 +3193,9 @@ function blocoGlobal(A,B){const g=placarSomado(A,B);if(!g)return "";const f=(i,v
 /* perfil do treinador */
 function perfilTreinador(id,nome){const d=DADOS;const L=HIST.tab.filter(r=>r[1]===nome);
   const tit=(HIST.campeoes||[]).filter(c=>c[2]===nome).length;const fin=L.filter(r=>r[6]<=2).length;const po=L.filter(r=>r[7]&&r[7]<=6).length;
-  let v=0,dd=0,e=0,mv=0,md=0,cw=0,cl=0,big=null;const opp={};
+  let v=0,dd=0,e=0,mv=0,md=0,cw=0,cl=0,big=null,tom=null;const opp={};
   confrontosDe(nome).forEach(m=>{const f=rotulo(m);if(f==="CONSOLAÇÃO")return;const o=doLado(m,nome);o.res==="v"?v++:o.res==="d"?dd++:e++;if(f){o.res==="v"?mv++:o.res==="d"&&md++}cw+=o.w;cl+=o.l;
-    const x=opp[o.op]=opp[o.op]||{v:0,d:0,e:0};x[o.res==="v"?"v":o.res==="d"?"d":"e"]++;const mg=o.w-o.l;if(o.res==="v"&&(!big||mg>big.mg))big={mg,m,o}});
+    const x=opp[o.op]=opp[o.op]||{v:0,d:0,e:0};x[o.res==="v"?"v":o.res==="d"?"d":"e"]++;const mg=o.w-o.l;if(o.res==="v"&&(!big||mg>big.mg))big={mg,m,o};if(o.res==="d"&&(!tom||-mg>tom.mg))tom={mg:-mg,m,o}});
   const os=Object.entries(opp).filter(([n,x])=>x.v+x.d+x.e>=2);const fregues=os.slice().sort((p,q)=>(q[1].v-q[1].d)-(p[1].v-p[1].d))[0],carrasco=os.slice().sort((p,q)=>(q[1].d-q[1].v)-(p[1].d-p[1].v))[0];
   let adds=L.reduce((x,r)=>x+(r[8]||0),0),trocas=L.reduce((x,r)=>x+(r[9]||0),0);
   const lst=(d&&d.tx&&d.tx.lst)||[];adds+=lst.filter(x=>x[2]===id).length;const tr=(d&&d.tx&&d.tx.tr)||[];trocas+=new Set(tr.filter(x=>x[1]===id||x[2]===id).map(x=>x[4])).size;
@@ -3205,7 +3205,7 @@ function perfilTreinador(id,nome){const d=DADOS;const L=HIST.tab.filter(r=>r[1]=
    ${tile("Títulos",tit?"🏆".repeat(tit):"0",fin?`${fin} final${fin>1?"is":""} desde 22/23`:"nenhuma final desde 22/23")}${tile("Playoffs",`${po}/${L.length}`,"temporadas fechadas")}
    ${tile("V-D-E",`${v}-${dd}-${e}`,`${(pc*100).toFixed(0)}% de aproveitamento`)}${tile("Mata-mata",`${mv}-${md}`,"vitórias-derrotas")}
    ${tile("Categorias",`${(100*cw/Math.max(1,cw+cl)).toFixed(0)}%`,`${cw} ganhas · ${cl} perdidas`)}${tile("Adds",adds,`${(adds/Math.max(1,anos)).toFixed(0)} por temporada`)}
-   ${tile("Trocas",trocas,trocas?"":"nunca trocou")}${big?tile("Maior surra",`${big.o.w}-${big.o.l}`,`no ${esc(big.o.op)} · ${esc(big.m.t)}`):""}
+   ${tile("Trocas",trocas,trocas?"":"nunca trocou")}${big?tile("Maior surra dada",`${big.o.w}-${big.o.l}`,`no ${esc(big.o.op)} · ${esc(big.m.t)}`):""}${tom?tile("Maior surra tomada",`${tom.o.w}-${tom.o.l}`,`do ${esc(tom.o.op)} · ${esc(tom.m.t)}`):""}
    ${fregues?tile("Maior freguês",`${logo(fregues[0])} ${esc(fregues[0])}`,`${fregues[1].v}-${fregues[1].d}-${fregues[1].e}`):""}${carrasco&&carrasco[1].d>carrasco[1].v?tile("Carrasco",`${logo(carrasco[0])} ${esc(carrasco[0])}`,`${carrasco[1].v}-${carrasco[1].d}-${carrasco[1].e}`):""}
   </div></div>`}
 function vPerfis(){
