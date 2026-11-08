@@ -1134,7 +1134,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108023331";
+const VERSAO_PAINEL="20261108023455";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1429,7 +1429,7 @@ const ZOE={
 };
 function bancoDe(p){ // soma das 11 stats nos dias em que ficou no banco (slot 12) e o valor 9-cat disso
   const d=DADOS;const k=d.gerado;if(p._bk===k)return p._b;const B=zero();let g=0,z=0;
-  for(let sp=d.s0;sp<=Math.min(d.cur,d.s1);sp++){const v=p.dl&&p.dl[sp];if(v&&v[11]===12){v.slice(0,11).forEach((x,i)=>B[i]+=x);g++;const r=rankLiga(sp);z+=r.v&&r.v[p.id]!=null?Math.max(0,r.v[p.id]):0}}
+  for(let sp=d.s0;sp<=Math.min(d.cur,d.s1);sp++){const v=p.dl&&p.dl[sp];if(v&&v[11]>=12){v.slice(0,11).forEach((x,i)=>B[i]+=x);g++;const r=rankLiga(sp);z+=r.v&&r.v[p.id]!=null?Math.max(0,r.v[p.id]):0}}
   p._bk=k;p._b={B,g,z};return p._b;
 }
 function linhaBanco(B){const [pts,reb,ast,stl,blk,tp,to,fgm,fga,ftm,fta]=B;const L=[];
@@ -1452,8 +1452,7 @@ function noticias(){
     const n=`<b>${esc(p.n)}</b>`;const man=esc(T(p.t)[2]);const op=opDe(p.t);const mop=op?esc(T(op)[2]):"adversário";const ctx={man,mop};
     const c=(RK.c&&RK.c[p.id])||{};const linha=linhaReal(v)+rola;
     const comoChegou=()=>{if(adds[p.id+":"+p.t]!=null)return `${man} pegou ${n} na waiver`;const pk=pick[p.n];if(pk&&pk[1]===nomeT(p.t))return `${man} pickou ${n} no pick ${pk[0]}`;return `${man} escalou ${n}`};
-    if(slot===13)return;
-    if(slot>=12){const zb=(RK.v&&RK.v[p.id])||0;if(pts>=20||zb>=4||stl>=4||blk>=4||reb>=12||ast>=10||tp>=5)cand.push({w:60+zb*5+pts/3,k:"BANCO",f:()=>`${n} no banco do ${man}: ${linhaReal(v)}. ${zoe("choro",ctx)}.`});return}
+    if(slot>=12){const zb=(RK.v&&RK.v[p.id])||0;if(pts>=20||zb>=4||stl>=4||blk>=4||reb>=12||ast>=10||tp>=5)cand.push({w:60+zb*5+pts/3,k:"BANCO",f:()=>`${n} no ${slot===13?"IR":"banco"} do ${man}: ${linhaReal(v)}. ${zoe("choro",ctx)}.`});return}
     const dd=[pts,reb,ast,stl,blk].filter(x=>x>=10).length;
     const L=[];
     if(dd>=3)L.push([90,"TRIPLO-DUPLO",()=>`${n}: ${linha}. Triplo-duplo e ${zoe("mamar",ctx)}.`]);
@@ -1644,7 +1643,7 @@ function leitura(a,b,s){
   // quem carrega
   [a,b].forEach(t=>{const p=melhorDaSemana(t);if(p)itens.push([ico("CARREGA"),`<b>${esc(p.n)}</b> é quem segura o ${esc(T(t)[0])}: ${linhaStats(p.W)} em ${p.g} jogo${p.g>1?"s":""}.`])});
   // banco
-  [a,b].forEach(t=>{const l=(EST.rost[t]||[]).filter(p=>p.bg).map(p=>({p,b:bancoDe(p)})).filter(x=>x.b.z>=3).sort((x,y)=>y.b.z-x.b.z);if(l.length)itens.push([ico("BANCO","r"),`${esc(T(t)[0])} deixou no banco: ${l.slice(0,3).map(x=>`${x.p.n} (${linhaBanco(x.b.B)})`).join("; ")}.`])});
+  [a,b].forEach(t=>{const l=(EST.rost[t]||[]).map(p=>({p,b:bancoDe(p)})).filter(x=>x.b.z>=3).sort((x,y)=>y.b.z-x.b.z);if(l.length)itens.push([ico("BANCO","r"),`${esc(T(t)[0])} deixou no banco: ${l.slice(0,3).map(x=>`${x.p.n} (${linhaBanco(x.b.B)})`).join("; ")}.`])});
   // OUT escalado
   [a,b].forEach(t=>{(EST.rost[t]||[]).filter(p=>p.slot<12&&p.inj==="OUT").forEach(p=>itens.push([ico("OUT","r"),`<b>${esc(p.n)}</b> está OUT e segue titular do ${esc(T(t)[0])} (${SLOT[p.slot]}). Vaga jogada fora.`]))});
   return `<div class="leitura"><ul>${itens.slice(0,7).map(([i,t])=>`<li>${i}<span>${t}</span></li>`).join("")||"<li>Nada a declarar. Por enquanto.</li>"}</ul></div>`;
@@ -1668,7 +1667,7 @@ const PREMIO={
  URGH:{n:"URGH",d:"pego na waiver nesta semana e vomitou",cls:"ruim"},
  PACOCA:{n:"ENTREGANDO A PAÇOCA",d:"quem mais comprometeu as categorias que o time perde",cls:"ruim"},
  TRAB:{n:"TRABALHADOR",d:"mais jogos como titular na semana",cls:""},
- CULPADO:{n:"CULPADO",d:"o que o manager deixou no banco, em todas as categorias",cls:"ruim"}
+ CULPADO:{n:"CULPADO",d:"o que o manager deixou no banco ou no IR, em todas as categorias",cls:"ruim"}
 };
 const selo=k=>`<svg class="ic-pr" viewBox="0 0 32 32" aria-hidden="true">${SELO[k]}</svg>`;
 const PRINCIPAIS=["MVP","PIPOQUEIRO","RUI","BELEZINHA","URGH"];
@@ -1680,8 +1679,8 @@ function premios(a,b,sp){ // sp="sem" (acumulado da semana) ou número do dia
   const tot=t=>dia?((d.D[t]&&d.D[t][sp])||zero()):EST.tot[t];const ta=tot(a),tb=tot(b);
   const rows=[],banco=[];
   [a,b].forEach(t=>(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t)).forEach(p=>{
-    if(!dia){if(p.g>0)rows.push({p,t,W:p.W,g:p.g});if(p.bg>0){const b=bancoDe(p);if(b.g)banco.push({p,t,B:b.B,bg:b.g,z:b.z})}}
-    else{const v=p.dl&&p.dl[sp];if(!v)return;const W=v.slice(0,11);if(v[11]<12)rows.push({p,t,W,g:1});else if(v[11]===12){const r=rankLiga(sp);banco.push({p,t,B:W,bg:1,z:Math.max(0,(r.v&&r.v[p.id])||0)})}}
+    if(!dia){if(p.g>0)rows.push({p,t,W:p.W,g:p.g});{const b=bancoDe(p);if(b.g)banco.push({p,t,B:b.B,bg:b.g,z:b.z})}}
+    else{const v=p.dl&&p.dl[sp];if(!v)return;const W=v.slice(0,11);if(v[11]<12)rows.push({p,t,W,g:1});else if(v[11]>=12){const r=rankLiga(sp);banco.push({p,t,B:W,bg:1,z:Math.max(0,(r.v&&r.v[p.id])||0)})}}
   }));
   if(!rows.length)return null;
   const impacto=(W,t)=>{const me=t===a?ta:tb,op=t===a?tb:ta;let bom=0,ruim=0;
@@ -1707,7 +1706,7 @@ function premios(a,b,sp){ // sp="sem" (acumulado da semana) ou número do dia
     pos("PACOCA",top(r=>r.g>=2&&r.ruim>0.8&&!usado.has(r.p.id),r=>r.ruim));
     pos("TRAB",top(r=>r.g>=2,r=>r.g*10+r.val/100));
   }
-  const cb=banco.sort((x,y)=>y.z-x.z)[0];if(cb&&cb.z>=(dia?3:4))out.push({k:"CULPADO",...PREMIO.CULPADO,x:cb,W:null,l:`${linhaBanco(cb.B)} no banco em ${cb.bg} j · culpa do ${T(cb.t)[2]}`});
+  const cb=banco.sort((x,y)=>y.z-x.z)[0];if(cb&&cb.z>=(dia?3:4))out.push({k:"CULPADO",...PREMIO.CULPADO,x:cb,W:null,l:`${linhaBanco(cb.B)} fora do time em ${cb.bg} j · culpa do ${T(cb.t)[2]}`});
   return out;
 }
 function cardPremios(a,b){
@@ -1725,10 +1724,10 @@ function destaques(a,b){
   const d=DADOS;const L=[];
   [a,b].forEach(t=>(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t)).forEach(p=>{if(p.g>0)L.push({p,t,v:valorJogo(p.W)})}));
   L.sort((x,y)=>y.v-x.v);const top=L.slice(0,6),pior=L.filter(x=>x.p.g>=2).slice(-3).reverse();
-  const bancos=[];[a,b].forEach(t=>(EST.rost[t]||[]).forEach(p=>{if(p.bg){const bb=bancoDe(p);if(bb.z>=3)bancos.push({p,t,b:bb})}}));bancos.sort((x,y)=>y.b.z-x.b.z);
+  const bancos=[];[a,b].forEach(t=>(EST.rost[t]||[]).forEach(p=>{{const bb=bancoDe(p);if(bb.z>=3)bancos.push({p,t,b:bb})}}));bancos.sort((x,y)=>y.b.z-x.b.z);
   const tr=(x,cls)=>{const p=x.p,W=p.W;return `<tr class="${cls||""}" style="--cor:${T(x.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small><img src="img/l/${T(x.t)[1]}.webp" alt=""> ${p.g} jogo${p.g>1?"s":""} · ${W[7]}/${W[8]} fg · ${W[9]}/${W[10]} ft</small></div></div></td><td class="pts">${W[0]}</td><td>${W[1]}</td><td>${W[2]}</td><td>${W[3]}</td><td>${W[4]}</td><td>${W[5]}</td><td>${W[6]}</td><td class="fgft">${W[7]}/${W[8]}</td><td class="fgft">${W[9]}/${W[10]}</td></tr>`};
   const cab=`<thead><tr><th>Jogador</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th class="fgft">FG</th><th class="fgft">FT</th></tr></thead>`;
-  return `<div class="card lj-wrap"><div class="bloco-tit">DESTAQUES DA SEMANA <small>totais como titular</small></div><table class="lj">${cab}<tbody>${top.map(x=>tr(x)).join("")}${pior.length?`<tr class="sepr"><td colspan="10">Os que afundaram</td></tr>`+pior.map(x=>tr(x,"ruim")).join(""):""}${bancos.length?`<tr class="sepr"><td colspan="10">Ficou no banco</td></tr>`+bancos.map(x=>{const B=x.b.B;return `<tr class="fora" style="--cor:${T(x.t)[4]}"><td class="jg"><div class="jg-in">${face(x.p.id,x.p.n,"")}<div><b>${esc(x.p.n)}</b><small><img src="img/l/${T(x.t)[1]}.webp" alt=""> ${x.b.g} jogo${x.b.g>1?"s":""} no banco</small></div></div></td><td class="pts">${B[0]}</td><td>${B[1]}</td><td>${B[2]}</td><td>${B[3]}</td><td>${B[4]}</td><td>${B[5]}</td><td>${B[6]}</td><td class="fgft">${B[7]}/${B[8]}</td><td class="fgft">${B[9]}/${B[10]}</td></tr>`}).join(""):""}</tbody></table></div>`;
+  return `<div class="card lj-wrap"><div class="bloco-tit">DESTAQUES DA SEMANA <small>totais como titular</small></div><table class="lj">${cab}<tbody>${top.map(x=>tr(x)).join("")}${pior.length?`<tr class="sepr"><td colspan="10">Os que afundaram</td></tr>`+pior.map(x=>tr(x,"ruim")).join(""):""}${bancos.length?`<tr class="sepr"><td colspan="10">Ficou fora (banco ou IR)</td></tr>`+bancos.map(x=>{const B=x.b.B;return `<tr class="fora" style="--cor:${T(x.t)[4]}"><td class="jg"><div class="jg-in">${face(x.p.id,x.p.n,"")}<div><b>${esc(x.p.n)}</b><small><img src="img/l/${T(x.t)[1]}.webp" alt=""> ${x.b.g} jogo${x.b.g>1?"s":""} fora</small></div></div></td><td class="pts">${B[0]}</td><td>${B[1]}</td><td>${B[2]}</td><td>${B[3]}</td><td>${B[4]}</td><td>${B[5]}</td><td>${B[6]}</td><td class="fgft">${B[7]}/${B[8]}</td><td class="fgft">${B[9]}/${B[10]}</td></tr>`}).join(""):""}</tbody></table></div>`;
 }
 function quadroConfronto(A,B,ta,tb,s){
   const sc=placar(ta,tb);const h2=window.MUSEU?h2hEntre(A,B):null;
@@ -2009,7 +2008,7 @@ function elencoTabela(t){
   const d=DADOS;const ros=(EST.rost[t]||[]).slice();
   const al=[];
   ros.filter(p=>p.slot<12&&p.inj==="OUT").forEach(p=>al.push(["ESCALADO E OUT",`${p.n} está OUT e titular (${SLOT[p.slot]}).`]));
-  const nb=ros.filter(p=>p.bg).map(p=>({p,b:bancoDe(p)})).filter(x=>x.b.z>=2).sort((x,y)=>y.b.z-x.b.z);if(nb.length)al.push(["FICOU NO BANCO",nb.map(x=>`${x.p.n}: ${linhaBanco(x.b.B)}`).join(" · ")+"."]);
+  const nb=ros.map(p=>({p,b:bancoDe(p)})).filter(x=>x.b.z>=2).sort((x,y)=>y.b.z-x.b.z);if(nb.length)al.push(["FICOU NO BANCO",nb.map(x=>`${x.p.n}: ${linhaBanco(x.b.B)}`).join(" · ")+"."]);
   const ir=ros.filter(p=>p.slot===13);if(ir.length)al.push(["IR",ir.map(p=>p.n).join(", ")]);
   let h=al.length?`<div class="alertas">${al.map(a=>`<div class="alerta"><b>${esc(a[0])}</b><span>${esc(a[1])}</span></div>`).join("")}</div>`:"";
   const ord=p=>p.slot===13?2:p.slot===12?1:0;
