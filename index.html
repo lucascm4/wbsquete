@@ -1079,7 +1079,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108021101";
+const VERSAO_PAINEL="20261108021258";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1346,40 +1346,48 @@ function h2hEntre(A,B){const l=confrontosDe(A).filter(m=>m.a===B||m.b===B);let v
 /* ---------- views ---------- */
 function vazio(){return `<div class="cab-secao"><span class="sobre">PAINEL DO LOYDÃO</span><h1 class="manchete">BUSCANDO A ESPN…</h1><p class="linha-fina">Se não carregar em alguns segundos, toque em Atualizar. O Museu já funciona.</p></div>`}
 
+const ZOE={
+ mamar:["colocou o {mop} pra mamar","o {mop} tá sentado no colo","mandou o {mop} pro chuveiro mais cedo","o {mop} já pode ir pagando a pizza","aula grátis pro {mop}","o {mop} saiu de fininho do grupo","sem dó nem piedade do {mop}","o {mop} vai precisar de terapia","o {mop} tá procurando o controle remoto","CPF do {mop} cancelado","o {mop} pediu pra sair","o {mop} assistiu de camarote"],
+ festa:["o {man} já tá printando pro grupo","o {man} dormiu sorrindo","{man} com o peito estufado","o {man} soltou rojão","o {man} vai encher o saco amanhã","o {man} pagou o draft numa noite"],
+ choro:["chora, {man}, chora","choro, neném, choro","{man} abraçado no travesseiro","{man} já tá olhando a waiver","{man} vai fingir que não viu","isso é crime, {man}","{man}, devolve o ingresso","o {mop} agradece de joelhos","{man} vai apagar o app","o grupo já tá rindo do {man}","{man} pede música no Fantástico"]
+};
+function linhaReal(v){const [pts,reb,ast,stl,blk,tp,to,fgm,fga,ftm,fta]=v;const L=[`${pts} pts`];
+  if(reb>=7)L.push(`${reb} reb`);if(ast>=6)L.push(`${ast} ast`);if(stl>=3)L.push(`${stl} roubos`);if(blk>=3)L.push(`${blk} tocos`);if(tp>=4)L.push(`${tp} bolas de 3`);if(fga>=10)L.push(`${fgm}/${fga} FG`);if(fta>=8)L.push(`${ftm}/${fta} LL`);if(to>=5)L.push(`${to} TO`);
+  return L.slice(0,6).join(", ")}
 function noticias(){
-  // só performance de jogador, em manchete do Loydão
+  // só performance de jogador, manchete com a linha real + zoeira variada
   const d=DADOS;const sp=d.P.some(p=>p.dl&&p.dl[d.cur])?d.cur:d.last;const it=[];const nomeT=id=>T(id)[0];
   const opDe=t=>{const m=d.mt.find(x=>x.includes(t));return m?m[0]===t?m[1]:m[0]:null};
   const RK=rankLiga(sp);const adds=addsSemana();
   const pick={};((HIST.drafts&&HIST.drafts["2026/27"])||[]).forEach(r=>pick[r[3]]=[r[0],r[2]]);
+  const usados=new Set();let semente=sp*7;
+  const zoe=(tipo,ctx)=>{const P=ZOE[tipo];for(let k=0;k<P.length;k++){const f=P[(semente+k)%P.length];if(!usados.has(f)){usados.add(f);semente+=5;return f.replace("{man}",ctx.man).replace("{mop}",ctx.mop)}}return P[0].replace("{man}",ctx.man).replace("{mop}",ctx.mop)};
+  const cand=[];
   d.P.forEach(p=>{const v=p.dl&&p.dl[sp];if(!v||p.fora)return;const [pts,reb,ast,stl,blk,tp,to,fgm,fga,ftm,fta]=v;const slot=v[11];
-    const g=d.nba&&d.nba[p.pro];const rola=g&&g.live?" e o jogo ainda rola":"";
-    const n=`<b>${esc(p.n)}</b>`;const man=esc(T(p.t)[2]);const op=opDe(p.t);const mop=op?esc(T(op)[2]):"adversário";
-    const c=(RK.c&&RK.c[p.id])||{};
+    const g=d.nba&&d.nba[p.pro];const rola=g&&g.live?" (e o jogo ainda rola)":"";
+    const n=`<b>${esc(p.n)}</b>`;const man=esc(T(p.t)[2]);const op=opDe(p.t);const mop=op?esc(T(op)[2]):"adversário";const ctx={man,mop};
+    const c=(RK.c&&RK.c[p.id])||{};const linha=linhaReal(v)+rola;
     const comoChegou=()=>{if(adds[p.id+":"+p.t]!=null)return `${man} pegou ${n} na waiver`;const pk=pick[p.n];if(pk&&pk[1]===nomeT(p.t))return `${man} pickou ${n} no pick ${pk[0]}`;return `${man} escalou ${n}`};
-    const L=[];
-    if(slot>=12&&slot!==13&&pts>=20){it.push({w:70+pts/2,k:"BANCO",t:`${n} fez ${pts} pontos no banco do ${man}${rola}. Gênio.`});return}
-    if(slot>=12)return;
+    if(slot===13)return;
+    if(slot>=12){if(pts>=20)cand.push({w:70+pts/2,k:"BANCO",f:()=>`${n} no banco do ${man}: ${linha}. ${zoe("choro",ctx)}.`});return}
     const dd=[pts,reb,ast,stl,blk].filter(x=>x>=10).length;
-    if(dd>=3)L.push([60,"TRIPLO-DUPLO",`${n} com triplo-duplo (${pts}-${reb}-${ast})${rola}. ${mop} assiste de camarote.`]);
-    const bons=[["STL",c.STL,stl>=4,"LADRÃO",()=>`${n} tem ${stl} roubos e colocou o ${mop} pra mamar`],
-      ["BLK",c.BLK,blk>=4,"PAREDÃO",()=>`${n} distribuiu ${blk} tocos, ${mop} catando cavaco`],
-      ["3PM",c["3PM"],tp>=5,"CHUVA",()=>`${n} chovendo: ${tp} bolas de três. ${mop}, pega o guarda-chuva`],
-      ["REB",c.REB,reb>=14,"VIDRO",()=>`${n} limpou o vidro: ${reb} rebotes na cara do ${mop}`],
-      ["AST",c.AST,ast>=11,"GARÇOM",()=>`${n} de garçom: ${ast} assistências pro ${man} comemorar`],
-      ["PTS",c.PTS,pts>=35,"BOMBA",()=>`${n} meteu ${pts} pontos no ${mop}${rola}`],
-      ["FG%",c["FG%"],fga>=12,"MÃO QUENTE",()=>`${n} cirúrgico: ${fgm}/${fga} de quadra`],
-      ["FT%",c["FT%"],fta>=10,"GELO",()=>`${n} gelo nas veias: ${ftm}/${fta} na linha`]].filter(x=>x[1]!=null&&x[1]>=2.2&&x[2]).sort((a,b)=>b[1]-a[1]);
-    if(bons[0])L.push([30+bons[0][1]*10,bons[0][3],bons[0][4]()+"."]);
-    if(c["FG%"]!=null&&c["FG%"]<=-1.8&&fga>=10)L.push([30-c["FG%"]*9,"MARTELO",`${comoChegou()} e ele só martelou: ${fgm}/${fga} de quadra. Muito ruim.`]);
-    else if(c["FT%"]!=null&&c["FT%"]<=-1.8&&fta-ftm>=4)L.push([26-c["FT%"]*8,"TIJOLO",`${comoChegou()} e ele foi pra linha pra errar: ${ftm}/${fta}.`]);
-    if(to>=6)L.push([24+to*2,"ENTREGOU",`${n} entregou ${to} bolas. ${man} conta os turnovers chorando.`]);
-    if(p.av&&p.av[11]>=5){const mp=p.av[0];if(mp>=14&&pts<=0.4*mp&&((v[12]||0)>=15||(g&&g.fim)))L.push([28+(mp-pts),"APAGADO",`${comoChegou()} e ele fez ${pts===0?"zero":"só "+pts} ponto${pts===1?"":"s"}${g&&g.fim?"":" até agora"}. Média de ${mp}.`]);}
-    if(pts===0&&(v[12]||0)>=20&&!L.length)L.push([22,"ZERO",`${n} jogou ${v[12]} minutos e fez zero ponto. ${man} agradece.`]);
-    L.sort((a,b)=>b[0]-a[0]);if(L[0])it.push({w:L[0][0],k:L[0][1],t:L[0][2]});
+    const L=[];
+    if(dd>=3)L.push([90,"TRIPLO-DUPLO",()=>`${n}: ${linha}. Triplo-duplo e ${zoe("mamar",ctx)}.`]);
+    else if(dd===2&&(pts>=20||reb>=14||ast>=12))L.push([40+pts/2,"DUPLO-DUPLO",()=>`${n}: ${linha}. ${zoe(p.id%2?"mamar":"festa",ctx)}.`]);
+    const bons=[["STL",c.STL,stl>=4,"LADRÃO"],["BLK",c.BLK,blk>=4,"PAREDÃO"],["3PM",c["3PM"],tp>=5,"CHUVA"],["REB",c.REB,reb>=14,"VIDRO"],["AST",c.AST,ast>=11,"GARÇOM"],["PTS",c.PTS,pts>=35,"BOMBA"],["FG%",c["FG%"],fga>=12,"MÃO QUENTE"],["FT%",c["FT%"],fta>=10,"GELO"]]
+      .filter(x=>x[1]!=null&&x[1]>=2.2&&x[2]).sort((a,b)=>b[1]-a[1]);
+    if(bons[0])L.push([30+bons[0][1]*10,bons[0][3],()=>`${n}: ${linha}. ${zoe(bons[0][3]==="GARÇOM"||bons[0][3]==="GELO"?"festa":"mamar",ctx)}.`]);
+    if(c["FG%"]!=null&&c["FG%"]<=-1.8&&fga>=10)L.push([30-c["FG%"]*9,"MARTELO",()=>`${comoChegou()} e ele martelou ${fgm}/${fga} de quadra. ${zoe("choro",ctx)}.`]);
+    else if(c["FT%"]!=null&&c["FT%"]<=-1.8&&fta-ftm>=4)L.push([26-c["FT%"]*8,"TIJOLO",()=>`${comoChegou()} e ele foi pra linha errar: ${ftm}/${fta}. ${zoe("choro",ctx)}.`]);
+    if(to>=6)L.push([24+to*2,"ENTREGOU",()=>`${n}: ${to} turnovers. ${zoe("choro",ctx)}.`]);
+    if(p.av&&p.av[11]>=5){const mp=p.av[0];if(mp>=14&&pts<=0.4*mp&&((v[12]||0)>=15||(g&&g.fim)))L.push([28+(mp-pts),"APAGADO",()=>`${comoChegou()} e ele fez ${pts===0?"zero":"só "+pts} ponto${pts===1?"":"s"}${g&&g.fim?"":" até agora"} (média de ${mp}). ${zoe("choro",ctx)}.`]);}
+    if(pts===0&&(v[12]||0)>=20&&!L.length)L.push([22,"ZERO",()=>`${n} jogou ${v[12]} minutos e fez zero ponto. ${zoe("choro",ctx)}.`]);
+    L.sort((a,b)=>b[0]-a[0]);if(L[0])cand.push({w:L[0][0],k:L[0][1],f:L[0][2]});
   });
-  it.sort((x,y)=>y.w-x.w);
-  return it.slice(0,14);
+  cand.sort((x,y)=>y.w-x.w);
+  // no máximo 3 do mesmo selo, pra não ficar repetitivo
+  const cont={};cand.forEach(x=>{cont[x.k]=(cont[x.k]||0)+1;if(cont[x.k]<=3&&it.length<14)it.push({w:x.w,k:x.k,t:x.f()})});
+  return it;
 }
 function ticker(){
   const el=$("#ticker");if(!el)return;if(!DADOS){el.hidden=true;return}
