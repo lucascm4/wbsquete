@@ -1141,6 +1141,13 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .tj{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:14px}
 .tj img,.tj .ini{width:30px;height:30px;border-radius:50%;object-fit:cover;object-position:top;background:#e9e1d6;border:2px solid #000;font-size:10px;color:#3a2a2a}
 .tj small{color:var(--apagado)}
+.tj .ad{grid-column:1/-1;display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;background:#0d0909;border:1px solid var(--linha);border-radius:8px;padding:6px 8px;font-size:13px}
+.tj .ad span{display:flex;flex-direction:column;gap:1px}.tj .ad small{font-size:10px;letter-spacing:.06em;color:var(--apagado)}
+.tj .ad b{font-family:var(--display);font-weight:400;font-size:20px}.tj .ad b.pos{color:#3ddc84}.tj .ad b.neg{color:#ff5a5a}.tj .ad i{font-size:11px;color:var(--apagado);font-style:normal}
+.tj .ad .seta{color:var(--amarelo);font-size:18px}
+.tj em{font-style:normal;font-size:11px;font-weight:800}.tj em.up{color:#3ddc84}.tj em.dn{color:#ff5a5a}
+.como-ler{padding:8px 12px 12px;font-size:13px;line-height:1.45;border-top:1px solid var(--linha)}
+.como-ler summary{cursor:pointer;font-weight:800;color:var(--amarelo)}.como-ler p{margin:6px 0 0}
 
 .duas{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
 @media (max-width:760px){.duas{grid-template-columns:minmax(0,1fr)}}
@@ -1178,7 +1185,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108143002";
+const VERSAO_PAINEL="20261108143239";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2233,12 +2240,28 @@ function trocasAtuais(){ // 26/27: jogador em time diferente do draft sem regist
   const adds=new Set(d.tx.adds||[]);const dr={};HIST.drafts["2026/27"].forEach(r=>dr[r[3]]=r[2]);
   const mov=d.P.filter(p=>!p.fora&&dr[p.n]&&dr[p.n]!==T(p.t)[0]&&!adds.has(p.id)).map(p=>({p,de:dr[p.n],para:T(p.t)[0]}));
   if(!mov.length)return "";
-  const pares={};mov.forEach(m=>{const k=[m.de,m.para].sort().join("|");(pares[k]=pares[k]||[]).push(m)});
+  // antes x depois: média por jogo com cada camisa (boxes da temporada), avaliada na mesma régua 9-cat
+  const boxOk=typeof BOX!=="undefined"&&Object.keys(BOX.dias).length>=d.last;
+  if(!boxOk&&typeof garantirBoxes==="function")setTimeout(()=>garantirBoxes(d.last),0);
+  const nota=notas(d.P.concat(d.fa||[]),p=>p.av);const mg=minMedia("temp");
+  const regua=d.P.concat(d.fa||[]).filter(p=>p.av&&p.av[11]>=mg&&p.nota!=null).map(p=>p.nota).sort((x,y)=>y-x);
+  const rkDe=z=>1+regua.filter(n=>n>z).length;
+  const idDe=nome=>(d.teams.find(t=>T(t.id)[0]===nome)||{}).id;
+  const fase=(id,tm)=>{const s2=zero();let g=0;if(!boxOk)return null;Object.values(BOX.dias).forEach(L=>L.forEach(l=>{if(l[0]===id&&l[1]===tm){l.slice(3,14).forEach((y,i)=>s2[i]+=y);g++}}));
+    if(!g||!nota)return {g:0};const av=s2.map(x=>x/g);const z=nota(av).n;return {g,z,rk:rkDe(z),pts:Math.round(av[0]*10)/10}};
+  const pares={};mov.forEach(m=>{m.antes=fase(m.p.id,idDe(m.de));m.depois=fase(m.p.id,idDe(m.para));const k=[m.de,m.para].sort().join("|");(pares[k]=pares[k]||[]).push(m)});
   const datas=(d.tx.ac||[]).map(ms=>new Date(ms));
+  const z1=z=>(z>0?"+":"")+z.toFixed(1);
+  const fz=f=>!f?"…":!f.g?"não jogou":`<b class="${f.z>0?"pos":f.z<0?"neg":""}">#${f.rk}</b> ${z1(f.z)} <i>${f.g} j</i>`;
   return Object.entries(pares).map(([k,ms],idx)=>{const [t1,t2]=k.split("|");const lado=t=>ms.filter(m=>m.para===t);
-    const dt=datas[datas.length-1-idx];const val=l=>l.reduce((s2,m)=>s2+(m.p.nota||0),0);
+    const dt=datas[datas.length-1-idx];
+    const val=l=>l.reduce((s2,m)=>s2+(m.depois&&m.depois.g?m.depois.z:0),0);
     const l1=lado(t1),l2=lado(t2);const v1=val(l1),v2=val(l2);const venc=v1>=v2?t1:t2;
-    return `<div class="card troca"><div class="tq">2026/27${dt?" · "+dd(dt.getDate())+"/"+dd(dt.getMonth()+1)+"/"+String(dt.getFullYear()).slice(2):""} · temporada atual<span>na frente hoje: <b>${esc(venc)}</b></span></div><div class="tl2">${[[t1,l1,v1],[t2,l2,v2]].map(([t,l,v])=>`<div class="tlado ${t===venc?"ganhou":""}"><div class="tt">${logo(t)}<span>${esc(t)} recebeu</span><b class="num">${v>0?"+":""}${v.toFixed(1)}</b></div>${l.map(m=>`<div class="tj">${face(m.p.id,m.p.n,"")}<span>${esc(m.p.n)}</span><small class="num">nota ${m.p.nota==null?"–":m.p.nota.toFixed(1)} · ${m.p.av?m.p.av[0]+" pts":"–"}</small></div>`).join("")||'<div class="tj"><span class="esp">nada (ou jogador já largado)</span></div>'}</div>`).join("")}</div><div class="legenda">Valor = soma da nota da temporada dos jogadores recebidos, por enquanto. Troca detectada pelo elenco: quem está num time diferente do draft sem ter passado pelo waiver.</div></div>`}).join("");
+    const jog=m=>{const a=m.antes,b=m.depois;const sobe=a&&b&&a.g&&b.g?b.z-a.z:null;
+      return `<div class="tj">${face(m.p.id,m.p.n,"")}<span>${esc(m.p.n)}</span><small class="num">${sobe==null?"":sobe>0.3?'<em class="up">▲ melhorou</em>':sobe<-0.3?'<em class="dn">▼ piorou</em>':'<em>= igual</em>'}</small>
+        <div class="ad"><span><small>ANTES · ${esc(T(idDe(m.de))[3]||m.de)}</small>${fz(a)}</span><span class="seta">➜</span><span><small>DEPOIS · ${esc(T(idDe(m.para))[3]||m.para)}</small>${fz(b)}</span></div></div>`};
+    return `<div class="card troca"><div class="tq">2026/27${dt?" · "+dd(dt.getDate())+"/"+dd(dt.getMonth()+1)+"/"+String(dt.getFullYear()).slice(2):""} · temporada atual<span>na frente hoje: <b>${esc(venc)}</b></span></div><div class="tl2">${[[t1,l1,v1],[t2,l2,v2]].map(([t,l,v])=>`<div class="tlado ${t===venc?"ganhou":""}"><div class="tt">${logo(t)}<span>${esc(t)} recebeu</span><b class="num">${z1(v)}</b></div>${l.map(jog).join("")||'<div class="tj"><span class="esp">nada (ou jogador já largado)</span></div>'}</div>`).join("")}</div>
+    <details class="como-ler"><summary>Como ler esta troca</summary><p><b>O número de cada jogador</b> (ex.: +2,4 ou −1,1) é a nota 9-cat por jogo: quanto ele rende acima (+) ou abaixo (−) de um titular médio da liga, somando as 9 categorias. <b>0 = jogador mediano de fantasy</b>; +3 é estrela, −2 é peso morto.</p><p><b>#</b> = em que posição essa média o colocaria no ranking da temporada. <b>ANTES</b> = o que ele fez com a camisa do time antigo; <b>DEPOIS</b> = o que fez no time novo (<i>j</i> = jogos).</p><p><b>O placar grande de cada lado</b> soma o DEPOIS de quem o time recebeu. Ganha a troca quem recebeu mais produção. Com poucos jogos depois, ainda é cedo pra cravar.</p></details></div>`}).join("");
 }
 function vMuseuCapa(){
   const n={campeoes:HIST.campeoes.length,tabelas:new Set(HIST.tab.map(r=>r[0])).size,atuacoes:Object.keys(HIST.perf).length,decepcoes:(HIST.decep||[]).length,escaladas:(HIST.escal||[]).length,trocas:(HIST.trocas||[]).length,confrontos:window.MUSEU?window.MUSEU.length:507,drafts:Object.keys(HIST.drafts||{}).length};
@@ -2271,7 +2294,7 @@ function vMuseu(){
     const ord=UI.trocaOrd||"recentes";
     const L=ord==="lavadas"?Tr.slice().sort((a,b)=>b.dif-a.dif):Tr.slice().sort((a,b)=>b.t.localeCompare(a.t)||b.dia-a.dia);
     h+=`<h1 class="manchete">${ord==="lavadas"?"AS TROCAS MAIS LAVADAS":"HISTÓRICO DE TROCAS"}</h1><p class="linha-fina">${Tr.length} trocas no meio da temporada desde 22/23. O placar de cada lado é o valor nas 9 categorias que os jogadores recebidos produziram como titulares do novo time até o fim da temporada.</p></div>
-    <div class="pilulas" role="group" aria-label="Ordem"><button class="pil" type="button" data-to="recentes" aria-pressed="${ord==="recentes"}">Mais recentes</button><button class="pil" type="button" data-to="lavadas" aria-pressed="${ord==="lavadas"}">Mais lavadas</button></div>
+    <details class="card como-ler"><summary>Como ler as trocas antigas</summary><p>Em cada jogador: <b>jogos</b> que ele fez como titular no time novo e o <b>saldo</b> 9-cat somado nesses jogos. <b>Positivo</b> = ajudou acima de um titular médio da liga; <b>negativo</b> = jogou, mas abaixo da média (ou ficou na quadra afundando FG%/TO). O placar grande é a soma do lado; quem tem mais, ganhou a troca.</p></details><div class="pilulas" role="group" aria-label="Ordem"><button class="pil" type="button" data-to="recentes" aria-pressed="${ord==="recentes"}">Mais recentes</button><button class="pil" type="button" data-to="lavadas" aria-pressed="${ord==="lavadas"}">Mais lavadas</button></div>
     <div class="trocas">${ord==="recentes"?atuais:""}${L.map(t=>{const [x,y]=t.l;const vx=x.v>y.v?x:y;return `<div class="card troca"><div class="tq">${esc(t.t)} · ${esc(t.d)}<span>vencedor: <b>${esc(vx.para)}</b></span></div><div class="tl2">${[x,y].map(l=>`<div class="tlado ${l===vx?"ganhou":""}"><div class="tt">${logo(l.para)}<span>${esc(l.para)} recebeu</span><b class="num">${l.v>0?"+":""}${l.v}</b></div>${l.j.map(j=>`<div class="tj">${face(null,j[0],"")}<span>${esc(j[0])}</span><small class="num">${j[1]} jogos · ${j[2]>0?"+":""}${j[2]}</small></div>`).join("")}</div>`).join("")}</div></div>`}).join("")}</div>`;
     return h;
   }
