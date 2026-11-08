@@ -1772,11 +1772,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794176043"></script>
-<script src="radar.js?v=1794176043"></script>
-<script src="midia.js?v=1794176043"></script>
+<script src="hist.js?v=1794176121"></script>
+<script src="radar.js?v=1794176121"></script>
+<script src="midia.js?v=1794176121"></script>
 <script>
-const VERSAO_PAINEL="20261108191403";
+const VERSAO_PAINEL="20261108191521";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3564,7 +3564,7 @@ function ofertasBet(){const d=DADOS;if(!d||!EST||!EST.tot)return [];const O=[];c
   try{const S=simTemporada();Object.entries(S).forEach(([id,x])=>{id=+id;
     if(x.tit>0.08&&x.tit<0.6){const o=oddDe(1-x.tit);if(o)O.push({t:`${man(id)} pipoca e NÃO leva o título`,de:o,para:turbo(o),s:"mercado da temporada · cinturão"})}
     if(x.tit>0.01&&x.tit<0.08){const o=oddDe(x.tit);if(o)O.push({t:`${man(id)} campeão (é sério, tem odd)`,de:o,para:turbo(o),s:"mercado da temporada · zebra das zebras"})}
-    if(x.lant>0.08){const o=oddDe(x.lant);if(o)O.push({t:`${man(id)} lanterna e paga o stand-up`,de:o,para:turbo(o),s:"mercado da punição"})}
+    if(x.lant>0.08){const o=oddDe(x.lant);if(o)O.push({t:`${man(id)} lanterna e faz o ensaio sensual`,de:o,para:turbo(o),s:"mercado da punição · ensaio sensual"})}
     if(x.po>0.2&&x.po<0.6){const o=oddDe(1-x.po);if(o)O.push({t:`${man(id)} fica fora dos playoffs`,de:o,para:turbo(o),s:"mercado da temporada"})}})}catch(e){}
   return O.filter(o=>o.de>=1.4&&o.de<=60).sort(()=>Math.random()-0.5)}
 const PUBLI_SLOGAN=["BETLOYDE: a casa que torce contra você","Aposte com responsabilidade. Perca com dignidade.","Odd turbinada é igual promessa de manager: confie desconfiando","Não é dinheiro de verdade. A vergonha é.","BETLOYDE · patrocinadora oficial do choro de segunda-feira"];
