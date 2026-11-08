@@ -482,17 +482,17 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .rkl{display:flex;flex-direction:column;gap:10px}
 .rkc{display:grid;grid-template-columns:34px 30px 48px minmax(0,1fr) auto;grid-template-rows:auto auto;gap:4px 10px;align-items:center;padding:10px 12px;text-align:left;width:100%;cursor:pointer;transition:transform .12s}
 .rkc:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000}
-.rkc .pos{font-family:var(--display);font-size:28px;color:var(--amarelo);grid-row:1/3}
-.rkc .mov{font-size:12px;font-weight:700;grid-row:1/3}
+.rkc .pos{font-family:var(--display);font-size:28px;color:var(--amarelo);grid-row:1/3;grid-column:1}
+.rkc .mov{font-size:12px;font-weight:700;grid-row:1/3;grid-column:2}
 .rkc .mov.up{color:var(--verde)}.rkc .mov.dn{color:var(--perigo)}.rkc .mov.eq{color:var(--cinza)}
-.rkc img{width:48px;height:48px;border-radius:50%;object-fit:contain;background:#fff;border:2px solid #000;grid-row:1/3}
-.rkc .tm{min-width:0}
+.rkc img{width:48px;height:48px;border-radius:50%;object-fit:contain;background:#fff;border:2px solid #000;grid-row:1/3;grid-column:3}
+.rkc .tm{min-width:0;grid-column:4;grid-row:1}
 .rkc .tm b{display:block;font-family:var(--display);font-weight:400;font-size:20px;line-height:1}
 .rkc .tm small{display:flex;align-items:center;gap:6px;color:var(--apagado);font-size:12px;margin-top:3px;flex-wrap:wrap}
-.rkc .dest{text-align:right;grid-row:1/3}
+.rkc .dest{text-align:right;grid-row:1/3;grid-column:5}
 .rkc .dest b{display:block;font-family:var(--display);font-weight:400;font-size:28px;line-height:1}
 .rkc .dest small{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--apagado)}
-.rkc .mini3{grid-column:4/5;display:grid;grid-template-columns:70px auto 70px auto;gap:2px 6px;align-items:center;font-size:11px;color:var(--apagado)}
+.rkc .mini3{grid-column:4;grid-row:2;display:grid;grid-template-columns:70px auto 70px auto;gap:2px 6px;align-items:center;font-size:11px;color:var(--apagado)}
 .rkc .mini3>span{height:8px;background:#2a1f1f;border:1px solid #000;position:relative}
 .rkc .mini3>span i{position:absolute;inset:0 auto 0 0;background:var(--amarelo)}
 .rkc.corte{border-bottom:5px dashed var(--ouro)}
