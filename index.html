@@ -1270,6 +1270,8 @@ b.neg{color:#ff6b6b}
 .moleque ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
 .moleque li{font-size:13.5px;line-height:1.4;color:#eee}.moleque li b{color:var(--amarelo);text-transform:uppercase;font-size:12px}
 .moleque li u{text-decoration:none;font-weight:800;color:#fff}.moleque li small{color:var(--apagado);font-size:11px}
+.lei-ml{margin-top:10px!important;padding-top:8px;border-top:1px dashed #5a4a10;font-size:14px!important}
+.lei-ml b{display:block;font-family:var(--display);font-weight:400;color:var(--amarelo);font-size:14px;letter-spacing:.05em;margin-bottom:2px}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1336,10 +1338,10 @@ b.neg{color:#ff6b6b}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794165312"></script>
-<script src="radar.js?v=1794165312"></script>
+<script src="hist.js?v=1794165727"></script>
+<script src="radar.js?v=1794165727"></script>
 <script>
-const VERSAO_PAINEL="20261108161512";
+const VERSAO_PAINEL="20261108162207";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2139,25 +2141,34 @@ function fichaJog(r,k,RK,cls){
 /* ESCALAÇÃO MOLEQUE (no estilo do Alê do Pânico): cada titular vira uma comparação com trocadilho */
 const MOLEQUE={
  bom:{
-  PTS:[["a fábrica da Volks fora de greve","faz cesta todo dia"],["o carnê das Casas Bahia","não para de cair na conta"],["o boleto do dia 5","chega sempre e não perdoa"]],
-  REB:[["o aspirador de pó","limpa tudo embaixo da cesta"],["a sogra no domingo","não deixa sobrar nada no prato"],["o garimpeiro","sai do garrafão com o ouro"]],
-  AST:[["o garçom de rodízio","passa em todas as mesas"],["o tio do pavê","sempre serve alguém"],["o motoboy do iFood","entrega em qualquer canto"]],
-  STL:[["a cleptomania","põe tudo no bolso"],["o batedor de carteira da Sé","rouba e ninguém vê"],["o pombo da praça","pega tudo que cai no chão"]],
-  BLK:[["a vasectomia","corta a bola e evita o choro"],["o porteiro do prédio","não deixa ninguém subir"],["o segurança da balada","barra quem chega de tênis"]],
-  "3PM":[["o foguete da NASA ao contrário","manda de longe e acerta"],["o tio do churrasco","acerta o ponto da carne de longe"],["o sniper do condomínio","mira na janela de longe"]],
-  "FG%":[["o urologista","coloca a luva e pega com firmeza"],["o cirurgião plástico","não erra um corte"],["o GPS da Waze","sempre acha o caminho"]],
+  PTS:[["a fábrica da Volks fora de greve","faz cesta todo dia"],["o carnê das Casas Bahia","não para de cair na conta"],["o boleto do dia 5","chega sempre e não perdoa"],["o mecânico","abre a caixa de ferramenta e resolve"]],
+  REB:[["o aspirador de pó","limpa tudo embaixo da cesta"],["a sogra no domingo","não deixa sobrar nada no prato"],["a cartomante","pega até pensamento"],["o goleiro Rodrigo Rodrigues","se pegar, não larga mais"]],
+  AST:[["o garçom de open bar","é só pedir que ele entrega"],["o motoboy do iFood","entrega em qualquer canto"],["o garçom de rodízio","passa em todas as mesas"],["o cozinheiro do Péricles","tá sempre trabalhando pros outros"]],
+  STL:[["a cleptomania","põe tudo no bolso"],["o batedor de carteira da Sé","rouba e ninguém vê"],["o pombo da praça","pega tudo que cai no chão"],["o policial americano","chega sufocando o adversário"]],
+  BLK:[["a vasectomia","corta a bola e evita o choro"],["o porteiro do prédio","não deixa ninguém subir"],["o papel higiênico","tá sempre limpando as cagadas do time"],["o segurança da balada","barra quem chega de chinelo"]],
+  "3PM":[["o foguete da NASA ao contrário","manda de longe e acerta"],["o sniper do condomínio","mira na janela de longe"],["a cartomante","acerta até de olho fechado"]],
+  "FG%":[["o urologista","coloca a luva e pega com firmeza"],["o elevador novo","sobe e desce com facilidade"],["o GPS do Waze","sempre acha o caminho"]],
   "FT%":[["o relojoeiro suíço","não erra um tic-tac"],["o caixa do banco","conta tudo certinho"],["o professor de autoescola","faz baliza de olho fechado"]],
-  TO:[["o cofre do Itaú","não entrega nada"],["o pão-duro da família","não dá a bola pra ninguém"],["a mãe com o controle da TV","não solta de jeito nenhum"]]},
+  TO:[["a cueca apertada","prende bem a bola"],["o cofre do Itaú","não entrega nada"],["o pão-duro da família","não dá a bola pra ninguém"]]},
  ruim:{
-  PTS:[["a fábrica da Volks em greve","não tá fazendo mais cesta"],["o filho do Carlos Alberto de Nóbrega","não serve nem pra ficar no banco"],["o sinal do 3G no elevador","some quando mais precisa"]],
-  "FG%":[["o foguete da NASA","sempre manda um pro espaço"],["o pedreiro da obra do vizinho","tijolo atrás de tijolo"],["o dardo de bar às 3 da manhã","mira no alvo e acerta o garçom"]],
-  "FT%":[["o ENEM","demorou, fecha a porta"],["a obra da prefeitura","tijolo e mais tijolo"],["o cego no tiroteio","atira pra tudo que é lado"]],
-  TO:[["o peido na transação","sente um desconforto na hora de passar"],["o caixa eletrônico do posto","entrega a bola pra quem passar"],["a Black Friday no Brasil","só dá desconto pro adversário"]],
-  REB:[["a pílula do dia seguinte","chega atrasada"],["o porteiro dormindo","deixa todo mundo entrar"],["o Saci com câimbra","não consegue ficar em pé"]],
-  AST:[["o namoro no sofá","maltrata a bola"],["o mendigo do centro","tem um pombo no pé"],["o fominha da pelada","passa a bola nem pra mãe"]],
-  STL:[["o gato carente","só fica roçando na canela"],["o turista em Copacabana","é ele que é roubado"],["o segurança de shopping","vê tudo e não pega nada"]],
-  BLK:[["a Black Friday no Brasil","não dá um desconto"],["a porta giratória sem detector","deixa passar até faca"],["o goleiro goiano","só fica olhando as bolas"]],
-  "3PM":[["a compra na Shein","demora quase um ano pra chegar"],["o Wi-Fi do aeroporto","conecta uma vez por dia"],["a promessa de político","fica só no discurso"]]}};
+  PTS:[["a fábrica da Volks em greve","não tá fazendo mais cesta"],["o dente do Firmino","mesmo na boca, passa em branco"],["o nerd na balada","não pega nada"],["o filho do Carlos Alberto de Nóbrega","não serve nem pra ficar no banco"]],
+  "FG%":[["o foguete da NASA","sempre manda um pro espaço"],["o uísque do Paraguai","só dá dor de cabeça"],["o pedreiro da obra do vizinho","é tijolo atrás de tijolo"]],
+  "FT%":[["o ENEM","demorou, fecha a porta"],["o título da Argentina","demora 26 anos pra cair"],["a obra da prefeitura","é tijolo e mais tijolo"]],
+  TO:[["a Odebrecht","rouba bem mas depois entrega"],["o peido na transação","sente um desconforto na hora de passar"],["o atendente de telemarketing","enrola, enrola e não resolve"],["a Black Friday no Brasil","só dá desconto pro adversário"]],
+  REB:[["o gordo na piscina","quando entra só faz onda"],["a pílula do dia seguinte","chega atrasada"],["o porteiro dormindo","deixa todo mundo entrar"]],
+  AST:[["o irmão mais novo","só entra pra empatar"],["o namoro no sofá","maltrata a bola"],["o fominha da pelada","não passa a bola nem pra mãe"]],
+  STL:[["o padre Marcelo Rossi","ajuda na oração mas é muito cai-cai"],["o gato carente","só fica roçando na canela"],["o turista em Copacabana","é ele que é roubado"]],
+  BLK:[["o goleiro goiano","só fica olhando as bolas"],["a porta giratória sem detector","deixa passar até faca"],["a zaga do Paraguai","só dá dor de cabeça"]],
+  "3PM":[["o extrato bancário","dá medo de tirar"],["a compra na Shein","demora um ano pra chegar"],["o Wi-Fi do aeroporto","conecta uma vez por dia"],["a promessa de político","fica só no discurso"]]}};
+const NO_CAT={PTS:"na pontuação",REB:"no rebote",AST:"no passe",STL:"no roubo",BLK:"no toco","3PM":"na bola de três","FG%":"no arremesso","FT%":"no lance livre",TO:"no cuidado com a bola"};
+function molequeJogador(p,z){z=z||{};const K=Object.keys(NO_CAT).filter(k=>z[k]!=null);if(!K.length)return "";
+  const h=[...String(p.id)].reduce((a,c)=>a*31+c.charCodeAt(0)>>>0,11);const pk=(L,o)=>L[(h+o)%L.length];
+  const best=K.slice().sort((a,b)=>z[b]-z[a])[0],worst=K.slice().sort((a,b)=>z[a]-z[b])[0];const pos=POS[p.pos]||"jogador";
+  let t="";
+  if(z[best]>=0.4){const [c,f]=pk(MOLEQUE.bom[best],0);t=`O ${esc(p.n)} é o ${pos} ${esc(c)}: ${esc(f)}`;
+    if(z[worst]<=-0.4){const [c2,f2]=pk(MOLEQUE.ruim[worst],3);t+=`. Mas ${NO_CAT[worst]} é ${esc(c2)}: ${esc(f2)}`}}
+  else{const [c2,f2]=pk(MOLEQUE.ruim[worst],1);t=`O ${esc(p.n)} é o ${pos} ${esc(c2)}: ${esc(f2)}`}
+  return t+"."}
 function escalacaoMoleque(dono,coco,sp){
   const usados=new Set();const K=["PTS","REB","AST","STL","BLK","3PM","FG%","FT%","TO"];
   const linhas=dono.map((r,k)=>{if(!r)return "";const c=r.c||{};const lado=coco?"ruim":"bom";
@@ -2178,7 +2189,7 @@ function quadraSelecao(dono,tot,sp,coco){
   const zoeira=coco?["😂","🍅","🤣","💩","🍅","😹","🤡","🍅","😂","💩"].map((e,i)=>`<span class="zo" style="left:${[6,88,14,72,40,92,4,60,30,80][i]}%;top:${[8,12,46,44,70,78,88,4,92,62][i]}%;animation-delay:${i*0.35}s">${e}</span>`).join(""):"";
   return `<div class="card quadra-card ${coco?"coco":""}">${coco?`<div class="bloco-tit">QUADRA DE COCÔ <small>a pior escalação ${sp==="sem"?"da semana":"da noite"} · toque na cara</small></div>`:""}<div class="quadra">${linhas}${zoeira}${quadra}</div>
   <div class="q-banco"><span class="q-rot">${coco?"BANCO DA VERGONHA":"SEGUNDA UNIDADE"}</span><div class="q-bl">${banco}</div></div>
-  <div class="q-tot">${cats.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>${escalacaoMoleque(dono,coco,sp)}</div>`;
+  <div class="q-tot">${cats.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div></div>`;
 }
 function abrirFicha(k){
   const x=window._SEL&&window._SEL[k];if(!x)return;const {r}=x;const p=r.p,st=r.s;const sp=UI.noiteDia??diaPadrao();
@@ -2479,7 +2490,7 @@ function abrirJogador(id,perF){
    <div class="pj-rks">${rks.map(([k,v])=>`<div><small>${esc(k)}</small><b>#${v}</b></div>`).join("")}</div>
    <div class="pj-sec">PERÍODO</div>${filtroPer}
    ${st?`<div class="pj-sub">${esc(rotPer(sp,1))}${(sp==="sem"||ehRange(sp))&&r.g?` · ${r.g?jp(r.g,p,sp):""} jogos (total)`:(ehMedia(sp)||r.ly)?` · média por jogo · ${jp(r.g,p,r.ly?"ly":sp)} jogos`:""}${r.rk?(r.ly?` · nível de <b>#${r.rk}</b> na régua de hoje`:` · <b>#${r.rk}</b> de ${r.n} no período`):""}</div><div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`:`<p class="pj-txt">${r.carregando?(sp==="ly"?"Buscando a temporada passada…":"Buscando os boxes…"):sp==="ly"?"Não jogou na temporada passada.":"Não jogou nesse período."}</p>`}
-   <div class="pj-sec">LEITURA DO LOYDÃO</div><div class="lei"><b class="lei-t">${lei[0]}</b>${lei[2]?`<small class="lei-a">${esc(lei[2])}</small>`:""}<p>${lei[1]}</p></div>
+   <div class="pj-sec">LEITURA DO LOYDÃO</div><div class="lei"><b class="lei-t">${lei[0]}</b>${lei[2]?`<small class="lei-a">${esc(lei[2])}</small>`:""}<p>${lei[1]}</p>${(()=>{const m=molequeJogador(p,zs);return m?`<p class="lei-ml"><b>ESCALAÇÃO MOLEQUE</b> ${m}</p>`:""})()}</div>
    <div class="pj-sec">TEMPORADAS <button type="button" class="qq" data-expl aria-label="O que é o selo">?</button></div><div class="expl" hidden><b>O que é o + e o −?</b> É a nota 9-cat: compara o jogador com um <b>titular médio da nossa liga</b> (os 156 melhores, 12 times x 13 vagas) em cada categoria.<br><b>0</b> = igual à média. <b>+1</b> = um desvio acima da média (ajuda a ganhar a categoria). <b>−1</b> = um desvio abaixo (atrapalha).<br>No TO é invertido: perder pouca bola dá +, perder muita dá −. FG% e FT% pesam o volume: 60% em 2 arremessos vale menos que 55% em 20.<br>A nota total soma as 9: <b>+4 ou mais</b> é estrela, <b>+1,5</b> titular firme, <b>0</b> mediano, <b>−1,5</b> banco, <b>−3</b> peso morto.</div>${carreira?carreira:`<p class="pj-txt">${typeof LY!=="undefined"&&LY[id]===undefined?"Buscando as temporadas anteriores…":"Sem temporadas anteriores na ESPN (estreante)."}</p>`}
    ${jogos?`<div class="pj-sec">ÚLTIMOS JOGOS</div><div class="pj-scroll">${jogos}</div>`:""}</div>`;
   if(typeof LY!=="undefined"&&LY[id]===undefined)seasonPassada(id).then(()=>{const pop=document.getElementById("popFicha");if(pop&&pop.dataset.id==String(id)){const sc=pop.querySelector(".pop-full").scrollTop;abrirJogador(id,UI.fichaPer);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc}});
