@@ -860,6 +860,18 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .cp-i .selo{width:22px;height:22px}
 .cp-i.ouro{border-color:var(--amarelo)}.cp-i.ruim{border-color:var(--vermelho)}.cp-i.bom{border-color:#5ad1ff}
 
+/* tabelas de jogadores: sem sobreposição, fg/ft em evidência, cabeçalho ordenável */
+.lj td.jg{overflow:hidden}
+.lj .jg-in>div{min-width:0;flex:1}
+.lj .jg-in small{white-space:normal;row-gap:1px}
+.lj .jg-in small .ev{color:#fff;font-weight:700;background:#2a1c1c;padding:0 4px;border:1px solid #000;font-size:10.5px}
+.lj th[data-col]{cursor:pointer;user-select:none}
+.lj th.ord{color:var(--amarelo)}
+.slot-sel{font-family:var(--display);font-size:12px;letter-spacing:.04em;color:#000;background:var(--amarelo);border:1px solid #000;padding:2px 5px;min-width:30px;text-align:center;flex:none}
+.lj tr.total td{border-top:3px solid var(--amarelo);font-weight:700;color:#fff;background:#140e0e}
+.lj tr.total td small{display:block;font-size:10px;color:var(--apagado);font-weight:400}
+@media (max-width:760px){.lj .jg-in small .ev{font-size:9.5px;padding:0 3px}.slot-sel{font-size:10px;min-width:24px;padding:1px 3px}}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -921,7 +933,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108013537";
+const VERSAO_PAINEL="20261108013913";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1189,6 +1201,10 @@ function noticias(){
     else if(tp>=8)it.push({w:30,k:"CHUVA",t:`${quem} acertou ${tp} bolas de 3.`});
     else if(reb>=20)it.push({w:30,k:"VIDRO",t:`${quem} pegou ${reb} rebotes.`});
     else if(slot<12&&pts===0&&(v[12]||0)>=20)it.push({w:20,k:"ZERO",t:`${quem} jogou ${v[12]} minutos e fez zero ponto.`});
+    // contra a própria média
+    if(slot<12&&p.av&&p.av[11]>=5){const val=valorJogo(v),base=valorJogo(p.av.slice(0,11));const mp=p.av[0];
+      if(val-base>=16&&pts>=22&&pts>=1.6*mp)it.push({w:28+Math.min(20,val-base),k:"ESTOURANDO",t:`${quem}: ${pts} pts, ${reb} reb, ${ast} ast${live}. Média dele é ${mp} pontos.`});
+      else if(base>=20&&base-val>=13&&((v[12]||0)>=15||(g&&g.fim))&&pts<=0.5*mp)it.push({w:26+Math.min(15,base-val),k:"APAGADO",t:`${quem} fez só ${pts} ponto${pts===1?"":"s"}${g&&g.fim?"":" até agora"}. Média de ${mp}.`});}
   });
   // viradas desde a última vez que esta pessoa abriu
   let ant=null;try{ant=JSON.parse(localStorage.getItem("painel.snap")||"null")}catch(e){}
@@ -1258,6 +1274,14 @@ function jogoNBA(p,sp){ // "@OKC 55-84 · 2:28 3ºQ"
   return `<span class="nbag ${g.live?"live":g.fim?"fim":""}">${esc(g.op)}${g.sc?" "+esc(g.sc):""} · ${esc(g.st)}</span>`;
 }
 function valorJogo(v){return v[0]+1.2*v[1]+1.5*v[2]+3*v[3]+3*v[4]+v[5]-v[6]+(v[7]-0.47*v[8])*1.5+(v[9]-0.78*v[10])}
+/* ordenação das tabelas de jogadores (clique no cabeçalho, igual planilha) */
+const COLS=[["PTS",0],["REB",1],["AST",2],["STL",3],["BLK",4],["3PM",5],["TO",6],["FG","fg"],["FT","ft"]];
+function chaveCol(c,st){if(!st)return -1e9;if(c==="fg")return st[8]?st[7]/st[8]:-1;if(c==="ft")return st[10]?st[9]/st[10]:-1;return st[c]}
+function ordenaLj(rows){const o=UI.ljSort;if(!o||o.c==null)return rows;const k=r=>chaveCol(o.c,r.s);return rows.slice().sort((x,y)=>o.asc?k(x)-k(y):k(y)-k(x))}
+function cabLj(primeiro){const o=UI.ljSort||{};const seta=c=>String(o.c)===String(c)?(o.asc?" ▲":" ▼"):"";
+  return `<thead><tr><th data-col="" class="${o.c==null?"ord":""}" title="voltar à ordem por rendimento">${primeiro||"Jogador"}</th>${COLS.map(([n,c])=>`<th data-col="${c}" class="${String(o.c)===String(c)?"ord":""}${c==="fg"||c==="ft"?" fgft":""}" title="ordenar por ${n}">${n}${seta(c)}</th>`).join("")}</tr></thead>`}
+function subJog(t,st,extra){ // linha de baixo do jogador: time, fg e ft em evidência, mais o que vier
+  return `<img src="img/l/${T(t)[1]}.webp" alt="${esc(T(t)[0])}"> <span>${esc(T(t)[0])}</span>${st?`<b class="ev">${st[7]}/${st[8]} fg</b><b class="ev">${st[9]}/${st[10]} ft</b>`:""}${extra||""}`}
 function listaJuntos(a,b,sp){
   const d=DADOS;const rows=[];const futuro=sp!=="sem"&&sp>d.cur;const ft=UI.filtroTime||0;
   [a,b].filter(t=>!ft||t===ft).forEach(t=>(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t)).forEach(p=>{
@@ -1265,12 +1289,12 @@ function listaJuntos(a,b,sp){
     else if(futuro){if(!p.fora&&p.slot!==13&&(p.gd||[]).includes(sp)){const av=p.av?p.av.slice(0,11):null;rows.push({p,t,s:av,slot:p.slot,proj:1,val:av?valorJogo(av):-1e5})}}
     else{const v=p.dl&&p.dl[sp];if(v)rows.push({p,t,s:v.slice(0,11),slot:v[11],min:v[12]||0,val:valorJogo(v)});else if(sp===d.cur&&p.hoje&&p.slot<12)rows.push({p,t,s:null,slot:p.slot,pend:1,val:-1e5})}
   }));
-  const tit=rows.filter(r=>r.slot<12).sort((x,y)=>y.val-x.val),banco=rows.filter(r=>r.slot>=12).sort((x,y)=>(y.s?y.s[0]:0)-(x.s?x.s[0]:0));
+  const tit=ordenaLj(rows.filter(r=>r.slot<12).sort((x,y)=>y.val-x.val)),banco=rows.filter(r=>r.slot>=12).sort((x,y)=>(y.s?y.s[0]:0)-(x.s?x.s[0]:0));
   const n1=x=>futuro?(Math.round(x*10)/10).toFixed(1).replace(".0",""):x;
   const linha=r=>{const p=r.p;const st=r.s;const cor=T(r.t)[4];const g=!futuro&&sp!=="sem"?(d.nba&&d.nba[p.pro]):null;
-    return `<tr class="${r.pend?"pend":""}${r.proj?" proj":""}" style="--cor:${cor}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt="${esc(T(r.t)[0])}"> ${SLOT[r.slot]||""}${r.min?` · ${r.min}'`:""}${r.g!=null&&sp==="sem"?` · ${r.g} j`:""}${st&&!futuro?` · ${st[7]}/${st[8]} fg · ${st[9]}/${st[10]} ft`:""} ${tagInj(p)}${r.pend?'<span class="tag hoje">JOGA</span>':""}${r.proj?'<span class="tag ir">MÉDIA</span>':""}</small>${g?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
+    return `<tr class="${r.pend?"pend":""}${r.proj?" proj":""}" style="--cor:${cor}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small>${subJog(r.t,futuro?null:st,`${r.g!=null&&sp==="sem"?`<span>${r.g} j</span>`:""}${r.slot>=12&&r.slot!==13?'<span class="tag banco">BANCO</span>':r.slot===13?'<span class="tag ir">IR</span>':""} ${tagInj(p)}${r.pend?'<span class="tag hoje">JOGA</span>':""}${r.proj?'<span class="tag ir">MÉDIA</span>':""}`)}</small>${g?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
     ${st?`<td class="pts">${n1(st[0])}</td><td>${n1(st[1])}</td><td>${n1(st[2])}</td><td>${n1(st[3])}</td><td>${n1(st[4])}</td><td>${n1(st[5])}</td><td>${n1(st[6])}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td>`:`<td colspan="9" class="esp">${r.pend?"ainda não jogou":"sem média"}</td>`}</tr>`};
-  const cab=`<thead><tr><th>Jogador</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th class="fgft">FG</th><th class="fgft">FT</th></tr></thead>`;
+  const cab=cabLj();
   const filtros=`<div class="pilulas mini" role="group" aria-label="Time">${[[0,"Os dois"],[a,T(a)[0]],[b,T(b)[0]]].map(([k,n])=>`<button class="pil" type="button" data-ft="${k}" aria-pressed="${ft===k}">${esc(n)}</button>`).join("")}</div>`;
   return `<div class="card lj-wrap"><div class="bloco-tit">JOGADORES <small>${sp==="sem"?"semana toda":futuro?spRot(sp)+" · média da temporada de quem joga":spRot(sp)} · do melhor pro pior</small></div>${filtros}
   <table class="lj">${cab}<tbody>${tit.map(linha).join("")||`<tr><td colspan="10" class="esp">${futuro?"Ninguém joga nesse dia.":"Ninguém em quadra nesse dia."}</td></tr>`}${banco.length?`<tr class="sepr"><td colspan="10">Banco e IR${sp==="sem"?" · pontos que ficaram fora":""}</td></tr>`+banco.map(r=>sp==="sem"?`<tr style="--cor:${T(r.t)[4]}" class="fora"><td class="jg"><div class="jg-in">${face(r.p.id,r.p.n,"")}<div><b>${esc(r.p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${r.bg} jogo${r.bg>1?"s":""} no banco</small></div></div></td><td class="pts">${r.bp}</td><td colspan="8" class="esp">no banco</td></tr>`:linha(r)).join(""):""}</tbody></table></div>`;
@@ -1462,15 +1486,42 @@ function vNoite(){
     else{const v=p.dl&&p.dl[sp];if(v)rows.push({p,t:p.t,s:v.slice(0,11),slot:v[11],min:v[12]||0,val:valorJogo(v)})}
   });
   rows.sort((x,y)=>modo==="piores"?x.val-y.val:y.val-x.val);
-  const L=rows.slice(0,40);
+  if(modo==="selecao")return vSelecao(rows,sp);
+  const L=ordenaLj(rows.slice(0,40));
   const linha=r=>{const p=r.p;const st=r.s;const banco=r.slot>=12;
-    return `<tr class="${banco?"fora":""}" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small><a href="#time-${r.t}"><img src="img/l/${T(r.t)[1]}.webp" alt="${esc(T(r.t)[0])}" title="${esc(T(r.t)[0])}"></a> ${esc(T(r.t)[0])} · ${banco?'<span class="tag banco">BANCO</span>':SLOT[r.slot]||""}${r.min?` · ${r.min}'`:""}${sp==="sem"?` · ${r.g} j`:""} · ${st[7]}/${st[8]} fg · ${st[9]}/${st[10]} ft</small>${sp!=="sem"?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
+    return `<tr class="${banco?"fora":""}" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small>${subJog(r.t,st,`${sp==="sem"?`<span>${r.g} j</span>`:""}${banco?'<span class="tag banco">BANCO</span>':""}`)}</small>${sp!=="sem"?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
     <td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td></tr>`};
   let h=`<div class="cab-secao"><span class="sobre">JOGADORES · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">${modo==="piores"?"OS PIORES DA NOITE":"OS MELHORES DA NOITE"}</h1><p class="linha-fina">Todos os jogadores da liga, ordenados pelo rendimento (pontos, rebotes, assistências, roubos, tocos, bolas, aproveitamento e turnovers).</p></div>
   <div class="dias" role="group" aria-label="Dia"><button class="dia" type="button" data-nd="sem" aria-pressed="${sp==="sem"}">SEMANA<small>total</small></button>`;
   for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++){const r=spRot(x).split(" ");h+=`<button class="dia" type="button" data-nd="${x}" aria-pressed="${String(sp)===String(x)}">${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
-  h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores" aria-pressed="${modo==="melhores"}">Melhores</button><button class="pil" type="button" data-nm="piores" aria-pressed="${modo==="piores"}">Piores</button><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===ft?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
-  <div class="card lj-wrap"><table class="lj"><thead><tr><th>Jogador</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th class="fgft">FG</th><th class="fgft">FT</th></tr></thead><tbody>${L.map(linha).join("")||`<tr><td colspan="10" class="esp">Ninguém jogou ainda.</td></tr>`}</tbody></table></div>`;
+  h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores" aria-pressed="${modo==="melhores"}">Melhores</button><button class="pil" type="button" data-nm="piores" aria-pressed="${modo==="piores"}">Piores</button><button class="pil" type="button" data-nm="selecao" aria-pressed="${modo==="selecao"}">Seleção ${tip("A melhor escalação possível com todo mundo da liga naquele dia: PG, SG, SF, PF, C, G, F e 2 UTIL, respeitando as posições da ESPN.","da noite")}</button><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===ft?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
+  <div class="card lj-wrap"><table class="lj">${cabLj()}<tbody>${L.map(linha).join("")||`<tr><td colspan="10" class="esp">Ninguém jogou ainda.</td></tr>`}</tbody></table></div>`;
+  return h;
+}
+/* seleção da noite: melhor escalação possível (matching guloso por valor, que é ótimo para slots) */
+const SLOTS_SEL=[0,1,2,3,4,5,6,11,11];
+function elegiveis(p){ // slots que o jogador pode ocupar
+  if(p.el&&p.el.length)return p.el.filter(s=>s<=11);
+  const m={1:[0,5],2:[1,5],3:[2,6],4:[3,6],5:[4]};return (m[p.pos]||[]).concat([11]);
+}
+function escalaMelhor(rows){
+  const dono=Array(SLOTS_SEL.length).fill(null);
+  const tenta=(r,vis)=>{for(let k=0;k<SLOTS_SEL.length;k++){if(vis[k]||!r.el.includes(SLOTS_SEL[k]))continue;vis[k]=1;if(dono[k]==null||tenta(dono[k],vis)){dono[k]=r;return true}}return false};
+  rows.forEach(r=>{r.el=elegiveis(r.p);tenta(r,[])});
+  return dono;
+}
+function vSelecao(rows,sp){
+  const d=DADOS;const ord=rows.slice().sort((x,y)=>y.val-x.val);const dono=escalaMelhor(ord);
+  const tot=zero();dono.forEach(r=>{if(r)r.s.forEach((x,i)=>tot[i]+=x)});
+  const linha=(r,k)=>{if(!r)return `<tr><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span><div><b>—</b></div></div></td><td colspan="9" class="esp">ninguém</td></tr>`;const p=r.p,st=r.s;
+    return `<tr style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small>${subJog(r.t,st,r.slot>=12?'<span class="tag banco">NO BANCO</span>':"")}</small></div></div></td><td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${st[7]}/${st[8]}</td><td class="fgft">${st[9]}/${st[10]}</td></tr>`};
+  const nb=dono.filter(r=>r&&r.slot>=12).length;
+  let h=`<div class="cab-secao"><span class="sobre">SELEÇÃO · ${sp==="sem"?"SEMANA "+d.wk:esc(spRot(sp).toUpperCase())}</span><h1 class="manchete">SELEÇÃO DA NOITE</h1><p class="linha-fina">A melhor escalação possível juntando os 12 elencos: PG, SG, SF, PF, C, G, F e 2 UTIL, nas posições da ESPN.${nb?` <b>${nb} ${nb>1?"estavam":"estava"} no banco.</b>`:""}</p></div>
+  <div class="dias" role="group" aria-label="Dia"><button class="dia" type="button" data-nd="sem" aria-pressed="${sp==="sem"}">SEMANA<small>total</small></button>`;
+  for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++){const r=spRot(x).split(" ");h+=`<button class="dia" type="button" data-nd="${x}" aria-pressed="${String(sp)===String(x)}">${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
+  h+=`</div><div class="pilulas"><button class="pil" type="button" data-nm="melhores">Melhores</button><button class="pil" type="button" data-nm="piores">Piores</button><button class="pil" type="button" data-nm="selecao" aria-pressed="true">Seleção</button></div>
+  <div class="card lj-wrap"><table class="lj"><thead><tr><th>Escalação</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>3PM</th><th>TO</th><th class="fgft">FG</th><th class="fgft">FT</th></tr></thead><tbody>${dono.map(linha).join("")}
+  <tr class="total"><td class="jg"><div class="jg-in"><div><b>TOTAL</b><small>${sp==="sem"?"na semana":"na noite"}</small></div></div></td><td class="pts">${tot[0]}</td><td>${tot[1]}</td><td>${tot[2]}</td><td>${tot[3]}</td><td>${tot[4]}</td><td>${tot[5]}</td><td>${tot[6]}</td><td class="fgft">${tot[7]}/${tot[8]}<br><small>${tot[8]?(100*tot[7]/tot[8]).toFixed(1):0}%</small></td><td class="fgft">${tot[9]}/${tot[10]}<br><small>${tot[10]?(100*tot[9]/tot[10]).toFixed(1):0}%</small></td></tr></tbody></table></div>`;
   return h;
 }
 /* ---------- ranking do Loydão + tabela ---------- */
@@ -1819,7 +1870,7 @@ function gravarCache(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e)
 function metaDe(p,extra){
   const m={n:p.fullName,pos:p.defaultPositionId,pro:p.proTeamId,inj:p.injuryStatus||"ACTIVE",own:p.ownership&&p.ownership.percentOwned,...extra};
   const med=(id,split)=>{const s=(p.stats||[]).find(x=>x.id===id&&x.statSplitTypeId===split);if(s&&s.stats&&s.stats["42"]){const g=s.stats["42"];return [...AO.K.map(k=>+((s.stats[k]||0)/g).toFixed(1)),g]}};
-  m.av=med("002027",0);m.l7=med("012027",1);
+  m.av=med("002027",0);m.l7=med("012027",1);m.el=(p.eligibleSlots||[]).filter(x=>x<=11);
   const pj=(p.stats||[]).find(x=>x.id==="102027"&&x.statSplitTypeId===0&&x.statSourceId===1);if(pj&&pj.stats&&pj.stats["42"]>0){const g=pj.stats["42"];m.pj=AO.K.map(k=>+((pj.stats[k]||0)/g).toFixed(2))}
   if(extra&&extra.ratings)m.rk=[0,1,2,3].map(k=>extra.ratings[k]?extra.ratings[k].totalRanking:null);
   delete m.ratings;return m;
@@ -1942,7 +1993,7 @@ function render(){
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
-  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm]");if(!t)return;
+  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
   if(ds.jogo!==undefined)ir("jogo-"+ds.jogo);
@@ -1965,6 +2016,7 @@ document.addEventListener("click",e=>{
   else if(ds.nm){UI.noiteModo=ds.nm;render()}
   else if(ds.sub){UI.subJogo=ds.sub;window.scrollTo(0,0);render()}
   else if(ds.prm){UI.prModo=ds.prm;render()}
+  else if(ds.col!=null){const c=ds.col===""?null:(isNaN(+ds.col)?ds.col:+ds.col);const o=UI.ljSort||{};UI.ljSort=c==null?{c:null}:(String(o.c)===String(c)?{c,asc:!o.asc}:{c,asc:false});render()}
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
   else if(ds.drt){UI.drTemp=ds.drt;UI.drTime="todos";render()}
 });
