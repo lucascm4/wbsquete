@@ -1629,11 +1629,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794172657"></script>
-<script src="radar.js?v=1794172657"></script>
-<script src="midia.js?v=1794172657"></script>
+<script src="hist.js?v=1794172764"></script>
+<script src="radar.js?v=1794172764"></script>
+<script src="midia.js?v=1794172764"></script>
 <script>
-const VERSAO_PAINEL="20261108181737";
+const VERSAO_PAINEL="20261108181924";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1713,14 +1713,13 @@ function precifica(P,margem,T,mx,mn){
   // margem como a Sportingbet: ~8% no mercado equilibrado, caindo até ~4,5% quando um lado é muito favorito (o 1.01 não tem onde absorver margem)
   if(margem==null||margem<1.15){const pm=Math.max(...P);margem=(margem||1.07)+0.01-0.035*Math.max(0,(pm-0.5)/0.5)}
   let q=P.map(p=>Math.pow(Math.max(p,1e-4),T));let sq=q.reduce((x,y)=>x+y,0);q=q.map(x=>x/sq);
-  const piso=1/(mx*1.02);q=q.map(x=>Math.max(x,piso));sq=q.reduce((x,y)=>x+y,0);q=q.map(x=>x/sq);
-  let lo=0.3,hi=1;for(let it=0;it<40;it++){const c=(lo+hi)/2;const t=q.reduce((x,y)=>x+Math.pow(y,c),0);if(t>margem)lo=c;else hi=c}
+    let lo=0.3,hi=1;for(let it=0;it<40;it++){const c=(lo+hi)/2;const t=q.reduce((x,y)=>x+Math.pow(y,c),0);if(t>margem)lo=c;else hi=c}
   const c=(lo+hi)/2;return q.map(x=>{const v=degrau(Math.min(mx,Math.max(mn,1/Math.pow(x,c))));return v.toFixed(2)})}
 function momento(a,b){const d=DADOS;const rem=(EST.rem[a]||[]).length+(EST.rem[b]||[]).length;const G=d.nba||{};
   const vivo=d.P.some(p=>(p.t===a||p.t===b)&&p.slot<12&&G[p.pro]&&G[p.pro].live);
   const pre=d.cur===d.s0&&!d.P.some(p=>p.dl&&p.dl[d.cur]);
   // pré-semana: margem menor (mercado principal); durante a semana 7%; com jogo rolando 8% (ao vivo as casas cobram mais)
-  return {rem,vivo,pre,margem:pre?1.06:vivo?1.08:1.07,T:rem>=20?0.9:rem>=8?0.93:0.95,mx:rem>8?41:51,mn:1.01}}
+  return {rem,vivo,pre,margem:pre?1.06:vivo?1.08:1.07,T:rem>=20?0.9:rem>=8?0.93:0.95,mx:1000,mn:1.01}}
 function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];const M=momento(a,b);
   if(!M.rem)return sm[k]=[sm.pa,sm.pe,sm.pb].map(p=>p>0.5?"✓":"✗"); // acabou: mercado liquidado
   return sm[k]=precifica([sm.pa,sm.pe,sm.pb],M.margem,M.T,M.mx,M.mn)}
@@ -1736,7 +1735,7 @@ function maisMercados(a,b,s){const A=T(a),B=T(b);const M=momento(a,b);if(!M.rem)
   const cats=CATS.map((c,j)=>{const pa=s.cat[j],pe=s.catE[j],pb=Math.max(0,1-pa-pe);const P=pe>0.02?[pa,pe,pb]:[pa+pe/2,pb+pe/2];const o=precifica(P,M.margem,M.T,M.mx,M.mn);
     return linha(c.k,P.length===3?[[a3,o[0],pa],["X",o[1],pe],[b3,o[2],pb]]:[[a3,o[0],P[0]],[b3,o[1],P[1]]])}).join("");
   // placar exato: margem alta, como nas casas
-  const top=R.slice().sort((x,y)=>y.p-x.p).slice(0,8);const oE=precifica(top.map(r=>r.p).concat([Math.max(0.001,1-top.reduce((x,r)=>x+r.p,0))]),1.2,M.T,M.mx===41?81:101,1.5);
+  const top=R.slice().sort((x,y)=>y.p-x.p).slice(0,8);const oE=precifica(top.map(r=>r.p).concat([Math.max(0.001,1-top.reduce((x,r)=>x+r.p,0))]),1.2,M.T,1000,1.5);
   const exato=`<div class="mk-g">${top.map((r,i)=>`<span class="mk-o"><small>${r.w}-${r.l}${r.t?"-"+r.t:""}</small><b>${oE[i]}</b></span>`).join("")}</div>`;
   return `<details class="mk"><summary>Mais mercados ${M.vivo?'<span class="mk-live">● AO VIVO</span>':""}</summary>
    ${tt}${hc}
@@ -1762,7 +1761,7 @@ const GLOSS={
  vira:"VIRA: quem lidera a categoria agora deve perder até domingo, pela previsão.",
  pegado:"PEGADO: categoria em que cada lado tem entre 30% e 70% de chance. Decide no detalhe.",
  rk:"Rk 9cat: ranking próprio no formato da nossa liga (9 categorias, z-score, FG% e FT% pesados pelo volume, TO contra), no mesmo método do Basketball Monster. Rk 7d é o mesmo ranking só com os últimos 7 dias.",
- odd:"Odd: quanto você levaria por 1 real apostado. A casa parte da chance do modelo do Loydão e faz o que uma bet de verdade faz: desconfia do próprio modelo (encolhe os extremos), não paga mais que 41, cobra margem (5% antes da semana, 7% durante, 8% com jogo rolando) pesando mais na zebra e arredonda nos degraus de casa de aposta. A % ao lado é a chance pura do modelo. Quando não falta jogo, o mercado é liquidado (✓/✗).",
+ odd:"Odd: quanto você levaria por 1 real apostado. A casa parte da chance do modelo do Loydão e faz o que uma bet de verdade faz: desconfia do próprio modelo (encolhe os extremos), cobra margem (5% antes da semana, 7% durante, 8% com jogo rolando) pesando mais na zebra e arredonda nos degraus de casa de aposta. A % ao lado é a chance pura do modelo. Quando não falta jogo, o mercado é liquidado (✓/✗).",
  chances:"Chances: 4.000 simulações do resto da semana. Em cada uma, cada jogador rende perto da média dele, com variação normal.",
  playoffs:"Playoffs: chance de terminar entre os 6 primeiros. 1.200 simulações do resto da temporada, com o modelo testado nas 4 temporadas anteriores da liga (acerta a classificação de playoffs com erro Brier 0,19 na semana 3 e 0,12 na semana 8).",
  titulo:"Título: chance de ganhar o mata-mata nas simulações (seeds 1 e 2 folgam na primeira semana).",
