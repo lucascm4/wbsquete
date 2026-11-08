@@ -1772,11 +1772,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794175874"></script>
-<script src="radar.js?v=1794175874"></script>
-<script src="midia.js?v=1794175874"></script>
+<script src="hist.js?v=1794176043"></script>
+<script src="radar.js?v=1794176043"></script>
+<script src="midia.js?v=1794176043"></script>
 <script>
-const VERSAO_PAINEL="20261108191114";
+const VERSAO_PAINEL="20261108191403";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3984,9 +3984,13 @@ if(window.visualViewport){visualViewport.addEventListener("resize",posDoca);visu
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="avTime"){UI.avF=+e.target.value||0;render()}if(e.target&&e.target.id==="avDuelo"){UI.avDuelo=+e.target.value||0;try{if(UI.avDuelo&&!meuTime())localStorage.setItem("painel.meu",UI.avDuelo)}catch(x){}render()}});
 
 /* anúncios: cartão no meio das páginas + tarja pop-up de vez em quando (estilo TV) */
-function montarPubli(r){try{const app=document.getElementById("app");if(!app||app.querySelector(".publi")||!DADOS)return;if(!/^(|confrontos|times|noite|perfis|radar|museu|aovivo|time-\d+)$/.test(r||""))return;
-  const cards=[...app.querySelectorAll(":scope > .card, :scope > .jogo, :scope > .grade > *")];const O=ofertasBet();if(!O.length)return;
-  const alvo=cards[Math.min(cards.length-1,(r===""||r==="confrontos")?2:1)];if(!alvo)return;const div=document.createElement("div");div.innerHTML=publiCard(O[0]);alvo.after(div.firstElementChild)}catch(e){}}
+function montarPubli(r){try{const app=document.getElementById("app");if(!app||app.querySelector(".publi")||!DADOS)return;
+  const O=ofertasBet();if(!O.length)return;const cards=[...app.querySelectorAll(":scope > .card, :scope > .jogo, :scope > .grade > *, :scope > .tabela-wrap")].filter(c=>!c.classList.contains("publi"));
+  const div=document.createElement("div");div.innerHTML=publiCard(O[0]);const el=div.firstElementChild;
+  if(!cards.length){app.appendChild(el);return}
+  const pos=(r===""||r==="confrontos")?2:cards.length>=3?1:cards.length-1;cards[Math.min(cards.length-1,pos)].after(el);
+  // páginas longas ganham um segundo anúncio mais embaixo
+  if(cards.length>=7&&O[1]){const d2=document.createElement("div");d2.innerHTML=publiCard(O[1]);cards[Math.min(cards.length-1,6)].after(d2.firstElementChild)}}catch(e){}}
 let _tarjas=0,_ultTarja=0;
 function tarja(){try{if(_tarjas>=4||document.hidden||document.getElementById("popFicha")||document.getElementById("popInst")||document.getElementById("popLista")||document.getElementById("tarjaBet"))return;
   if(Date.now()-_ultTarja<4*60*1000)return;const O=ofertasBet();if(!O.length)return;const of=O[0];_tarjas++;_ultTarja=Date.now();
@@ -3994,5 +3998,7 @@ function tarja(){try{if(_tarjas>=4||document.hidden||document.getElementById("po
   el.innerHTML=`<div class="tarja-in" ${of.j!=null?`data-jogo="${of.j}"`:""}><span class="tarja-m"><i>BET</i>LOYDE</span><div class="tarja-c"><small>${esc(of.s)}</small><b>${esc(of.t)}: de ${fmtO(of.de)} para <u>${fmtO(of.para)}</u></b></div><span class="tarja-18">+18</span><button type="button" class="tarja-x" aria-label="fechar anúncio">✕</button></div><small class="tarja-leg">Publicidade de mentira · odds do modelo do Loydão · aposte com responsabilidade (aqui ninguém aposta nada)</small>`;
   el.querySelector(".tarja-x").onclick=ev=>{ev.stopPropagation();el.remove()};document.body.appendChild(el);setTimeout(()=>{el.classList.add("sai");setTimeout(()=>el.remove(),400)},11000)}catch(e){}}
 setTimeout(tarja,60*1000);setInterval(tarja,60*1000);
+
+new MutationObserver(()=>{const f=document.querySelector("#popFicha .pop-full");if(f&&!f.querySelector(".publi")&&typeof ofertasBet==="function"){try{const O=ofertasBet();if(O.length){const d=document.createElement("div");d.innerHTML=publiCard(O[0]);f.appendChild(d.firstElementChild)}}catch(e){}}}).observe(document.body,{childList:true});
 </script>
 </body></html>
