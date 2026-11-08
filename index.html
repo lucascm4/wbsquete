@@ -1772,11 +1772,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794175787"></script>
-<script src="radar.js?v=1794175787"></script>
-<script src="midia.js?v=1794175787"></script>
+<script src="hist.js?v=1794175874"></script>
+<script src="radar.js?v=1794175874"></script>
+<script src="midia.js?v=1794175874"></script>
 <script>
-const VERSAO_PAINEL="20261108190947";
+const VERSAO_PAINEL="20261108191114";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3550,7 +3550,7 @@ function vAoVivoTodos(abas){
 const oddDe=p=>{if(!(p>0.004))return null;const v=degrau(Math.max(1.01,1/(p*1.075)));return v};
 const fmtO=v=>v==null?"—":v.toFixed(2);
 function ofertasBet(){const d=DADOS;if(!d||!EST||!EST.tot)return [];const O=[];const man=id=>T(id)[2],sig=id=>T(id)[3]||T(id)[0];
-  const turbo=v=>degrau(v*(1.18+Math.random()*0.17));
+  const turbo=v=>degrau(v*(1.12+Math.random()*0.16));
   // confrontos da semana
   d.mt.forEach(([a,b])=>{let s;try{s=simula(a,b)}catch(e){return}const fav=s.pa>=s.pb?a:b,zeb=fav===a?b:a,pf=Math.max(s.pa,s.pb),pz=Math.min(s.pa,s.pb);
     if(pz>0.03){const o=oddDe(pz);if(o)O.push({t:`${man(zeb)} vira pra cima do ${man(fav)}`,de:o,para:turbo(o),s:`${T(zeb)[0]} x ${T(fav)[0]} · semana ${d.wk}`,j:d.mt.findIndex(m=>m.includes(a))})}
@@ -3566,7 +3566,7 @@ function ofertasBet(){const d=DADOS;if(!d||!EST||!EST.tot)return [];const O=[];c
     if(x.tit>0.01&&x.tit<0.08){const o=oddDe(x.tit);if(o)O.push({t:`${man(id)} campeão (é sério, tem odd)`,de:o,para:turbo(o),s:"mercado da temporada · zebra das zebras"})}
     if(x.lant>0.08){const o=oddDe(x.lant);if(o)O.push({t:`${man(id)} lanterna e paga o stand-up`,de:o,para:turbo(o),s:"mercado da punição"})}
     if(x.po>0.2&&x.po<0.6){const o=oddDe(1-x.po);if(o)O.push({t:`${man(id)} fica fora dos playoffs`,de:o,para:turbo(o),s:"mercado da temporada"})}})}catch(e){}
-  return O.sort(()=>Math.random()-0.5)}
+  return O.filter(o=>o.de>=1.4&&o.de<=60).sort(()=>Math.random()-0.5)}
 const PUBLI_SLOGAN=["BETLOYDE: a casa que torce contra você","Aposte com responsabilidade. Perca com dignidade.","Odd turbinada é igual promessa de manager: confie desconfiando","Não é dinheiro de verdade. A vergonha é.","BETLOYDE · patrocinadora oficial do choro de segunda-feira"];
 function publiCard(of){if(!of)return "";return `<div class="publi" ${of.j!=null?`data-jogo="${of.j}"`:""}><div class="publi-l"><span class="publi-tag">PUBLICIDADE</span><b class="publi-m"><i>BET</i>LOYDE</b></div><div class="publi-c"><span class="publi-sup">${esc(of.s)}</span><b class="publi-t">${esc(of.t)}:</b><span class="publi-o">de <s>${fmtO(of.de)}</s> para <b>${fmtO(of.para)}</b></span></div><div class="publi-r"><span class="publi-18">+18</span><small>${esc(PUBLI_SLOGAN[Math.floor(Math.random()*PUBLI_SLOGAN.length)])}</small></div><small class="publi-leg">Odds de mentira calculadas pelo modelo do Loydão. Ninguém aposta nada aqui.</small></div>`}
 
