@@ -1606,6 +1606,9 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 .sh-nav b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46%;font-size:11px!important}
 .tl-home .hm{grid-template-columns:repeat(4,minmax(0,1fr))}.hm i,.hm-l img{max-width:46px;justify-self:center}
 
+.bf-s{flex:1;font:700 11px system-ui,sans-serif;color:var(--apagado);padding:6px 8px;background:#000;border-radius:6px;border:1px dashed #444}
+.bf-s.grande{display:block;text-align:center;font-family:var(--display);font-size:20px;color:#fff;margin-top:8px;padding:14px}.bf-s.grande small{display:block;font:500 12px system-ui;color:var(--apagado);margin-top:6px;line-height:1.4}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1671,11 +1674,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794173260"></script>
-<script src="radar.js?v=1794173260"></script>
-<script src="midia.js?v=1794173260"></script>
+<script src="hist.js?v=1794173349"></script>
+<script src="radar.js?v=1794173349"></script>
+<script src="midia.js?v=1794173349"></script>
 <script>
-const VERSAO_PAINEL="20261108182740";
+const VERSAO_PAINEL="20261108182909";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1764,7 +1767,10 @@ function momento(a,b){const d=DADOS;const rem=(EST.rem[a]||[]).length+(EST.rem[b
   return {rem,vivo,pre,margem:pre?1.06:vivo?1.08:1.07,T:rem>=20?0.9:rem>=8?0.93:0.95,mx:1000,mn:1.01}}
 function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];const M=momento(a,b);
   if(!M.rem)return sm[k]=[sm.pa,sm.pe,sm.pb].map(p=>p>0.5?"✓":"✗"); // acabou: mercado liquidado
+  // como as casas: mercado praticamente decidido (favorito com 98,5%+) é suspenso, em vez de ficar oferecendo 1.01
+  if(Math.max(sm.pa,sm.pb)>=0.985)return sm[k]=["🔒","🔒","🔒"];
   return sm[k]=precifica([sm.pa,sm.pe,sm.pb],M.margem,M.T,M.mx,M.mn)}
+function suspenso(a,b,s){return casa(a,b,s)[0]==="🔒"}
 function maisMercados(a,b,s){const A=T(a),B=T(b);const M=momento(a,b);if(!M.rem)return "";const a3=A[3]||A[0],b3=B[3]||B[0];
   const R=Object.entries(s.res).map(([k,p])=>{const [w,l,t]=k.split("-").map(Number);return {w,l,t,p}});
   const soma=f=>R.filter(f).reduce((x,r)=>x+r.p,0);
@@ -1784,7 +1790,7 @@ function maisMercados(a,b,s){const A=T(a),B=T(b);const M=momento(a,b);if(!M.rem)
    <div class="mk-sec">CATEGORIA A CATEGORIA</div>${cats}
    <div class="mk-sec">PLACAR EXATO <small>(${esc(a3)} primeiro · margem de 20%, como nas casas)</small></div>${exato}
    <p class="mk-nota">Margem da casa: até ${Math.round((M.margem+0.01-1)*100)}% nos mercados equilibrados, menos quando um lado é muito favorito${M.vivo?" · jogo rolando, ao vivo a casa cobra mais":M.pre?" · pré-semana":""}. Linha decidida some da escada, como na Sportingbet.</p></details>`}
-let _ODM=null;function oddS(k,p,pronto){const v=pronto!=null?pronto:odd(p);if(v==="—"||v==="✓"||v==="✗")return v;const dk="wbs.odds."+(DADOS?DADOS.cur:0);
+let _ODM=null;function oddS(k,p,pronto){const v=pronto!=null?pronto:odd(p);if(v==="—"||v==="✓"||v==="✗"||v==="🔒")return v;const dk="wbs.odds."+(DADOS?DADOS.cur:0);
   if(!_ODM||_ODM._k!==dk){_ODM=null;try{_ODM=JSON.parse(localStorage.getItem(dk)||"null")}catch(e){}_ODM=_ODM||{};_ODM._k=dk}
   let m=_ODM[k];if(!m){m=_ODM[k]={v,prev:v}}else if(m.v!==v){m.prev=m.v;m.v=v}try{localStorage.setItem(dk,JSON.stringify(_ODM))}catch(e){}
   const a=+m.v,b=+m.prev;return v+(a>b?'<i class="od-up">▲</i>':a<b?'<i class="od-dn">▼</i>':"")}
@@ -2136,6 +2142,7 @@ function miniTabela(a,b,sc){
 }
 function betFaixa(a,b,s){
   const A=T(a),B=T(b);const fav=s.pa>s.pb?1:s.pb>s.pa?2:0;
+  if(suspenso(a,b,s)){const fv=s.pa>s.pb?A:B;return `<div class="bf bf-susp"><span class="bf-m"><b>BET</b>LOYDE</span><span class="bf-s">🔒 Mercado suspenso · ${esc(fv[3]||fv[0])} com ${pct(Math.max(s.pa,s.pb))}, praticamente decidido</span></div>`}
   return `<div class="bf"><span class="bf-m"><b>BET</b>LOYDE</span><span class="bq ${fav===1?"fav":""}"><small>1</small><b>${oddS(a+"-"+b+"-1",s.pa,casa(a,b,s)[0])}</b></span><span class="bq ${fav===0?"fav":""}"><small>X</small><b>${oddS(a+"-"+b+"-x",s.pe,casa(a,b,s)[1])}</b></span><span class="bq ${fav===2?"fav":""}"><small>2</small><b>${oddS(a+"-"+b+"-2",s.pb,casa(a,b,s)[2])}</b></span></div>`;
 }
 function jogoNBA(p,sp){ // "@OKC 55-84 · 2:28 3ºQ"
@@ -2250,6 +2257,7 @@ function tabelaCategorias(a,b,ta,tb,pa,pb,sim){
 }
 function betLoyde(a,b,s){
   const A=T(a),B=T(b);const fav=s.pa>s.pb?1:s.pb>s.pa?2:0;
+  if(suspenso(a,b,s)){const fv=s.pa>s.pb?A:B;return `<div class="bet"><div class="marca"><span class="logo"><b>BET</b>LOYDE<i>COMO FECHA</i></span><small>${tip("odd","o que é a odd")}</small></div><div class="bf-s grande">🔒 MERCADO SUSPENSO<small>${esc(fv[0])} tem ${pct(Math.max(s.pa,s.pb))} de chance: está praticamente decidido. As casas tiram o mercado do ar nessa hora em vez de oferecer 1.01. No backtest, favoritos de domingo com 98%+ ganharam todas.</small></div></div>`}
   return `<div class="bet"><div class="marca"><span class="logo"><b>BET</b>LOYDE<i>COMO FECHA</i></span><small>${tip("odd","o que é a odd")}</small></div>
   <div class="bet-jogo"><div class="bet-times"><span><img src="img/l/${A[1]}.webp" alt="">${esc(A[0])}</span><span><img src="img/l/${B[1]}.webp" alt="">${esc(B[0])}</span></div>
   <div class="bet-odds"><span class="bq ${fav===1?"fav":""}"><small>1</small><b>${oddS(a+"-"+b+"-1",s.pa,casa(a,b,s)[0])}</b><em>${pct(s.pa)}</em></span><span class="bq ${fav===0?"fav":""}"><small>X</small><b>${oddS(a+"-"+b+"-x",s.pe,casa(a,b,s)[1])}</b><em>${pct(s.pe)}</em></span><span class="bq ${fav===2?"fav":""}"><small>2</small><b>${oddS(a+"-"+b+"-2",s.pb,casa(a,b,s)[2])}</b><em>${pct(s.pb)}</em></span></div></div>
