@@ -1008,7 +1008,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108015328";
+const VERSAO_PAINEL="20261108015438";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1122,7 +1122,9 @@ function prepara(d){
     if(p.av){const g=p.av[11];p.avx=p.pj?p.av.slice(0,11).map((x,i)=>(x*g+p.pj[i]*6)/(g+6)):p.av.slice(0,11)}else if(p.pj)p.avx=p.pj.slice(0,11);else p.avx=null;});
   // rank 9-cat próprio (troca o rank da ESPN): temporada por média, 7 dias pela média dos 7 dias
   {const todos=d.P.concat(d.fa||[]).filter(p=>!p.fora);todos.forEach(p=>{if(p.rk&&!p.rkE)p.rkE=p.rk});
-   const ord=k=>todos.filter(p=>p[k]!=null&&(k==="nota"?p.av&&p.av[11]>=2:p.l7&&p.l7[11]>=2)).sort((x,y)=>y[k]-x[k]);
+   const gmax=Math.max(1,...todos.map(p=>p.av?p.av[11]:0)),gmin=Math.max(3,Math.round(gmax*0.5)); // mínimo: metade dos jogos possíveis
+   const g7=Math.max(1,...todos.map(p=>p.l7?p.l7[11]:0)),gmin7=Math.max(2,Math.round(g7*0.5));
+   const ord=k=>todos.filter(p=>p[k]!=null&&(k==="nota"?p.av&&p.av[11]>=gmin:p.l7&&p.l7[11]>=gmin7)).sort((x,y)=>y[k]-x[k]);
    const r0={},r1={};ord("nota").forEach((p,i)=>r0[p.id]=i+1);ord("nota7").forEach((p,i)=>r1[p.id]=i+1);
    todos.forEach(p=>{p.rk=(r0[p.id]||r1[p.id])?[r0[p.id]||null,r1[p.id]||null]:null});}
   d.teams.forEach(t=>{
