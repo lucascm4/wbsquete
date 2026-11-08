@@ -843,7 +843,8 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .subabas button{all:unset;cursor:pointer;text-align:center;padding:11px 4px;font-family:var(--display);font-size:16px;letter-spacing:.05em;color:#bbb;border-bottom:3px solid transparent}
 .subabas button[aria-selected="true"]{color:#000;background:var(--amarelo)}
 .pr .pn em{display:block;font-style:normal;font-size:11px;color:#e9dfd2;margin-top:3px;font-variant-numeric:tabular-nums;line-height:1.35}
-@media (max-width:760px){.subabas button{font-size:14px;padding:10px 2px}.pr .pn em{font-size:10px}.jn-set small{display:none}}
+@media (max-width:760px){.subabas button{font-size:14px;padding:10px 2px}.pr .pn em{font-size:10.5px}.jn-set small{display:none}
+.premios.cheio{grid-template-columns:1fr}.premios.cheio .pr{grid-template-columns:44px minmax(0,1fr)}.premios.cheio .pr .ft{width:44px;height:44px}.premios.cheio .pr .pn b{font-size:14px}}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -906,7 +907,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108012520";
+const VERSAO_PAINEL="20261108012708";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1354,7 +1355,7 @@ function premios(a,b){
 function cardPremios(a,b){
   const L=premios(a,b);if(!L)return "";
   return `<div class="card"><div class="bloco-tit">PRÊMIOS DA SEMANA <small>${tip("MVP = quem mais pesou nas categorias que o time ganha. Paçoca = quem mais comprometeu as que perde. Rui Dimai = volume com pontaria ruim. MIP = acima da própria média. Culpado = pontos no banco.","como são escolhidos")}</small></div>
-  <div class="premios">${L.map(w=>`<div class="pr" style="--cor:${T(w.x.t)[4]}"><span class="pk ${w.k==="MVP"?"ouro":["ENTREGANDO A PAÇOCA","LIXO","RUI DIMAI","CULPADO"].includes(w.k)?"ruim":""}">${w.k}</span>${face(w.x.p.id,w.x.p.n,"")}<div class="pn"><b>${esc(w.x.p.n)}</b><small><img src="img/l/${T(w.x.t)[1]}.webp" alt=""> ${esc(T(w.x.t)[0])} · ${esc(w.d)}</small><em>${w.k==="CULPADO"?esc(w.l):linhaStats(w.x.p.W)+" · "+w.x.p.g+" j"}</em></div></div>`).join("")}</div></div>`;
+  <div class="premios cheio">${L.map(w=>`<div class="pr" style="--cor:${T(w.x.t)[4]}"><span class="pk ${w.k==="MVP"?"ouro":["ENTREGANDO A PAÇOCA","LIXO","RUI DIMAI","CULPADO"].includes(w.k)?"ruim":""}">${w.k}</span>${face(w.x.p.id,w.x.p.n,"")}<div class="pn"><b>${esc(w.x.p.n)}</b><small><img src="img/l/${T(w.x.t)[1]}.webp" alt=""> ${esc(T(w.x.t)[0])} · ${esc(w.d)}</small><em>${w.k==="CULPADO"?esc(w.l):linhaStats(w.x.p.W)+" · "+w.x.p.g+" j"}</em></div></div>`).join("")}</div></div>`;
 }
 function chipsPremios(a,b){
   const L=premios(a,b);if(!L)return "";const m=L.find(w=>w.k==="MVP"),p=L.find(w=>w.k==="ENTREGANDO A PAÇOCA")||L.find(w=>w.k==="LIXO");
