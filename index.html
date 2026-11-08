@@ -1234,7 +1234,7 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108150648";
+const VERSAO_PAINEL="20261108150820";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2108,7 +2108,7 @@ function abrirJogador(id,perF){
     if(yr===2027){const cur=d.P.find(q=>q.id===id&&!q.fora);d.P.filter(q=>q.id===id).forEach(q=>{const nm=T(q.t)[0];if(nm&&!ts.includes(nm))ts.push(nm)});if(cur){const nm=T(cur.t)[0];ts.splice(ts.indexOf(nm),1);ts.push(nm)}}
     return {ts,drop:f.drop,sp}};
   const carinhas=yr=>{const x=tmsDe(yr);if(!x.ts.length)return `<span class="car-fa">livre na liga</span>`;return `<span class="car-ft">${x.ts.map((t,i)=>`${i?'<i>›</i>':""}${logo(t)}`).join("")}${x.ts.length===1?`<em>${esc(x.ts[0])}</em>`:""}${x.drop?'<em class="dp">largado</em>':""}</span>`};
-  const tot=linhasCar.length?(()=>{const g=linhasCar.reduce((x,l)=>x+l.a[11],0);const m=zero().map((_,i)=>linhasCar.reduce((x,l)=>x+l.a[i]*l.a[11],0)/Math.max(1,g));return [...m,g]})():null;
+  const LT=linhasCar.filter(l=>!l.soLiga);const tot=LT.length>1?(()=>{const g=LT.reduce((x,l)=>x+l.a[11],0);const m=zero().map((_,i)=>LT.reduce((x,l)=>x+l.a[i]*l.a[11],0)/Math.max(1,g));return [...m,g]})():null;
   const selo=a=>{const n=notaDe(a);return `<span class="car-n ${corN(n)}">${n==null?"–":(n>0?"+":"")+n.toFixed(1)}</span>`};
   const v4=a=>`<span class="car-v"><b>${a[11]}</b><small>J</small></span><span class="car-v"><b>${n1(a[0])}</b><small>PTS</small></span><span class="car-v"><b>${n1(a[1])}</b><small>REB</small></span><span class="car-v"><b>${n1(a[2])}</b><small>AST</small></span>`;
   const mais=a=>`<div class="car-mais">${[["STL",n1(a[3])],["BLK",n1(a[4])],["3PM",n1(a[5])],["TO",n1(a[6])],["FG",`${pc(a[7],a[8])}<small>${n1(a[7])}/${n1(a[8])}</small>`],["FT",`${pc(a[9],a[10])}<small>${n1(a[9])}/${n1(a[10])}</small>`]].map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`;
