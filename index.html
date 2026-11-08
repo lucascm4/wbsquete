@@ -1674,11 +1674,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794173349"></script>
-<script src="radar.js?v=1794173349"></script>
-<script src="midia.js?v=1794173349"></script>
+<script src="hist.js?v=1794173423"></script>
+<script src="radar.js?v=1794173423"></script>
+<script src="midia.js?v=1794173423"></script>
 <script>
-const VERSAO_PAINEL="20261108182909";
+const VERSAO_PAINEL="20261108183023";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1877,8 +1877,13 @@ function prepara(d){
     e.tot[t.id]=a;
     const rem=[];
     for(let sp=d.cur;sp<=d.s1;sp++){
-      const c=(e.rost[t.id]||[]).filter(p=>{const nw=noticia(p,sp);return p.slot!==13&&(nw?nw.st!=="OUT":p.inj!=="OUT")&&p.avx&&(p.gd||[]).includes(sp)&&!(sp===d.cur&&p.dl&&p.dl[sp])});
-      c.sort((x,y)=>(y.nota||0)-(x.nota||0));c.slice(0,10).forEach(p=>{const av=p.avx.slice();const nw=noticia(p,sp);av.dnp=nw?NOT_DNP[nw.st]??0.05:p.inj==="DAY_TO_DAY"?0.35:0.05;rem.push(av)});
+      const hoje=sp===d.cur,G=d.nba||{};
+      const c=(e.rost[t.id]||[]).filter(p=>{const nw=noticia(p,sp);if(!(p.slot!==13&&(nw?nw.st!=="OUT":p.inj!=="OUT")&&p.avx&&(p.gd||[]).includes(sp)))return false;
+        if(hoje){const g=G[p.pro];if(p.dl&&p.dl[sp])return false; // já tem linha hoje (o resto do jogo entra abaixo)
+          if(g&&g.fim)return false;            // jogo acabou e ele não jogou
+          if(p.slot>=12)return false;          // hoje conta quem está escalado (banco não soma)
+        }return true});
+      c.sort((x,y)=>(y.nota||0)-(x.nota||0));c.slice(0,10).forEach(p=>{const g=hoje&&G[p.pro];const fr=g&&g.live?g.frac:0;const av=p.avx.map(x=>x*(1-fr));const nw=noticia(p,sp);av.dnp=g&&g.live?Math.min(0.9,0.2+fr):(nw?NOT_DNP[nw.st]??0.05:p.inj==="DAY_TO_DAY"?0.35:0.05);rem.push(av)});
       // jogo em andamento: quem já tem linha parcial hoje ainda produz o resto do jogo
       if(sp===d.cur&&d.nba)(e.rost[t.id]||[]).forEach(p=>{const g=d.nba[p.pro];if(p.slot<12&&p.avx&&p.dl&&p.dl[sp]&&g&&g.live&&g.frac<1){const av=p.avx.map(x=>x*(1-g.frac));av.dnp=0;rem.push(av)}});
     }
