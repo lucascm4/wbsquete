@@ -1796,11 +1796,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794180335"></script>
-<script src="radar.js?v=1794180335"></script>
-<script src="midia.js?v=1794180335"></script>
+<script src="hist.js?v=1794180897"></script>
+<script src="radar.js?v=1794180897"></script>
+<script src="midia.js?v=1794180897"></script>
 <script>
-const VERSAO_PAINEL="20261108202535";
+const VERSAO_PAINEL="20261108203457";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2176,7 +2176,15 @@ function linhaBanco(B){const [pts,reb,ast,stl,blk,tp,to,fgm,fga,ftm,fta]=B;const
 function linhaReal(v){const [pts,reb,ast,stl,blk,tp,to,fgm,fga,ftm,fta]=v;const L=[`${pts} pts`];
   if(reb>=7)L.push(`${reb} reb`);if(ast>=6)L.push(`${ast} ast`);if(stl>=3)L.push(`${stl} roubos`);if(blk>=3)L.push(`${blk} tocos`);if(tp>=4)L.push(`${tp} bolas de 3`);if(fga>=10)L.push(`${fgm}/${fga} FG`);if(fta>=8)L.push(`${ftm}/${fta} LL`);if(to>=5)L.push(`${to} TO`);
   return L.slice(0,6).join(", ")}
-function noticias(){
+/* cada notícia fica no ar no máximo 30 min; depois dá lugar a outra (volta só se não sobrar nada) */
+function chaveNot(x){const m=/<b>([^<]+)<\/b>/.exec(x.t||"");return (x.k||"")+"|"+(m?m[1]:(x.t||"").slice(0,40))}
+function noticias(){const L=noticiasBrutas();let V={};try{V=JSON.parse(localStorage.getItem("wbs.notVista")||"{}")}catch(e){}
+  const agora=Date.now(),LIM=30*60e3;Object.keys(V).forEach(k=>{if(agora-V[k]>3*3600e3)delete V[k]});
+  let vivas=L.filter(x=>{if(x.pub)return true;const k=chaveNot(x);return !V[k]||agora-V[k]<LIM});
+  if(vivas.filter(x=>!x.pub).length<4){const velhas=L.filter(x=>!vivas.includes(x)).sort((a,b)=>V[chaveNot(a)]-V[chaveNot(b)]);velhas.slice(0,4).forEach(x=>{V[chaveNot(x)]=agora;vivas.push(x)})}
+  vivas=vivas.slice(0,14);vivas.forEach(x=>{if(!x.pub){const k=chaveNot(x);if(!V[k])V[k]=agora}});try{localStorage.setItem("wbs.notVista",JSON.stringify(V))}catch(e){}
+  return vivas}
+function noticiasBrutas(){
   // hoje (se já tem jogo rolando) + ontem completando: assim o ticker não esvazia quando a rodada começa
   const d=DADOS;const hoje=d.P.some(p=>p.dl&&p.dl[d.cur]);window._ZUSO=new Set();
   if(!hoje)return noticiasDe(d.last);
@@ -2194,7 +2202,7 @@ function noticiasDe(sp){
   const opDe=t=>{const m=d.mt.find(x=>x.includes(t));return m?m[0]===t?m[1]:m[0]:null};
   const RK=rankLiga(sp);const adds=addsSemana();
   const pick={};((HIST.drafts&&HIST.drafts["2026/27"])||[]).forEach(r=>pick[r[3]]=[r[0],r[2]]);
-  const usados=window._ZUSO||new Set();let semente=sp*7;
+  const usados=window._ZUSO||new Set();let semente=sp*7+Math.floor(Date.now()/18e5)*3;
   const zoe=(tipo,ctx)=>{const P=ZOE[tipo];for(let k=0;k<P.length;k++){const f=P[(semente+k)%P.length];if(!usados.has(f)){usados.add(f);semente+=5;return f.replace("{man}",ctx.man).replace("{mop}",ctx.mop)}}
     const grupo=["fogo","festa","mamar"].includes(tipo)?["fogo","festa","mamar"]:["choro","entrega"];
     for(const tp of grupo)for(const f of (ZOE[tp]||[]))if(!usados.has(f)){usados.add(f);return f.replace("{man}",ctx.man).replace("{mop}",ctx.mop)}
@@ -2224,7 +2232,7 @@ function noticiasDe(sp){
   });
   cand.sort((x,y)=>y.w-x.w);
   // no máximo 3 do mesmo selo, pra não ficar repetitivo
-  const cont={};cand.forEach(x=>{cont[x.k]=(cont[x.k]||0)+1;if(cont[x.k]<=3&&it.length<14)it.push({w:x.w,k:x.k,t:x.f().replace(/\. ([a-zà-ú])/g,(m,l)=>". "+l.toUpperCase())})});
+  const cont={};cand.forEach(x=>{cont[x.k]=(cont[x.k]||0)+1;if(cont[x.k]<=4&&it.length<40)it.push({w:x.w,k:x.k,t:x.f().replace(/\. ([a-zà-ú])/g,(m,l)=>". "+l.toUpperCase())})});
   return it;
 }
 function ticker(){
