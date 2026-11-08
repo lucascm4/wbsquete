@@ -1185,7 +1185,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108144138";
+const VERSAO_PAINEL="20261108144300";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2241,6 +2241,8 @@ function trocasAtuais(){ // 26/27: jogador em time diferente do draft sem regist
   // só troca de verdade: itens TRADE executados na ESPN (waiver e free agent ficam de fora)
   const achaP=id=>d.P.find(q=>q.id===id&&!q.fora)||d.P.find(q=>q.id===id)||(d.fa||[]).find(q=>q.id===id)||{id,n:(typeof BOX!=="undefined"&&BOX.meta[id]&&BOX.meta[id].n)||("jogador "+id),fora:1};
   const mov=(d.tx.tr||[]).map(([id,de,para,sp])=>{const p=achaP(id);return {p,de:T(de)[0],para:T(para)[0],sp,saiu:!d.P.some(q=>q.id===id&&!q.fora&&q.t===para)}});
+  // reserva: se a ESPN não mandou os itens da troca, volta ao jeito antigo, tirando quem entrou por waiver/free agent
+  if(!mov.length&&(d.tx.ac||[]).length){const viaAdd=new Set((d.tx.lst||[]).map(x=>x[0]));d.P.filter(p=>!p.fora&&dr[p.n]&&dr[p.n]!==T(p.t)[0]&&!adds.has(p.id)&&!viaAdd.has(p.id)).forEach(p=>mov.push({p,de:dr[p.n],para:T(p.t)[0]}))}
   if(!mov.length)return "";
   // antes x depois: média por jogo com cada camisa (boxes da temporada), avaliada na mesma régua 9-cat
   const boxOk=typeof BOX!=="undefined"&&Object.keys(BOX.dias).length>=d.last;
