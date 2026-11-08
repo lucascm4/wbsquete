@@ -1178,7 +1178,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108142850";
+const VERSAO_PAINEL="20261108143002";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1272,7 +1272,7 @@ const seloFase=m=>{const r=rotulo(m);return r?` <span class="selo ${r==="FINAL"?
 
 /* ---------- estado ---------- */
 let DADOS=null,EST=null;
-const UI={dia:{},museuFiltro:"campeoes",atu:"PTS",tabTemp:"2025/26",h2hA:"Iguana",h2hB:"Diabo",jogFiltro:"todos",jogOrd:"nota",jogModo:"sem",rkOrd:"proj",radar:"quente"};
+const UI={dia:{},museuFiltro:"campeoes",atu:"PTS",tabTemp:"2025/26",h2hA:"Iguana",h2hB:"Diabo",jogFiltro:"todos",jogOrd:"nota",jogModo:"sem",rkOrd:"atual",radar:"quente"};
 
 function notas(lista,getAv,minG,pool){
   // z-score nas 9 categorias, FG e FT pelo impacto (acertos acima da média da liga x volume).
@@ -1892,10 +1892,11 @@ function tabelaDes(L,sp,RKV){
    ${MAP.map(([k,i])=>cel(r,k,i,null,k==="PTS"?"pts":"")).join("")}${cel(r,"FG%",7,fgc(st[7],st[8]),"fgft")}${cel(r,"FT%",9,fgc(st[9],st[10]),"fgft")}</tr>`};
   return `<div class="card lj-wrap"><table class="lj des">${cabLj()}<tbody>${L.map(linha).join("")||`<tr><td colspan="10" class="esp">Ninguém jogou ainda.</td></tr>`}</tbody></table></div>`;
 }
+function diaPadrao(){const d=DADOS;return d.P.some(p=>p.dl&&p.dl[d.cur])?d.cur:d.last}
 function semAcento(t){return String(t).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()}
 function vNoite(){
   const d=DADOS;if(!d)return vazio();
-  const sp=UI.noiteDia??d.cur;const ft=UI.noiteTime||0;const modo=UI.noiteModo==="piores"?"piores":"selecao";
+  const sp=UI.noiteDia??diaPadrao();const ft=UI.noiteTime||0;const modo=UI.noiteModo==="piores"?"piores":"selecao";
   const rows=[];
   if(ehRange(sp)){if(!rangePronto(sp)){garantirBoxes(rangeDe(sp)[1]);return cabRange(sp)}linhasRange(sp,r=>!ft||r.t===ft).forEach(r=>rows.push(Object.assign(r,{val:valorJogo(r.s)})))}
   else if(ehMedia(sp))linhasMedia(sp,p=>!ft||p.t===ft).forEach(r=>rows.push(Object.assign(r,{val:valorJogo(r.s)})));
@@ -1952,7 +1953,7 @@ function quadraSelecao(dono,tot,sp,coco){
   <div class="q-tot">${cats.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div></div>`;
 }
 function abrirFicha(k){
-  const x=window._SEL&&window._SEL[k];if(!x)return;const {r}=x;const p=r.p,st=r.s;const sp=UI.noiteDia??DADOS.cur;
+  const x=window._SEL&&window._SEL[k];if(!x)return;const {r}=x;const p=r.p,st=r.s;const sp=UI.noiteDia??diaPadrao();
   const pc=(a,b)=>b?(100*a/b).toFixed(1)+"%":"–";
   const cel=[["PTS",st[0]],["REB",st[1]],["AST",st[2]],["STL",st[3]],["BLK",st[4]],["3PM",st[5]],["TO",st[6]],["FG",`${st[7]}/${st[8]}<small>${pc(st[7],st[8])}</small>`],["FT",`${st[9]}/${st[10]}<small>${pc(st[9],st[10])}</small>`]];
   fecharFicha();const el=document.createElement("div");el.className="pop-fundo";el.id="popFicha";
