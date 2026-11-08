@@ -1541,11 +1541,11 @@ img[src*="img/l/"]{cursor:pointer}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794170505"></script>
-<script src="radar.js?v=1794170505"></script>
-<script src="midia.js?v=1794170505"></script>
+<script src="hist.js?v=1794170580"></script>
+<script src="radar.js?v=1794170580"></script>
+<script src="midia.js?v=1794170580"></script>
 <script>
-const VERSAO_PAINEL="20261108174145";
+const VERSAO_PAINEL="20261108174300";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1861,8 +1861,14 @@ function linhaReal(v){const [pts,reb,ast,stl,blk,tp,to,fgm,fga,ftm,fta]=v;const 
   if(reb>=7)L.push(`${reb} reb`);if(ast>=6)L.push(`${ast} ast`);if(stl>=3)L.push(`${stl} roubos`);if(blk>=3)L.push(`${blk} tocos`);if(tp>=4)L.push(`${tp} bolas de 3`);if(fga>=10)L.push(`${fgm}/${fga} FG`);if(fta>=8)L.push(`${ftm}/${fta} LL`);if(to>=5)L.push(`${to} TO`);
   return L.slice(0,6).join(", ")}
 function noticias(){
+  // hoje (se já tem jogo rolando) + ontem completando: assim o ticker não esvazia quando a rodada começa
+  const d=DADOS;const hoje=d.P.some(p=>p.dl&&p.dl[d.cur]);
+  if(!hoje)return noticiasDe(d.last);
+  const a=noticiasDe(d.cur);if(a.length>=6)return a;
+  const ant=d.cur-1>=1?noticiasDe(d.cur-1):[];return a.concat(ant.slice(0,Math.max(0,10-a.length)).map(x=>Object.assign({},x,{t:"<i>Ontem:</i> "+x.t})))}
+function noticiasDe(sp){
   // só performance de jogador, manchete com a linha real + zoeira variada
-  const d=DADOS;const sp=d.P.some(p=>p.dl&&p.dl[d.cur])?d.cur:d.last;const it=[];const nomeT=id=>T(id)[0];
+  const d=DADOS;const it=[];const nomeT=id=>T(id)[0];
   const opDe=t=>{const m=d.mt.find(x=>x.includes(t));return m?m[0]===t?m[1]:m[0]:null};
   const RK=rankLiga(sp);const adds=addsSemana();
   const pick={};((HIST.drafts&&HIST.drafts["2026/27"])||[]).forEach(r=>pick[r[3]]=[r[0],r[2]]);
@@ -1870,7 +1876,7 @@ function noticias(){
   const zoe=(tipo,ctx)=>{const P=ZOE[tipo];for(let k=0;k<P.length;k++){const f=P[(semente+k)%P.length];if(!usados.has(f)){usados.add(f);semente+=5;return f.replace("{man}",ctx.man).replace("{mop}",ctx.mop)}}return P[0].replace("{man}",ctx.man).replace("{mop}",ctx.mop)};
   const cand=[];
   d.P.forEach(p=>{const v=p.dl&&p.dl[sp];if(!v||p.fora)return;const [pts,reb,ast,stl,blk,tp,to,fgm,fga,ftm,fta]=v;const slot=v[11];
-    const g=d.nba&&d.nba[p.pro];const rola=g&&g.live?" (e o jogo ainda rola)":"";
+    const g=sp===d.cur&&d.nba&&d.nba[p.pro];const rola=g&&g.live?" (e o jogo ainda rola)":"";
     const n=`<b>${esc(p.n)}</b>`;const man=esc(T(p.t)[2]);const op=opDe(p.t);const mop=op?esc(T(op)[2]):"adversário";const ctx={man,mop};
     const c=(RK.c&&RK.c[p.id])||{};const linha=linhaReal(v)+rola;
     const comoChegou=()=>{if(adds[p.id+":"+p.t]!=null)return `${man} pegou ${n} na waiver`;const pk=pick[p.n];if(pk&&pk[1]===nomeT(p.t))return `${man} pickou ${n} no pick ${pk[0]}`;return `${man} escalou ${n}`};
