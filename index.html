@@ -1476,6 +1476,34 @@ img[src*="img/l/"]{cursor:pointer}
 .pj-volta:active{transform:translateY(1px)}
 .pj-tabs{position:static!important}
 
+/* sem barra inferior no celular */
+@media (max-width:899px){.nav{display:none!important}main{padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))!important}}
+/* seleção compacta: a quadra cabe inteira na tela */
+.cab-c .manchete{font-size:clamp(22px,6.5vw,30px)!important;margin:2px 0 0}
+.cab-c .linha-fina{font-size:11.5px;line-height:1.3;margin:4px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dias.sel-c{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto;gap:4px;scrollbar-width:none;margin:6px 0}
+.dias.sel-c::-webkit-scrollbar{display:none}
+.dias.sel-c .dia.per.big,.dias.sel-c .dia{flex:0 0 auto!important;min-width:0!important;padding:4px 9px!important;font-size:12px!important;line-height:1.1;border-width:2px!important}
+.dias.sel-c .dia small{font-size:9px!important}
+.dias.sel-c .rg{grid-column:auto!important;flex:0 0 auto;display:flex;align-items:center;gap:4px;padding:2px 6px!important;font-size:11px}
+.dias.sel-c .rg select{font-size:12px;padding:2px 4px;max-width:110px}
+.pilulas.sel-c{display:flex!important;flex-wrap:nowrap!important;gap:4px;margin:0 0 8px;align-items:center}
+.pilulas.sel-c .pil,.pilulas.sel-c .pil.big{flex:1 1 0;min-width:0!important;font-size:13px!important;padding:6px 8px!important;letter-spacing:.02em}
+.pilulas.sel-c .sel{flex:1.2 1 0;min-width:0;font-size:12px;padding:5px 6px}
+/* ao vivo */
+.fab-live{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;align-items:center;gap:6px;padding:9px 14px;border-radius:999px;background:#d4121c;color:#fff;border:2px solid #fff;font-family:var(--display);font-size:16px;letter-spacing:.04em;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+.fab-live small{font:700 10px system-ui,sans-serif;opacity:.9}
+.fab-live i{width:9px;height:9px;border-radius:50%;background:#fff;animation:pisca 1.2s infinite}
+@keyframes pisca{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.fab-live i{animation:none}}
+.av-jogos{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:6px 0 8px}
+.av-jogos::-webkit-scrollbar{display:none}
+.av-j{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;background:#0a0707;border:2px solid #000;border-radius:8px;padding:4px 10px;font-size:12px;color:#fff;white-space:nowrap}
+.av-j b{font-family:var(--display);font-weight:400;font-size:14px}.av-j small{font-size:10px;color:var(--apagado)}
+.av-j.live{border-color:#d4121c}.av-j.live small{color:#ff6b6b;font-weight:700}
+.av-f{margin-bottom:6px}
+tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1541,11 +1569,11 @@ img[src*="img/l/"]{cursor:pointer}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794170580"></script>
-<script src="radar.js?v=1794170580"></script>
-<script src="midia.js?v=1794170580"></script>
+<script src="hist.js?v=1794170742"></script>
+<script src="radar.js?v=1794170742"></script>
+<script src="midia.js?v=1794170742"></script>
 <script>
-const VERSAO_PAINEL="20261108174300";
+const VERSAO_PAINEL="20261108174542";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2260,7 +2288,7 @@ function vDesempenhosAntigo(){
   return h;
 }
 function cabRange(sp){const [a,b]=rangeDe(sp);const n=b-a+1;const ok=Object.keys(BOX.dias).filter(x=>+x>=a&&+x<=b).length;
-  return `<div class="cab-secao"><span class="sobre">INTERVALO · ${esc(rotPer(sp,1))}</span><h1 class="manchete">BUSCANDO OS BOXES</h1><p class="linha-fina">Baixando ${n} dia${n>1?"s":""} de jogos da ESPN (${ok} de ${n} prontos). Na próxima vez fica guardado no seu aparelho.</p></div><div class="dias" role="group" aria-label="Período">${botoesPer(sp,"data-nd")}</div>`}
+  return `<div class="cab-secao"><span class="sobre">INTERVALO · ${esc(rotPer(sp,1))}</span><h1 class="manchete">BUSCANDO OS BOXES</h1><p class="linha-fina">Baixando ${n} dia${n>1?"s":""} de jogos da ESPN (${ok} de ${n} prontos). Na próxima vez fica guardado no seu aparelho.</p></div><div class="dias sel-c" role="group" aria-label="Período">${botoesPer(sp,"data-nd")}</div>`}
 /* tabela de jogadores no estilo desempenhos (células coloridas pelo z e chips de destaque) */
 function tabelaDes(L,sp,RKV){
   const n1=x=>Number.isInteger(x)?x:Math.round(x*10)/10;
@@ -2319,9 +2347,9 @@ function vNoite(){
   const RKV=rkVer(sp,"periodo");
   const tabela=tabelaDes(L,sp,RKV);
   if(modo==="selecao")return vSelecao(rows.slice().sort((x,y)=>y.val-x.val),sp,tabela);
-  let h=`<div class="cab-secao"><span class="sobre">JOGADORES · ${esc(rotPer(sp,1))}</span><h1 class="manchete">${modo==="piores"?"OS PIORES":"OS MELHORES"} ${rotPer(sp)}</h1><p class="linha-fina">Todos os jogadores da liga, ordenados pelo valor nas 9 categorias da nossa liga (z-score, FG% e FT% pesados pelo volume, TO contra). O <b>#</b> é a posição do cara entre todos os ${rankLiga(sp)._n||0} que jogaram${ft?", mesmo filtrando por time":""}.</p></div>
-  <div class="dias" role="group" aria-label="Período">${botoesPer(sp,"data-nd")}`;
-  h+=`</div><div class="pilulas"><button class="pil big" type="button" data-nm="selecao">Seleção</button><button class="pil big" type="button" data-nm="piores" aria-pressed="true">Piores</button><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===ft?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
+  let h=`<div class="cab-secao cab-c"><span class="sobre">JOGADORES · ${esc(rotPer(sp,1))}</span><h1 class="manchete">${modo==="piores"?"OS PIORES":"OS MELHORES"} ${rotPer(sp)}</h1><p class="linha-fina">Todos os jogadores da liga, ordenados pelo valor nas 9 categorias da nossa liga (z-score, FG% e FT% pesados pelo volume, TO contra). O <b>#</b> é a posição do cara entre todos os ${rankLiga(sp)._n||0} que jogaram${ft?", mesmo filtrando por time":""}.</p></div>
+  <div class="dias sel-c" role="group" aria-label="Período">${botoesPer(sp,"data-nd")}`;
+  h+=`</div><div class="pilulas sel-c"><button class="pil big" type="button" data-nm="selecao">Seleção</button><button class="pil big" type="button" data-nm="piores" aria-pressed="true">Piores</button><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===ft?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
   ${coco}<div class="bloco-tit lista-tit">A LISTA, DO PIOR PRO MENOS PIOR</div>${tabela}`;
   return h;
 }
@@ -2744,9 +2772,9 @@ function vSelecao(rows,sp,tabela){
   const linha=(r,k)=>{if(!r)return `<tr><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span><div><b>—</b></div></div></td><td colspan="9" class="esp">ninguém</td></tr>`;const p=r.p,st=r.s;
     return `<tr data-pj="${p.id}" class="clic" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>${face(p.id,p.n,"")}<div><b>${rkTag(rkVer(sp,"periodo"),p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,r.slot>=12?'<span class="tag banco">NO BANCO</span>':"")}</small></div></div></td><td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${fgc(st[7],st[8])}</td><td class="fgft">${fgc(st[9],st[10])}</td></tr>`};
   const nb=dono.filter(r=>r&&r.slot>=12).length;
-  let h=`<div class="cab-secao"><span class="sobre">SELEÇÃO · ${esc(rotPer(sp,1))}</span><h1 class="manchete">SELEÇÃO ${rotPer(sp)}</h1><p class="linha-fina">Toque na carinha para ver as stats. A melhor escalação possível ${sp==="sem"?"na semana":ehRange(sp)?"somando tudo "+rotPer(sp).toLowerCase():ehMedia(sp)?"pela média por jogo "+rotPer(sp).toLowerCase()+" (mínimo de "+minMedia(sp)+" jogos)":"com os jogos do dia"}, juntando os 12 elencos: PG, SG, SF, PF, C, G, F e 2 UTIL, nas posições da ESPN.${nb?` <b>${nb} ${nb>1?"estavam":"estava"} no banco.</b>`:""}</p></div>
-  <div class="dias" role="group" aria-label="Período">${botoesPer(sp,"data-nd")}`;
-  h+=`</div><div class="pilulas"><button class="pil big" type="button" data-nm="selecao" aria-pressed="true">Seleção</button><button class="pil big" type="button" data-nm="piores">Piores</button><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===(UI.noiteTime||0)?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
+  let h=`<div class="cab-secao cab-c"><span class="sobre">SELEÇÃO · ${esc(rotPer(sp,1))}</span><h1 class="manchete">SELEÇÃO ${rotPer(sp)}</h1><p class="linha-fina">Toque na carinha para ver as stats. A melhor escalação possível ${sp==="sem"?"na semana":ehRange(sp)?"somando tudo "+rotPer(sp).toLowerCase():ehMedia(sp)?"pela média por jogo "+rotPer(sp).toLowerCase()+" (mínimo de "+minMedia(sp)+" jogos)":"com os jogos do dia"}, juntando os 12 elencos: PG, SG, SF, PF, C, G, F e 2 UTIL, nas posições da ESPN.${nb?` <b>${nb} ${nb>1?"estavam":"estava"} no banco.</b>`:""}</p></div>
+  <div class="dias sel-c" role="group" aria-label="Período">${botoesPer(sp,"data-nd")}`;
+  h+=`</div><div class="pilulas sel-c"><button class="pil big" type="button" data-nm="selecao" aria-pressed="true">Seleção</button><button class="pil big" type="button" data-nm="piores">Piores</button><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===(UI.noiteTime||0)?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
   ${quadraSelecao(dono,tot,sp)}
   <div class="bloco-tit lista-tit">TODOS OS JOGADORES ${ehMedia(sp)?"(MÉDIA POR JOGO)":""}</div>${tabela||""}`;
   return h;
@@ -3181,6 +3209,27 @@ function vMuseuJogo(i){
   return h;
 }
 
+/* ---------- AO VIVO: quem está jogando agora ---------- */
+function jogosAoVivo(){const d=DADOS;if(!d||!d.nba)return {live:0,hoje:0};const v=Object.values(d.nba);return {live:v.filter(g=>g.live).length/2,hoje:v.length/2}}
+function vAoVivo(){
+  const d=DADOS;if(!d)return vazio();const sp=d.cur;const meu=meuTime();
+  const f=UI.avF??(meu||0);const q=UI.avQ||"quadra";
+  const G=d.nba||{};const jg=jogosAoVivo();
+  const jogos=Object.entries(G).filter(([id,g])=>/^vs /.test(g.op)).sort((a,b)=>(b[1].live-a[1].live)||(a[1].fim-b[1].fim)).map(([id,g])=>`<span class="av-j ${g.live?"live":g.fim?"fim":""}"><b>${esc(NBA[id]||"")}</b> ${g.sc?esc(g.sc):""} <b>${esc(g.op.slice(3))}</b><small>${esc(g.st)}</small></span>`).join("");
+  const rows=[];d.P.filter(p=>!p.fora&&(!f||p.t===f)).forEach(p=>{const g=G[p.pro];if(!g)return;if(q==="quadra"&&!g.live)return;const v=p.dl&&p.dl[sp];
+    rows.push({p,t:p.t,g,s:v?v.slice(0,11):null,slot:v?v[11]:p.slot,min:v?v[12]||0:0,val:v?valorJogo(v):-1e5+(g.live?1:0)})});
+  const RKx=rankLiga(sp);rows.forEach(r=>{if(r.s&&RKx.v&&RKx.v[r.p.id]!=null)r.val=RKx.v[r.p.id]});
+  rows.sort((x,y)=>(y.g.live-x.g.live)||(y.val-x.val));const L=ordenaLj(rows);
+  const linha=r=>{const p=r.p,st=r.s;return `<tr data-pj="${p.id}" class="clic${r.g.live?" av-on":""}" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small>${subJog(r.t,null,`${r.slot>=12&&r.slot!==13?'<span class="tag banco">BANCO</span>':r.slot===13?'<span class="tag ir">IR</span>':""} ${tagInj(p)}`)}</small><small>${jogoNBA(p,sp)}${r.min?` · ${r.min} min`:""}</small></div></div></td>
+    ${st?`<td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${fgc(st[7],st[8])}</td><td class="fgft">${fgc(st[9],st[10])}</td>`:`<td colspan="9" class="esp">${r.g.live?"ainda não entrou":"jogo às "+esc(r.g.st)}</td>`}</tr>`};
+  const nome=f?T(f)[0]:"todos os times";
+  return `<div class="cab-secao cab-c"><span class="sobre">AO VIVO · ${esc(spRot(sp))}</span><h1 class="manchete">🔴 AO VIVO</h1></div>
+  ${jogos?`<div class="av-jogos">${jogos}</div>`:'<div class="card"><div class="vazio">Sem jogo da NBA hoje.</div></div>'}
+  <div class="pilulas sel-c av-f"><button class="pil" type="button" data-avq="quadra" aria-pressed="${q==="quadra"}">Em quadra agora</button><button class="pil" type="button" data-avq="hoje" aria-pressed="${q==="hoje"}">Todos de hoje</button></div>
+  <div class="pilulas sel-c av-f">${meu?`<button class="pil" type="button" data-avf="${meu}" aria-pressed="${f===meu}">Meu time</button>`:""}<button class="pil" type="button" data-avf="0" aria-pressed="${!f}">Todos</button><select id="avTime" class="sel" aria-label="Time"><option value="">escolher time…</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===f?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
+  <div class="card lj-wrap"><div class="bloco-tit">${q==="quadra"?"EM QUADRA":"JOGAM HOJE"} <small>${esc(nome)} · ${rows.length} jogador${rows.length===1?"":"es"}${jg.live?` · ${jg.live} jogo${jg.live>1?"s":""} rolando`:""}</small></div>
+  <table class="lj">${cabLj()}<tbody>${L.map(linha).join("")||`<tr><td colspan="10" class="esp">${q==="quadra"?"Ninguém desse filtro em quadra agora. Toque em “Todos de hoje”.":"Ninguém desse filtro joga hoje."}</td></tr>`}</tbody></table></div>`}
+
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
 const ajson=(u,h)=>fetch(u,{cache:"no-store",headers:h||{}}).then(r=>{if(!r.ok)throw new Error("ESPN respondeu "+r.status);return r.json()});
@@ -3336,12 +3385,13 @@ function render(){
     else if(r.startsWith("museu-"))h=vMuseuJogo(+r.slice(6));
     else if(r.startsWith("acervo-")){UI.museuFiltro=r.slice(7);h=vMuseu()}
     else if(r.startsWith("time-"))h=vTime(+r.slice(5));
-    else h=({confrontos:vConfrontos,perfis:vPerfis,noite:vNoite,desempenhos:vDesempenhos,times:vTimes,radar:vRadar,museu:vMuseuCapa}[r]||vConfrontos)();
+    else h=({confrontos:vConfrontos,perfis:vPerfis,aovivo:vAoVivo,noite:vNoite,desempenhos:vDesempenhos,times:vTimes,radar:vRadar,museu:vMuseuCapa}[r]||vConfrontos)();
   }catch(e){console.error(e);h=`<div class="card vazio">Deu ruim ao montar esta tela (${esc(e.message)}). Manda print pro Loydão.</div>`}
   if(r!=="confrontos"&&r!==""&&!r.startsWith("jogo-"))h=`<div class="barra-inicio"><button type="button" class="inicio" data-ir="confrontos">⌂ Início</button></div>`+h;
   $("#app").innerHTML=h;
   try{montarBusca(r)}catch(e){console.error(e)}
   try{montarAtalhos(r)}catch(e){console.error(e)}
+  try{montarLive(r)}catch(e){console.error(e)}
   if(UI._fichaMuseu&&window.MUSEU&&document.getElementById("popFicha")){const i=UI._fichaMuseu;UI._fichaMuseu=null;const pop=document.querySelector("#popFicha .pop-full");const sc=pop?pop.scrollTop:0;abrirJogador(i,UI.fichaPer);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc}
   if(UI._fichaEspera&&document.getElementById("popFicha")&&ehRange(UI.fichaPer)&&rangePronto(UI.fichaPer)){const i=UI._fichaEspera;UI._fichaEspera=null;abrirJogador(i,UI.fichaPer)}
 }
@@ -3364,6 +3414,7 @@ function montarBusca(r){
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
+  {const q=e.target.closest("[data-avq]");if(q){UI.avQ=q.dataset.avq;render();return}const f=e.target.closest("[data-avf]");if(f){UI.avF=+f.dataset.avf;render();return}}
   {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();location.hash="time-"+tid;return}}
   {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();location.hash="time-"+tid;return}}
   {const pn=e.target.closest("[data-pjn]");if(pn&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){UI.fichaPer=null;abrirJogadorNome(pn.dataset.pjn);return}}
@@ -3529,5 +3580,12 @@ function timeDoClique(el){
   return 0}
 /* trava o fundo enquanto a ficha está aberta (o fundo não mexe) */
 (function(){let y=0,trav=false;new MutationObserver(()=>{const ab=!!document.getElementById("popFicha");if(ab&&!trav){y=scrollY;trav=true;const b=document.body.style;b.position="fixed";b.top=(-y)+"px";b.left="0";b.right="0";b.width="100%"}else if(!ab&&trav){trav=false;const b=document.body.style;b.position=b.top=b.left=b.right=b.width="";scrollTo(0,y)}}).observe(document.body,{childList:true})})();
+
+/* botão flutuante AO VIVO quando tem jogo rolando */
+function montarLive(r){let b=document.getElementById("fabLive");const jg=typeof jogosAoVivo==="function"?jogosAoVivo():{live:0};
+  if(!jg.live||r==="aovivo"){if(b)b.remove();return}
+  if(!b){b=document.createElement("a");b.id="fabLive";b.className="fab-live";b.href="#aovivo";document.body.appendChild(b)}
+  b.innerHTML=`<i></i>AO VIVO <small>${jg.live} jogo${jg.live>1?"s":""}</small>`}
+document.addEventListener("change",e=>{if(e.target&&e.target.id==="avTime"){UI.avF=+e.target.value||0;render()}});
 </script>
 </body></html>
