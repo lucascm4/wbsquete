@@ -1615,6 +1615,12 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 .pj-selo .ic-pr{width:18px;height:18px}
 .bq b:has(+ em){}
 
+.bq:has(.cad){position:relative;justify-content:center!important}
+.bq:has(.cad) small{position:absolute;left:8px;top:50%;transform:translateY(-50%)}
+.bq:has(.cad) b{display:flex;align-items:center;justify-content:center;width:100%;margin:0!important}
+.cad{font-style:normal;font-size:16px;line-height:1;display:inline-block}
+.bq:has(.cad) em{display:none}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1680,11 +1686,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794173779"></script>
-<script src="radar.js?v=1794173779"></script>
-<script src="midia.js?v=1794173779"></script>
+<script src="hist.js?v=1794173823"></script>
+<script src="radar.js?v=1794173823"></script>
+<script src="midia.js?v=1794173823"></script>
 <script>
-const VERSAO_PAINEL="20261108183619";
+const VERSAO_PAINEL="20261108183703";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1799,7 +1805,7 @@ function maisMercados(a,b,s){const A=T(a),B=T(b);const M=momento(a,b);if(!M.rem)
    <div class="mk-sec">CATEGORIA A CATEGORIA</div>${cats}
    <div class="mk-sec">PLACAR EXATO <small>(${esc(a3)} primeiro · margem de 20%, como nas casas)</small></div>${exato}
    <p class="mk-nota">Margem da casa: até ${Math.round((M.margem+0.01-1)*100)}% nos mercados equilibrados, menos quando um lado é muito favorito${M.vivo?" · jogo rolando, ao vivo a casa cobra mais":M.pre?" · pré-semana":""}. Linha decidida some da escada, como na Sportingbet.</p></details>`}
-let _ODM=null;function oddS(k,p,pronto){const v=pronto!=null?pronto:odd(p);if(v==="—"||v==="✓"||v==="✗"||v==="🔒")return v;const dk="wbs.odds."+(DADOS?DADOS.cur:0);
+let _ODM=null;function oddS(k,p,pronto){const v=pronto!=null?pronto:odd(p);if(v==="🔒")return '<i class="cad" aria-label="fechado">🔒</i>';if(v==="—"||v==="✓"||v==="✗")return v;const dk="wbs.odds."+(DADOS?DADOS.cur:0);
   if(!_ODM||_ODM._k!==dk){_ODM=null;try{_ODM=JSON.parse(localStorage.getItem(dk)||"null")}catch(e){}_ODM=_ODM||{};_ODM._k=dk}
   let m=_ODM[k];if(!m){m=_ODM[k]={v,prev:v}}else if(m.v!==v){m.prev=m.v;m.v=v}try{localStorage.setItem(dk,JSON.stringify(_ODM))}catch(e){}
   const a=+m.v,b=+m.prev;return v+(a>b?'<i class="od-up">▲</i>':a<b?'<i class="od-dn">▼</i>':"")}
