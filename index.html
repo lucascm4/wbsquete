@@ -1634,6 +1634,18 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 svg.cad{width:18px;height:18px;display:block}
 .bq:has(.cad){overflow:hidden}
 
+/* placar do confronto: previsão embaixo do número, amarelo mais suave */
+.tabcat.tc3 col.c1{width:38%}.tabcat.tc3 col.c3{width:24%}
+.tabcat.tc3 td{vertical-align:middle;padding-top:6px;padding-bottom:6px}
+.tabcat.tc3 td .v{display:block;line-height:1}
+.tc3 .pv2{display:block;font:600 11px system-ui,sans-serif;color:#8fb4ff;margin-top:3px;letter-spacing:.02em}
+.tc3 .pv2.lid{color:#bcd3ff;font-weight:800}
+.tc3 td.g{background:rgba(255,212,0,.22)!important;color:#ffe36b!important;box-shadow:inset 0 0 0 1.5px rgba(255,212,0,.55)}
+.tc3 td.g .v{color:#ffe36b!important}
+.tc3 td.g .pv2{color:#d7c58a}
+.tc3 .tc-leg{display:block;font:500 9px system-ui;letter-spacing:0;text-transform:none;color:var(--apagado)}
+.tc3 .vr{display:block;font:800 9px system-ui;color:#ff9b4a;letter-spacing:.04em;margin-top:2px}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1699,11 +1711,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794173996"></script>
-<script src="radar.js?v=1794173996"></script>
-<script src="midia.js?v=1794173996"></script>
+<script src="hist.js?v=1794174207"></script>
+<script src="radar.js?v=1794174207"></script>
+<script src="midia.js?v=1794174207"></script>
 <script>
-const VERSAO_PAINEL="20261108183956";
+const VERSAO_PAINEL="20261108184327";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2286,12 +2298,12 @@ function boxTime(tid,sp){
 /* placar aberto das 9 categorias, com previsão de fechamento */
 function tabelaCategorias(a,b,ta,tb,pa,pb,sim){
   const sc=placar(ta,tb);const A=T(a),B=T(b);
-  let h=`<table class="tabcat"><colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c2"><col class="c1"></colgroup><thead><tr><th class="lg"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></th><th>${tip("prev","prev.")}</th><th>categoria</th><th>${tip("prev","prev.")}</th><th class="lg"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></th></tr></thead><tbody>`;
-  CATS.forEach((c,j)=>{const r=sc.r[j];const px=c.f(pa),py=c.f(pb);let lidA=c.inv?px<py:px>py;const prob=sim?sim.cat[j]:null;const peg=prob!=null&&prob>0.3&&prob<0.7;
-    const vira=prob!=null&&((r>0&&prob<0.45)||(r<0&&prob>0.55));
-    h+=`<tr><td class="${r>0?"g":""}"><span class="v">${fmt(c,c.f(ta))}</span></td><td class="pv">${fmt(c,px)}</td><td><span class="cn">${c.k}</span></td><td class="pv">${fmt(c,py)}</td><td class="${r<0?"g":""}"><span class="v">${fmt(c,c.f(tb))}</span></td></tr>`});
+  let h=`<table class="tabcat tc3"><colgroup><col class="c1"><col class="c3"><col class="c1"></colgroup><thead><tr><th class="lg"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></th><th>categoria <small class="tc-leg">embaixo: ${tip("prev","deve fechar")}</small></th><th class="lg"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></th></tr></thead><tbody>`;
+  CATS.forEach((c,j)=>{const r=sc.r[j];const px=c.f(pa),py=c.f(pb);const pr=c.inv?(px<py?1:px>py?-1:0):(px>py?1:px<py?-1:0);
+    const vira=r!==0&&pr!==0&&r!==pr;
+    h+=`<tr${vira?' class="vira"':""}><td class="${r>0?"g":""}"><span class="v">${fmt(c,c.f(ta))}</span><small class="pv2 ${pr>0?"lid":""}">→ ${fmt(c,px)}</small></td><td><span class="cn">${c.k}</span>${vira?'<small class="vr">vira?</small>':""}</td><td class="${r<0?"g":""}"><span class="v">${fmt(c,c.f(tb))}</span><small class="pv2 ${pr<0?"lid":""}">→ ${fmt(c,py)}</small></td></tr>`});
   const ps=placar(pa,pb);
-  h+=`<tr class="resumo"><td colspan="5">Agora <b>${rtxt(sc.w,sc.l,sc.t)}</b> · deve fechar <b>${rtxt(ps.w,ps.l,ps.t)}</b> · faltam ${EST.jr[a]} jogos do ${esc(A[0])} e ${EST.jr[b]} do ${esc(B[0])}</td></tr>`;
+  h+=`<tr class="resumo"><td colspan="3">Agora <b>${rtxt(sc.w,sc.l,sc.t)}</b> · deve fechar <b>${rtxt(ps.w,ps.l,ps.t)}</b> · faltam ${EST.jr[a]} jogos do ${esc(A[0])} e ${EST.jr[b]} do ${esc(B[0])}</td></tr>`;
   return h+`</tbody></table>`;
 }
 function betLoyde(a,b,s){
