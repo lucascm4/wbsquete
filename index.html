@@ -844,7 +844,7 @@ const GLOSS={
  pegado:"PEGADO: categoria em que cada lado tem entre 30% e 70% de chance. Decide no detalhe.",
  rk:"Rk ESPN: o ranking oficial da ESPN entre todos os jogadores da NBA nesta temporada (1 é o melhor). Rk 7d é o mesmo ranking só com os últimos 7 dias.",
  odd:"Odd: quanto você levaria por 1 real apostado. Vem da chance calculada pelo modelo do Loydão, com 7% de margem da casa, como numa bet de verdade.",
- chances:"Chances: 2.500 simulações do resto da semana. Em cada uma, cada jogador rende perto da média dele, com variação normal.",
+ chances:"Chances: 4.000 simulações do resto da semana. Em cada uma, cada jogador rende perto da média dele, com variação normal.",
  playoffs:"Playoffs: chance de terminar entre os 6 primeiros. 1.200 simulações do resto da temporada, com o modelo testado nas 4 temporadas anteriores da liga (acerta a classificação de playoffs com erro Brier 0,19 na semana 3 e 0,12 na semana 8).",
  titulo:"Título: chance de ganhar o mata-mata nas simulações (seeds 1 e 2 folgam na primeira semana).",
  lanterna:"Lanterna: chance de terminar em 12º.",
@@ -921,7 +921,7 @@ function jogoSim(av,out,R){
 }
 function simula(a,b){
   const k=a+"-"+b;if(EST.sim[k])return EST.sim[k];
-  const N=2500,R=rng((DADOS.gerado%100000)+a*131+b);
+  const N=4000,R=rng(DADOS.cur*1009+a*131+b);
   const ta=EST.tot[a],tb=EST.tot[b],ra=EST.rem[a],rb=EST.rem[b];
   const res={},cat=Array(9).fill(0),catE=Array(9).fill(0);let V=0,E=0,L=0;
   for(let n=0;n<N;n++){
