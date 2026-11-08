@@ -1014,6 +1014,10 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .lg-i.ativo{background:rgba(255,212,0,.15);outline:2px solid var(--amarelo)}
 .pop-leg p{font-size:12px;color:var(--apagado);margin:8px 0 0}
 
+.barra-inicio{display:flex;gap:8px;margin-bottom:8px}
+.inicio{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;background:var(--amarelo);color:#000;border:2px solid #000;padding:6px 14px;font-family:var(--display);font-size:16px;letter-spacing:.04em;box-shadow:3px 3px 0 #000}
+.barra-inicio+.voltar,.barra-inicio+a.voltar{margin-top:0}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1075,7 +1079,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108020931";
+const VERSAO_PAINEL="20261108021101";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1651,7 +1655,7 @@ function vJogo(i){
   const sc=placar(ta,tb),s=simula(a,b);const dsel=UI.dia[i]??(d.last===d.cur?d.cur:"sem");const dia=d.cur-d.s0+1;
   const sub=UI.subJogo||"placar";const n=d.mt.length;const prev=(i+n-1)%n,next=(i+1)%n;
   const abas=[["placar","Placar"],["jogadores","Jogadores"],["odds","Odds"],["destaques","Destaques"],["premios","Prêmios"]];
-  let h=`<div class="jogo-nav"><button class="voltar" type="button" data-ir="confrontos">← Confrontos</button><span class="jn-set"><button type="button" class="jn-b" data-jogo="${prev}" aria-label="confronto anterior">‹</button><small>${i+1}/${n} · deslize p/ trocar</small><button type="button" class="jn-b" data-jogo="${next}" aria-label="próximo confronto">›</button></span></div>
+  let h=`<div class="jogo-nav"><button class="voltar" type="button" data-ir="confrontos">⌂ Início</button><span class="jn-set"><button type="button" class="jn-b" data-jogo="${prev}" aria-label="confronto anterior">‹</button><small>${i+1}/${n} · deslize p/ trocar</small><button type="button" class="jn-b" data-jogo="${next}" aria-label="próximo confronto">›</button></span></div>
   <div class="card"><div class="placar-topo">
     <div class="lado"><a href="#time-${a}" style="text-decoration:none;color:inherit">${rostoTime(A[0])}</a><div class="info"><div class="nm">${esc(A[0])}</div><div class="mg">${esc(A[2])}</div></div></div>
     <div class="pl num"><span class="${sc.w>sc.l?"v":""}">${sc.w}</span>-<span class="${sc.l>sc.w?"v":""}">${sc.l}</span>${sc.t?"-"+sc.t:""}<small>sem ${d.wk} · dia ${Math.min(dia,7)}/7 · previsão ${(()=>{const p=placar(pa,pb);return rtxt(p.w,p.l,p.t)})()}</small></div>
@@ -2255,6 +2259,7 @@ function render(){
     else if(r.startsWith("time-"))h=vTime(+r.slice(5));
     else h=({confrontos:vConfrontos,noite:vNoite,desempenhos:vDesempenhos,times:vTimes,radar:vRadar,museu:vMuseuCapa}[r]||vConfrontos)();
   }catch(e){console.error(e);h=`<div class="card vazio">Deu ruim ao montar esta tela (${esc(e.message)}). Manda print pro Loydão.</div>`}
+  if(r!=="confrontos"&&r!==""&&!r.startsWith("jogo-"))h=`<div class="barra-inicio"><button type="button" class="inicio" data-ir="confrontos">⌂ Início</button></div>`+h;
   $("#app").innerHTML=h;
 }
 function ir(h){if(location.hash==="#"+h)render();else location.hash=h;window.scrollTo(0,0)}
@@ -2341,5 +2346,8 @@ document.addEventListener("keydown",e=>{if(e.target.matches("input,select,textar
 /* ---------- partida ---------- */
 (function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===8)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}else ticker()})();
 atualizarAoVivo();
+
+/* logo e título do topo também voltam para o início */
+document.querySelectorAll(".topo .belt,.topo .mast").forEach(el=>{el.style.cursor="pointer";el.addEventListener("click",()=>ir("confrontos"))});
 </script>
 </body></html>
