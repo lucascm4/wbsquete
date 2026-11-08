@@ -1681,6 +1681,32 @@ svg.cad{width:18px;height:18px;display:block}
 .av-nav{display:flex;align-items:center;gap:6px;margin:6px 0 8px;padding:6px;background:#0a0707;border-radius:10px;border-bottom:2px solid var(--amarelo)}
 .av-nav-m{flex:1;text-align:center;line-height:1.15}.av-nav-m b{display:block;font-family:var(--display);font-weight:400;font-size:18px;color:#fff;letter-spacing:.03em}.av-nav-m small{font-size:11px;color:var(--apagado)}
 
+/* PUBLI BETLOYDE */
+.publi{position:relative;display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;margin:10px 0;padding:10px 10px 18px;border-radius:12px;background:linear-gradient(100deg,#062b1d,#0b4a2f 60%,#0f6b3f);border:2px solid #ffd400;color:#fff;cursor:pointer;box-shadow:0 4px 0 #000}
+.publi-l{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.publi-tag{font:800 8px system-ui;letter-spacing:.1em;color:#b7f5c9;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:3px}
+.publi-m{font-family:var(--display);font-size:18px;letter-spacing:.02em;color:#fff}.publi-m i{font-style:normal;color:#ffd400}
+.publi-c{min-width:0;display:flex;flex-direction:column;gap:1px}
+.publi-sup{font:600 10px system-ui;color:#b7f5c9;text-transform:uppercase;letter-spacing:.05em}
+.publi-t{font-family:var(--display);font-weight:400;font-size:15px;line-height:1.1;color:#ffd400}
+.publi-o{font:700 13px system-ui}.publi-o s{opacity:.7}.publi-o b{font-family:var(--display);font-weight:400;font-size:20px;color:#fff;background:#d4121c;padding:0 6px;border-radius:5px;margin-left:2px}
+.publi-r{display:flex;flex-direction:column;align-items:center;gap:3px;max-width:86px;text-align:center}
+.publi-18{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#ffd400;color:#000;font:900 10px system-ui}
+.publi-r small{font-size:8.5px;line-height:1.15;color:#d8f7e2}
+.publi-leg{position:absolute;left:10px;right:10px;bottom:3px;font-size:8px;color:rgba(255,255,255,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk-i b.pub{background:#0f6b3f!important;color:#ffd400!important}
+.tarja{position:fixed;left:8px;right:8px;top:calc(env(safe-area-inset-top,0px) + 92px);z-index:70;animation:tarjaIn .35s ease-out;transition:opacity .35s,transform .35s}
+.tarja.sai{opacity:0;transform:translateY(-10px)}
+@keyframes tarjaIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+.tarja-in{display:flex;align-items:center;gap:8px;background:linear-gradient(90deg,#0b4a2f,#0f6b3f);border:2px solid #ffd400;border-radius:12px 12px 0 0;padding:8px 8px 8px 10px;color:#fff;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.tarja-m{font-family:var(--display);font-size:16px;flex:0 0 auto}.tarja-m i{font-style:normal;color:#ffd400}
+.tarja-c{flex:1;min-width:0;display:flex;flex-direction:column}.tarja-c small{font:600 9px system-ui;color:#b7f5c9;text-transform:uppercase;letter-spacing:.05em}
+.tarja-c b{font-family:var(--display);font-weight:400;font-size:15px;line-height:1.15;color:#ffd400}.tarja-c u{text-decoration:none;color:#fff;background:#d4121c;padding:0 5px;border-radius:4px}
+.tarja-18{flex:0 0 auto;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#ffd400;color:#000;font:900 9px system-ui}
+.tarja-x{all:unset;cursor:pointer;flex:0 0 auto;padding:2px 4px;color:#d8f7e2;font-size:15px}
+.tarja-leg{display:block;background:#052016;color:rgba(255,255,255,.6);font-size:8px;padding:2px 10px 3px;border:2px solid #ffd400;border-top:0;border-radius:0 0 10px 10px}
+@media (prefers-reduced-motion:reduce){.tarja{animation:none}}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1746,11 +1772,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794175407"></script>
-<script src="radar.js?v=1794175407"></script>
-<script src="midia.js?v=1794175407"></script>
+<script src="hist.js?v=1794175787"></script>
+<script src="radar.js?v=1794175787"></script>
+<script src="midia.js?v=1794175787"></script>
 <script>
-const VERSAO_PAINEL="20261108190327";
+const VERSAO_PAINEL="20261108190947";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2174,8 +2200,9 @@ function ticker(){
   const el=$("#ticker");if(!el)return;if(!DADOS){el.hidden=true;return}
   let it=[];try{it=noticias()}catch(e){console.error(e)}
   if(!it.length){el.hidden=true;return}
+  try{const O=ofertasBet();if(O.length){const n=Math.max(1,Math.floor(it.length/5));for(let k=0;k<n&&k<O.length;k++){const of=O[k];it.splice(Math.min(it.length,(k+1)*5-1),0,{k:"PUBLI",t:`BETLOYDE: ${esc(of.t)}: de ${fmtO(of.de)} para ${fmtO(of.para)}`,pub:1})}}}catch(e){}
   const live=DADOS.nba&&Object.values(DADOS.nba).some(g=>g.live);
-  const html=it.map(x=>`<span class="tk-i" ${x.j!=null?`data-jogo="${x.j}"`:""}><b class="${["BANCO","MARTELO","TIJOLO","ENTREGOU","APAGADO","ZERO"].includes(x.k)?"r":""}">${x.k}</b>${x.t.replace(/<\/?b>/g,"")}</span>`).join('<span class="tk-sep">◆</span>');
+  const html=it.map(x=>`<span class="tk-i" ${x.j!=null?`data-jogo="${x.j}"`:""}><b class="${x.pub?"pub":["BANCO","MARTELO","TIJOLO","ENTREGOU","APAGADO","ZERO"].includes(x.k)?"r":""}">${x.k}</b>${x.t.replace(/<\/?b>/g,"")}</span>`).join('<span class="tk-sep">◆</span>');
   el.hidden=false;el.innerHTML=`<span class="tk-tag">${live?'<i class="ao-vivo"></i>AO VIVO':"HOJE"}</span><div class="tk-wrap"><div class="tk-mov${it.length<6?" tk-uma":""}">${html}${it.length<6?"":`<span class="tk-sep">◆</span>${html}`}</div></div>`;
   const mov=el.querySelector(".tk-mov");const dur=mov.classList.contains("tk-uma")?Math.max(12,Math.round((mov.scrollWidth+innerWidth)/60)):Math.max(30,Math.round(mov.scrollWidth/2/60));mov.style.animationDuration=dur+"s";
 }
@@ -3519,6 +3546,30 @@ function vAoVivoTodos(abas){
   <div class="card lj-wrap"><div class="bloco-tit">${q==="quadra"?"EM QUADRA":"JOGAM HOJE"} <small>${esc(nome)} · ${rows.length} jogador${rows.length===1?"":"es"}${jg.live?` · ${jg.live} jogo${jg.live>1?"s":""} rolando`:""}</small></div>
   <table class="lj">${cabLj()}<tbody>${L.map(linha).join("")||`<tr><td colspan="10" class="esp">${q==="quadra"?"Ninguém desse filtro em quadra agora. Toque em “Todos de hoje”.":"Ninguém desse filtro joga hoje."}</td></tr>`}</tbody></table></div>`}
 
+/* ---------- PUBLI BETLOYDE: anúncios de mentirinha com odds de verdade (saem da chance do modelo) ---------- */
+const oddDe=p=>{if(!(p>0.004))return null;const v=degrau(Math.max(1.01,1/(p*1.075)));return v};
+const fmtO=v=>v==null?"—":v.toFixed(2);
+function ofertasBet(){const d=DADOS;if(!d||!EST||!EST.tot)return [];const O=[];const man=id=>T(id)[2],sig=id=>T(id)[3]||T(id)[0];
+  const turbo=v=>degrau(v*(1.18+Math.random()*0.17));
+  // confrontos da semana
+  d.mt.forEach(([a,b])=>{let s;try{s=simula(a,b)}catch(e){return}const fav=s.pa>=s.pb?a:b,zeb=fav===a?b:a,pf=Math.max(s.pa,s.pb),pz=Math.min(s.pa,s.pb);
+    if(pz>0.03){const o=oddDe(pz);if(o)O.push({t:`${man(zeb)} vira pra cima do ${man(fav)}`,de:o,para:turbo(o),s:`${T(zeb)[0]} x ${T(fav)[0]} · semana ${d.wk}`,j:d.mt.findIndex(m=>m.includes(a))})}
+    // favorito vence + leva a categoria mais provável dele
+    const cats=CATS.map((c,j)=>({c,p:fav===a?s.cat[j]:Math.max(0,1-s.cat[j]-s.catE[j])})).filter(x=>x.p>0.35&&x.p<0.9).sort((x,y)=>y.p-x.p);
+    if(cats[0]&&pf<0.97){const p=pf*cats[0].p*1.1;const o=oddDe(Math.min(0.95,p));if(o&&o>1.25)O.push({t:`${T(fav)[0]} vence e tem mais ${cats[0].c.k}`,de:o,para:turbo(o),s:`${sig(a)} x ${sig(b)} · aumentada`,j:d.mt.findIndex(m=>m.includes(a))})}
+    // empate
+    if(s.pe>0.03){const o=oddDe(s.pe);if(o)O.push({t:`${man(a)} e ${man(b)} dividem a pizza: empate`,de:o,para:turbo(o),s:`${sig(a)} x ${sig(b)}`})}
+  });
+  // temporada: título, pipocar, lanterna
+  try{const S=simTemporada();Object.entries(S).forEach(([id,x])=>{id=+id;
+    if(x.tit>0.08&&x.tit<0.6){const o=oddDe(1-x.tit);if(o)O.push({t:`${man(id)} pipoca e NÃO leva o título`,de:o,para:turbo(o),s:"mercado da temporada · cinturão"})}
+    if(x.tit>0.01&&x.tit<0.08){const o=oddDe(x.tit);if(o)O.push({t:`${man(id)} campeão (é sério, tem odd)`,de:o,para:turbo(o),s:"mercado da temporada · zebra das zebras"})}
+    if(x.lant>0.08){const o=oddDe(x.lant);if(o)O.push({t:`${man(id)} lanterna e paga o stand-up`,de:o,para:turbo(o),s:"mercado da punição"})}
+    if(x.po>0.2&&x.po<0.6){const o=oddDe(1-x.po);if(o)O.push({t:`${man(id)} fica fora dos playoffs`,de:o,para:turbo(o),s:"mercado da temporada"})}})}catch(e){}
+  return O.sort(()=>Math.random()-0.5)}
+const PUBLI_SLOGAN=["BETLOYDE: a casa que torce contra você","Aposte com responsabilidade. Perca com dignidade.","Odd turbinada é igual promessa de manager: confie desconfiando","Não é dinheiro de verdade. A vergonha é.","BETLOYDE · patrocinadora oficial do choro de segunda-feira"];
+function publiCard(of){if(!of)return "";return `<div class="publi" ${of.j!=null?`data-jogo="${of.j}"`:""}><div class="publi-l"><span class="publi-tag">PUBLICIDADE</span><b class="publi-m"><i>BET</i>LOYDE</b></div><div class="publi-c"><span class="publi-sup">${esc(of.s)}</span><b class="publi-t">${esc(of.t)}:</b><span class="publi-o">de <s>${fmtO(of.de)}</s> para <b>${fmtO(of.para)}</b></span></div><div class="publi-r"><span class="publi-18">+18</span><small>${esc(PUBLI_SLOGAN[Math.floor(Math.random()*PUBLI_SLOGAN.length)])}</small></div><small class="publi-leg">Odds de mentira calculadas pelo modelo do Loydão. Ninguém aposta nada aqui.</small></div>`}
+
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
 const ajson=(u,h)=>fetch(u,{cache:"no-store",headers:h||{}}).then(r=>{if(!r.ok)throw new Error("ESPN respondeu "+r.status);return r.json()});
@@ -3681,6 +3732,7 @@ function render(){
   try{montarBusca(r)}catch(e){console.error(e)}
   try{montarAtalhos(r)}catch(e){console.error(e)}
   try{montarLive(r)}catch(e){console.error(e)}
+  try{montarPubli(r)}catch(e){console.error(e)}
   if(UI._fichaMuseu&&window.MUSEU&&document.getElementById("popFicha")){const i=UI._fichaMuseu;UI._fichaMuseu=null;const pop=document.querySelector("#popFicha .pop-full");const sc=pop?pop.scrollTop:0;abrirJogador(i,UI.fichaPer);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc}
   if(UI._fichaEspera&&document.getElementById("popFicha")&&ehRange(UI.fichaPer)&&rangePronto(UI.fichaPer)){const i=UI._fichaEspera;UI._fichaEspera=null;abrirJogador(i,UI.fichaPer)}
 }
@@ -3930,5 +3982,17 @@ addEventListener("scroll",()=>{const t=document.getElementById("fabTopo")||doca(
 function posDoca(){const dk=document.getElementById("fabDoca");if(!dk)return;const vv=window.visualViewport;let h=vv?vv.height+vv.offsetTop:innerHeight;const app=navigator.standalone||matchMedia("(display-mode: standalone)").matches;if(app&&screen.height>h&&Math.abs(screen.width-innerWidth)<4){const pt=parseFloat(getComputedStyle(document.documentElement).paddingTop)||0;h=screen.height-pt-44}dk.style.transform=`translateY(${Math.round(h)}px)`}
 if(window.visualViewport){visualViewport.addEventListener("resize",posDoca);visualViewport.addEventListener("scroll",posDoca)}addEventListener("resize",posDoca);setInterval(posDoca,1000);
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="avTime"){UI.avF=+e.target.value||0;render()}if(e.target&&e.target.id==="avDuelo"){UI.avDuelo=+e.target.value||0;try{if(UI.avDuelo&&!meuTime())localStorage.setItem("painel.meu",UI.avDuelo)}catch(x){}render()}});
+
+/* anúncios: cartão no meio das páginas + tarja pop-up de vez em quando (estilo TV) */
+function montarPubli(r){try{const app=document.getElementById("app");if(!app||app.querySelector(".publi")||!DADOS)return;if(!/^(|confrontos|times|noite|perfis|radar|museu|aovivo|time-\d+)$/.test(r||""))return;
+  const cards=[...app.querySelectorAll(":scope > .card, :scope > .jogo, :scope > .grade > *")];const O=ofertasBet();if(!O.length)return;
+  const alvo=cards[Math.min(cards.length-1,(r===""||r==="confrontos")?2:1)];if(!alvo)return;const div=document.createElement("div");div.innerHTML=publiCard(O[0]);alvo.after(div.firstElementChild)}catch(e){}}
+let _tarjas=0,_ultTarja=0;
+function tarja(){try{if(_tarjas>=4||document.hidden||document.getElementById("popFicha")||document.getElementById("popInst")||document.getElementById("popLista")||document.getElementById("tarjaBet"))return;
+  if(Date.now()-_ultTarja<4*60*1000)return;const O=ofertasBet();if(!O.length)return;const of=O[0];_tarjas++;_ultTarja=Date.now();
+  const el=document.createElement("div");el.id="tarjaBet";el.className="tarja";
+  el.innerHTML=`<div class="tarja-in" ${of.j!=null?`data-jogo="${of.j}"`:""}><span class="tarja-m"><i>BET</i>LOYDE</span><div class="tarja-c"><small>${esc(of.s)}</small><b>${esc(of.t)}: de ${fmtO(of.de)} para <u>${fmtO(of.para)}</u></b></div><span class="tarja-18">+18</span><button type="button" class="tarja-x" aria-label="fechar anúncio">✕</button></div><small class="tarja-leg">Publicidade de mentira · odds do modelo do Loydão · aposte com responsabilidade (aqui ninguém aposta nada)</small>`;
+  el.querySelector(".tarja-x").onclick=ev=>{ev.stopPropagation();el.remove()};document.body.appendChild(el);setTimeout(()=>{el.classList.add("sai");setTimeout(()=>el.remove(),400)},11000)}catch(e){}}
+setTimeout(tarja,60*1000);setInterval(tarja,60*1000);
 </script>
 </body></html>
