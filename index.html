@@ -475,8 +475,9 @@ main+.rod{margin-top:0}
 /* tooltip */
 .tip{position:relative;cursor:help;border-bottom:1px dotted currentColor;white-space:nowrap}
 .tip i{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:var(--amarelo);color:#000;font:700 10px/1 var(--ui);font-style:normal;margin-left:4px;vertical-align:2px}
-.tip::after{content:attr(data-tip);position:absolute;left:0;bottom:calc(100% + 8px);z-index:40;width:min(300px,80vw);background:#000;color:#fff;border:2px solid var(--amarelo);padding:8px 10px;font:500 13px/1.35 var(--ui);white-space:normal;letter-spacing:0;text-transform:none;box-shadow:4px 4px 0 #000;opacity:0;pointer-events:none;transition:opacity .12s}
-.tip:hover::after,.tip:focus-visible::after,.tip.aberta::after{opacity:1}
+.tip::after{content:attr(data-tip);position:absolute;left:0;bottom:calc(100% + 8px);z-index:40;width:min(300px,80vw);background:#000;color:#fff;border:2px solid var(--amarelo);padding:8px 10px;font:500 13px/1.35 var(--ui);white-space:normal;letter-spacing:0;text-transform:none;box-shadow:4px 4px 0 #000;display:none;pointer-events:none}
+.tip:hover::after,.tip:focus-visible::after,.tip.aberta::after{display:block}
+.tip.dir::after{left:auto;right:0}
 .linha-fina .tip,.legenda .tip{color:inherit}
 td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 /* ranking em cards */
@@ -1594,7 +1595,7 @@ $("#btnAtualiza").onclick=()=>atualizarAoVivo();
 $("#nav").innerHTML=NAVS.map(([k,n,ic])=>`<a href="#${k}" data-nav="${k}"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg>${n}</a>`).join("");
 $("#navTop").innerHTML=NAVS.map(([k,n])=>`<a href="#${k}" data-nav="${k}">${n}</a>`).join("");
 
-document.addEventListener("click",e=>{const t=e.target.closest(".tip");document.querySelectorAll(".tip.aberta").forEach(x=>{if(x!==t)x.classList.remove("aberta")});if(t){e.preventDefault();e.stopPropagation();t.classList.toggle("aberta")}},true);
+document.addEventListener("click",e=>{const t=e.target.closest(".tip");document.querySelectorAll(".tip.aberta").forEach(x=>{if(x!==t)x.classList.remove("aberta")});if(t){e.preventDefault();e.stopPropagation();t.classList.toggle("aberta");t.classList.toggle("dir",t.getBoundingClientRect().left>window.innerWidth/2)}},true);
 /* ---------- partida ---------- */
 (function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===6)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}})();
 atualizarAoVivo();
