@@ -1076,6 +1076,12 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 .dia.per{background:#1d1414;border-color:var(--amarelo)}
 .dia.per[aria-pressed="true"]{background:var(--amarelo)}
 
+/* períodos: Semana, Mês, Season em destaque + "outro" com seletor de dia */
+.dias .dia.per.big{flex:1 1 0;min-width:0;font-size:16px;padding:8px 4px}
+.dias .dia.per.esc{position:relative;flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:13px}
+.dias .dia.per.esc select{background:#000;color:var(--amarelo);border:1px solid var(--amarelo);font:600 12px system-ui,sans-serif;padding:2px;max-width:100%}
+.dias .dia.per.esc.on{background:var(--amarelo);color:#000}.dias .dia.per.esc.on select{background:#fff;color:#000;border-color:#000}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1137,7 +1143,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108113238";
+const VERSAO_PAINEL="20261108135240";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1511,7 +1517,7 @@ function vConfrontos(){
   const mais=ordem.slice().sort((x,y)=>Math.abs(x.s.pa-x.s.pb)-Math.abs(y.s.pa-y.s.pb))[0];
   const dia=d.cur-d.s0+1;
   let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
-  <div class="atalhos"><button type="button" class="atalho" data-sel="${d.last}">${ICS.sel} <span>Seleção</span></button><button type="button" class="atalho" data-ir="desempenhos">${ICS.fogo} <span>Noite</span></button><button type="button" class="atalho" data-ir="times">${ICS.rk} <span>Ranking</span></button><button type="button" class="atalho" data-ir="radar">${ICS.radar} <span>Radar</span></button><button type="button" class="atalho" data-ir="museu">${ICS.museu} <span>Museu</span></button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="baixar" data-instalar>📲 Baixar o app</button>`:""}<label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
+  <div class="atalhos"><button type="button" class="atalho" data-sel="sem">${ICS.sel} <span>Seleção</span></button><button type="button" class="atalho" data-ir="desempenhos">${ICS.fogo} <span>Noite</span></button><button type="button" class="atalho" data-ir="times">${ICS.rk} <span>Ranking</span></button><button type="button" class="atalho" data-ir="radar">${ICS.radar} <span>Radar</span></button><button type="button" class="atalho" data-ir="museu">${ICS.museu} <span>Museu</span></button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="baixar" data-instalar>📲 Baixar o app</button>`:""}<label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
   ordem.forEach(({m,i,sc,s})=>{
     const [a,b]=m,A=T(a),B=T(b);
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
@@ -1557,9 +1563,13 @@ const MEDIAS={l7:["l7","ÚLTIMOS 7 DIAS","DOS ÚLTIMOS 7 DIAS",2],l30:["l30","Ú
 const ehMedia=sp=>typeof sp==="string"&&MEDIAS[sp]!=null;
 function minMedia(sp){const d=DADOS;if(sp!=="temp")return MEDIAS[sp][3];const g=Math.max(1,...d.P.map(p=>p.av?p.av[11]:0));return Math.max(3,Math.round(g*0.5))}
 function rotPer(sp,curto){const d=DADOS;if(sp==="sem")return curto?"SEMANA "+d.wk:"DA SEMANA";if(ehMedia(sp))return curto?MEDIAS[sp][1]:MEDIAS[sp][2];return curto?spRot(sp).toUpperCase():"DA NOITE"}
-function botoesPer(sp,attr){const d=DADOS;let h=`<button class="dia" type="button" ${attr}="sem" aria-pressed="${sp==="sem"}">SEMANA<small>total</small></button>`;
-  for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++){const r=spRot(x).split(" ");h+=`<button class="dia" type="button" ${attr}="${x}" aria-pressed="${String(sp)===String(x)}">${r[0].toUpperCase()}<small>${r[1]}</small></button>`}
-  return h+[["l7","7 DIAS","média"],["l30","30 DIAS","média"],["temp","SEASON","média"]].map(([k,a,b])=>`<button class="dia per" type="button" ${attr}="${k}" aria-pressed="${sp===k}">${a}<small>${b}</small></button>`).join("")}
+function botoesPer(sp,attr){const d=DADOS;
+  // três períodos grandes + um seletor com cada dia da semana (e os últimos 7 dias)
+  const big=[["sem","SEMANA","semana "+d.wk],["l30","MÊS","últimos 30 dias"],["temp","SEASON","temporada"]].map(([k,a,b])=>`<button class="dia per big" type="button" ${attr}="${k}" aria-pressed="${sp===k}">${a}<small>${b}</small></button>`).join("");
+  const dias=[];for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++)dias.push(x);
+  const escolhido=!["sem","l30","temp"].includes(String(sp));
+  const opt=`<option value="">${escolhido?"":"um dia…"}</option>`+dias.slice().reverse().map(x=>`<option value="${x}" ${String(sp)===String(x)?"selected":""}>${esc(spRot(x))}${x===d.cur?" (hoje)":""}</option>`).join("")+`<option value="l7" ${sp==="l7"?"selected":""}>últimos 7 dias</option>`;
+  return big+`<label class="dia per esc ${escolhido?"on":""}">OUTRO<select id="perSel" data-attr="${attr}" aria-label="Escolher um dia">${opt}</select></label>`}
 function linhasMedia(sp,filtro){ // jogadores com média no período (por jogo)
   const k=MEDIAS[sp][0];const mg=minMedia(sp);const out=[];
   DADOS.P.filter(p=>!p.fora&&(!filtro||filtro(p))).forEach(p=>{const a=p[k];if(a&&a[11]>=mg)out.push({p,t:p.t,s:a.slice(0,11),g:a[11],slot:0,media:1})});return out}
@@ -2412,7 +2422,7 @@ document.addEventListener("click",e=>{
   else if(ds.cft){UI.cfTemp=ds.cft;UI.cfTime="todos";render()}
   else if(ds.drt){UI.drTemp=ds.drt;UI.drTime="todos";render()}
 });
-document.addEventListener("change",e=>{if(e.target.id==="noiteTime"){UI.noiteTime=+e.target.value;render()}if(e.target.id==="rkModo"){UI.rkModo=e.target.value;try{localStorage.setItem("painel.rk",e.target.value)}catch(x){}render()}if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
+document.addEventListener("change",e=>{if(e.target.id==="noiteTime"){UI.noiteTime=+e.target.value;render()}if(e.target.id==="perSel"&&e.target.value){const v=e.target.value;UI.noiteDia=isNaN(+v)?v:+v;render()}if(e.target.id==="rkModo"){UI.rkModo=e.target.value;try{localStorage.setItem("painel.rk",e.target.value)}catch(x){}render()}if(e.target.id==="meuTime"){try{localStorage.setItem("painel.meu",e.target.value)}catch(x){}render()}if(e.target.id==="cfTime"){UI.cfTime=e.target.value;render()}if(e.target.id==="drTime"){UI.drTime=e.target.value;render()}if(e.target.id==="h2hA"){UI.h2hA=e.target.value;render()}if(e.target.id==="h2hB"){UI.h2hB=e.target.value;render()}});
 window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0)});
 $("#btnAtualiza").onclick=()=>atualizarAoVivo();
 function tourAuto(){let visto=null;try{visto=localStorage.getItem("painel.tour")}catch(e){}if(!visto){const espera=setInterval(()=>{if(DADOS&&document.querySelector(".jogo")){clearInterval(espera);tourInicio()}},800);setTimeout(()=>clearInterval(espera),30000)}}
