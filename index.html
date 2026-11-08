@@ -1185,7 +1185,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108143239";
+const VERSAO_PAINEL="20261108143419";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2247,20 +2247,20 @@ function trocasAtuais(){ // 26/27: jogador em time diferente do draft sem regist
   const regua=d.P.concat(d.fa||[]).filter(p=>p.av&&p.av[11]>=mg&&p.nota!=null).map(p=>p.nota).sort((x,y)=>y-x);
   const rkDe=z=>1+regua.filter(n=>n>z).length;
   const idDe=nome=>(d.teams.find(t=>T(t.id)[0]===nome)||{}).id;
-  const fase=(id,tm)=>{const s2=zero();let g=0;if(!boxOk)return null;Object.values(BOX.dias).forEach(L=>L.forEach(l=>{if(l[0]===id&&l[1]===tm){l.slice(3,14).forEach((y,i)=>s2[i]+=y);g++}}));
-    if(!g||!nota)return {g:0};const av=s2.map(x=>x/g);const z=nota(av).n;return {g,z,rk:rkDe(z),pts:Math.round(av[0]*10)/10}};
+  const fase=(id,tm)=>{const s2=zero();let g=0,ult=0,pri=0;if(!boxOk)return null;Object.entries(BOX.dias).forEach(([sp,L])=>L.forEach(l=>{if(l[0]===id&&l[1]===tm){ult=Math.max(ult,+sp);pri=pri?Math.min(pri,+sp):+sp;l.slice(3,14).forEach((y,i)=>s2[i]+=y);g++}}));
+    if(!g||!nota)return {g:0,ult,pri};const av=s2.map(x=>x/g);const z=nota(av).n;return {g,z,rk:rkDe(z),ult,pri}};
   const pares={};mov.forEach(m=>{m.antes=fase(m.p.id,idDe(m.de));m.depois=fase(m.p.id,idDe(m.para));const k=[m.de,m.para].sort().join("|");(pares[k]=pares[k]||[]).push(m)});
   const datas=(d.tx.ac||[]).map(ms=>new Date(ms));
   const z1=z=>(z>0?"+":"")+z.toFixed(1);
   const fz=f=>!f?"…":!f.g?"não jogou":`<b class="${f.z>0?"pos":f.z<0?"neg":""}">#${f.rk}</b> ${z1(f.z)} <i>${f.g} j</i>`;
   return Object.entries(pares).map(([k,ms],idx)=>{const [t1,t2]=k.split("|");const lado=t=>ms.filter(m=>m.para===t);
-    const dt=datas[datas.length-1-idx];
+    const ultAnt=Math.max(0,...ms.map(m=>m.antes&&m.antes.ult||0));
     const val=l=>l.reduce((s2,m)=>s2+(m.depois&&m.depois.g?m.depois.z:0),0);
     const l1=lado(t1),l2=lado(t2);const v1=val(l1),v2=val(l2);const venc=v1>=v2?t1:t2;
     const jog=m=>{const a=m.antes,b=m.depois;const sobe=a&&b&&a.g&&b.g?b.z-a.z:null;
       return `<div class="tj">${face(m.p.id,m.p.n,"")}<span>${esc(m.p.n)}</span><small class="num">${sobe==null?"":sobe>0.3?'<em class="up">▲ melhorou</em>':sobe<-0.3?'<em class="dn">▼ piorou</em>':'<em>= igual</em>'}</small>
         <div class="ad"><span><small>ANTES · ${esc(T(idDe(m.de))[3]||m.de)}</small>${fz(a)}</span><span class="seta">➜</span><span><small>DEPOIS · ${esc(T(idDe(m.para))[3]||m.para)}</small>${fz(b)}</span></div></div>`};
-    return `<div class="card troca"><div class="tq">2026/27${dt?" · "+dd(dt.getDate())+"/"+dd(dt.getMonth()+1)+"/"+String(dt.getFullYear()).slice(2):""} · temporada atual<span>na frente hoje: <b>${esc(venc)}</b></span></div><div class="tl2">${[[t1,l1,v1],[t2,l2,v2]].map(([t,l,v])=>`<div class="tlado ${t===venc?"ganhou":""}"><div class="tt">${logo(t)}<span>${esc(t)} recebeu</span><b class="num">${z1(v)}</b></div>${l.map(jog).join("")||'<div class="tj"><span class="esp">nada (ou jogador já largado)</span></div>'}</div>`).join("")}</div>
+    return `<div class="card troca"><div class="tq">2026/27${ultAnt?" · troca depois de "+esc(spRot(ultAnt)):""} · temporada atual<span>na frente hoje: <b>${esc(venc)}</b></span></div><div class="tl2">${[[t1,l1,v1],[t2,l2,v2]].map(([t,l,v])=>`<div class="tlado ${t===venc?"ganhou":""}"><div class="tt">${logo(t)}<span>${esc(t)} recebeu</span><b class="num">${z1(v)}</b></div>${l.map(jog).join("")||'<div class="tj"><span class="esp">nada (ou jogador já largado)</span></div>'}</div>`).join("")}</div>
     <details class="como-ler"><summary>Como ler esta troca</summary><p><b>O número de cada jogador</b> (ex.: +2,4 ou −1,1) é a nota 9-cat por jogo: quanto ele rende acima (+) ou abaixo (−) de um titular médio da liga, somando as 9 categorias. <b>0 = jogador mediano de fantasy</b>; +3 é estrela, −2 é peso morto.</p><p><b>#</b> = em que posição essa média o colocaria no ranking da temporada. <b>ANTES</b> = o que ele fez com a camisa do time antigo; <b>DEPOIS</b> = o que fez no time novo (<i>j</i> = jogos).</p><p><b>O placar grande de cada lado</b> soma o DEPOIS de quem o time recebeu. Ganha a troca quem recebeu mais produção. Com poucos jogos depois, ainda é cedo pra cravar.</p></details></div>`}).join("");
 }
 function vMuseuCapa(){
