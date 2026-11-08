@@ -1674,6 +1674,10 @@ svg.cad{width:18px;height:18px;display:block}
 .tip i{margin-left:3px}
 .tc3 .tc-leg{display:inline}
 
+.bola{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.bola.vd{background:#22c55e;box-shadow:0 0 0 1.5px rgba(0,0,0,.35)}.bola.vm{background:#ef4444;box-shadow:0 0 0 1.5px rgba(0,0,0,.35)}.bola.cz{background:#9ca3af}
+.tc3 .pv2.ganha,.tc3 .pv2{font-weight:600!important}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1739,11 +1743,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794174860"></script>
-<script src="radar.js?v=1794174860"></script>
-<script src="midia.js?v=1794174860"></script>
+<script src="hist.js?v=1794174882"></script>
+<script src="radar.js?v=1794174882"></script>
+<script src="midia.js?v=1794174882"></script>
 <script>
-const VERSAO_PAINEL="20261108185420";
+const VERSAO_PAINEL="20261108185442";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1873,7 +1877,7 @@ const T=id=>TIMES[id]||["?","","","?","#555"];
 const GLOSS={
  nota:"Nota: resume as 9 categorias num número só. 0 é a média dos jogadores da liga; +5 é elite; negativo é peso morto. Turnover conta contra.",
  rating:"Rating do Loydão: começa em 1000 e soma vitórias e categorias desta temporada, a força do elenco de hoje, o momento (últimas 3 semanas), a temporada passada, o histórico desde 22/23 e os títulos.",
- prev:"“fecha X” embaixo do número = onde a categoria deve fechar no domingo (o que já aconteceu + a média de cada jogador nos jogos que faltam). Em negrito: quem fecha ganhando.",
+ prev:"O número pequeno embaixo é onde a categoria deve fechar no domingo (o que já aconteceu + a média de cada jogador nos jogos que faltam). Bolinha verde: fecha ganhando. Vermelha: fecha perdendo.",
  vira:"VIRA: quem lidera a categoria agora deve perder até domingo, pela previsão.",
  pegado:"PEGADO: categoria em que cada lado tem entre 30% e 70% de chance. Decide no detalhe.",
  rk:"Rk 9cat: ranking próprio no formato da nossa liga (9 categorias, z-score, FG% e FT% pesados pelo volume, TO contra), no mesmo método do Basketball Monster. Rk 7d é o mesmo ranking só com os últimos 7 dias.",
@@ -2328,7 +2332,7 @@ function tabelaCategorias(a,b,ta,tb,pa,pb,sim){
   const sc=placar(ta,tb);const A=T(a),B=T(b);
   let h=`<table class="tabcat tc3"><colgroup><col class="c1"><col class="c3"><col class="c1"></colgroup><thead><tr><th class="lg"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></th><th>categoria <small class="tc-leg">${tip("prev","")}</small></th><th class="lg"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></th></tr></thead><tbody>`;
   CATS.forEach((c,j)=>{const r=sc.r[j];const px=c.f(pa),py=c.f(pb);const pr=c.inv?(px<py?1:px>py?-1:0):(px>py?1:px<py?-1:0);
-    const pv=(v,k)=>`<small class="pv2 ${k>0?"ganha":k<0?"perde":""}">fecha ${v}</small>`;
+    const pv=(v,k)=>`<small class="pv2 ${k>0?"ganha":k<0?"perde":""}"><i class="bola ${k>0?"vd":k<0?"vm":"cz"}"></i>${v}</small>`;
     h+=`<tr><td class="${r>0?"g":r<0?"p":""}"><span class="v">${fmt(c,c.f(ta))}</span>${pv(fmt(c,px),pr)}</td><td><span class="cn">${c.k}</span></td><td class="${r<0?"g":r>0?"p":""}"><span class="v">${fmt(c,c.f(tb))}</span>${pv(fmt(c,py),-pr)}</td></tr>`});
   const ps=placar(pa,pb);
   h+=`<tr class="resumo"><td colspan="3">Agora <b>${rtxt(sc.w,sc.l,sc.t)}</b> · deve fechar <b>${rtxt(ps.w,ps.l,ps.t)}</b> · faltam ${EST.jr[a]} jogos do ${esc(A[0])} e ${EST.jr[b]} do ${esc(B[0])}</td></tr>`;
