@@ -1234,7 +1234,7 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108150440";
+const VERSAO_PAINEL="20261108150648";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2099,8 +2099,11 @@ function abrirJogador(id,perF){
   const notaDe=a=>{const z=window._NAV?window._NAV(a):null;return z?z.n:null};
   const corN=n=>n==null?"":n>=4?"n-el":n>=1.5?"n-bo":n>=0?"n-ok":n>=-1.5?"n-fr":"n-ru";
   const FT=timesFantasy(p.n);const SPL=splitsFantasy(p.n,id);
-  const linhasCar=(p.av?[{yr:2027,t:p.pro,a:p.av,atual:1}]:[]).concat(car||[]);
   const rotT=yr=>(yr-1)+"/"+String(yr).slice(2);
+  const linhasCar=(p.av?[{yr:2027,t:p.pro,a:p.av,atual:1}]:[]).concat(car||[]);
+  // temporadas sem dado da ESPN: usa o que ele fez como titular na liga (museu)
+  Object.keys(SPL).forEach(k=>{const yr=+k.slice(0,4)+1;if(linhasCar.some(l=>l.yr===yr))return;const cs=Object.values(SPL[k]);const g=cs.reduce((x,c)=>x+c.g,0);if(!g)return;const sm=zero();cs.forEach(c=>c.s.forEach((v,i)=>sm[i]+=v));linhasCar.push({yr,a:sm.map(v=>v/g).concat([g]),soLiga:1})});
+  linhasCar.sort((x,y)=>y.yr-x.yr);
   const tmsDe=yr=>{const k=rotT(yr);const f=FT[k]||{ts:[],drop:null};const sp=SPL[k]||{};const ts=f.ts.slice();Object.keys(sp).sort((a,b)=>sp[a].w1-sp[b].w1).forEach(t=>{if(!ts.includes(t))ts.push(t)});
     if(yr===2027){const cur=d.P.find(q=>q.id===id&&!q.fora);d.P.filter(q=>q.id===id).forEach(q=>{const nm=T(q.t)[0];if(nm&&!ts.includes(nm))ts.push(nm)});if(cur){const nm=T(cur.t)[0];ts.splice(ts.indexOf(nm),1);ts.push(nm)}}
     return {ts,drop:f.drop,sp}};
@@ -2111,9 +2114,9 @@ function abrirJogador(id,perF){
   const mais=a=>`<div class="car-mais">${[["STL",n1(a[3])],["BLK",n1(a[4])],["3PM",n1(a[5])],["TO",n1(a[6])],["FG",`${pc(a[7],a[8])}<small>${n1(a[7])}/${n1(a[8])}</small>`],["FT",`${pc(a[9],a[10])}<small>${n1(a[9])}/${n1(a[10])}</small>`]].map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`;
   const linCar=(rot,a,cls,yr)=>{const x=yr!=null?tmsDe(yr):{ts:[],sp:{}};
     const cortes=x.ts.filter(t=>x.sp[t]).map(t=>{const c=x.sp[t];const av=c.s.map(v=>v/c.g).concat([c.g]);return `<div class="car-corte"><div class="cc-t">${logo(t)}<b>${esc(t)}</b><small>como titular</small></div><div class="cc-l">${selo(av)}${v4(av)}</div>${mais(av)}</div>`}).join("");
-    return `<details class="car-l ${cls||""}"><summary><span class="car-s"><b>${rot}</b>${yr!=null?carinhas(yr):""}</span>${selo(a)}${v4(a)}</summary>
+    return `<details class="car-l ${cls||""}"><summary><span class="car-s"><b>${rot}</b>${yr!=null?carinhas(yr):""}${(cls||"").includes("car-liga")?'<small class="car-t">só jogos na liga</small>':""}</span>${selo(a)}${v4(a)}</summary>
     ${cortes?`<div class="car-sub">NO ANO TODO</div>`:""}${mais(a)}${cortes?`<div class="car-sub">POR TIME DA LIGA</div>${cortes}`:""}</details>`};
-  const carreira=car&&car.length?`<div class="car">${tot?linCar("Total",tot,"car-tot"):""}${linhasCar.map(l=>linCar(rotA(l.yr),l.a,l.atual?"car-at":"",l.yr)).join("")}</div><div class="car-leg">Carinhas = times da WBSQUETE que tiveram ele naquele ano, na ordem. Toque na temporada: aparece o ano todo e o corte de quanto ele fez em cada time.</div>`:"";
+  const carreira=car&&car.length?`<div class="car">${tot?linCar("Total",tot,"car-tot"):""}${linhasCar.map(l=>linCar(rotA(l.yr),l.a,(l.atual?"car-at":"")+(l.soLiga?" car-liga":""),l.yr)).join("")}</div><div class="car-leg">Carinhas = times da WBSQUETE que tiveram ele naquele ano, na ordem. Toque na temporada: aparece o ano todo e o corte de quanto ele fez em cada time. Antes de 25/26 a ESPN só libera o que ele fez como titular na liga.</div>`:"";
   // últimos jogos (boxes guardados)
   const ult=[];if(typeof BOX!=="undefined"){Object.keys(BOX.dias).map(Number).sort((a,b)=>b-a).forEach(x=>{if(ult.length>=6)return;const l=BOX.dias[x].find(l=>l[0]===id);if(l)ult.push([x,l])})}
   if(!ult.length&&p.dl)Object.keys(p.dl).map(Number).sort((a,b)=>b-a).slice(0,6).forEach(x=>{const v=p.dl[x];ult.push([x,[id,p.t,v[11],...v.slice(0,11)]])});
@@ -2575,16 +2578,14 @@ async function garantirBoxes(ate){
   }finally{BOX.carregando=false;BOX.pronto=Object.keys(BOX.dias).length;render()}
 }
 /* temporadas anteriores (time da NBA + médias), sob demanda, guardadas no aparelho */
-const LY={},CAR={};const ANOS_CAR=[2026,2025,2024,2023,2022];
+const LY={},CAR={};const ANOS_CAR=[2026];
 function lerStatsCar(p,out){(p.stats||[]).forEach(x=>{const m=/^00(\d{4})$/.exec(x.id||"");if(!m||x.statSplitTypeId!==0||x.statSourceId!==0||!x.stats||!x.stats["42"])return;const yr=+m[1];if(yr>=2027||out[yr])return;
   const g=x.stats["42"];out[yr]={yr,t:x.proTeamId||null,a:[...AO.K.map(k=>+((x.stats[k]||0)/g).toFixed(1)),g]}})}
 async function seasonPassada(id){
-  if(LY[id]!==undefined)return LY[id];const c=lerCache("wbs.car."+id);if(c){CAR[id]=c.v;LY[id]=(c.v.find(x=>x.yr===2026)||{}).a||null;return LY[id]}
+  if(LY[id]!==undefined)return LY[id];const c=lerCache("wbs.car2."+id);if(c){CAR[id]=c.v;LY[id]=(c.v.find(x=>x.yr===2026)||{}).a||null;return LY[id]}
   const out={};const filtro=yrs=>JSON.stringify({players:{filterIds:{value:[id]},filterStatsForTopScoringPeriodIds:{value:2,additionalValue:yrs.map(y=>"00"+y)}}});
   try{const r=await ajson(AO.LG+"?view=kona_player_info",{"X-Fantasy-Filter":filtro(ANOS_CAR)});lerStatsCar((((r.players||[])[0]||{}).player)||{},out)}catch(e){}
-  // o que faltou: pergunta à temporada daquele ano
-  await Promise.all(ANOS_CAR.filter(y=>!out[y]).map(async y=>{try{const r=await ajson(AO.L.replace(/2027$/,String(y))+"/players?view=kona_player_info",{"X-Fantasy-Filter":filtro([y])});const pl=(Array.isArray(r)?r[0]:((r.players||[])[0]||{}).player)||{};lerStatsCar(pl,out)}catch(e){}}));
-  const v=Object.values(out).sort((x,y)=>y.yr-x.yr);CAR[id]=v;LY[id]=(v.find(x=>x.yr===2026)||{}).a||null;gravarCache("wbs.car."+id,{v});return LY[id]
+  const v=Object.values(out).sort((x,y)=>y.yr-x.yr);CAR[id]=v;LY[id]=(v.find(x=>x.yr===2026)||{}).a||null;gravarCache("wbs.car2."+id,{v});return LY[id]
 }
 async function baixarFA(sp){
   const f={players:{filterStatus:{value:["FREEAGENT","WAIVERS"]},filterSlotIds:{value:[0,1,2,3,4,5,6,7,8,9,10,11]},limit:80,offset:0,sortPercOwned:{sortPriority:1,sortAsc:false},filterRanksForScoringPeriodIds:{value:[sp]},filterStatsForTopScoringPeriodIds:{value:2,additionalValue:["002027","012027"]}}};
