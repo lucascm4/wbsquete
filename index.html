@@ -1237,6 +1237,13 @@ body:not(.rolou) .jn-mini>:not(small){display:none}
 .barra-inicio{float:none;position:absolute;right:max(10px,env(safe-area-inset-right,0px));top:10px;margin:0;z-index:5}
 .pilulas.vis{margin-top:4px}.pilulas.vis .rk-sel{font-size:13px}.pilulas.vis select{padding:4px 8px;font-size:13px}
 .dias .dia.hoje{border-color:var(--amarelo)}
+/* placar do dia nos botões e resumo */
+.dia em.pd{font-style:normal;font-weight:800;color:#ddd}.dia em.pd.ga{color:#3ddc84}.dia em.pd.gb{color:#ff7a7a}
+.dia[aria-pressed="true"] em.pd{color:#000}
+.dia-res{display:flex;gap:6px;padding:6px 8px 0}
+.dia-res>span{flex:1 1 0;display:flex;flex-direction:column;align-items:center;background:#000;border-radius:8px;padding:4px 4px 5px;line-height:1.15;min-width:0}
+.dia-res small{font:800 9px system-ui,sans-serif;letter-spacing:.06em;color:var(--apagado);text-align:center}
+.dia-res b{font-family:var(--display);font-weight:400;font-size:22px;color:#fff}.dia-res i{font-style:normal}.dia-res i.v{color:var(--amarelo)}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1303,10 +1310,10 @@ body:not(.rolou) .jn-mini>:not(small){display:none}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794164058"></script>
-<script src="radar.js?v=1794164058"></script>
+<script src="hist.js?v=1794164297"></script>
+<script src="radar.js?v=1794164297"></script>
 <script>
-const VERSAO_PAINEL="20261108155418";
+const VERSAO_PAINEL="20261108155817";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1788,7 +1795,9 @@ function listaJuntos(a,b,sp){
     ${st?`<td class="pts">${n1(st[0])}</td><td>${n1(st[1])}</td><td>${n1(st[2])}</td><td>${n1(st[3])}</td><td>${n1(st[4])}</td><td>${n1(st[5])}</td><td>${n1(st[6])}</td><td class="fgft">${fgc(st[7],st[8])}</td><td class="fgft">${fgc(st[9],st[10])}</td>`:`<td colspan="9" class="esp">${r.pend?"ainda não jogou":"sem média"}</td>`}</tr>`};
   const cab=cabLj();
   const filtros=`<div class="pilulas mini" role="group" aria-label="Time">${[[0,"Os dois"],[a,T(a)[0]],[b,T(b)[0]]].map(([k,n])=>`<button class="pil" type="button" data-ft="${k}" aria-pressed="${ft===k}">${esc(n)}</button>`).join("")}</div>`;
-  return `<div class="card lj-wrap"><div class="bloco-tit">JOGADORES <small>${sp==="sem"?"semana toda":futuro?spRot(sp)+" · média da temporada de quem joga":spRot(sp)} · do melhor pro pior</small></div>${filtros}
+  const ja=jogadoresDia(a,sp),jb=jogadoresDia(b,sp);const pdx=placarDia(a,b,sp);
+  const resumo=`<div class="dia-res">${pdx?`<span class="dr-pl"><small>${sp===d.cur?"PLACAR DE HOJE":"PLACAR DO DIA"}</small><b><i class="${pdx.w>pdx.l?"v":""}">${pdx.w}</i>-<i class="${pdx.l>pdx.w?"v":""}">${pdx.l}</i>${pdx.t?"-"+pdx.t:""}</b><small>só o dia, sem acumulado</small></span>`:""}<span class="dr-jg"><small>${sp==="sem"?"JOGOS NA SEMANA":futuro?"JOGADORES EM QUADRA (PREVISTO)":"JOGADORES EM QUADRA"}</small><b>${txtJog(ja)} x ${txtJog(jb)}</b><small>${esc(T(a)[3]||T(a)[0])} x ${esc(T(b)[3]||T(b)[0])}${typeof ja==="object"||typeof jb==="object"?" · contando quem ainda vai jogar":""}</small></span></div>`;
+  return `<div class="card lj-wrap"><div class="bloco-tit">JOGADORES <small>${sp==="sem"?"semana toda":futuro?spRot(sp)+" · média da temporada de quem joga":spRot(sp)} · do melhor pro pior</small></div>${resumo}${filtros}
   <table class="lj">${cab}<tbody>${tit.map(linha).join("")||`<tr><td colspan="10" class="esp">${futuro?"Ninguém joga nesse dia.":"Ninguém em quadra nesse dia."}</td></tr>`}${banco.length?`<tr class="sepr"><td colspan="10">Banco e IR${sp==="sem"?" · o que ficou fora":""}</td></tr>`+banco.map(r=>sp==="sem"?`<tr style="--cor:${T(r.t)[4]}" class="fora"><td class="jg"><div class="jg-in">${face(r.p.id,r.p.n,"")}<div><b>${esc(r.p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${r.bg} jogo${r.bg>1?"s":""} fora (banco/IR)</small></div></div></td>${(()=>{const B=bancoDe(r.p).B;return `<td class="pts">${B[0]}</td><td>${B[1]}</td><td>${B[2]}</td><td>${B[3]}</td><td>${B[4]}</td><td>${B[5]}</td><td>${B[6]}</td><td class="fgft">${fgc(B[7],B[8])}</td><td class="fgft">${fgc(B[9],B[10])}</td>`})()}</tr>`:linha(r)).join(""):""}</tbody></table></div>`;
 }
 function boxTime(tid,sp){
@@ -1974,7 +1983,8 @@ function vJogo(i){
     ${hh?`<div class="card"><div class="bloco-tit">HISTÓRICO DIRETO <small>toque para abrir o box</small></div><div class="saldo-h2h"><span class="${hh.va>hh.vb?"lid":""}">${esc(A[0])} <b>${hh.va}</b></span><span class="x">${hh.e?hh.e+" emp.":"x"}</span><span class="${hh.vb>hh.va?"lid":""}"><b>${hh.vb}</b> ${esc(B[0])}</span><small>desde 22/23${mm?` · ${mm} em mata-mata`:""}</small></div><div class="hist-lista">${hh.l.map(m2=>{const [w,lo,t]=m2.r;return `<button type="button" ${m2.atual?"disabled":`data-mj="${m2.i}"`}><span class="qd">${temporadaCurta(m2.t)} · sem ${m2.w}</span><span><span class="${m2.v===m2.a?"w":""}">${esc(m2.a)}</span> x <span class="${m2.v===m2.b?"w":""}">${esc(m2.b)}</span>${seloFase(m2)}</span><span class="rs num">${rtxt(w,lo,t)}</span></button>`}).join("")||'<div class="vazio">Nunca se enfrentaram desde 22/23.</div>'}</div></div>`:""}`;
   }else if(sub==="jogadores"){
     // ordem: hoje, total da semana, dias passados do mais recente pro mais antigo, depois os futuros
-    const bd=sp=>{const r=spRot(sp).split(" ");const hoje=sp===d.cur;return `<button class="dia ${sp>d.cur?"fut":""}${hoje?" hoje":""}" type="button" data-dia="${sp}" aria-pressed="${String(dsel)===String(sp)}">${hoje?"HOJE":r[0].toUpperCase()}<small>${sp>d.cur?"proj.":r[1]}</small></button>`};
+    const bd=sp=>{const r=spRot(sp).split(" ");const hoje=sp===d.cur;const pd=placarDia(a,b,sp);const pdt=pd?`<em class="pd ${pd.w>pd.l?"ga":pd.l>pd.w?"gb":""}">${pd.w}-${pd.l}${pd.t?"-"+pd.t:""}</em>`:"";
+      return `<button class="dia ${sp>d.cur?"fut":""}${hoje?" hoje":""}" type="button" data-dia="${sp}" aria-pressed="${String(dsel)===String(sp)}">${hoje?"HOJE":r[0].toUpperCase()}<small>${pdt||(sp>d.cur?"proj.":r[1])}</small></button>`};
     const hojeNa=d.cur>=d.s0&&d.cur<=d.s1;
     h+=`<div class="dias" role="group" aria-label="Escolher dia">${hojeNa?bd(d.cur):""}<button class="dia" type="button" data-dia="sem" aria-pressed="${dsel==="sem"}">SEMANA<small>total</small></button>`;
     for(let sp=Math.min(d.cur-1,d.s1);sp>=d.s0;sp--)h+=bd(sp);
@@ -2046,6 +2056,13 @@ function possiveis(p,per){
   else return null;
   return _POS[k]=m||null}
 const jp=(g,p,per)=>{const m=possiveis(p,per);return m&&m>=g?`${g}/${m}`:`${g}`};
+/* placar só do dia e quantos jogadores cada time teve (ou terá) em quadra */
+function jogadoresDia(t,sp){const d=DADOS;
+  if(sp==="sem")return d.P.filter(p=>p.t===t).reduce((x,p)=>x+(p.g||0),0);
+  if(sp>d.cur)return (EST.rost[t]||[]).filter(p=>p.slot<12&&p.slot!==13&&!(noticia(p,sp)&&noticia(p,sp).st==="OUT")&&p.inj!=="OUT"&&(p.gd||[]).includes(sp)).length;
+  let n=0,pend=0;d.P.filter(p=>p.t===t).forEach(p=>{const v=p.dl&&p.dl[sp];if(v&&v[11]<12)n++;else if(!v&&sp===d.cur&&p.hoje&&p.slot<12&&!p.fora)pend++});return pend?{n,pend}:n}
+const txtJog=x=>typeof x==="object"?`${x.n+x.pend}`:`${x}`;
+function placarDia(a,b,sp){const d=DADOS;if(sp==="sem"||sp>d.cur)return null;const A=d.D[a]&&d.D[a][sp],B=d.D[b]&&d.D[b][sp];if(!A||!B||(!A[8]&&!B[8]&&!A[0]&&!B[0]))return null;return placar(A,B)}
 function vNoite(){
   const d=DADOS;if(!d)return vazio();
   const sp=UI.noiteDia??diaPadrao();const ft=UI.noiteTime||0;const modo=UI.noiteModo==="piores"?"piores":"selecao";
