@@ -1236,6 +1236,7 @@ body:not(.rolou) .jn-mini>:not(small){display:none}
 #app{position:relative}
 .barra-inicio{float:none;position:absolute;right:max(10px,env(safe-area-inset-right,0px));top:10px;margin:0;z-index:5}
 .pilulas.vis{margin-top:4px}.pilulas.vis .rk-sel{font-size:13px}.pilulas.vis select{padding:4px 8px;font-size:13px}
+.dias .dia.hoje{border-color:var(--amarelo)}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1302,10 +1303,10 @@ body:not(.rolou) .jn-mini>:not(small){display:none}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794163883"></script>
-<script src="radar.js?v=1794163883"></script>
+<script src="hist.js?v=1794164058"></script>
+<script src="radar.js?v=1794164058"></script>
 <script>
-const VERSAO_PAINEL="20261108155123";
+const VERSAO_PAINEL="20261108155418";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1972,8 +1973,12 @@ function vJogo(i){
     h+=`<div class="card">${tabelaCategorias(a,b,ta,tb,pa,pb,s)}</div>
     ${hh?`<div class="card"><div class="bloco-tit">HISTÓRICO DIRETO <small>toque para abrir o box</small></div><div class="saldo-h2h"><span class="${hh.va>hh.vb?"lid":""}">${esc(A[0])} <b>${hh.va}</b></span><span class="x">${hh.e?hh.e+" emp.":"x"}</span><span class="${hh.vb>hh.va?"lid":""}"><b>${hh.vb}</b> ${esc(B[0])}</span><small>desde 22/23${mm?` · ${mm} em mata-mata`:""}</small></div><div class="hist-lista">${hh.l.map(m2=>{const [w,lo,t]=m2.r;return `<button type="button" ${m2.atual?"disabled":`data-mj="${m2.i}"`}><span class="qd">${temporadaCurta(m2.t)} · sem ${m2.w}</span><span><span class="${m2.v===m2.a?"w":""}">${esc(m2.a)}</span> x <span class="${m2.v===m2.b?"w":""}">${esc(m2.b)}</span>${seloFase(m2)}</span><span class="rs num">${rtxt(w,lo,t)}</span></button>`}).join("")||'<div class="vazio">Nunca se enfrentaram desde 22/23.</div>'}</div></div>`:""}`;
   }else if(sub==="jogadores"){
-    h+=`<div class="dias" role="group" aria-label="Escolher dia"><button class="dia" type="button" data-dia="sem" aria-pressed="${dsel==="sem"}">SEMANA<small>total</small></button>`;
-    for(let sp=d.s0;sp<=d.s1;sp++){const r=spRot(sp).split(" ");h+=`<button class="dia ${sp>d.cur?"fut":""}" type="button" data-dia="${sp}" aria-pressed="${String(dsel)===String(sp)}">${r[0].toUpperCase()}<small>${sp>d.cur?"proj.":r[1]}</small></button>`}
+    // ordem: hoje, total da semana, dias passados do mais recente pro mais antigo, depois os futuros
+    const bd=sp=>{const r=spRot(sp).split(" ");const hoje=sp===d.cur;return `<button class="dia ${sp>d.cur?"fut":""}${hoje?" hoje":""}" type="button" data-dia="${sp}" aria-pressed="${String(dsel)===String(sp)}">${hoje?"HOJE":r[0].toUpperCase()}<small>${sp>d.cur?"proj.":r[1]}</small></button>`};
+    const hojeNa=d.cur>=d.s0&&d.cur<=d.s1;
+    h+=`<div class="dias" role="group" aria-label="Escolher dia">${hojeNa?bd(d.cur):""}<button class="dia" type="button" data-dia="sem" aria-pressed="${dsel==="sem"}">SEMANA<small>total</small></button>`;
+    for(let sp=Math.min(d.cur-1,d.s1);sp>=d.s0;sp--)h+=bd(sp);
+    for(let sp=Math.max(d.cur+1,d.s0);sp<=d.s1;sp++)h+=bd(sp);
     h+=`</div>${listaJuntos(a,b,dsel)}`;
   }else if(sub==="odds"){h+=abaOdds(a,b,ta,tb,pa,pb,s)
   }else if(sub==="destaques"){h+=destaques(a,b)||'<div class="card"><div class="vazio">Ainda sem jogos na semana.</div></div>'}
