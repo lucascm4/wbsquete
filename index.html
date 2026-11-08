@@ -1276,10 +1276,10 @@ tr.clic{cursor:pointer}tr.clic:active td{filter:brightness(1.3)}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794163565"></script>
-<script src="radar.js?v=1794163565"></script>
+<script src="hist.js?v=1794163664"></script>
+<script src="radar.js?v=1794163664"></script>
 <script>
-const VERSAO_PAINEL="20261108154605";
+const VERSAO_PAINEL="20261108154744";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2297,7 +2297,7 @@ function abrirJogador(id,perF){
     const cortes=ks.map(t=>{const c=x.sp[t];const g=Math.max(1,c.g);const av=c.s.map(v=>v/g).concat([c.g]);
       const pj=c.pos?Math.round(100*c.jog/c.pos):null,pe=c.jog?Math.round(100*c.g/c.jog):null;const cor=v=>v==null?"":v>=80?"bom":v<55?"ruim":"";
       return `<div class="car-corte ${varios?"":"so1"}"><div class="cc-t">${logo(t)}<b>${esc(t)}</b></div>
-        <div class="cc-ap2"><span class="${cor(pj)}"><small>JOGOU</small><b>${c.jog}${c.pos?`/${c.pos}`:""}</b>${pj!=null?`<i>${pj}%</i>`:""}</span><span class="${cor(pe)}"><small>ESCALADO</small><b>${c.g}${c.jog?`/${c.jog}`:""}</b>${pe!=null?`<i>${pe}%</i>`:""}</span>${c.g?selo(av):""}</div>
+        <div class="cc-ap2"><span class="${cor(pj)}"><small>JOGOU</small><b>${c.jog}${c.pos?`/${c.pos}`:""}</b>${pj!=null?`<i>${pj}%</i>`:""}</span><span class="${cor(pe)}"><small>ESCALADO</small><b>${c.g}${c.jog?`/${c.jog}`:""}</b>${pe!=null?`<i>${pe}%</i>`:""}</span>${varios&&c.g?selo(av):""}</div>
         ${varios&&c.g?`<div class="cc-l">${v4(av)}</div>${mais(av,c.min!=null?c.min/g:null)}`:""}</div>`}).join("");
     return `<details class="car-l ${cls||""}"><summary><span class="car-s"><b>${rot}</b>${yr!=null?carinhas(yr)+dr(yr):""}${(cls||"").includes("car-liga")?'<small class="car-t">só jogos na liga</small>':""}</span>${selo(a)}${v4(a,(cls||"").includes("car-liga")?null:yr)}</summary>
     ${mais(a,mn)}${cortes?`<div class="car-sub">APROVEITAMENTO POR MANAGER <small>jogou = jogos que fez / jogos do time dele na NBA enquanto estava no elenco · escalado = dos que jogou</small></div>${cortes}`:""}</details>`};
