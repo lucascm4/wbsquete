@@ -1544,6 +1544,19 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 .fab-doca{position:fixed!important;top:0;left:0;right:0;bottom:auto!important;height:0;align-items:flex-end;padding-bottom:0}
 .fab-doca>*{margin-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
 
+/* mais mercados da BETLOYDE */
+.mk{margin-top:8px;border-top:1px solid #2c1f1f}
+.mk summary{cursor:pointer;padding:8px 2px;font-family:var(--display);font-size:15px;color:var(--amarelo);list-style:none}
+.mk summary::-webkit-details-marker{display:none}.mk summary:before{content:"▸ "}.mk[open] summary:before{content:"▾ "}
+.mk-live{font:800 10px system-ui;color:#ff4a4a;margin-left:6px}
+.mk-sec{font:800 10px system-ui;letter-spacing:.06em;color:var(--apagado);margin:10px 0 4px}.mk-sec small{font-weight:500;letter-spacing:0}
+.mk-l{display:flex;align-items:center;gap:4px;margin-bottom:4px}
+.mk-r{flex:0 0 34%;font-size:12px;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mk-o{flex:1 1 0;min-width:0;display:flex;align-items:baseline;justify-content:space-between;gap:3px;background:#000;border:1px solid #2c2020;border-radius:6px;padding:4px 6px}
+.mk-o small{font-size:10px;color:var(--apagado);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mk-o b{font-family:var(--display);font-weight:400;font-size:15px;color:#9ff0b0}.mk-o em{display:none}
+.mk-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.mk-nota{font-size:11px;color:var(--apagado);margin:8px 0 2px}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1609,11 +1622,11 @@ tr.av-on td.jg{box-shadow:inset 4px 0 0 #ff3b3b!important}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794172269"></script>
-<script src="radar.js?v=1794172269"></script>
-<script src="midia.js?v=1794172269"></script>
+<script src="hist.js?v=1794172407"></script>
+<script src="radar.js?v=1794172407"></script>
+<script src="midia.js?v=1794172407"></script>
 <script>
-const VERSAO_PAINEL="20261108181109";
+const VERSAO_PAINEL="20261108181327";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -1689,18 +1702,38 @@ const odd=p=>p<=0.001?"—":Math.max(1.01,1/(p*MARGEM)).toFixed(2);
 /* casa de apostas: como uma bet de verdade precifica (ver doc 39) */
 const ESCADA=[[2,0.01],[3,0.02],[4,0.05],[6,0.1],[10,0.2],[20,0.5],[30,1],[50,2],[1e9,5]];
 function degrau(o){for(const [ate,pas] of ESCADA)if(o<ate)return Math.round(o/pas)*pas;return o}
-function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];
-  const rem=(EST.rem[a]||[]).length+(EST.rem[b]||[]).length;
-  const P=[sm.pa,sm.pe,sm.pb];
-  if(!rem){return sm[k]=P.map(p=>p>0.5?"✓":"✗")} // acabou: mercado liquidado
-  // 1) risco de modelo: a casa nunca confia 100% no próprio modelo (encolhe os extremos, mais quanto mais jogo falta)
-  const T=rem>=20?0.8:rem>=8?0.85:0.9;let q=P.map(p=>Math.pow(Math.max(p,1e-4),T));let sq=q.reduce((x,y)=>x+y,0);q=q.map(x=>x/sq);
-  // 2) piso: ninguém paga mais que ~41 (chance mínima de 2,4%) enquanto tem jogo
-  const PISO=0.024;q=q.map(x=>Math.max(x,PISO));sq=q.reduce((x,y)=>x+y,0);q=q.map(x=>x/sq);
-  // 3) margem de 7% pelo método da potência: pesa mais na zebra (viés favorito-zebra, como as casas fazem)
-  let lo=0.5,hi=1;for(let it=0;it<40;it++){const c=(lo+hi)/2;const t=q.reduce((x,y)=>x+Math.pow(y,c),0);if(t>MARGEM)lo=c;else hi=c}
-  const c=(lo+hi)/2;const o=q.map(x=>{let v=1/Math.pow(x,c);v=Math.min(41,Math.max(1.03,v));return degrau(v)});
-  return sm[k]=o.map(v=>v.toFixed(v>=10?(v%1?1:0):2))}
+function precifica(P,margem,T,mx,mn){let q=P.map(p=>Math.pow(Math.max(p,1e-4),T));let sq=q.reduce((x,y)=>x+y,0);q=q.map(x=>x/sq);
+  const piso=1/(mx*1.02);q=q.map(x=>Math.max(x,piso));sq=q.reduce((x,y)=>x+y,0);q=q.map(x=>x/sq);
+  let lo=0.3,hi=1;for(let it=0;it<40;it++){const c=(lo+hi)/2;const t=q.reduce((x,y)=>x+Math.pow(y,c),0);if(t>margem)lo=c;else hi=c}
+  const c=(lo+hi)/2;return q.map(x=>{const v=degrau(Math.min(mx,Math.max(mn,1/Math.pow(x,c))));return v.toFixed(v>=10?(v%1?1:0):2)})}
+function momento(a,b){const d=DADOS;const rem=(EST.rem[a]||[]).length+(EST.rem[b]||[]).length;const G=d.nba||{};
+  const vivo=d.P.some(p=>(p.t===a||p.t===b)&&p.slot<12&&G[p.pro]&&G[p.pro].live);
+  const pre=d.cur===d.s0&&!d.P.some(p=>p.dl&&p.dl[d.cur]);
+  // pré-semana: margem menor (mercado principal); durante a semana 7%; com jogo rolando 8% (ao vivo as casas cobram mais)
+  return {rem,vivo,pre,margem:pre?1.05:vivo?1.08:1.07,T:rem>=20?0.8:rem>=8?0.85:0.9,mx:rem>8?41:51,mn:rem<=2?1.01:1.03}}
+function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];const M=momento(a,b);
+  if(!M.rem)return sm[k]=[sm.pa,sm.pe,sm.pb].map(p=>p>0.5?"✓":"✗"); // acabou: mercado liquidado
+  return sm[k]=precifica([sm.pa,sm.pe,sm.pb],M.margem,M.T,M.mx,M.mn)}
+function maisMercados(a,b,s){const A=T(a),B=T(b);const M=momento(a,b);if(!M.rem)return "";const a3=A[3]||A[0],b3=B[3]||B[0];
+  const R=Object.entries(s.res).map(([k,p])=>{const [w,l,t]=k.split("-").map(Number);return {w,l,t,p}});
+  const soma=f=>R.filter(f).reduce((x,r)=>x+r.p,0);
+  const linha=(rot,ops)=>`<div class="mk-l"><span class="mk-r">${rot}</span>${ops.map(([n,o,pp])=>`<span class="mk-o"><small>${n}</small><b>${o}</b>${pp!=null?`<em>${pct(pp)}</em>`:""}</span>`).join("")}</div>`;
+  // handicap de categorias (diferença no placar)
+  const hc=[1.5,2.5].map(h=>{const pA=soma(r=>r.w-r.l>h);const o=precifica([pA,1-pA],M.margem-0.01,M.T,M.mx,M.mn);return linha(`${esc(a3)} −${h} cat.`,[["sim",o[0],pA],["não",o[1],1-pA]])}).join("");
+  // total de categorias do time A
+  const tt=[4.5,5.5].map(h=>{const pO=soma(r=>r.w>h);const o=precifica([pO,1-pO],M.margem-0.01,M.T,M.mx,M.mn);return linha(`${esc(a3)} leva +${h} cat.`,[["mais",o[0],pO],["menos",o[1],1-pO]])}).join("");
+  // categoria a categoria
+  const cats=CATS.map((c,j)=>{const pa=s.cat[j],pe=s.catE[j],pb=Math.max(0,1-pa-pe);const P=pe>0.02?[pa,pe,pb]:[pa+pe/2,pb+pe/2];const o=precifica(P,M.margem+0.01,M.T,M.mx,M.mn);
+    return linha(c.k,P.length===3?[[a3,o[0],pa],["X",o[1],pe],[b3,o[2],pb]]:[[a3,o[0],P[0]],[b3,o[1],P[1]]])}).join("");
+  // placar exato: margem alta, como nas casas
+  const top=R.slice().sort((x,y)=>y.p-x.p).slice(0,8);const oE=precifica(top.map(r=>r.p).concat([Math.max(0.001,1-top.reduce((x,r)=>x+r.p,0))]),1.2,M.T,M.mx===41?81:101,1.5);
+  const exato=`<div class="mk-g">${top.map((r,i)=>`<span class="mk-o"><small>${r.w}-${r.l}${r.t?"-"+r.t:""}</small><b>${oE[i]}</b></span>`).join("")}</div>`;
+  return `<details class="mk"><summary>Mais mercados ${M.vivo?'<span class="mk-live">● AO VIVO</span>':""}</summary>
+   <div class="mk-sec">HANDICAP DE CATEGORIAS</div>${hc}
+   <div class="mk-sec">TOTAL DE CATEGORIAS</div>${tt}
+   <div class="mk-sec">CATEGORIA A CATEGORIA</div>${cats}
+   <div class="mk-sec">PLACAR EXATO <small>(${esc(a3)} primeiro · margem de 20%, como nas casas)</small></div>${exato}
+   <p class="mk-nota">Margem da casa agora: ${Math.round((M.margem-1)*100)}%${M.vivo?" (jogo rolando, ao vivo a casa cobra mais)":M.pre?" (pré-semana)":""}. Odd entre ${M.mn.toFixed(2)} e ${M.mx}.</p></details>`}
 let _ODM=null;function oddS(k,p,pronto){const v=pronto!=null?pronto:odd(p);if(v==="—"||v==="✓"||v==="✗")return v;const dk="wbs.odds."+(DADOS?DADOS.cur:0);
   if(!_ODM||_ODM._k!==dk){_ODM=null;try{_ODM=JSON.parse(localStorage.getItem(dk)||"null")}catch(e){}_ODM=_ODM||{};_ODM._k=dk}
   let m=_ODM[k];if(!m){m=_ODM[k]={v,prev:v}}else if(m.v!==v){m.prev=m.v;m.v=v}try{localStorage.setItem(dk,JSON.stringify(_ODM))}catch(e){}
@@ -1720,7 +1753,7 @@ const GLOSS={
  vira:"VIRA: quem lidera a categoria agora deve perder até domingo, pela previsão.",
  pegado:"PEGADO: categoria em que cada lado tem entre 30% e 70% de chance. Decide no detalhe.",
  rk:"Rk 9cat: ranking próprio no formato da nossa liga (9 categorias, z-score, FG% e FT% pesados pelo volume, TO contra), no mesmo método do Basketball Monster. Rk 7d é o mesmo ranking só com os últimos 7 dias.",
- odd:"Odd: quanto você levaria por 1 real apostado. A casa parte da chance do modelo do Loydão e faz o que uma bet de verdade faz: desconfia do próprio modelo (encolhe os extremos), não paga mais que 41, cobra 7% de margem pesando mais na zebra e arredonda nos degraus de casa de aposta. A % ao lado é a chance pura do modelo. Quando não falta jogo, o mercado é liquidado (✓/✗).",
+ odd:"Odd: quanto você levaria por 1 real apostado. A casa parte da chance do modelo do Loydão e faz o que uma bet de verdade faz: desconfia do próprio modelo (encolhe os extremos), não paga mais que 41, cobra margem (5% antes da semana, 7% durante, 8% com jogo rolando) pesando mais na zebra e arredonda nos degraus de casa de aposta. A % ao lado é a chance pura do modelo. Quando não falta jogo, o mercado é liquidado (✓/✗).",
  chances:"Chances: 4.000 simulações do resto da semana. Em cada uma, cada jogador rende perto da média dele, com variação normal.",
  playoffs:"Playoffs: chance de terminar entre os 6 primeiros. 1.200 simulações do resto da temporada, com o modelo testado nas 4 temporadas anteriores da liga (acerta a classificação de playoffs com erro Brier 0,19 na semana 3 e 0,12 na semana 8).",
  titulo:"Título: chance de ganhar o mata-mata nas simulações (seeds 1 e 2 folgam na primeira semana).",
@@ -2166,7 +2199,7 @@ function betLoyde(a,b,s){
   return `<div class="bet"><div class="marca"><span class="logo"><b>BET</b>LOYDE<i>COMO FECHA</i></span><small>${tip("odd","o que é a odd")}</small></div>
   <div class="bet-jogo"><div class="bet-times"><span><img src="img/l/${A[1]}.webp" alt="">${esc(A[0])}</span><span><img src="img/l/${B[1]}.webp" alt="">${esc(B[0])}</span></div>
   <div class="bet-odds"><span class="bq ${fav===1?"fav":""}"><small>1</small><b>${oddS(a+"-"+b+"-1",s.pa,casa(a,b,s)[0])}</b><em>${pct(s.pa)}</em></span><span class="bq ${fav===0?"fav":""}"><small>X</small><b>${oddS(a+"-"+b+"-x",s.pe,casa(a,b,s)[1])}</b><em>${pct(s.pe)}</em></span><span class="bq ${fav===2?"fav":""}"><small>2</small><b>${oddS(a+"-"+b+"-2",s.pb,casa(a,b,s)[2])}</b><em>${pct(s.pb)}</em></span></div></div>
-  <div class="pe">Palpite do Loydão: <b>${esc(fav===2?B[0]:A[0])} ${placarProvavel(s,fav===2?"b":"a")}</b> · odd = 1 ÷ (chance × 1,07)</div></div>`;
+  <div class="pe">Palpite do Loydão: <b>${esc(fav===2?B[0]:A[0])} ${placarProvavel(s,fav===2?"b":"a")}</b>${momento(a,b).vivo?' · <span class="mk-live">● AO VIVO</span>':""}</div>${maisMercados(a,b,s)}</div>`;
 }
 function placarProvavel(s,lado){const e=Object.entries(s.res).filter(([k])=>{const [w,l]=k.split("-").map(Number);return lado==="a"?w>l:l>w}).sort((x,y)=>y[1]-x[1])[0];if(!e)return "";const [w,l,t]=e[0].split("-").map(Number);return lado==="a"?rtxt(w,l,t):rtxt(l,w,t)}
 function chancesPlacar(a,b,s){
