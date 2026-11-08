@@ -1170,7 +1170,7 @@ td .tip::after,th .tip::after{left:50%;transform:translateX(-50%)}
 <script src="hist.js"></script>
 <script src="radar.js"></script>
 <script>
-const VERSAO_PAINEL="20261108141249";
+const VERSAO_PAINEL="20261108141603";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2401,14 +2401,17 @@ async function coletarAoVivo(){
   for(let sp=s0;sp<=ate;sp++){
     teams.forEach(t=>D[t.id][sp]=zero());
     (C.dias[sp].linhas||[]).forEach(l=>{const [id,tm,slot,...vv]=l;const v=vv.slice(0,11),min=vv[11]||0;last=Math.max(last,sp);
-      let q=P[id];if(!q){const mm=C.dias[sp].meta[id]||{};q=P[id]={id,n:mm.n||"jogador "+id,t:tm,pos:mm.pos||0,pro:mm.pro||0,slot:12,inj:"ACTIVE",W:zero(),g:0,bp:0,bg:0,dl:{},fora:1}}
+      // cada passagem por um time conta só para aquele time (quem trocou de time no meio da semana não leva os números do antigo)
+      let q=P[id];
+      if(q&&q.t!==tm){const k=id+"@"+tm;q=P[k];if(!q){const b=P[id];q=P[k]={id,n:b.n,t:tm,pos:b.pos,pro:b.pro,el:b.el,av:b.av,l7:b.l7,slot:12,inj:"ACTIVE",W:zero(),g:0,bp:0,bg:0,dl:{},fora:1}}}
+      else if(!q){const mm=C.dias[sp].meta[id]||{};q=P[id]={id,n:mm.n||"jogador "+id,t:tm,pos:mm.pos||0,pro:mm.pro||0,slot:12,inj:"ACTIVE",W:zero(),g:0,bp:0,bg:0,dl:{},fora:1}}
       q.dl[sp]=[...v,slot,min];
       if(slot<12){q.g++;q.W=soma(q.W,v);D[tm][sp]=soma(D[tm][sp],v)}else if(slot===12){q.bg++;q.bp+=v[0]}});
   }
   const agenda=q=>{let n=0;q.gd=[];for(let sp=cur;sp<=s1;sp++){const g=games[q.pro]&&games[q.pro][sp];if(g&&g.length){q.gd.push(sp);if(!(sp===cur&&q.dl&&q.dl[cur]))n++}}q.gl=n;const g=games[q.pro]&&games[q.pro][cur];q.hoje=g&&g.length?1:0;if(q.fora){q.gl=0;q.hoje=0}};
   Object.values(P).forEach(agenda);fa.forEach(agenda);
   const hist=sb.schedule.filter(m=>m.matchupPeriodId<wk&&m.winner&&m.winner!=="UNDECIDED").map(m=>{const c=x=>[0,6,3,2,1,17,19,20,11].map(id=>{const s=x.cumulativeScore&&x.cumulativeScore.scoreByStat&&x.cumulativeScore.scoreByStat[id];return s?+(+s.score).toFixed(4):0});return [m.matchupPeriodId,m.home.teamId,m.away.teamId,[m.home.cumulativeScore.wins,m.home.cumulativeScore.losses,m.home.cumulativeScore.ties],m.winner==="HOME"?m.home.teamId:m.winner==="AWAY"?m.away.teamId:0,c(m.home),c(m.away)]});
-  return {v:8,gerado:Date.now(),cur,last,wk,s0,s1,teams,mt,fut,gw,D,hist,nba,tx,P:Object.values(P),fa};
+  return {v:9,gerado:Date.now(),cur,last,wk,s0,s1,teams,mt,fut,gw,D,hist,nba,tx,P:Object.values(P),fa};
 }
 function janelaDeJogos(){
   if(!AO.sch)return null;const sp=spHoje();let ini=Infinity,fim=0;
@@ -2542,7 +2545,7 @@ document.addEventListener("touchend",e=>{if(x0==null)return;const t=e.changedTou
 document.addEventListener("keydown",e=>{if(e.target.matches("input,select,textarea"))return;if(e.key==="ArrowRight")vai(1);else if(e.key==="ArrowLeft")vai(-1)});
 })();
 /* ---------- partida ---------- */
-(function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===8)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}else ticker()})();
+(function(){const c=lsGet("painel.cache");let ok=false;if(c){try{const d=JSON.parse(c);if(d.v===9)ok=carrega(d)}catch(e){}}if(!ok){$("#status").textContent="buscando na ESPN…";render()}else ticker()})();
 atualizarAoVivo();
 
 /* logo e título do topo também voltam para o início */
