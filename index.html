@@ -1338,10 +1338,10 @@ b.neg{color:#ff6b6b}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794165727"></script>
-<script src="radar.js?v=1794165727"></script>
+<script src="hist.js?v=1794165807"></script>
+<script src="radar.js?v=1794165807"></script>
 <script>
-const VERSAO_PAINEL="20261108162207";
+const VERSAO_PAINEL="20261108162327";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2165,9 +2165,9 @@ function molequeJogador(p,z){z=z||{};const K=Object.keys(NO_CAT).filter(k=>z[k]!
   const h=[...String(p.id)].reduce((a,c)=>a*31+c.charCodeAt(0)>>>0,11);const pk=(L,o)=>L[(h+o)%L.length];
   const best=K.slice().sort((a,b)=>z[b]-z[a])[0],worst=K.slice().sort((a,b)=>z[a]-z[b])[0];const pos=POS[p.pos]||"jogador";
   let t="";
-  if(z[best]>=0.4){const [c,f]=pk(MOLEQUE.bom[best],0);t=`O ${esc(p.n)} é o ${pos} ${esc(c)}: ${esc(f)}`;
+  if(z[best]>=0.4){const [c,f]=pk(MOLEQUE.bom[best],0);t=`O ${esc(p.n)} é o ${pos} ${esc(c.replace(/^(o|a) /,""))}: ${esc(f)}`;
     if(z[worst]<=-0.4){const [c2,f2]=pk(MOLEQUE.ruim[worst],3);t+=`. Mas ${NO_CAT[worst]} é ${esc(c2)}: ${esc(f2)}`}}
-  else{const [c2,f2]=pk(MOLEQUE.ruim[worst],1);t=`O ${esc(p.n)} é o ${pos} ${esc(c2)}: ${esc(f2)}`}
+  else{const [c2,f2]=pk(MOLEQUE.ruim[worst],1);t=`O ${esc(p.n)} é o ${pos} ${esc(c2.replace(/^(o|a) /,""))}: ${esc(f2)}`}
   return t+"."}
 function escalacaoMoleque(dono,coco,sp){
   const usados=new Set();const K=["PTS","REB","AST","STL","BLK","3PM","FG%","FT%","TO"];
