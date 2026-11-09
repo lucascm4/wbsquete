@@ -1803,11 +1803,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794188498"></script>
-<script src="radar.js?v=1794188498"></script>
-<script src="midia.js?v=1794188498"></script>
+<script src="hist.js?v=1794189528"></script>
+<script src="radar.js?v=1794189528"></script>
+<script src="midia.js?v=1794189528"></script>
 <script>
-const VERSAO_PAINEL="20261108224138";
+const VERSAO_PAINEL="20261108225848";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3778,7 +3778,7 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
 /* nova versão do site publicada? então recarrega com URL nova (fura o cache) */
 async function checarVersao(){
   try{const t=await fetch(location.pathname+"?b="+Date.now(),{cache:"no-store"}).then(r=>r.text());const m=t.match(/VERSAO_PAINEL="([^"]+)"/);
-    if(m&&m[1]!==VERSAO_PAINEL&&!AO.recarregando){AO.recarregando=true;setTimeout(()=>location.replace(location.pathname+"?b="+m[1]+location.hash),1500)}}catch(e){}
+    if(m&&m[1]!==VERSAO_PAINEL&&!AO.recarregando){AO.recarregando=true;const vai=()=>location.replace(location.pathname+"?b="+m[1]+location.hash);if(document.getElementById("popFicha")){const iv=setInterval(()=>{if(!document.getElementById("popFicha")){clearInterval(iv);vai()}},2000)}else setTimeout(vai,800)}}catch(e){}
 }
 /* ---------- roteador ---------- */
 function rota(){return (location.hash||"#confrontos").slice(1)}
@@ -3932,7 +3932,13 @@ document.querySelectorAll(".topo .belt,.topo .mast").forEach(el=>{el.style.curso
 
 try{const v=localStorage.getItem("painel.rk");if(v)UI.rkModo=v}catch(e){}
 /* app instalável */
-if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+/* atualização automática pra quem instalou: o service worker novo assume sozinho e a página recarrega na versão nova */
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(reg=>{
+    const up=()=>{try{reg.update()}catch(e){}};setInterval(up,5*60*1000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)up()});
+  }).catch(()=>{}));
+  let trocou=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(trocou)return;trocou=true;if(!document.getElementById("popFicha"))location.reload();else AO.recarregarDepois=true})}
+// se tiver versão nova com a ficha aberta, recarrega quando ela fechar (pra não tirar a pessoa do meio da leitura)
+setInterval(()=>{if(AO.recarregarDepois&&!document.getElementById("popFicha"))location.reload()},3000);
 let pedidoInstalar=null;
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();pedidoInstalar=e;render()});
 window.addEventListener("appinstalled",()=>{pedidoInstalar=null;render()});
@@ -4116,5 +4122,7 @@ function listaDaTela(tipo,orig){const app=(orig&&orig.closest(".du-col"))||docum
 (function(){let x0=null,y0=null;document.addEventListener("touchstart",e=>{if(!e.target.closest("#popFicha")||e.target.closest(".pj-scroll,.pj-tab,.cr-tj,.pilulas"))return;x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
   document.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;if(Math.abs(dx)<70||Math.abs(dy)>50)return;
     const L=UI.fichaLista;const pop=document.getElementById("popFicha");if(!L||!pop||L.ids.length<2)return;const b=pop.querySelector(dx<0?'.pj-seta[aria-label="próximo jogador"]':'.pj-seta[aria-label="jogador anterior"]');if(b)irFicha(+b.dataset.fnav)},{passive:true})})();
+
+setTimeout(checarVersao,4000);
 </script>
 </body></html>
