@@ -1731,6 +1731,7 @@ svg.cad{width:18px;height:18px;display:block}
 .ff-v.v b{color:#4ade80}.ff-v.d b{color:#f87171}
 .ff-s{display:flex;flex-direction:column;align-items:center;font-size:13px;line-height:1.1;min-width:44px}.ff-s small{font-size:8.5px;color:var(--apagado);text-transform:uppercase;letter-spacing:.04em}
 .burro{font-size:15px;margin-left:2px;cursor:help}
+.bode{font-style:normal;font-size:.8em;margin-left:2px}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1797,11 +1798,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794188083"></script>
-<script src="radar.js?v=1794188083"></script>
-<script src="midia.js?v=1794188083"></script>
+<script src="hist.js?v=1794188205"></script>
+<script src="radar.js?v=1794188205"></script>
+<script src="midia.js?v=1794188205"></script>
 <script>
-const VERSAO_PAINEL="20261108223443";
+const VERSAO_PAINEL="20261108223645";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3071,7 +3072,7 @@ function abrirJogador(id,perF){
   return L})();
   const todos=tp.map(([e,n,c])=>`<span class="pj-selo ${c}" title="temporada"><i class="pj-em">${e}</i>${n}</span>`).concat(mine.map(x=>`<span class="pj-selo ${x.cls||""}" title="semana: ${esc(x.d)}">${seloPr(x.k)}${esc(x.n)} <small>sem.</small></span>`));
   return todos.length?`<span class="pj-selos">${todos.join("")}</span>`:""}catch(e){return ""}})()}${APELIDO[p.n]?`<em class="pj-ap">“${esc(APELIDO[p.n][0])}”</em>`:""}<small><img src="img/l/${T(t)[1]}.webp" alt=""> ${esc(T(t)[0])} · ${esc(NBA[p.pro]||"")} · ${esc(POS[p.pos]||"")}${p.inj&&p.inj!=="ACTIVE"?` · <u>${esc(p.inj)}</u>`:""}</small></div></div>
-   <div class="pj-rks">${rks.map(([k,v])=>`<div><small>${esc(k)}</small><b>#${v}</b></div>`).join("")}</div>
+   <div class="pj-rks">${rks.map(([k,v])=>`<div><small>${esc(k)}</small><b>#${v}${k==="Temporada"&&v<=3?' <i class="bode" title="top 3 da temporada">🐐</i>':""}</b></div>`).join("")}</div>
    <div class="lei"><b class="lei-t">${lei[0]}</b>${lei[2]?`<small class="lei-a">${esc(lei[2])}</small>`:""}<p>${lei[1]}</p>${lei[3]?`<p class="lei-inj">${esc(lei[3])}</p>`:""}</div>
    <div class="pj-tabs" role="tablist">${[["num","📊 Números"],["car","🏀 Carreira"],["jog","📅 Jogos"]].map(([k,n])=>`<button type="button" role="tab" data-ptab="${k}" aria-selected="${(UI.fichaAba||"num")===k}">${n}</button>`).join("")}</div>
    <div class="pj-pane" data-pane="num" ${(UI.fichaAba||"num")==="num"?"":"hidden"}><div class="pj-sec">PERÍODO</div>${filtroPer}${st?`<div class="pj-sub">${esc(rotPer(sp,1))}${(sp==="sem"||ehRange(sp))&&r.g?` · ${r.g?jp(r.g,p,sp):""} jogos (total)`:(ehMedia(sp)||r.ly)?` · média por jogo · ${jp(r.g,p,r.ly?"ly":sp)} jogos`:""}${r.rk?(r.ly?` · nível de <b>#${r.rk}</b> na régua de hoje`:` · <b>#${r.rk}</b> de ${r.n} no período`):""}</div><div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`:`<p class="pj-txt">${r.carregando?(sp==="ly"?"Buscando a temporada passada…":"Buscando os boxes…"):sp==="ly"?"Não jogou na temporada passada.":"Não jogou nesse período."}</p>`}</div>
@@ -3615,7 +3616,7 @@ const PUBLI_SLOGAN=["BETLOYDE: a casa que torce contra você","Aposte com respon
 const LID_NOME=[["CESTINHA","PTS"],["REBOTEIRO","REB"],["GARÇOM","AST"],["LADRÃO","STL"],["PAREDÃO","BLK"],["SNIPER","3PM"]];
 let _LID=null;function lideres(){const d=DADOS;if(_LID&&_LID.g===d.gerado)return _LID.m;const todos=d.P.concat(d.fa||[]).filter(p=>p.av&&p.av[11]);const mx=Math.max(...todos.map(p=>p.av[11]));const ok=todos.filter(p=>p.av[11]>=0.6*mx);
   const m={};LID_NOME.forEach((x,j)=>{ok.slice().sort((a,b)=>b.av[j]-a.av[j]).slice(0,3).forEach((p,i)=>{(m[p.id]=m[p.id]||[]).push([j,i])})});_LID={g:d.gerado,m};return m}
-function lideresDe(p){const L=(lideres()[p.id])||[];return L.map(([j,i])=>[i===0?"🏆":i===1?"🥈":"🥉",i===0?`${LID_NOME[j][0]} DA LIGA`:`${i+1}º ${LID_NOME[j][0]} DA LIGA`,i===0?"ouro":"bom"])}
+function lideresDe(p){const L=(lideres()[p.id])||[];return L.map(([j,i])=>[i===0?"🥇":i===1?"🥈":"🥉",i===0?`${LID_NOME[j][0]} DA LIGA`:`${i+1}º ${LID_NOME[j][0]} DA LIGA`,i===0?"ouro":"bom"])}
 /* 🫏 burro: deixou jogador no banco com vaga sobrando e isso custou o confronto */
 let _BUR=null;function burroDe(t){const d=DADOS;if(!_BUR||_BUR.g!==d.gerado){_BUR={g:d.gerado,m:{}};
   d.mt.forEach(([a,b])=>{const add={};[a,b].forEach(x=>{add[x]={v:zero(),n:0,quem:{}};for(let sp=d.s0;sp<=d.cur;sp++){const L=d.P.filter(p=>p.t===x&&p.dl&&p.dl[sp]);const tit=L.filter(p=>p.dl[sp][11]<12).length;let vaga=Math.max(0,10-tit);
