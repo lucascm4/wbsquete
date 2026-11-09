@@ -27,11 +27,7 @@ window.RADAR={"quando":"sáb 07/11","notas":{
 }};
 
 window.RADAR.lesoes={"quando":"seg 09/11 19:05","sp":21,"fonte":"Underdog NBA","itens":{
-"Zion Williamson":["OUT","descanso · fora hoje (Underdog, 18:45)"],
-"Yves Missi":["OUT","joelho · fora hoje"],
-"Trendon Watford":["OUT","tornozelo · fora hoje"],
-"Jock Landale":["IN","quadril · liberado pra jogar"],
-"Josh Hart":["Q","tornozelo · dúvida pra terça"]
+"Zion Williamson":["OUT","descanso · fora hoje (Underdog, 18:45)"]
 }};
 
 /* alertas de status ao vivo (Underdog NBA): entram no noticiário com "hope he is ok" */

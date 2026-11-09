@@ -1769,6 +1769,20 @@ svg.cad{width:18px;height:18px;display:block}
 .ia-not{border-color:#e33}.ia-not .rev-top span{color:#ff6b6b}
 .ia-ruim{border-color:#e33}.ia-bom{border-color:#f59e0b}.ia-wav{border-color:#22c55e}.ia-wav .rev-top span{color:#4ade80}
 .ia-nunca{all:unset;cursor:pointer;color:#888;font-size:11px;text-align:center;text-decoration:underline}
+.btn-eu{display:flex;align-items:center;gap:6px;background:#111;border:1px solid var(--amarelo);color:#fff;border-radius:999px;padding:4px 10px 4px 4px;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;max-width:120px}
+.btn-eu img{width:22px;height:22px;border-radius:50%;object-fit:contain;background:#000}
+.btn-eu span{overflow:hidden;text-overflow:ellipsis}
+.menu-eu{position:fixed;z-index:95;top:calc(env(safe-area-inset-top,0px) + 58px);right:max(12px,env(safe-area-inset-right,0px));background:#0a0707;border:1px solid var(--amarelo);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:4px;min-width:200px;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.menu-eu b{color:var(--amarelo);font-size:12px;padding:4px 8px}
+.menu-eu button{all:unset;cursor:pointer;color:#eee;font-size:14px;padding:9px 8px;border-radius:8px}
+.menu-eu button:active,.menu-eu button:hover{background:#1c1c1c}
+.cad-box{width:min(420px,100%)}
+.cad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;overflow:auto}
+.cad-t{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border:1px solid #333;border-radius:10px;background:#141010;text-align:center}
+.cad-t img{width:40px;height:40px;object-fit:contain}
+.cad-t b{font-size:12px;color:#fff}.cad-t small{font-size:11px;color:#aaa}
+.cad-t.on{border-color:var(--amarelo);background:#221c08}
+.cad-t:active{transform:scale(.96)}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1835,11 +1849,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794262049"></script>
-<script src="radar.js?v=1794262049"></script>
-<script src="midia.js?v=1794262049"></script>
+<script src="hist.js?v=1794262379"></script>
+<script src="radar.js?v=1794262379"></script>
+<script src="midia.js?v=1794262379"></script>
 <script>
-const VERSAO_PAINEL="20261109190729";
+const VERSAO_PAINEL="20261109191259";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2232,7 +2246,7 @@ function noticiasBrutas(){
 /* alertas de status (Underdog NBA / ESPN) com o "hope he is ok" do Loydão */
 const HOPE=["Hope he is ok 🙏","Hope he is ok 🙏 (o {man} não)","Hope he is ok 🙏 — o {mop} já tá acendendo vela, mas pro outro lado","Hope he is ok 🙏 Sério. Mais ou menos.","Hope he is ok 🙏 e que o {man} tenha banco"];
 function alertasStatus(){const d=DADOS;const L=((window.RADAR&&RADAR.alertas)||[]).concat((typeof AO!=="undefined"&&AO.alertas)||[]);const out=[];
-  L.filter(x=>x.sp===d.cur).forEach((x,i)=>{const p=d.P.find(q=>q.n===x.nome);const man=p?T(p.t)[2]:"o dono";const op=p?d.mt.find(m=>m.includes(p.t)):null;const mop=op?T(op[0]===p.t?op[1]:op[0])[2]:"o rival";
+  L.filter(x=>x.sp===d.cur).forEach((x,i)=>{const p=d.P.find(q=>q.n===x.nome);if(!p)return;const man=p?T(p.t)[2]:"o dono";const op=p?d.mt.find(m=>m.includes(p.t)):null;const mop=op?T(op[0]===p.t?op[1]:op[0])[2]:"o rival";
     out.push({w:999,k:"🚑 STATUS",t:`<b>${esc(x.nome)}</b>${p?` (${esc(T(p.t)[0])})`:""} ${esc(x.txt)}. ${HOPE[(i+d.cur)%HOPE.length].replace("{man}",esc(man)).replace("{mop}",esc(mop))}`})});
   return out}
 function noticiasDe(sp){
@@ -4172,12 +4186,32 @@ document.addEventListener("click",e=>{const el=e.target.closest("[data-pj],[data
     const L=UI.fichaLista;const pop=document.getElementById("popFicha");if(!L||!pop||L.length<2)return;const b=pop.querySelector(dx<0?'.pj-seta[aria-label="próximo jogador"]':'.pj-seta[aria-label="jogador anterior"]');if(b)irFicha(+b.dataset.fnav)},{passive:true})})();
 
 setTimeout(checarVersao,4000);
+
+/* ---------- cadastro do treinador: escolhe o time uma vez e o app fica "logado" nele ---------- */
+function setMeu(id){try{if(id)localStorage.setItem("painel.meu",id);else localStorage.removeItem("painel.meu")}catch(e){}UI.avDuelo=0;chipEu();render()}
+function chipEu(){const top=document.querySelector(".topo-in");if(!top)return;let b=document.getElementById("btnEu");
+  if(!b){b=document.createElement("button");b.id="btnEu";b.type="button";b.className="btn-eu";const at=document.getElementById("btnAtualiza");top.insertBefore(b,at);b.onclick=menuEu}
+  const id=meuTime();if(id){const t=T(id);b.innerHTML=`<img src="img/l/${t[1]}.webp" alt=""><span>${esc(t[2])}</span>`;b.title="Logado como "+t[2]+" ("+t[0]+")"}else{b.innerHTML=`<span>👤 Entrar</span>`;b.title="Escolher o seu time"}}
+function menuEu(){const id=meuTime();if(!id){popCadastro();return}
+  document.getElementById("menuEu")?.remove();const t=T(id);const d=DADOS;const mi=d?d.mt.findIndex(m=>m.includes(id)):-1;
+  const m=document.createElement("div");m.id="menuEu";m.className="menu-eu";
+  m.innerHTML=`<b>${esc(t[2])} · ${esc(t[0])}</b>${mi>=0?`<button type="button" data-a="jogo">⚔️ Meu confronto</button>`:""}<button type="button" data-a="vivo">🔴 Meu jogo ao vivo</button><button type="button" data-a="perfil">📇 Perfil do meu time</button><button type="button" data-a="trocar">🔄 Trocar de time</button><button type="button" data-a="sair">Sair</button>`;
+  document.body.appendChild(m);const fecha=()=>{m.remove();document.removeEventListener("click",fora,true)};const fora=e=>{if(!m.contains(e.target)&&e.target.closest("#btnEu")==null)fecha()};setTimeout(()=>document.addEventListener("click",fora,true),0);
+  m.querySelectorAll("button").forEach(b=>b.onclick=()=>{const a=b.dataset.a;fecha();
+    if(a==="jogo")ir("jogo-"+mi);else if(a==="vivo"){UI.avDuelo=id;UI.avModo="duelo";ir("aovivo")}else if(a==="perfil")ir("time-"+id);else if(a==="trocar")popCadastro();else if(a==="sair")setMeu(0)})}
+function popCadastro(){if(document.getElementById("popCad"))return;const w=document.createElement("div");w.id="popCad";w.className="rev-pop";
+  const ids=Object.keys(TIMES).map(Number);const atual=meuTime();
+  w.innerHTML=`<div class="rev-box cad-box" role="dialog" aria-label="Escolha o seu time"><div class="rev-top"><span>👤 QUEM É VOCÊ, TREINADOR?</span><button type="button" class="rev-x" aria-label="fechar">✕</button></div><p class="ia-txt">Escolha o seu time uma vez. O app fica no seu nome neste aparelho: o seu confronto aparece primeiro, o ao vivo abre no seu duelo e o plantão fala dos seus jogadores.</p><div class="cad-grid">${ids.map(id=>{const t=T(id);return `<button type="button" class="cad-t ${id===atual?"on":""}" data-id="${id}"><img src="img/l/${t[1]}.webp" alt=""><b>${esc(t[0])}</b><small>${esc(t[2])}</small></button>`}).join("")}</div><button type="button" class="ia-nunca cad-pula">só tô olhando</button></div>`;
+  const fecha=()=>w.remove();w.querySelector(".rev-x").onclick=()=>{lss("wbs.cadPulou",Date.now());fecha()};w.querySelector(".cad-pula").onclick=()=>{lss("wbs.cadPulou",Date.now());fecha()};
+  w.querySelectorAll(".cad-t").forEach(b=>b.onclick=()=>{setMeu(+b.dataset.id);fecha()});document.body.appendChild(w);inappFeito=true}
+function precisaCadastro(){return !meuTime()&&Date.now()-(+lsg("wbs.cadPulou",0))>7*864e5}
+
 /* in-apps: revista nova (prioridade), e com moderação um por vez em rodízio: notícia, zoeira, bet, waiver, revista */
 const INAPP_CD=30*60e3; // no máximo 1 a cada 30 min, e 1 por abertura
 let inappFeito=false;
 function lsg(k,d){try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}}
 function lss(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-function inappOcupado(){return !!(document.getElementById("popRev")||document.getElementById("popFicha")||document.getElementById("popInst")||document.getElementById("popLista")||document.getElementById("convApp")||document.getElementById("tarjaBet"))}
+function inappOcupado(){return !!(document.getElementById("popRev")||document.getElementById("popCad")||document.getElementById("popFicha")||document.getElementById("popInst")||document.getElementById("popLista")||document.getElementById("convApp")||document.getElementById("tarjaBet"))}
 function mostrarInapp(o){ // o: {tipo,rot,cls,img,tit,txt,bt:[{t,href,fn}]}
   const w=document.createElement("div");w.id="popRev";w.className="rev-pop";
   w.innerHTML=`<div class="rev-box ia-${o.cls||"n"}" role="dialog" aria-label="${esc(o.rot)}"><div class="rev-top"><span>${o.rot}</span><button type="button" class="rev-x" aria-label="fechar">✕</button></div>${o.img?`<a class="rev-capa" ${o.bt[0].href?`href="${o.bt[0].href}" ${/^http/.test(o.bt[0].href)?'target="_blank" rel="noopener"':""}`:""}><img src="${o.img}" alt=""></a>`:""}${o.tit?`<b class="rev-tit">${o.tit}</b>`:""}${o.txt?`<p class="ia-txt">${o.txt}</p>`:""}<div class="rev-bts"><button type="button" class="rev-f">Fechar</button>${o.bt.map((b,i)=>b.href?`<a class="rev-v" data-i="${i}" href="${b.href}" ${/^http/.test(b.href)?'target="_blank" rel="noopener"':""}>${b.t}</a>`:`<button type="button" class="rev-v" data-i="${i}">${b.t}</button>`).join("")}</div>${o.nunca?`<button type="button" class="ia-nunca">não quero mais ver propaganda</button>`:""}</div>`;
@@ -4190,12 +4224,12 @@ function mostrarInapp(o){ // o: {tipo,rot,cls,img,tit,txt,bt:[{t,href,fn}]}
 function iaRevista(nova){const R=window.REVISTA;if(!R||!R.n)return null;const lida=+lsg("wbs.revistaLida",0);if(!nova&&lida>=R.n)return null;
   return {tipo:"revista",cls:"rev",rot:nova?`📰 SAIU A REVISTA · nº ${R.n}`:`📰 JÁ LEU A REVISTA? · nº ${R.n}`,img:R.capa,tit:esc(R.titulo),bt:[{t:"Ver revista",href:R.link,fn:()=>lss("wbs.revistaLida",R.n)}]}}
 function iaNoticia(){const d=DADOS;if(!d)return null;let L=[];try{L=alertasStatus()}catch(e){}
-  if(L.length){const x=L[0];return {tipo:"noticia",cls:"not",rot:"🚨 PLANTÃO DO LOYDÃO",txt:x.t,bt:[{t:"Ver ao vivo",href:"#aovivo"}]}}
+  if(L.length){const mt=meuTime();const nm=mt?[T(mt)[0],T(mt)[2]]:[];const x=L.find(i=>nm.some(n=>i.t.includes(n)))||L[0];return {tipo:"noticia",cls:"not",rot:"🚨 PLANTÃO DO LOYDÃO",txt:x.t,bt:[{t:"Ver ao vivo",href:"#aovivo"}]}}
   const Z=RADAR.lesoes;if(!Z||Z.sp!==d.cur||!Z.itens)return null;
   const c=Object.entries(Z.itens).map(([n,v])=>[d.P.find(p=>p.n===n),v]).filter(([p,v])=>p&&v[0]==="OUT"&&p.slot!==13);if(!c.length)return null;
-  const [p,v]=c[Math.floor(Math.random()*c.length)];const op=d.mt.find(m=>m.includes(p.t));const rv=op?T(op[0]===p.t?op[1]:op[0])[0]:null;
+  const mt=meuTime();const mo=mt?(d.mt.find(m=>m.includes(mt))||[]):[];const pri=c.filter(([p])=>mo.includes(p.t));const [p,v]=pri.length?pri[0]:c[Math.floor(Math.random()*c.length)];const op=d.mt.find(m=>m.includes(p.t));const rv=op?T(op[0]===p.t?op[1]:op[0])[0]:null;
   return {tipo:"noticia",cls:"not",rot:"🚨 PLANTÃO DO LOYDÃO",txt:`<b>${esc(p.n)}</b> (${esc(T(p.t)[0])}) está FORA hoje: ${esc(v[1].split("·")[0].trim())}. ${rv?`O ${esc(rv)} agradece.`:""}`,bt:[{t:"Ver ficha",fn:()=>abrirJogador(p.id)}]}}
-function iaZoeira(){let L=[];try{L=noticiasBrutas()}catch(e){}const x=L.filter(i=>i.k&&!/STATUS|PUBLI/.test(i.k)).sort((a,b)=>b.w-a.w)[0];if(!x)return null;
+function iaZoeira(){let L=[];try{L=noticiasBrutas()}catch(e){}const mt=meuTime();const d=DADOS;const mo=mt&&d?(d.mt.find(m=>m.includes(mt))||[]).map(id=>T(id)[2]):[];const C=L.filter(i=>i.k&&!/STATUS|PUBLI/.test(i.k)).sort((a,b)=>b.w-a.w);const x=C.find(i=>mo.some(n=>i.t.includes(n)))||C[0];if(!x)return null;
   const ruim=/APAGADO|ZERO|MARTELO|TIJOLO|ENTREG|BANCO/.test(x.k);return {tipo:"zoeira",cls:ruim?"ruim":"bom",rot:(ruim?"🤡 ":"🔥 ")+esc(x.k),txt:x.t,bt:[{t:"Ver ao vivo",href:"#aovivo"}]}}
 function iaBet(){if(typeof semPubli==="function"&&semPubli())return null;let O=[];try{O=ofertasBet()}catch(e){}if(!O.length)return null;const of=O[Math.floor(Math.random()*O.length)];
   return {tipo:"bet",cls:"bet",rot:"<i>BET</i>LOYDE · PUBLICIDADE",tit:esc(of.t),txt:`${esc(of.s)} · de <s>${fmtO(of.de)}</s> para <b class="ia-odd">${fmtO(of.para)}</b><br><small>Odds de mentira do modelo do Loydão. +18. Ninguém aposta nada aqui.</small>`,nunca:true,bt:[{t:"Ver o jogo",href:of.j!=null?"#jogo-"+of.j:"#confrontos"}]}}
@@ -4204,6 +4238,7 @@ function iaWaiver(){const d=DADOS;if(!d||!d.fa||!d.fa.length)return null;const c
   return {tipo:"waiver",cls:"wav",rot:"🗑️➡️💎 SOBRANDO NA WAIVER",tit:esc(p.n),txt:`Rank LOYDÃO <b>#${p.rkL}</b>${p.gl!=null?` · ${p.gl} jogo${p.gl!==1?"s":""} até domingo`:""}${p.own!=null?` · ${Math.round(p.own)}% das ligas`:""}. ${nota?esc(nota):"Livre na ESPN agora. O primeiro que piscar leva."}`,bt:[{t:"Ver quem pegar",fn:()=>{UI.radar="pegar";ir("radar")}}]}}
 const IA_ORDEM=["noticia","zoeira","bet","waiver","revista"];
 function inapp(){if(inappFeito)return;if(inappOcupado()){setTimeout(inapp,15000);return}
+  if(precisaCadastro()&&DADOS){popCadastro();return}
   const R=window.REVISTA;const vista=+lsg("wbs.revistaVista",0);
   if(R&&R.n&&vista<R.n){const o=iaRevista(true);lss("wbs.revistaVista",R.n);mostrarInapp(o);return}
   if(Date.now()-(+lsg("wbs.inappT",0))<INAPP_CD)return;if(!DADOS)return;
@@ -4213,5 +4248,7 @@ function popRevista(){inapp()}
 function carregarRevista(){const s=document.createElement("script");s.src="revista.js?t="+Date.now();s.onload=()=>{const R=window.REVISTA;const nova=R&&R.n&&+lsg("wbs.revistaVista",0)<R.n;setTimeout(inapp,nova?2500:25000)};document.head.appendChild(s)}
 carregarRevista();
 document.addEventListener("visibilitychange",()=>{if(!document.hidden){inappFeito=false;carregarRevista()}});
+
+setTimeout(chipEu,0);document.addEventListener("change",e=>{if(e.target&&e.target.id==="meuTime")setTimeout(chipEu,0)});
 </script>
 </body></html>
