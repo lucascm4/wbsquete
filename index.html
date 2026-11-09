@@ -1730,6 +1730,7 @@ svg.cad{width:18px;height:18px;display:block}
 .ff-v{display:flex;flex-direction:column;align-items:center;line-height:1.05}.ff-v b{font-family:var(--display);font-weight:400;font-size:17px}.ff-v small{font-size:9px;color:var(--apagado)}
 .ff-v.v b{color:#4ade80}.ff-v.d b{color:#f87171}
 .ff-s{display:flex;flex-direction:column;align-items:center;font-size:13px;line-height:1.1;min-width:44px}.ff-s small{font-size:8.5px;color:var(--apagado);text-transform:uppercase;letter-spacing:.04em}
+.burro{font-size:15px;margin-left:2px;cursor:help}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1796,11 +1797,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794180897"></script>
-<script src="radar.js?v=1794180897"></script>
-<script src="midia.js?v=1794180897"></script>
+<script src="hist.js?v=1794188083"></script>
+<script src="radar.js?v=1794188083"></script>
+<script src="midia.js?v=1794188083"></script>
 <script>
-const VERSAO_PAINEL="20261108203457";
+const VERSAO_PAINEL="20261108223443";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2274,9 +2275,9 @@ function vConfrontos(){
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
     h+=`<button class="card jogo ${meu&&m.includes(meu)?"meu-jogo":""}" type="button" data-jogo="${i}">
       <div class="jogo-topo">
-        <div class="lado">${rostoTime(A[0])}<div class="info"><div class="nm">${esc(A[0])}</div><div class="mg">${esc(A[2])} · ${ra.join("-")}</div></div></div>
+        <div class="lado">${rostoTime(A[0])}<div class="info"><div class="nm">${esc(A[0])}</div><div class="mg">${esc(A[2])}${(()=>{const z=burroDe(a);return z?` <span class="burro" data-burro="${esc(A[2])} deixou ${esc(z.quem.join(", "))} no banco com vaga sobrando. Com ele(s), o ${esc(z.de)} viraria ${esc(z.para)}.">🫏</span>`:""})()} · ${ra.join("-")}</div></div></div>
         <div class="placar num"><span class="${sc.w>sc.l?"v":""}">${sc.w}</span>-<span class="${sc.l>sc.w?"v":""}">${sc.l}</span>${sc.t?`-${sc.t}`:""}<small>agora</small></div>
-        <div class="lado dir">${rostoTime(B[0])}<div class="info"><div class="nm">${esc(B[0])}</div><div class="mg">${esc(B[2])} · ${rb.join("-")}</div></div></div>
+        <div class="lado dir">${rostoTime(B[0])}<div class="info"><div class="nm">${esc(B[0])}</div><div class="mg">${esc(B[2])}${(()=>{const z=burroDe(b);return z?` <span class="burro" data-burro="${esc(B[2])} deixou ${esc(z.quem.join(", "))} no banco com vaga sobrando. Com ele(s), o ${esc(z.de)} viraria ${esc(z.para)}.">🫏</span>`:""})()} · ${rb.join("-")}</div></div></div>
       </div>
       ${miniTabela(a,b,sc)}
       ${chipsPremios(a,b)}
@@ -2501,7 +2502,7 @@ function premios(a,b,sp){ // sp="sem" (acumulado da semana) ou número do dia
     pos("TRAB",top(r=>r.g>=2,r=>r.g*10+r.val/100));
     pos("ULTRA",top(r=>r.g>=2&&!usado.has(r.p.id),r=>-r.pg));
   }
-  const cb=banco.sort((x,y)=>y.z-x.z)[0];if(cb&&cb.z>=(dia?2.5:3))out.push({k:"CULPADO",...PREMIO.CULPADO,x:cb,W:null,l:`${linhaBanco(cb.B)} fora do time em ${cb.bg} j · culpa do ${T(cb.t)[2]}`});
+  const cb=null;if(cb)out.push({k:"CULPADO",...PREMIO.CULPADO,x:cb,W:null,l:`${linhaBanco(cb.B)} fora do time em ${cb.bg} j · culpa do ${T(cb.t)[2]}`});
   return out;
 }
 function cardPremios(a,b){
@@ -2754,7 +2755,7 @@ function abrirFicha(k){
 function abrirLegenda(k){
   fecharFicha();const el=document.createElement("div");el.className="pop-fundo";el.id="popFicha";
   el.innerHTML=`<div class="pop-jog pop-leg" role="dialog" aria-label="Legenda dos prêmios"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button><h3>PRÊMIOS DO DIA</h3>
-   ${PRINCIPAIS.concat(["PACOCA","TRAB","ULTRA","CULPADO"]).map(x=>`<div class="lg-i ${x===k?"ativo":""}">${selo(x)}<div><b>${PREMIO[x].n}</b><small>${PREMIO[x].d}${["PACOCA","TRAB","ULTRA","CULPADO"].includes(x)?" · só na semana, dentro do confronto":""}</small></div></div>`).join("")}
+   ${PRINCIPAIS.concat(["PACOCA","TRAB","ULTRA"]).map(x=>`<div class="lg-i ${x===k?"ativo":""}">${selo(x)}<div><b>${PREMIO[x].n}</b><small>${PREMIO[x].d}${["PACOCA","TRAB","ULTRA","CULPADO"].includes(x)?" · só na semana, dentro do confronto":""}</small></div></div>`).join("")}
    <p>Na home aparecem os prêmios do dia. Dentro do confronto, aba Prêmios, tem os da semana.</p></div>`;
   el.addEventListener("click",e=>{if(e.target===el||e.target.closest("[data-fecha]"))fecharFichaU()});document.body.appendChild(el);
 }
@@ -3064,7 +3065,8 @@ function abrirJogador(id,perF){
   el.innerHTML=`<div class="pop-jog pop-full" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(t)[4]}"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button>
    <div class="pj-topo">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b>${(()=>{try{const m=DADOS.mt.find(x=>x.includes(t));const L=m?(premios(m[0],m[1],"sem")||[]):[];const mine=L.filter(x=>x.x&&x.x.p&&x.x.p.id===p.id);const tp=(()=>{const r=p.rk&&p.rk[0],r7=p.rk&&p.rk[1];const L=[];
   if(p.inj==="OUT"||(noticia(p)&&noticia(p).st==="OUT"))L.push(["🏥","ENFERMARIA","ruim"]);
-  if(r){L.push(r<=12?["👑","MONSTRO DA TEMPORADA","ouro"]:r<=50?["⭐","TITULAR DE RESPEITO","bom"]:r<=100?["👍","CUMPRE TABELA",""]:r<=150?["😐","MEIA-BOCA",""]:["💩","ULTRA FEZES","ruim"])}
+  if(r){L.push(r<=12?["👑","MONSTRO DA TEMPORADA","ouro"]:r<=50?["🤤","AIN QUI DILIÇA","bom"]:r<=100?["👍","TÁ OK",""]:r<=150?["🧱","RUI DIMAI","ruim"]:["💩","ULTRA FEZES","ruim"]);
+  lideresDe(p).forEach(x=>L.push(x))}
   if(r&&r7){if(r-r7>=40)L.push(["🔥","PEGANDO FOGO","bom"]);else if(r7-r>=60)L.push(["🧊","ESFRIOU","ruim"])}
   return L})();
   const todos=tp.map(([e,n,c])=>`<span class="pj-selo ${c}" title="temporada"><i class="pj-em">${e}</i>${n}</span>`).concat(mine.map(x=>`<span class="pj-selo ${x.cls||""}" title="semana: ${esc(x.d)}">${seloPr(x.k)}${esc(x.n)} <small>sem.</small></span>`));
@@ -3609,6 +3611,19 @@ function ofertasBet(){const d=DADOS;if(!d||!EST||!EST.tot)return [];const O=[];c
     if(x.po>0.2&&x.po<0.6){const o=oddDe(1-x.po);if(o)O.push({t:`${man(id)} fica fora dos playoffs`,de:o,para:turbo(o),s:"mercado da temporada"})}})}catch(e){}
   return O.filter(o=>o.de>=1.4&&o.de<=60).sort(()=>Math.random()-0.5)}
 const PUBLI_SLOGAN=["BETLOYDE: a casa que torce contra você","Aposte com responsabilidade. Perca com dignidade.","Odd turbinada é igual promessa de manager: confie desconfiando","Não é dinheiro de verdade. A vergonha é.","BETLOYDE · patrocinadora oficial do choro de segunda-feira"];
+/* líderes da liga por categoria (média por jogo, quem jogou pelo menos 60% dos jogos do mais assíduo) */
+const LID_NOME=[["CESTINHA","PTS"],["REBOTEIRO","REB"],["GARÇOM","AST"],["LADRÃO","STL"],["PAREDÃO","BLK"],["SNIPER","3PM"]];
+let _LID=null;function lideres(){const d=DADOS;if(_LID&&_LID.g===d.gerado)return _LID.m;const todos=d.P.concat(d.fa||[]).filter(p=>p.av&&p.av[11]);const mx=Math.max(...todos.map(p=>p.av[11]));const ok=todos.filter(p=>p.av[11]>=0.6*mx);
+  const m={};LID_NOME.forEach((x,j)=>{ok.slice().sort((a,b)=>b.av[j]-a.av[j]).slice(0,3).forEach((p,i)=>{(m[p.id]=m[p.id]||[]).push([j,i])})});_LID={g:d.gerado,m};return m}
+function lideresDe(p){const L=(lideres()[p.id])||[];return L.map(([j,i])=>[i===0?"🏆":i===1?"🥈":"🥉",i===0?`${LID_NOME[j][0]} DA LIGA`:`${i+1}º ${LID_NOME[j][0]} DA LIGA`,i===0?"ouro":"bom"])}
+/* 🫏 burro: deixou jogador no banco com vaga sobrando e isso custou o confronto */
+let _BUR=null;function burroDe(t){const d=DADOS;if(!_BUR||_BUR.g!==d.gerado){_BUR={g:d.gerado,m:{}};
+  d.mt.forEach(([a,b])=>{const add={};[a,b].forEach(x=>{add[x]={v:zero(),n:0,quem:{}};for(let sp=d.s0;sp<=d.cur;sp++){const L=d.P.filter(p=>p.t===x&&p.dl&&p.dl[sp]);const tit=L.filter(p=>p.dl[sp][11]<12).length;let vaga=Math.max(0,10-tit);
+      L.filter(p=>p.dl[sp][11]===12).map(p=>({p,v:p.dl[sp]})).sort((u,w)=>valorJogo(w.v)-valorJogo(u.v)).forEach(({p,v})=>{if(vaga<=0||valorJogo(v)<=0)return;vaga--;v.slice(0,11).forEach((y,i)=>add[x].v[i]+=y);add[x].n++;add[x].quem[p.n]=(add[x].quem[p.n]||0)+1})}});
+    const sc=placar(EST.tot[a],EST.tot[b]),res=sc.w>sc.l?1:sc.w<sc.l?-1:0;
+    [[a,b,1],[b,a,-1]].forEach(([x,y,sg])=>{if(!add[x].n)return;const ta=EST.tot[x].map((v,i)=>v+add[x].v[i]);const s2=x===a?placar(ta,EST.tot[b]):placar(EST.tot[a],ta);const r2=s2.w>s2.l?1:s2.w<s2.l?-1:0;
+      if(r2*sg>res*sg){const f=(q)=>x===a?`${q.w}-${q.l}${q.t?"-"+q.t:""}`:`${q.l}-${q.w}${q.t?"-"+q.t:""}`;_BUR.m[x]={quem:Object.keys(add[x].quem),de:f(sc),para:f(s2)}}})})}
+  return _BUR.m[t]||null}
 function semPubli(){try{return localStorage.getItem("wbs.semPubli")==="1"}catch(e){return false}}
 function publiCard(of){if(!of||semPubli())return "";return `<div class="publi" ${of.j!=null?`data-jogo="${of.j}"`:""}><div class="publi-l"><span class="publi-tag">PUBLICIDADE</span><b class="publi-m"><i>BET</i>LOYDE</b></div><div class="publi-c"><span class="publi-sup">${esc(of.s)}</span><b class="publi-t">${esc(of.t)}:</b><span class="publi-o">de <s>${fmtO(of.de)}</s> para <b>${fmtO(of.para)}</b></span></div><div class="publi-r"><span class="publi-18">+18</span><small>${esc(PUBLI_SLOGAN[Math.floor(Math.random()*PUBLI_SLOGAN.length)])}</small></div><small class="publi-leg">Odds de mentira calculadas pelo modelo do Loydão. Ninguém aposta nada aqui.</small><button type="button" class="publi-x" data-publix aria-label="fechar anúncio">✕</button><button type="button" class="publi-nunca" data-publinunca>não quero mais ver</button></div>`}
 
@@ -3800,6 +3815,7 @@ document.addEventListener("click",e=>{
   if(e.target.closest("[data-h2hlista]")&&UI._h2h){const el=document.createElement("div");el.className="pop-fundo";el.id="popLista";el.innerHTML=`<div class="inst"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button><div class="inst-cab"><div><b>HISTÓRICO DIRETO</b><small>${esc(UI._h2h.t)} · toque para abrir o box</small></div></div>${UI._h2h.h}</div>`;
     el.addEventListener("click",ev=>{if(ev.target===el||ev.target.closest("[data-fecha]")){el.remove();return}if(ev.target.closest("[data-mj]"))el.remove()},true);document.body.appendChild(el);return}
   if(e.target.closest(".topo .belt,.topo .mast")){location.hash="confrontos";scrollTo(0,0);return}
+  {const bu=e.target.closest("[data-burro]");if(bu){e.preventDefault();e.stopPropagation();mostrarAviso("🫏 "+bu.dataset.burro);return}}
   if(e.target.closest("[data-publix]")){e.stopPropagation();const p=e.target.closest(".publi");if(p)p.remove();return}
   if(e.target.closest("[data-publinunca]")){e.stopPropagation();try{localStorage.setItem("wbs.semPubli","1")}catch(x){}document.querySelectorAll(".publi,#tarjaBet").forEach(x=>x.remove());ticker();mostrarAviso&&mostrarAviso("Pronto: sem anúncios da BETLOYDE neste aparelho. Dá pra ligar de novo no rodapé.");return}
   if(e.target.closest("[data-publion]")){try{localStorage.removeItem("wbs.semPubli")}catch(x){}render();ticker();return}
