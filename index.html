@@ -1739,6 +1739,17 @@ svg.cad{width:18px;height:18px;display:block}
 .pj-seta:active{transform:scale(.94)}
 .pr-vivo{display:block;font-style:normal;font-size:10px;color:#ff6b6b;font-weight:700;margin-top:2px}
 
+.seq{display:inline-block;font:800 9.5px system-ui;letter-spacing:.03em;padding:1px 5px;border-radius:4px;margin-left:4px;vertical-align:1px;color:#fff}
+.seq.W{background:#16a34a}.seq.L{background:#dc2626}.seq.E{background:#71717a}
+.sp-card summary{list-style:none;cursor:pointer}.sp-card summary::-webkit-details-marker{display:none}
+.sp-l{display:flex;flex-direction:column}
+.sp-r{border-top:1px solid #241a1a}.sp-r>summary{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:8px 12px;list-style:none;cursor:pointer}
+.sp-r>summary::-webkit-details-marker{display:none}
+.sp-t{display:flex;align-items:center;gap:6px;font-family:var(--display);font-size:15px;color:#9a8f86;min-width:0}.sp-t.dir{justify-content:flex-end}
+.sp-t img,.sp-t .ini{width:22px;height:22px}.sp-t.v{color:#fff}
+.sp-p{font-family:var(--display);font-weight:400;font-size:20px;color:var(--amarelo)}
+.sp-cat{margin:0 0 8px}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1804,11 +1815,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794190992"></script>
-<script src="radar.js?v=1794190992"></script>
-<script src="midia.js?v=1794190992"></script>
+<script src="hist.js?v=1794222895"></script>
+<script src="radar.js?v=1794222895"></script>
+<script src="midia.js?v=1794222895"></script>
 <script>
-const VERSAO_PAINEL="20261108232312";
+const VERSAO_PAINEL="20261109081455";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2268,6 +2279,15 @@ function precisaEscolher(){let m=null,p=null;try{m=localStorage.getItem("painel.
 function meuTime(){try{return +localStorage.getItem("painel.meu")||0}catch(e){return 0}}
 const svgI=p=>`<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 const ICS={sel:svgI(IC.quadra),radar:svgI(IC.binoculo),fogo:svgI(IC.ringue),rk:svgI(IC.cinturao),museu:svgI(IC.museu),perfis:svgI(IC.prancheta)};
+/* sequência de vitórias/derrotas (W2, L3, E1) a partir dos confrontos fechados */
+function sequencia(t){const d=DADOS;const H=(d.hist||[]).filter(m=>m[1]===t||m[2]===t).sort((x,y)=>x[0]-y[0]);if(!H.length)return null;
+  const r=H.map(m=>m[4]===t?"W":m[4]===0?"E":"L");const u=r[r.length-1];let n=0;for(let i=r.length-1;i>=0&&r[i]===u;i--)n++;return {u,n,ult:r.slice(-5)}}
+function seqTag(t){const q=sequencia(t);return q?` <span class="seq ${q.u}" title="últimos: ${q.ult.join(" ")}">${q.u}${q.n}</span>`:""}
+/* resultado da semana que acabou de fechar */
+function semanaPassada(){const d=DADOS;const wk=d.wk-1;if(wk<1)return "";const H=(d.hist||[]).filter(m=>m[0]===wk);if(!H.length)return "";const K=["FG%","FT%","3PM","REB","AST","STL","BLK","TO","PTS"];
+  return `<details class="card sp-card" ${d.cur-d.s0<=1?"open":""}><summary class="bloco-tit">RESULTADO DA SEMANA ${wk} <small>toque para ${d.cur-d.s0<=1?"fechar":"abrir"}</small></summary><div class="sp-l">${H.map(([mp,a,b,rec,win,ca,cb])=>{const A=T(a),B=T(b);const pc=(v,j)=>j<2?(v*100).toFixed(1):Math.round(v);
+    return `<details class="sp-r"><summary><span class="sp-t ${win===a?"v":""}">${logo(A[0])}${esc(A[3]||A[0])}</span><b class="sp-p">${rec[0]}-${rec[1]}${rec[2]?"-"+rec[2]:""}</b><span class="sp-t dir ${win===b?"v":""}">${esc(B[3]||B[0])}${logo(B[0])}</span></summary>
+    <table class="pg2 sp-cat"><tbody>${K.map((k,j)=>{const ix=[6,7,5,1,2,3,4,8,0][j];const x=ca[ix],y=cb[ix];const ga=j===7?x<y:x>y,gb=j===7?y<x:y>x;return `<tr><td class="${ga?"w":""}">${pc(x,j)}</td><th>${k}</th><td class="${gb?"w":""}">${pc(y,j)}</td></tr>`}).join("")}</tbody></table></details>`}).join("")}</div></details>`}
 function vConfrontos(){
   const d=DADOS;if(!d)return vazio();
   const meu=meuTime();
@@ -2276,15 +2296,15 @@ function vConfrontos(){
   const mais=ordem.slice().sort((x,y)=>Math.abs(x.s.pa-x.s.pb)-Math.abs(y.s.pa-y.s.pb))[0];
   const dia=d.cur-d.s0+1;
   let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
-  <div class="atalhos"><button type="button" class="atalho" data-sel="sem">${ICS.sel} <span>Seleção</span></button><button type="button" class="atalho" data-ir="times">${ICS.rk} <span>Ranking</span></button><button type="button" class="atalho" data-ir="perfis">${ICS.perfis} <span>Perfis</span></button><button type="button" class="atalho" data-ir="radar">${ICS.radar} <span>Radar</span></button><button type="button" class="atalho" data-ir="museu">${ICS.museu} <span>Museu</span></button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="baixar" data-instalar>📲 Baixar o app</button>`:""}<label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
+  <div class="atalhos"><button type="button" class="atalho" data-sel="sem">${ICS.sel} <span>Seleção</span></button><button type="button" class="atalho" data-ir="times">${ICS.rk} <span>Ranking</span></button><button type="button" class="atalho" data-ir="perfis">${ICS.perfis} <span>Perfis</span></button><button type="button" class="atalho" data-ir="radar">${ICS.radar} <span>Radar</span></button><button type="button" class="atalho" data-ir="museu">${ICS.museu} <span>Museu</span></button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="baixar" data-instalar>📲 Baixar o app</button>`:""}<label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div>${semanaPassada()}<div class="grade">`;
   ordem.forEach(({m,i,sc,s})=>{
     const [a,b]=m,A=T(a),B=T(b);
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
     h+=`<button class="card jogo ${meu&&m.includes(meu)?"meu-jogo":""}" type="button" data-jogo="${i}">
       <div class="jogo-topo">
-        <div class="lado">${rostoTime(A[0])}<div class="info"><div class="nm">${esc(A[0])}</div><div class="mg">${esc(A[2])}${(()=>{const z=burroDe(a);return z?` <span class="burro" data-burro="${esc(A[2])} deixou ${esc(z.quem.join(", "))} no banco com vaga sobrando. Com ele(s), o ${esc(z.de)} viraria ${esc(z.para)}.">🫏</span>`:""})()} · ${ra.join("-")}</div></div></div>
+        <div class="lado">${rostoTime(A[0])}<div class="info"><div class="nm">${esc(A[0])}</div><div class="mg">${esc(A[2])}${seqTag(a)}${(()=>{const z=burroDe(a);return z?` <span class="burro" data-burro="${esc(A[2])} deixou ${esc(z.quem.join(", "))} no banco com vaga sobrando. Com ele(s), o ${esc(z.de)} viraria ${esc(z.para)}.">🫏</span>`:""})()} · ${ra.join("-")}</div></div></div>
         <div class="placar num"><span class="${sc.w>sc.l?"v":""}">${sc.w}</span>-<span class="${sc.l>sc.w?"v":""}">${sc.l}</span>${sc.t?`-${sc.t}`:""}<small>agora</small></div>
-        <div class="lado dir">${rostoTime(B[0])}<div class="info"><div class="nm">${esc(B[0])}</div><div class="mg">${esc(B[2])}${(()=>{const z=burroDe(b);return z?` <span class="burro" data-burro="${esc(B[2])} deixou ${esc(z.quem.join(", "))} no banco com vaga sobrando. Com ele(s), o ${esc(z.de)} viraria ${esc(z.para)}.">🫏</span>`:""})()} · ${rb.join("-")}</div></div></div>
+        <div class="lado dir">${rostoTime(B[0])}<div class="info"><div class="nm">${esc(B[0])}</div><div class="mg">${esc(B[2])}${seqTag(b)}${(()=>{const z=burroDe(b);return z?` <span class="burro" data-burro="${esc(B[2])} deixou ${esc(z.quem.join(", "))} no banco com vaga sobrando. Com ele(s), o ${esc(z.de)} viraria ${esc(z.para)}.">🫏</span>`:""})()} · ${rb.join("-")}</div></div></div>
       </div>
       ${miniTabela(a,b,sc)}
       ${chipsPremios(a,b)}
@@ -3258,7 +3278,7 @@ function vTime(id){
   const M=window.MIDIA&&window.MIDIA.times[nome];
   let h=`<button class="voltar" type="button" data-ir="times">← Ranking</button>
   <div class="card thero th2">${rostoTime(nome)}<div class="th-cab"><div class="nm">${esc(nome)}</div><div class="mg">${esc(Tt[2])}${tt.length?` · 🏆 ${tt.map(c=>c[0]).join(", ")}`:""}</div>${M&&M.ap&&M.ap.length?`<div class="bio-ap">${M.ap.slice(0,3).map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:""}</div>
-    <div class="th-dados"><div><span>Ranking</span><b>${pos?pos+"º":"–"}</b></div><div><span>26/27</span><b>${d?d.teams.find(t=>t.id===id).rec.join("-"):"–"}</b></div>${sim?`<div><span>Playoffs</span><b>${pct(sim.po)}</b></div><div><span>Título</span><b>${pct(sim.tit)}</b></div>`:""}<div><span>Histórico</span><b>${reg.join("-")}</b></div></div>
+    <div class="th-dados"><div><span>Ranking</span><b>${pos?pos+"º":"–"}</b></div><div><span>26/27</span><b>${d?d.teams.find(t=>t.id===id).rec.join("-"):"–"}${d?seqTag(id):""}</b></div>${sim?`<div><span>Playoffs</span><b>${pct(sim.po)}</b></div><div><span>Título</span><b>${pct(sim.tit)}</b></div>`:""}<div><span>Histórico</span><b>${reg.join("-")}</b></div></div>
     ${M&&M.bio?`<p class="bio-tx">${esc(M.bio)}</p>`:""}${M&&M.fr&&M.fr.length?`<details class="bio-mais"><summary>O que a mídia dizia em 25/26</summary><ul>${M.fr.map(q=>`<li>${esc(q)}</li>`).join("")}</ul></details>`:""}</div>`;
   const atual=confrontosDe(nome).filter(m=>m.t==="2026/27");
   let semana="";if(d){const mi=d.mt.findIndex(m=>m.includes(id));if(mi>=0){const m=d.mt[mi];const s=placar(EST.tot[m[0]],EST.tot[m[1]]);const eu=m[0]===id;semana=`<a class="qd2 ao" href="#jogo-${mi}"><b>${rtxt(eu?s.w:s.l,eu?s.l:s.w,s.t)}</b><small>agora</small></a>`}}
@@ -3747,7 +3767,7 @@ async function coletarAoVivo(){
   }
   const agenda=q=>{let n=0;q.gd=[];for(let sp=cur;sp<=s1;sp++){const g=games[q.pro]&&games[q.pro][sp];if(g&&g.length){q.gd.push(sp);if(!(sp===cur&&q.dl&&q.dl[cur]))n++}}q.gl=n;const g=games[q.pro]&&games[q.pro][cur];q.hoje=g&&g.length?1:0;if(q.fora){q.gl=0;q.hoje=0}};
   Object.values(P).forEach(agenda);fa.forEach(agenda);
-  const hist=sb.schedule.filter(m=>m.matchupPeriodId<wk&&m.winner&&m.winner!=="UNDECIDED").map(m=>{const c=x=>[0,6,3,2,1,17,19,20,11].map(id=>{const s=x.cumulativeScore&&x.cumulativeScore.scoreByStat&&x.cumulativeScore.scoreByStat[id];return s?+(+s.score).toFixed(4):0});return [m.matchupPeriodId,m.home.teamId,m.away.teamId,[m.home.cumulativeScore.wins,m.home.cumulativeScore.losses,m.home.cumulativeScore.ties],m.winner==="HOME"?m.home.teamId:m.winner==="AWAY"?m.away.teamId:0,c(m.home),c(m.away)]});
+  const hist=sb.schedule.filter(m=>m.matchupPeriodId<wk&&((m.winner&&m.winner!=="UNDECIDED")||m.matchupPeriodId===wk-1)).map(m=>{const c=x=>[0,6,3,2,1,17,19,20,11].map(id=>{const s=x.cumulativeScore&&x.cumulativeScore.scoreByStat&&x.cumulativeScore.scoreByStat[id];return s?+(+s.score).toFixed(4):0});return [m.matchupPeriodId,m.home.teamId,m.away.teamId,[m.home.cumulativeScore.wins,m.home.cumulativeScore.losses,m.home.cumulativeScore.ties],(m.winner==="HOME"||(m.winner==="UNDECIDED"&&m.home.cumulativeScore.wins>m.home.cumulativeScore.losses))?m.home.teamId:(m.winner==="AWAY"||(m.winner==="UNDECIDED"&&m.home.cumulativeScore.wins<m.home.cumulativeScore.losses))?m.away.teamId:0,c(m.home),c(m.away)]});
   return {v:9,gerado:Date.now(),cur,last,wk,s0,s1,teams,mt,fut,gw,D,hist,nba,tx,P:Object.values(P),fa};
 }
 function janelaDeJogos(){
