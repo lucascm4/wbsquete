@@ -1829,11 +1829,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794238733"></script>
-<script src="radar.js?v=1794238733"></script>
-<script src="midia.js?v=1794238733"></script>
+<script src="hist.js?v=1794238838"></script>
+<script src="radar.js?v=1794238838"></script>
+<script src="midia.js?v=1794238838"></script>
 <script>
-const VERSAO_PAINEL="20261109123853";
+const VERSAO_PAINEL="20261109124038";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2366,7 +2366,9 @@ function linhasRange(sp,filtro){ // totais de cada jogador no intervalo (time = 
   for(let x=a;x<=b;x++)(BOX.dias[x]||[]).forEach(l=>{const id=l[0];const v=l.slice(3,14);let r=acc[id];if(!r){r=acc[id]={id,t:l[1],s:zero(),g:0}}v.forEach((y,i)=>r.s[i]+=y);r.g++;r.t=l[1]});
   return Object.values(acc).map(r=>{let p=d.P.find(q=>q.id===r.id)||(d.fa||[]).find(q=>q.id===r.id);if(!p){const m=BOX.meta[r.id]||{};p={id:r.id,n:m.n||("jogador "+r.id),pos:m.pos||0,pro:m.pro||0,el:m.el||[],inj:"ACTIVE"}}return {p,t:r.t,s:r.s,g:r.g,slot:0}}).filter(r=>!filtro||filtro(r))}
 function minMedia(sp){const d=DADOS;if(sp!=="temp")return MEDIAS[sp][3];const g=Math.max(1,...d.P.map(p=>p.av?p.av[11]:0));return Math.max(3,Math.round(g*0.5))}
-function rotPer(sp,curto){const d=DADOS;if(ehRange(sp)){const [a,b]=rangeDe(sp);const t=spRot(a)+" a "+spRot(b);return curto?t.toUpperCase():"DE "+t.toUpperCase()}if(sp==="sem")return curto?"SEMANA "+d.wk:"DA SEMANA";if(ehMedia(sp))return curto?MEDIAS[sp][1]:MEDIAS[sp][2];return curto?spRot(sp).toUpperCase():"DA NOITE"}
+function semIni(k){return k<=1?1:7+(k-2)*7}function semFim(k){return k<=1?6:semIni(k)+6}
+function semDoRange(sp){if(!ehRange(sp))return 0;const [a,b]=rangeDe(sp);for(let k=1;k<DADOS.wk;k++)if(a===semIni(k)&&b===semFim(k))return k;return 0}
+function rotPer(sp,curto){const d=DADOS;const sk=semDoRange(sp);if(sk)return curto?"SEMANA "+sk:"DA SEMANA "+sk;if(ehRange(sp)){const [a,b]=rangeDe(sp);const t=spRot(a)+" a "+spRot(b);return curto?t.toUpperCase():"DE "+t.toUpperCase()}if(sp==="sem")return curto?"SEMANA "+d.wk:"DA SEMANA";if(ehMedia(sp))return curto?MEDIAS[sp][1]:MEDIAS[sp][2];return curto?spRot(sp).toUpperCase():"DA NOITE"}
 function botoesPer(sp,attr){const d=DADOS;
   // três períodos grandes + um seletor com cada dia da semana (e os últimos 7 dias)
   const ont=d.cur-1;const vOnt=ont>=d.s0?ont:"r:"+ont+"-"+ont;
@@ -2374,8 +2376,8 @@ function botoesPer(sp,attr){const d=DADOS;
   const big=BIG.filter(x=>ont>=1||x[1]!=="ONTEM").map(([k,a,b])=>`<button class="dia per big" type="button" ${attr}="${k}" aria-pressed="${String(sp)===String(k)}">${a}<small>${esc(b)}</small></button>`).join("");
   const dias=[];for(let x=d.s0;x<=Math.min(d.cur,d.s1);x++)dias.push(x);
   const escolhido=!BIG.some(x=>String(x[0])===String(sp));
-  const opt=`<option value="">${escolhido?"":"um dia…"}</option>`+dias.slice().reverse().map(x=>`<option value="${x}" ${String(sp)===String(x)?"selected":""}>${esc(spRot(x))}${x===d.cur?" (hoje)":""}</option>`).join("")+`<option value="l7" ${sp==="l7"?"selected":""}>últimos 7 dias</option><option value="range" ${ehRange(sp)?"selected":""}>intervalo de datas…</option>`;
-  let rg="";if(ehRange(sp)){const [a,b]=rangeDe(sp);const op=v=>{let o="";for(let x=d.cur;x>=1;x--)o+=`<option value="${x}" ${x===v?"selected":""}>${esc(spRot(x))}</option>`;return o};
+  const opt=`<option value="">${escolhido?"":"um dia…"}</option>`+dias.slice().reverse().map(x=>`<option value="${x}" ${String(sp)===String(x)?"selected":""}>${esc(spRot(x))}${x===d.cur?" (hoje)":""}</option>`).join("")+`<option value="l7" ${sp==="l7"?"selected":""}>últimos 7 dias</option>`+(()=>{let o="";for(let k=d.wk-1;k>=1;k--){const v="r:"+semIni(k)+"-"+semFim(k);o+=`<option value="${v}" ${String(sp)===v?"selected":""}>semana ${k} (fechada)</option>`}return o})()+`<option value="range" ${ehRange(sp)&&!semDoRange(sp)?"selected":""}>intervalo de datas…</option>`;
+  let rg="";if(ehRange(sp)&&!semDoRange(sp)){const [a,b]=rangeDe(sp);const op=v=>{let o="";for(let x=d.cur;x>=1;x--)o+=`<option value="${x}" ${x===v?"selected":""}>${esc(spRot(x))}</option>`;return o};
     rg=`<div class="rg"><label>De <select id="rgA">${op(a)}</select></label><label>até <select id="rgB">${op(b)}</select></label></div>`}
   return big+`<label class="dia per esc ${escolhido?"on":""}">OUTRO<select id="perSel" data-attr="${attr}" aria-label="Escolher um dia">${opt}</select></label>`+rg}
 function linhasMedia(sp,filtro){ // jogadores com média no período (por jogo)
