@@ -1783,6 +1783,7 @@ svg.cad{width:18px;height:18px;display:block}
 .cad-t b{font-size:12px;color:#fff}.cad-t small{font-size:11px;color:#aaa}
 .cad-t.on{border-color:var(--amarelo);background:#221c08}
 .cad-t:active{transform:scale(.96)}
+@media (max-width:440px){.btn-eu{padding:3px}.btn-eu span{display:none}.btn-eu:not(:has(img)) span{display:inline;padding:0 6px}}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1849,11 +1850,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794262379"></script>
-<script src="radar.js?v=1794262379"></script>
-<script src="midia.js?v=1794262379"></script>
+<script src="hist.js?v=1794262473"></script>
+<script src="radar.js?v=1794262473"></script>
+<script src="midia.js?v=1794262473"></script>
 <script>
-const VERSAO_PAINEL="20261109191259";
+const VERSAO_PAINEL="20261109191433";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4197,13 +4198,13 @@ function menuEu(){const id=meuTime();if(!id){popCadastro();return}
   const m=document.createElement("div");m.id="menuEu";m.className="menu-eu";
   m.innerHTML=`<b>${esc(t[2])} · ${esc(t[0])}</b>${mi>=0?`<button type="button" data-a="jogo">⚔️ Meu confronto</button>`:""}<button type="button" data-a="vivo">🔴 Meu jogo ao vivo</button><button type="button" data-a="perfil">📇 Perfil do meu time</button><button type="button" data-a="trocar">🔄 Trocar de time</button><button type="button" data-a="sair">Sair</button>`;
   document.body.appendChild(m);const fecha=()=>{m.remove();document.removeEventListener("click",fora,true)};const fora=e=>{if(!m.contains(e.target)&&e.target.closest("#btnEu")==null)fecha()};setTimeout(()=>document.addEventListener("click",fora,true),0);
-  m.querySelectorAll("button").forEach(b=>b.onclick=()=>{const a=b.dataset.a;fecha();
+  m.addEventListener("click",e=>e.stopPropagation());m.querySelectorAll("button").forEach(b=>b.onclick=e=>{e.stopPropagation();const a=b.dataset.a;fecha();
     if(a==="jogo")ir("jogo-"+mi);else if(a==="vivo"){UI.avDuelo=id;UI.avModo="duelo";ir("aovivo")}else if(a==="perfil")ir("time-"+id);else if(a==="trocar")popCadastro();else if(a==="sair")setMeu(0)})}
 function popCadastro(){if(document.getElementById("popCad"))return;const w=document.createElement("div");w.id="popCad";w.className="rev-pop";
   const ids=Object.keys(TIMES).map(Number);const atual=meuTime();
   w.innerHTML=`<div class="rev-box cad-box" role="dialog" aria-label="Escolha o seu time"><div class="rev-top"><span>👤 QUEM É VOCÊ, TREINADOR?</span><button type="button" class="rev-x" aria-label="fechar">✕</button></div><p class="ia-txt">Escolha o seu time uma vez. O app fica no seu nome neste aparelho: o seu confronto aparece primeiro, o ao vivo abre no seu duelo e o plantão fala dos seus jogadores.</p><div class="cad-grid">${ids.map(id=>{const t=T(id);return `<button type="button" class="cad-t ${id===atual?"on":""}" data-id="${id}"><img src="img/l/${t[1]}.webp" alt=""><b>${esc(t[0])}</b><small>${esc(t[2])}</small></button>`}).join("")}</div><button type="button" class="ia-nunca cad-pula">só tô olhando</button></div>`;
   const fecha=()=>w.remove();w.querySelector(".rev-x").onclick=()=>{lss("wbs.cadPulou",Date.now());fecha()};w.querySelector(".cad-pula").onclick=()=>{lss("wbs.cadPulou",Date.now());fecha()};
-  w.querySelectorAll(".cad-t").forEach(b=>b.onclick=()=>{setMeu(+b.dataset.id);fecha()});document.body.appendChild(w);inappFeito=true}
+  w.addEventListener("click",e=>e.stopPropagation());w.querySelectorAll(".cad-t").forEach(b=>b.onclick=e=>{e.stopPropagation();e.preventDefault();fecha();setMeu(+b.dataset.id)});document.body.appendChild(w);inappFeito=true}
 function precisaCadastro(){return !meuTime()&&Date.now()-(+lsg("wbs.cadPulou",0))>7*864e5}
 
 /* in-apps: revista nova (prioridade), e com moderação um por vez em rodízio: notícia, zoeira, bet, waiver, revista */
