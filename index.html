@@ -1803,11 +1803,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794189673"></script>
-<script src="radar.js?v=1794189673"></script>
-<script src="midia.js?v=1794189673"></script>
+<script src="hist.js?v=1794189836"></script>
+<script src="radar.js?v=1794189836"></script>
+<script src="midia.js?v=1794189836"></script>
 <script>
-const VERSAO_PAINEL="20261108230113";
+const VERSAO_PAINEL="20261108230356";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3068,7 +3068,7 @@ function abrirJogador(id,perF){
   const lei=leituraLoydao(p,zs,tend,T(t)[0]);
   const rks=[["Temporada",p.rk&&p.rk[0]],["7 dias",p.rk&&p.rk[1]],["Projetado",p.rkP],["Loydão",p.rkL]].filter(x=>x[1]);
   fecharFicha();const el=document.createElement("div");el.className="pop-fundo";el.id="popFicha";
-  el.innerHTML=`<div class="pop-jog pop-full" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(t)[4]}"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button>
+  el.innerHTML=`<div class="pop-jog pop-full" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(t)[4]}"><div class="pj-barra"><button type="button" class="pj-volta" data-fecha aria-label="voltar">← Voltar</button>${navFicha(p.id,p.n)}</div>
    <div class="pj-topo">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b>${(()=>{try{const m=DADOS.mt.find(x=>x.includes(t));const L=m?(premios(m[0],m[1],"sem")||[]):[];const mine=L.filter(x=>x.x&&x.x.p&&x.x.p.id===p.id);const tp=(()=>{const r=p.rk&&p.rk[0],r7=p.rk&&p.rk[1];const L=[];
   if(p.inj==="OUT"||(noticia(p)&&noticia(p).st==="OUT"))L.push(["🏥","ENFERMARIA","ruim"]);
   if(r){L.push(r<=12?["👑","MONSTRO DA TEMPORADA","ouro"]:r<=50?["🤤","AIN QUI DILIÇA","bom"]:r<=100?["👍","TÁ OK",""]:r<=150?["🧱","RUI DIMAI","ruim"]:["💩","ULTRA FEZES","ruim"]);
