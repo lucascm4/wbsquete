@@ -1733,6 +1733,11 @@ svg.cad{width:18px;height:18px;display:block}
 .burro{font-size:15px;margin-left:2px;cursor:help}
 .bode{font-style:normal;font-size:.8em;margin-left:2px}
 
+.pj-barra{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pj-nav{display:flex;align-items:center;gap:6px}.pj-nav small{font:700 11px system-ui;color:var(--apagado);min-width:38px;text-align:center}
+.pj-seta{all:unset;cursor:pointer;width:34px;height:34px;border-radius:50%;background:#000;border:2px solid var(--amarelo);color:var(--amarelo);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900}
+.pj-seta:active{transform:scale(.94)}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -1798,11 +1803,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794188205"></script>
-<script src="radar.js?v=1794188205"></script>
-<script src="midia.js?v=1794188205"></script>
+<script src="hist.js?v=1794188498"></script>
+<script src="radar.js?v=1794188498"></script>
+<script src="midia.js?v=1794188498"></script>
 <script>
-const VERSAO_PAINEL="20261108223645";
+const VERSAO_PAINEL="20261108224138";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2747,7 +2752,7 @@ function abrirFicha(k){
   const pc=(a,b)=>b?(100*a/b).toFixed(1)+"%":"–";
   const cel=[["PTS",st[0]],["REB",st[1]],["AST",st[2]],["STL",st[3]],["BLK",st[4]],["3PM",st[5]],["TO",st[6]],["FG",`${st[7]}/${st[8]}<small>${pc(st[7],st[8])}</small>`],["FT",`${st[9]}/${st[10]}<small>${pc(st[9],st[10])}</small>`]];
   fecharFicha();const el=document.createElement("div");el.className="pop-fundo";el.id="popFicha";
-  el.innerHTML=`<div class="pop-jog" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(r.t)[4]}"><div class="pj-barra"><button type="button" class="pj-volta" data-fecha aria-label="voltar">← Voltar</button></div>
+  el.innerHTML=`<div class="pop-jog" role="dialog" aria-label="${esc(p.n)}" style="--cor:${T(r.t)[4]}"><div class="pj-barra"><button type="button" class="pj-volta" data-fecha aria-label="voltar">← Voltar</button>${navFicha(id,p.n)}</div>
    <div class="pj-topo">${face(p.id,p.n,"")}<div><span class="slot-sel">${x.slot}</span>${x.rk?`<span class="rk-n">#${x.rk} de ${x.n}</span>`:""}<b>${esc(p.n)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt=""> ${esc(T(r.t)[0])} · ${esc(T(r.t)[2])}${(sp==="sem"||ehRange(sp))?` · ${r.g} jogos`:""}${r.slot>=12?' · <u>estava no banco</u>':""}</small>${sp!=="sem"&&!ehMedia(sp)&&!ehRange(sp)?`<small>${jogoNBA(p,sp)}</small>`:ehMedia(sp)?`<small>média por jogo · ${r.g} jogos</small>`:""}</div></div>
    <div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div></div>`;
   el.addEventListener("click",e=>{if(e.target===el||e.target.closest("[data-fecha]"))fecharFichaU()});
@@ -3625,6 +3630,10 @@ let _BUR=null;function burroDe(t){const d=DADOS;if(!_BUR||_BUR.g!==d.gerado){_BU
     [[a,b,1],[b,a,-1]].forEach(([x,y,sg])=>{if(!add[x].n)return;const ta=EST.tot[x].map((v,i)=>v+add[x].v[i]);const s2=x===a?placar(ta,EST.tot[b]):placar(EST.tot[a],ta);const r2=s2.w>s2.l?1:s2.w<s2.l?-1:0;
       if(r2*sg>res*sg){const f=(q)=>x===a?`${q.w}-${q.l}${q.t?"-"+q.t:""}`:`${q.l}-${q.w}${q.t?"-"+q.t:""}`;_BUR.m[x]={quem:Object.keys(add[x].quem),de:f(sc),para:f(s2)}}})})}
   return _BUR.m[t]||null}
+/* setas da ficha: passa pelos jogadores da tela de onde ela foi aberta */
+function navFicha(id,nome){const L=UI.fichaLista;if(!L||L.ids.length<2)return "";let i=L.tipo==="n"?L.ids.indexOf(nome):L.ids.indexOf(id);if(i<0)return "";const n=L.ids.length;
+  return `<div class="pj-nav"><button type="button" class="pj-seta" data-fnav="${(i+n-1)%n}" aria-label="jogador anterior">‹</button><small>${i+1}/${n}</small><button type="button" class="pj-seta" data-fnav="${(i+1)%n}" aria-label="próximo jogador">›</button></div>`}
+function irFicha(i){const L=UI.fichaLista;if(!L)return;const v=L.ids[i];if(v==null)return;if(L.tipo==="n")abrirJogadorNome(v);else abrirJogador(v,UI.fichaPer)}
 function semPubli(){try{return localStorage.getItem("wbs.semPubli")==="1"}catch(e){return false}}
 function publiCard(of){if(!of||semPubli())return "";return `<div class="publi" ${of.j!=null?`data-jogo="${of.j}"`:""}><div class="publi-l"><span class="publi-tag">PUBLICIDADE</span><b class="publi-m"><i>BET</i>LOYDE</b></div><div class="publi-c"><span class="publi-sup">${esc(of.s)}</span><b class="publi-t">${esc(of.t)}:</b><span class="publi-o">de <s>${fmtO(of.de)}</s> para <b>${fmtO(of.para)}</b></span></div><div class="publi-r"><span class="publi-18">+18</span><small>${esc(PUBLI_SLOGAN[Math.floor(Math.random()*PUBLI_SLOGAN.length)])}</small></div><small class="publi-leg">Odds de mentira calculadas pelo modelo do Loydão. Ninguém aposta nada aqui.</small><button type="button" class="publi-x" data-publix aria-label="fechar anúncio">✕</button><button type="button" class="publi-nunca" data-publinunca>não quero mais ver</button></div>`}
 
@@ -3816,6 +3825,7 @@ document.addEventListener("click",e=>{
   if(e.target.closest("[data-h2hlista]")&&UI._h2h){const el=document.createElement("div");el.className="pop-fundo";el.id="popLista";el.innerHTML=`<div class="inst"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button><div class="inst-cab"><div><b>HISTÓRICO DIRETO</b><small>${esc(UI._h2h.t)} · toque para abrir o box</small></div></div>${UI._h2h.h}</div>`;
     el.addEventListener("click",ev=>{if(ev.target===el||ev.target.closest("[data-fecha]")){el.remove();return}if(ev.target.closest("[data-mj]"))el.remove()},true);document.body.appendChild(el);return}
   if(e.target.closest(".topo .belt,.topo .mast")){location.hash="confrontos";scrollTo(0,0);return}
+  {const fn=e.target.closest("[data-fnav]");if(fn){irFicha(+fn.dataset.fnav);return}}
   {const bu=e.target.closest("[data-burro]");if(bu){e.preventDefault();e.stopPropagation();mostrarAviso("🫏 "+bu.dataset.burro);return}}
   if(e.target.closest("[data-publix]")){e.stopPropagation();const p=e.target.closest(".publi");if(p)p.remove();return}
   if(e.target.closest("[data-publinunca]")){e.stopPropagation();try{localStorage.setItem("wbs.semPubli","1")}catch(x){}document.querySelectorAll(".publi,#tarjaBet").forEach(x=>x.remove());ticker();mostrarAviso&&mostrarAviso("Pronto: sem anúncios da BETLOYDE neste aparelho. Dá pra ligar de novo no rodapé.");return}
@@ -3826,8 +3836,8 @@ document.addEventListener("click",e=>{
   {const q=e.target.closest("[data-avq]");if(q){UI.avQ=q.dataset.avq;render();return}const f=e.target.closest("[data-avf]");if(f){UI.avF=+f.dataset.avf;render();return}}
   {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();location.hash="time-"+tid;return}}
   {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();location.hash="time-"+tid;return}}
-  {const pn=e.target.closest("[data-pjn]");if(pn&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){UI.fichaPer=null;abrirJogadorNome(pn.dataset.pjn);return}}
-  {const pj=e.target.closest("[data-pj]");if(pj&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){const ao=location.hash==="#aovivo";UI.fichaPer=ao?DADOS.cur:null;if(ao)UI.fichaAba="num";abrirJogador(+pj.dataset.pj,ao?DADOS.cur:undefined);return}}
+  {const pn=e.target.closest("[data-pjn]");if(pn&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){UI.fichaPer=null;UI.fichaLista=listaDaTela("pjn",pn);abrirJogadorNome(pn.dataset.pjn);return}}
+  {const pj=e.target.closest("[data-pj]");if(pj&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){UI.fichaLista=listaDaTela("pj",pj);const ao=location.hash==="#aovivo";UI.fichaPer=ao?DADOS.cur:null;if(ao)UI.fichaAba="num";abrirJogador(+pj.dataset.pj,ao?DADOS.cur:undefined);return}}
   const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-mda],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj],[data-dd],[data-leg]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
@@ -4097,5 +4107,14 @@ function mostrarAviso(t){const a=document.createElement("div");a.className="avis
 /* rodapé: religar anúncios */
 (function(){const r=document.getElementById("rodape");if(!r)return;const b=document.createElement("button");b.type="button";b.className="publi-on";b.dataset.publion="1";b.textContent="ligar anúncios da BETLOYDE";r.after(b);
   const at=()=>{b.hidden=!semPubli()};at();setInterval(at,3000)})();
+
+/* lista de jogadores visíveis na tela (na ordem em que aparecem), pra navegar na ficha */
+function listaDaTela(tipo,orig){const app=(orig&&orig.closest(".du-col"))||document.getElementById("app");const at=tipo==="pjn"?"data-pjn":"data-pj";const ids=[];const vis=new Set();
+  app.querySelectorAll("["+at+"]").forEach(el=>{if(el.offsetParent===null)return;const v=tipo==="pjn"?el.getAttribute(at):+el.getAttribute(at);if(vis.has(v))return;vis.add(v);ids.push(v)});
+  return {tipo:tipo==="pjn"?"n":"id",ids}}
+/* deslizar o dedo na ficha também troca de jogador */
+(function(){let x0=null,y0=null;document.addEventListener("touchstart",e=>{if(!e.target.closest("#popFicha")||e.target.closest(".pj-scroll,.pj-tab,.cr-tj,.pilulas"))return;x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+  document.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;if(Math.abs(dx)<70||Math.abs(dy)>50)return;
+    const L=UI.fichaLista;const pop=document.getElementById("popFicha");if(!L||!pop||L.ids.length<2)return;const b=pop.querySelector(dx<0?'.pj-seta[aria-label="próximo jogador"]':'.pj-seta[aria-label="jogador anterior"]');if(b)irFicha(+b.dataset.fnav)},{passive:true})})();
 </script>
 </body></html>
