@@ -1850,11 +1850,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794262473"></script>
-<script src="radar.js?v=1794262473"></script>
-<script src="midia.js?v=1794262473"></script>
+<script src="hist.js?v=1794262519"></script>
+<script src="radar.js?v=1794262519"></script>
+<script src="midia.js?v=1794262519"></script>
 <script>
-const VERSAO_PAINEL="20261109191433";
+const VERSAO_PAINEL="20261109191519";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4084,7 +4084,7 @@ function montarAtalhos(r){
   app.insertBefore(nav,ref)}
 
 /* logo ou nome de time da liga = abre o perfil do time */
-function timeDoClique(el){
+function timeDoClique(el){if(el&&el.closest&&el.closest("#btnEu,#menuEu,#popCad,#popRev"))return 0;
   if(!el||el.closest("button[data-ft],[data-sub],[data-jogo],.pilulas,select,input,.nav,.jogo-nav .jn-b,.atalhos"))return 0;
   const img=el.closest("img");if(img){const m=/img\/l\/([a-z0-9_-]+)\.webp/i.exec(img.getAttribute("src")||"");if(m){const id=Object.keys(TIMES).find(k=>TIMES[k][1]===m[1]);if(id&&!(location.hash==="#time-"+id))return +id}}
   const r=el.closest(".rosto");if(r){const i=r.querySelector("img");if(i&&i!==img)return timeDoClique(i)}
@@ -4094,7 +4094,7 @@ function timeDoClique(el){
 (function(){let y=0,trav=false;new MutationObserver(()=>{const ab=!!document.getElementById("popFicha");if(ab&&!trav){y=scrollY;trav=true;const b=document.body.style;b.position="fixed";b.top=(-y)+"px";b.left="0";b.right="0";b.width="100%"}else if(!ab&&trav){trav=false;const b=document.body.style;b.position=b.top=b.left=b.right=b.width="";scrollTo(0,y)}}).observe(document.body,{childList:true})})();
 
 /* logo ou nome de time da liga = abre o perfil do time */
-function timeDoClique(el){
+function timeDoClique(el){if(el&&el.closest&&el.closest("#btnEu,#menuEu,#popCad,#popRev"))return 0;
   if(!el||el.closest("button[data-ft],[data-sub],[data-jogo],.pilulas,select,input,.nav,.jogo-nav .jn-b,.atalhos"))return 0;
   const img=el.closest("img");if(img){const m=/img\/l\/([a-z0-9_-]+)\.webp/i.exec(img.getAttribute("src")||"");if(m){const id=Object.keys(TIMES).find(k=>TIMES[k][1]===m[1]);if(id&&!(location.hash==="#time-"+id))return +id}}
   const r=el.closest(".rosto");if(r){const i=r.querySelector("img");if(i&&i!==img)return timeDoClique(i)}
