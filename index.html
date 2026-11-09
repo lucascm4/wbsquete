@@ -1804,11 +1804,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794190965"></script>
-<script src="radar.js?v=1794190965"></script>
-<script src="midia.js?v=1794190965"></script>
+<script src="hist.js?v=1794190992"></script>
+<script src="radar.js?v=1794190992"></script>
+<script src="midia.js?v=1794190992"></script>
 <script>
-const VERSAO_PAINEL="20261108232245";
+const VERSAO_PAINEL="20261108232312";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2234,8 +2234,8 @@ function noticiasDe(sp){
     if(c["FG%"]!=null&&c["FG%"]<=-1.8&&fga>=10)L.push([30-c["FG%"]*9,"MARTELO",()=>`${comoChegou()} e ele martelou ${fgm}/${fga} de quadra. ${zoe("choro",ctx)}.`]);
     else if(c["FT%"]!=null&&c["FT%"]<=-1.8&&fta-ftm>=4)L.push([26-c["FT%"]*8,"TIJOLO",()=>`${comoChegou()} e ele foi pra linha errar: ${ftm}/${fta}. ${zoe("choro",ctx)}.`]);
     if(to>=6)L.push([24+to*2,"ENTREGOU",()=>`${n}: ${to} turnovers. ${zoe("choro",ctx)}.`]);
-    if(p.av&&p.av[11]>=5){const mp=p.av[0];if(mp>=14&&pts<=0.4*mp&&((v[12]||0)>=15||(g&&g.fim)))L.push([28+(mp-pts),"APAGADO",()=>`${comoChegou()} e ele fez ${pts===0?"zero":"só "+pts} ponto${pts===1?"":"s"}${g&&g.fim?"":" até agora"} (média de ${mp}). ${zoe("choro",ctx)}.`]);}
-    if(pts===0&&(v[12]||0)>=20&&!L.length)L.push([22,"ZERO",()=>`${n} jogou ${v[12]} minutos e fez zero ponto. ${zoe("choro",ctx)}.`]);
+    if(p.av&&p.av[11]>=5){const mp=p.av[0];if(mp>=14&&(g&&g.live?(g.frac>=0.75&&pts+mp*(1-g.frac)<=0.4*mp):true)&&pts<=0.4*mp&&((v[12]||0)>=15||(g&&g.fim)))L.push([28+(mp-pts),"APAGADO",()=>`${comoChegou()} e ele fez ${pts===0?"zero":"só "+pts} ponto${pts===1?"":"s"}${g&&g.fim?"":" até agora"} (média de ${mp}). ${zoe("choro",ctx)}.`]);}
+    if(pts===0&&(v[12]||0)>=20&&!(g&&g.live&&g.frac<0.75)&&!L.length)L.push([22,"ZERO",()=>`${n} jogou ${v[12]} minutos e fez zero ponto. ${zoe("choro",ctx)}.`]);
     L.sort((a,b)=>b[0]-a[0]);if(L[0])cand.push({w:L[0][0],k:L[0][1],f:L[0][2]});
   });
   cand.sort((x,y)=>y.w-x.w);
