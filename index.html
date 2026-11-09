@@ -1850,11 +1850,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794262519"></script>
-<script src="radar.js?v=1794262519"></script>
-<script src="midia.js?v=1794262519"></script>
+<script src="hist.js?v=1794264046"></script>
+<script src="radar.js?v=1794264046"></script>
+<script src="midia.js?v=1794264046"></script>
 <script>
-const VERSAO_PAINEL="20261109191519";
+const VERSAO_PAINEL="20261109194046";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2241,9 +2241,23 @@ function noticias(){const L=noticiasBrutas();let V={};try{V=JSON.parse(localStor
 function noticiasBrutas(){
   // hoje (se já tem jogo rolando) + ontem completando: assim o ticker não esvazia quando a rodada começa
   const d=DADOS;const hoje=d.P.some(p=>p.dl&&p.dl[d.cur]);window._ZUSO=new Set();
-  if(!hoje)return noticiasDe(d.last);
+  if(!hoje){let o=[];try{o=noticiasDe(d.last)}catch(e){}if(o.length>=6)return o;return o.concat(preJogo()).slice(0,14)}
   const al=alertasStatus().slice(0,3),nd=noticiasDe(d.cur);const a=[];let k=0;nd.forEach((x,i)=>{a.push(x);if(i%3===1&&k<al.length)a.push(al[k++])});while(k<al.length)a.push(al[k++]);const rolando=d.nba&&Object.values(d.nba).some(g=>g.live);if(a.length>=6||(rolando&&a.length))return a;
   const ant=d.cur-1>=1?noticiasDe(d.cur-1):[];return a.concat(ant.slice(0,Math.max(0,10-a.length)).map(x=>Object.assign({},x,{t:"<i>Ontem:</i> "+x.t})))}
+/* antes da rodada: plantão, volume de jogos de hoje, odds da semana, resultado da semana passada, waiver e revista */
+function preJogo(){const d=DADOS;const out=[];const G=d.nba||{};const nm=id=>T(id)[0];
+  try{alertasStatus().forEach(x=>out.push(x))}catch(e){}
+  const Z=RADAR.lesoes;if(Z&&Z.sp===d.cur&&Z.itens)Object.entries(Z.itens).forEach(([n,v])=>{const p=d.P.find(q=>q.n===n);if(!p||v[0]!=="OUT"||out.some(o=>o.t.includes(n)))return;out.push({w:80,k:"🚑 FORA HOJE",t:`<b>${esc(n)}</b> (${esc(nm(p.t))}) não joga hoje: ${esc(v[1].split("·")[0].trim())}. ${HOPE[(p.id+d.cur)%HOPE.length].replace("{man}",esc(T(p.t)[2])).replace("{mop}","o rival")}`})});
+  const jg=t=>d.P.filter(p=>p.t===t&&p.slot<12&&G[p.pro]&&!G[p.pro].fim).length;
+  d.mt.forEach(([a,b],i)=>{const x=jg(a),y=jg(b);if(!x&&!y)return;const dif=Math.abs(x-y);const mais=x>y?a:b,menos=x>y?b:a;
+    out.push({w:40+dif*5,k:"📅 HOJE",j:i,t:dif>=2?`<b>${esc(nm(mais))}</b> tem ${Math.max(x,y)} jogadores em quadra hoje contra ${Math.min(x,y)} do ${esc(nm(menos))}. Volume é documento.`:`<b>${esc(nm(a))}</b> ${x} x ${y} <b>${esc(nm(b))}</b> em jogadores hoje. Tudo igual, decide quem escalar melhor.`})});
+  try{d.mt.forEach(([a,b],i)=>{const s=simula(a,b);const o=casa(a,b,s);const fa=s.pa>=s.pb;const odd=fa?o[0]:o[2],zeb=fa?o[2]:o[0];
+    out.push({w:30,k:"BETLOYDE",j:i,t:`<b>${esc(nm(fa?a:b))}</b> paga ${odd} contra o ${esc(nm(fa?b:a))}. A zebra paga ${zeb}.`,pub:0})})}catch(e){}
+  if(d.cur-d.s0<=1){(d.hist||[]).filter(m=>m[0]===d.wk-1).forEach(m=>{const [,a,b,rec,win]=m;if(!win)return;const per=win===a?b:a;out.push({w:35,k:"📜 SEMANA "+(d.wk-1),t:`<b>${esc(nm(win))}</b> ${Math.max(rec[0],rec[1])}-${Math.min(rec[0],rec[1])}${rec[2]?"-"+rec[2]:""} no ${esc(nm(per))}.`})})}
+  try{const f=(d.fa||[]).filter(p=>p.rkL&&p.rkL<=100&&p.inj!=="OUT").sort((x,y)=>x.rkL-y.rkL)[0];if(f)out.push({w:25,k:"💎 WAIVER",t:`<b>${esc(f.n)}</b> tá livre na ESPN: rank LOYDÃO #${f.rkL}${f.gl!=null?`, ${f.gl} jogos até domingo`:""}. O primeiro que piscar leva.`})}catch(e){}
+  const R=window.REVISTA;if(R&&R.n)out.push({w:20,k:"📰 REVISTA",t:`Saiu a <b>Revista do Loydão nº ${R.n}</b>: ${esc(R.titulo)}. Tá no menu, toca no pop-up ou no link do grupo.`});
+  // embaralha um pouco mantendo o plantão na frente
+  const top=out.filter(x=>x.w>=80),rest=out.filter(x=>x.w<80).sort((x,y)=>y.w-x.w+(Math.random()-.5)*20);return top.concat(rest)}
 /* alertas de status (Underdog NBA / ESPN) com o "hope he is ok" do Loydão */
 const HOPE=["Hope he is ok 🙏","Hope he is ok 🙏 (o {man} não)","Hope he is ok 🙏 — o {mop} já tá acendendo vela, mas pro outro lado","Hope he is ok 🙏 Sério. Mais ou menos.","Hope he is ok 🙏 e que o {man} tenha banco"];
 function alertasStatus(){const d=DADOS;const L=((window.RADAR&&RADAR.alertas)||[]).concat((typeof AO!=="undefined"&&AO.alertas)||[]);const out=[];
