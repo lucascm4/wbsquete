@@ -1850,11 +1850,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794264046"></script>
-<script src="radar.js?v=1794264046"></script>
-<script src="midia.js?v=1794264046"></script>
+<script src="hist.js?v=1794264069"></script>
+<script src="radar.js?v=1794264069"></script>
+<script src="midia.js?v=1794264069"></script>
 <script>
-const VERSAO_PAINEL="20261109194046";
+const VERSAO_PAINEL="20261109194109";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2241,7 +2241,7 @@ function noticias(){const L=noticiasBrutas();let V={};try{V=JSON.parse(localStor
 function noticiasBrutas(){
   // hoje (se já tem jogo rolando) + ontem completando: assim o ticker não esvazia quando a rodada começa
   const d=DADOS;const hoje=d.P.some(p=>p.dl&&p.dl[d.cur]);window._ZUSO=new Set();
-  if(!hoje){let o=[];try{o=noticiasDe(d.last)}catch(e){}if(o.length>=6)return o;return o.concat(preJogo()).slice(0,14)}
+  if(!hoje){let o=[];try{o=noticiasDe(d.last)}catch(e){}if(o.length>=6)return o;let pj=[];try{pj=preJogo()}catch(e){console.error(e)}return o.concat(pj).slice(0,14)}
   const al=alertasStatus().slice(0,3),nd=noticiasDe(d.cur);const a=[];let k=0;nd.forEach((x,i)=>{a.push(x);if(i%3===1&&k<al.length)a.push(al[k++])});while(k<al.length)a.push(al[k++]);const rolando=d.nba&&Object.values(d.nba).some(g=>g.live);if(a.length>=6||(rolando&&a.length))return a;
   const ant=d.cur-1>=1?noticiasDe(d.cur-1):[];return a.concat(ant.slice(0,Math.max(0,10-a.length)).map(x=>Object.assign({},x,{t:"<i>Ontem:</i> "+x.t})))}
 /* antes da rodada: plantão, volume de jogos de hoje, odds da semana, resultado da semana passada, waiver e revista */
