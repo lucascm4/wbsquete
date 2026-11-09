@@ -1803,11 +1803,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794189528"></script>
-<script src="radar.js?v=1794189528"></script>
-<script src="midia.js?v=1794189528"></script>
+<script src="hist.js?v=1794189536"></script>
+<script src="radar.js?v=1794189536"></script>
+<script src="midia.js?v=1794189536"></script>
 <script>
-const VERSAO_PAINEL="20261108225848";
+const VERSAO_PAINEL="20261108225856";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3936,7 +3936,7 @@ try{const v=localStorage.getItem("painel.rk");if(v)UI.rkModo=v}catch(e){}
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(reg=>{
     const up=()=>{try{reg.update()}catch(e){}};setInterval(up,5*60*1000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)up()});
   }).catch(()=>{}));
-  let trocou=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(trocou)return;trocou=true;if(!document.getElementById("popFicha"))location.reload();else AO.recarregarDepois=true})}
+  let trocou=false;const tinha=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(trocou||!tinha)return;trocou=true;if(!document.getElementById("popFicha"))location.reload();else AO.recarregarDepois=true})}
 // se tiver versão nova com a ficha aberta, recarrega quando ela fechar (pra não tirar a pessoa do meio da leitura)
 setInterval(()=>{if(AO.recarregarDepois&&!document.getElementById("popFicha"))location.reload()},3000);
 let pedidoInstalar=null;
