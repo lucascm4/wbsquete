@@ -1763,6 +1763,12 @@ svg.cad{width:18px;height:18px;display:block}
 .rev-v{background:var(--amarelo);color:#000}
 .rev-f:active,.rev-v:active{transform:scale(.97)}
 @media (prefers-reduced-motion:reduce){.rev-pop{animation:none}}
+.ia-txt{margin:0;color:#e9e3d8;font-size:15px;line-height:1.45;text-align:center}
+.ia-txt b{color:#fff}.ia-odd{color:var(--amarelo)!important;font-size:18px}
+.ia-bet .rev-top span i{color:var(--amarelo);font-style:normal}
+.ia-not{border-color:#e33}.ia-not .rev-top span{color:#ff6b6b}
+.ia-ruim{border-color:#e33}.ia-bom{border-color:#f59e0b}.ia-wav{border-color:#22c55e}.ia-wav .rev-top span{color:#4ade80}
+.ia-nunca{all:unset;cursor:pointer;color:#888;font-size:11px;text-align:center;text-decoration:underline}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1829,11 +1835,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794238838"></script>
-<script src="radar.js?v=1794238838"></script>
-<script src="midia.js?v=1794238838"></script>
+<script src="hist.js?v=1794262049"></script>
+<script src="radar.js?v=1794262049"></script>
+<script src="midia.js?v=1794262049"></script>
 <script>
-const VERSAO_PAINEL="20261109124038";
+const VERSAO_PAINEL="20261109190729";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4166,20 +4172,46 @@ document.addEventListener("click",e=>{const el=e.target.closest("[data-pj],[data
     const L=UI.fichaLista;const pop=document.getElementById("popFicha");if(!L||!pop||L.length<2)return;const b=pop.querySelector(dx<0?'.pj-seta[aria-label="próximo jogador"]':'.pj-seta[aria-label="jogador anterior"]');if(b)irFicha(+b.dataset.fnav)},{passive:true})})();
 
 setTimeout(checarVersao,4000);
-/* in-app da revista: quando sai edição nova, mostra a capa uma vez (Fechar / Ver revista) */
-function popRevista(){const R=window.REVISTA;if(!R||!R.n)return;let vista=0;try{vista=+localStorage.getItem("wbs.revistaVista")||0}catch(e){}
-  if(vista>=R.n||document.getElementById("popRev"))return;
-  if(document.getElementById("popFicha")||document.getElementById("popInst")||document.getElementById("popLista")){setTimeout(popRevista,8000);return}
-  const marca=()=>{try{localStorage.setItem("wbs.revistaVista",R.n)}catch(e){}};
+/* in-apps: revista nova (prioridade), e com moderação um por vez em rodízio: notícia, zoeira, bet, waiver, revista */
+const INAPP_CD=30*60e3; // no máximo 1 a cada 30 min, e 1 por abertura
+let inappFeito=false;
+function lsg(k,d){try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}}
+function lss(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function inappOcupado(){return !!(document.getElementById("popRev")||document.getElementById("popFicha")||document.getElementById("popInst")||document.getElementById("popLista")||document.getElementById("convApp")||document.getElementById("tarjaBet"))}
+function mostrarInapp(o){ // o: {tipo,rot,cls,img,tit,txt,bt:[{t,href,fn}]}
   const w=document.createElement("div");w.id="popRev";w.className="rev-pop";
-  w.innerHTML=`<div class="rev-box" role="dialog" aria-label="Revista do Loydão nº ${R.n}"><div class="rev-top"><span>📰 SAIU A REVISTA · nº ${R.n}</span><button type="button" class="rev-x" aria-label="fechar">✕</button></div><a class="rev-capa" href="${R.link}" target="_blank" rel="noopener"><img src="${R.capa}" alt="Capa da Revista do Loydão nº ${R.n}"></a><b class="rev-tit">${R.titulo}</b><div class="rev-bts"><button type="button" class="rev-f">Fechar</button><a class="rev-v" href="${R.link}" target="_blank" rel="noopener">Ver revista</a></div></div>`;
-  const fecha=()=>{marca();w.remove()};
-  w.querySelector(".rev-x").onclick=fecha;w.querySelector(".rev-f").onclick=fecha;
-  w.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{marca();setTimeout(()=>w.remove(),300)}));
-  w.addEventListener("click",e=>{if(e.target===w)fecha()});
-  fecharConvite();document.body.appendChild(w)}
-function carregarRevista(){const s=document.createElement("script");s.src="revista.js?t="+Date.now();s.onload=()=>setTimeout(popRevista,2500);document.head.appendChild(s)}
+  w.innerHTML=`<div class="rev-box ia-${o.cls||"n"}" role="dialog" aria-label="${esc(o.rot)}"><div class="rev-top"><span>${o.rot}</span><button type="button" class="rev-x" aria-label="fechar">✕</button></div>${o.img?`<a class="rev-capa" ${o.bt[0].href?`href="${o.bt[0].href}" ${/^http/.test(o.bt[0].href)?'target="_blank" rel="noopener"':""}`:""}><img src="${o.img}" alt=""></a>`:""}${o.tit?`<b class="rev-tit">${o.tit}</b>`:""}${o.txt?`<p class="ia-txt">${o.txt}</p>`:""}<div class="rev-bts"><button type="button" class="rev-f">Fechar</button>${o.bt.map((b,i)=>b.href?`<a class="rev-v" data-i="${i}" href="${b.href}" ${/^http/.test(b.href)?'target="_blank" rel="noopener"':""}>${b.t}</a>`:`<button type="button" class="rev-v" data-i="${i}">${b.t}</button>`).join("")}</div>${o.nunca?`<button type="button" class="ia-nunca">não quero mais ver propaganda</button>`:""}</div>`;
+  const fecha=()=>w.remove();
+  w.querySelector(".rev-x").onclick=fecha;w.querySelector(".rev-f").onclick=fecha;w.addEventListener("click",e=>{if(e.target===w)fecha()});
+  w.querySelectorAll(".rev-v").forEach(el=>el.addEventListener("click",()=>{const b=o.bt[+el.dataset.i];if(b.fn)b.fn();setTimeout(fecha,250)}));
+  const capa=w.querySelector(".rev-capa");if(capa)capa.addEventListener("click",()=>{const b=o.bt[0];if(b.fn)b.fn();setTimeout(fecha,250)});
+  const nn=w.querySelector(".ia-nunca");if(nn)nn.onclick=()=>{try{localStorage.setItem("wbs.semPubli","1")}catch(e){}fecha()};
+  document.body.appendChild(w);lss("wbs.inappT",Date.now());inappFeito=true}
+function iaRevista(nova){const R=window.REVISTA;if(!R||!R.n)return null;const lida=+lsg("wbs.revistaLida",0);if(!nova&&lida>=R.n)return null;
+  return {tipo:"revista",cls:"rev",rot:nova?`📰 SAIU A REVISTA · nº ${R.n}`:`📰 JÁ LEU A REVISTA? · nº ${R.n}`,img:R.capa,tit:esc(R.titulo),bt:[{t:"Ver revista",href:R.link,fn:()=>lss("wbs.revistaLida",R.n)}]}}
+function iaNoticia(){const d=DADOS;if(!d)return null;let L=[];try{L=alertasStatus()}catch(e){}
+  if(L.length){const x=L[0];return {tipo:"noticia",cls:"not",rot:"🚨 PLANTÃO DO LOYDÃO",txt:x.t,bt:[{t:"Ver ao vivo",href:"#aovivo"}]}}
+  const Z=RADAR.lesoes;if(!Z||Z.sp!==d.cur||!Z.itens)return null;
+  const c=Object.entries(Z.itens).map(([n,v])=>[d.P.find(p=>p.n===n),v]).filter(([p,v])=>p&&v[0]==="OUT"&&p.slot!==13);if(!c.length)return null;
+  const [p,v]=c[Math.floor(Math.random()*c.length)];const op=d.mt.find(m=>m.includes(p.t));const rv=op?T(op[0]===p.t?op[1]:op[0])[0]:null;
+  return {tipo:"noticia",cls:"not",rot:"🚨 PLANTÃO DO LOYDÃO",txt:`<b>${esc(p.n)}</b> (${esc(T(p.t)[0])}) está FORA hoje: ${esc(v[1].split("·")[0].trim())}. ${rv?`O ${esc(rv)} agradece.`:""}`,bt:[{t:"Ver ficha",fn:()=>abrirJogador(p.id)}]}}
+function iaZoeira(){let L=[];try{L=noticiasBrutas()}catch(e){}const x=L.filter(i=>i.k&&!/STATUS|PUBLI/.test(i.k)).sort((a,b)=>b.w-a.w)[0];if(!x)return null;
+  const ruim=/APAGADO|ZERO|MARTELO|TIJOLO|ENTREG|BANCO/.test(x.k);return {tipo:"zoeira",cls:ruim?"ruim":"bom",rot:(ruim?"🤡 ":"🔥 ")+esc(x.k),txt:x.t,bt:[{t:"Ver ao vivo",href:"#aovivo"}]}}
+function iaBet(){if(typeof semPubli==="function"&&semPubli())return null;let O=[];try{O=ofertasBet()}catch(e){}if(!O.length)return null;const of=O[Math.floor(Math.random()*O.length)];
+  return {tipo:"bet",cls:"bet",rot:"<i>BET</i>LOYDE · PUBLICIDADE",tit:esc(of.t),txt:`${esc(of.s)} · de <s>${fmtO(of.de)}</s> para <b class="ia-odd">${fmtO(of.para)}</b><br><small>Odds de mentira do modelo do Loydão. +18. Ninguém aposta nada aqui.</small>`,nunca:true,bt:[{t:"Ver o jogo",href:of.j!=null?"#jogo-"+of.j:"#confrontos"}]}}
+function iaWaiver(){const d=DADOS;if(!d||!d.fa||!d.fa.length)return null;const c=d.fa.filter(p=>p.rkL&&p.rkL<=110&&p.inj!=="OUT"&&(p.gl==null||p.gl>=2)).sort((a,b)=>a.rkL-b.rkL);if(!c.length)return null;
+  const p=c[Math.floor(Math.random()*Math.min(3,c.length))];const nota=RADAR.notas&&RADAR.notas[p.n];
+  return {tipo:"waiver",cls:"wav",rot:"🗑️➡️💎 SOBRANDO NA WAIVER",tit:esc(p.n),txt:`Rank LOYDÃO <b>#${p.rkL}</b>${p.gl!=null?` · ${p.gl} jogo${p.gl!==1?"s":""} até domingo`:""}${p.own!=null?` · ${Math.round(p.own)}% das ligas`:""}. ${nota?esc(nota):"Livre na ESPN agora. O primeiro que piscar leva."}`,bt:[{t:"Ver quem pegar",fn:()=>{UI.radar="pegar";ir("radar")}}]}}
+const IA_ORDEM=["noticia","zoeira","bet","waiver","revista"];
+function inapp(){if(inappFeito)return;if(inappOcupado()){setTimeout(inapp,15000);return}
+  const R=window.REVISTA;const vista=+lsg("wbs.revistaVista",0);
+  if(R&&R.n&&vista<R.n){const o=iaRevista(true);lss("wbs.revistaVista",R.n);mostrarInapp(o);return}
+  if(Date.now()-(+lsg("wbs.inappT",0))<INAPP_CD)return;if(!DADOS)return;
+  let i=+lsg("wbs.inappN",0);const F={noticia:iaNoticia,zoeira:iaZoeira,bet:iaBet,waiver:iaWaiver,revista:()=>iaRevista(false)};
+  for(let k=0;k<IA_ORDEM.length;k++){const tipo=IA_ORDEM[(i+k)%IA_ORDEM.length];let o=null;try{o=F[tipo]()}catch(e){}if(o){lss("wbs.inappN",(i+k+1)%IA_ORDEM.length);mostrarInapp(o);return}}}
+function popRevista(){inapp()}
+function carregarRevista(){const s=document.createElement("script");s.src="revista.js?t="+Date.now();s.onload=()=>{const R=window.REVISTA;const nova=R&&R.n&&+lsg("wbs.revistaVista",0)<R.n;setTimeout(inapp,nova?2500:25000)};document.head.appendChild(s)}
 carregarRevista();
-document.addEventListener("visibilitychange",()=>{if(!document.hidden)carregarRevista()});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){inappFeito=false;carregarRevista()}});
 </script>
 </body></html>
