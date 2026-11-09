@@ -1749,6 +1749,20 @@ svg.cad{width:18px;height:18px;display:block}
 .sp-t img,.sp-t .ini{width:22px;height:22px}.sp-t.v{color:#fff}
 .sp-p{font-family:var(--display);font-weight:400;font-size:20px;color:var(--amarelo)}
 .sp-cat{margin:0 0 8px}
+.rev-pop{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px);animation:convIn .25s ease-out}
+.rev-box{width:min(380px,100%);max-height:100%;display:flex;flex-direction:column;gap:10px;background:#0a0707;border:2px solid var(--amarelo);border-radius:16px;padding:12px;box-shadow:0 14px 40px rgba(0,0,0,.7)}
+.rev-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rev-top span{font-family:var(--display);font-size:15px;letter-spacing:.04em;color:var(--amarelo)}
+.rev-x{all:unset;cursor:pointer;color:#aaa;font-size:18px;padding:2px 6px}
+.rev-capa{display:block;min-height:0;flex:1 1 auto;overflow:hidden;border-radius:10px}
+.rev-capa img{display:block;width:100%;height:100%;max-height:62vh;object-fit:contain;background:#000}
+.rev-tit{font-family:var(--display);font-size:20px;color:#fff;text-align:center;letter-spacing:.02em}
+.rev-bts{display:grid;grid-template-columns:1fr 1.4fr;gap:8px}
+.rev-f,.rev-v{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;font-weight:800;font-size:14px;padding:12px 10px;border-radius:10px}
+.rev-f{background:#222;color:#ddd;border:1px solid #444}
+.rev-v{background:var(--amarelo);color:#000}
+.rev-f:active,.rev-v:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.rev-pop{animation:none}}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1815,11 +1829,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794222895"></script>
-<script src="radar.js?v=1794222895"></script>
-<script src="midia.js?v=1794222895"></script>
+<script src="hist.js?v=1794235430"></script>
+<script src="radar.js?v=1794235430"></script>
+<script src="midia.js?v=1794235430"></script>
 <script>
-const VERSAO_PAINEL="20261109081455";
+const VERSAO_PAINEL="20261109114350";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4005,7 +4019,7 @@ function instalarApp(){
 /* convite pra baixar: pop-up pequeno, dá pra fechar; volta só depois de 7 dias */
 function fecharConvite(){const c=document.getElementById("convApp");if(c)c.remove()}
 function convidarApp(){try{if(jaInstalado())return;const t=+localStorage.getItem("wbs.convite")||0;if(Date.now()-t<7*864e5)return}catch(e){return}
-  if(document.getElementById("convApp"))return;const c=document.createElement("div");c.id="convApp";c.className="conv";
+  if(document.getElementById("convApp")||document.getElementById("popRev"))return;const c=document.createElement("div");c.id="convApp";c.className="conv";
   c.innerHTML=`<img src="img/app/apple-180.png" alt=""><div><b>Baixe o app do Loydão</b><small>Tela cheia, sem barra do navegador, abre num toque.</small></div><button type="button" class="conv-v" data-instalar>Como baixar</button><button type="button" class="conv-x" aria-label="agora não">✕</button>`;
   c.querySelector(".conv-x").onclick=()=>{try{localStorage.setItem("wbs.convite",Date.now())}catch(e){}c.remove()};
   document.body.appendChild(c)}
@@ -4093,7 +4107,7 @@ function montarPubli(r){try{if(semPubli())return;const app=document.getElementBy
   // páginas longas ganham um segundo anúncio mais embaixo
   if(cards.length>=7&&O[1]){const d2=document.createElement("div");d2.innerHTML=publiCard(O[1]);cards[Math.min(cards.length-1,6)].after(d2.firstElementChild)}}catch(e){}}
 let _tarjas=0,_ultTarja=0;
-function tarja(){try{if(semPubli()||_tarjas>=4||document.hidden||document.getElementById("popFicha")||document.getElementById("popInst")||document.getElementById("popLista")||document.getElementById("tarjaBet"))return;
+function tarja(){try{if(semPubli()||_tarjas>=4||document.hidden||document.getElementById("popFicha")||document.getElementById("popInst")||document.getElementById("popLista")||document.getElementById("tarjaBet")||document.getElementById("popRev"))return;
   if(Date.now()-_ultTarja<4*60*1000)return;const O=ofertasBet();if(!O.length)return;const of=O[0];_tarjas++;_ultTarja=Date.now();
   const el=document.createElement("div");el.id="tarjaBet";el.className="tarja";
   el.innerHTML=`<div class="tarja-in" ${of.j!=null?`data-jogo="${of.j}"`:""}><span class="tarja-m"><i>BET</i>LOYDE</span><div class="tarja-c"><small>${esc(of.s)}</small><b>${esc(of.t)}: de ${fmtO(of.de)} para <u>${fmtO(of.para)}</u></b></div><span class="tarja-18">+18</span><button type="button" class="tarja-x" aria-label="fechar anúncio">✕</button></div><button type="button" class="tarja-nunca" data-publinunca>não quero mais ver anúncios</button><small class="tarja-leg">Publicidade de mentira · odds do modelo do Loydão · aposte com responsabilidade (aqui ninguém aposta nada)</small>`;
@@ -4150,5 +4164,20 @@ document.addEventListener("click",e=>{const el=e.target.closest("[data-pj],[data
     const L=UI.fichaLista;const pop=document.getElementById("popFicha");if(!L||!pop||L.length<2)return;const b=pop.querySelector(dx<0?'.pj-seta[aria-label="próximo jogador"]':'.pj-seta[aria-label="jogador anterior"]');if(b)irFicha(+b.dataset.fnav)},{passive:true})})();
 
 setTimeout(checarVersao,4000);
+/* in-app da revista: quando sai edição nova, mostra a capa uma vez (Fechar / Ver revista) */
+function popRevista(){const R=window.REVISTA;if(!R||!R.n)return;let vista=0;try{vista=+localStorage.getItem("wbs.revistaVista")||0}catch(e){}
+  if(vista>=R.n||document.getElementById("popRev"))return;
+  if(document.getElementById("popFicha")||document.getElementById("popInst")||document.getElementById("popLista")){setTimeout(popRevista,8000);return}
+  const marca=()=>{try{localStorage.setItem("wbs.revistaVista",R.n)}catch(e){}};
+  const w=document.createElement("div");w.id="popRev";w.className="rev-pop";
+  w.innerHTML=`<div class="rev-box" role="dialog" aria-label="Revista do Loydão nº ${R.n}"><div class="rev-top"><span>📰 SAIU A REVISTA · nº ${R.n}</span><button type="button" class="rev-x" aria-label="fechar">✕</button></div><a class="rev-capa" href="${R.link}" target="_blank" rel="noopener"><img src="${R.capa}" alt="Capa da Revista do Loydão nº ${R.n}"></a><b class="rev-tit">${R.titulo}</b><div class="rev-bts"><button type="button" class="rev-f">Fechar</button><a class="rev-v" href="${R.link}" target="_blank" rel="noopener">Ver revista</a></div></div>`;
+  const fecha=()=>{marca();w.remove()};
+  w.querySelector(".rev-x").onclick=fecha;w.querySelector(".rev-f").onclick=fecha;
+  w.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{marca();setTimeout(()=>w.remove(),300)}));
+  w.addEventListener("click",e=>{if(e.target===w)fecha()});
+  fecharConvite();document.body.appendChild(w)}
+function carregarRevista(){const s=document.createElement("script");s.src="revista.js?t="+Date.now();s.onload=()=>setTimeout(popRevista,2500);document.head.appendChild(s)}
+carregarRevista();
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)carregarRevista()});
 </script>
 </body></html>
