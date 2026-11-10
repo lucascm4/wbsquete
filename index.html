@@ -1957,6 +1957,18 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-emb small{font:700 8px var(--ui);letter-spacing:.03em;color:var(--apagado);white-space:nowrap}
 .mk-emb.on{border-color:var(--amarelo);background:#2a2200}
 .mk-fbox2 .mk-fb-v,.mk-fbox2 .mk-fb-i{font-size:12px}
+/* títulos de seção compactos */
+.cab-secao .manchete{font-size:clamp(20px,5.5vw,26px)!important;display:flex;align-items:center;gap:8px}
+.lf-q{all:unset;cursor:pointer;width:22px;height:22px;border-radius:50%;background:#000;color:var(--amarelo);border:2px solid var(--amarelo);font:900 13px var(--ui);display:inline-flex;align-items:center;justify-content:center;-webkit-text-stroke:0;text-shadow:none;flex:none}
+.cab-secao .linha-fina:not([hidden]){display:block!important;-webkit-line-clamp:unset!important}
+/* radar: tabela recolhida, só o Δ */
+.rd .tmini{cursor:pointer}
+.rd .tmini.rec tbody tr:not(.dl){display:none}
+.rd .tmini.rec tr.dl th::after{content:" ▾";font-size:9px;color:var(--apagado)}
+/* mercado: reações numa linha */
+.mk-reac{flex-wrap:nowrap!important;gap:4px!important;overflow-x:auto}
+.mk-reac>.mk-r{padding:3px 8px!important;font-size:12px!important}
+.mk-reac>.mk-r.apaga{margin-left:auto}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -2023,11 +2035,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794280319"></script>
-<script src="radar.js?v=1794280319"></script>
-<script src="midia.js?v=1794280319"></script>
+<script src="hist.js?v=1794280570"></script>
+<script src="radar.js?v=1794280570"></script>
+<script src="midia.js?v=1794280570"></script>
 <script>
-const VERSAO_PAINEL="20261110001159";
+const VERSAO_PAINEL="20261110001610";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4034,7 +4046,7 @@ function mkPost(p,filhos){const t=T(p.team);const meu=meuTime();const tp=TIPO_MK
   const X=p.extra||{};const av=X.av?`<div class="mk-av"><span class="mk-av-e">${esc(X.av)}</span>${X.linha?`<div class="mk-linha">📊 <b>${esc(X.rot||"")}</b>: ${esc(X.linha)}</div>`:""}</div>`:"";const card=X.card?mkCard(X.card):"";
   const lance=p.extra&&p.extra.lance?`<div class="mk-quote">LOYDÃO: ${esc(p.extra.lance)}</div>`:"";
   const reac=`<div class="mk-reac">${EMO_MK.map(e=>{const q=R[e]||[];return `<button type="button" class="mk-r ${q.includes(meu)?"on":""}" data-mkreac="${p.id}:${e}" title="${q.map(x=>esc(T(x)[0])).join(", ")}">${e}${q.length?` <b>${q.length}</b>`:""}</button>`}).join("")}
-    ${p.parent?"":`<button type="button" class="mk-r" data-mkresp="${p.id}">↩︎ responder</button>`}${p.team===meu&&!p.apagado?`<button type="button" class="mk-r apaga" data-mkdel="${p.id}" title="apagar">apagar</button>`:""}</div>`;
+    ${p.parent?"":`<button type="button" class="mk-r" data-mkresp="${p.id}" title="responder" aria-label="responder">↩︎${filhos&&filhos.length?` <b>${filhos.length}</b>`:""}</button>`}${p.team===meu&&!p.apagado?`<button type="button" class="mk-r apaga" data-mkdel="${p.id}" title="apagar" aria-label="apagar">✕</button>`:""}</div>`;
   return `<article class="mk-post ${p.parent?"filho":""}" style="--cor:${t[4]}"><div class="mk-cab">${logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.card?"📤 COMPARTILHOU":tp[0]+" "+tp[1]}</span></div>
     ${lance}<div class="mk-txt ${p.apagado?"apagado":""}">${esc(p.texto)}</div>${chip}${av}${card}${enq}${p.apagado?"":reac}
     ${filhos&&filhos.length?`<div class="mk-filhos">${filhos.map(f=>mkPost(f)).join("")}</div>`:""}</article>`}
@@ -4101,7 +4113,7 @@ document.addEventListener("click",async e=>{
   if((b=g("[data-mkresp]"))){if(!meuTime()){popCadastro();return}MK.parent=+b.dataset.mkresp;MK.ref=null;MK.tipo="resenha";document.querySelectorAll(".mk-tab").forEach(t=>t.classList.toggle("on",t.dataset.mktipo==="resenha"));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();mkIrCompositor();return}
   if((b=g("[data-mkreac]"))){const [id,em]=b.dataset.mkreac.split(":");if(await comPin((tm,pin)=>sbRpc("reagir",{p_team:tm,p_pin:pin,p_post:+id,p_emoji:em})))mkCarregar(true);return}
   if((b=g("[data-mkvoto]"))){const [id,o]=b.dataset.mkvoto.split(":").map(Number);if(await comPin((tm,pin)=>sbRpc("votar",{p_team:tm,p_pin:pin,p_post:id,p_opcao:o})))mkCarregar(true);return}
-  if((b=g("[data-mkdel]"))){const id=+b.dataset.mkdel;if(b.dataset.conf!=="1"){b.dataset.conf="1";b.textContent="apagar mesmo?";setTimeout(()=>{if(b.isConnected){b.dataset.conf="";b.textContent="apagar"}},3000);return}
+  if((b=g("[data-mkdel]"))){const id=+b.dataset.mkdel;if(b.dataset.conf!=="1"){b.dataset.conf="1";b.textContent="apagar?";setTimeout(()=>{if(b.isConnected){b.dataset.conf="";b.textContent="✕"}},3000);return}
     const p=MK.posts.find(x=>x.id===id);
     if(await comPin(async(tm,pin)=>{await sbRpc("apagar_post",{p_team:tm,p_pin:pin,p_id:id});if(p&&(p.tipo==="venda"||p.tipo==="interesse")&&p.player_id!=null)await sbRpc("marcar",{p_team:tm,p_pin:pin,p_player:p.player_id,p_nome:p.player_nome,p_tipo:p.tipo,p_pedido:null,p_ativo:false})}))mkCarregar(true);return}
   /* ficha */
@@ -4182,6 +4194,7 @@ function fichaComparar(id){const pop=document.getElementById("popFicha");if(!pop
   box.addEventListener("click",e=>e.stopPropagation());
   const sub=pane.querySelector(".pj-grade");if(sub&&sub.parentNode===pane)sub.after(box);else pane.appendChild(box)}
 abrirJogador=(orig=>function(id){const r=orig.apply(this,arguments);try{fichaComparar(id)}catch(e){console.error(e)}return r})(abrirJogador);
+document.addEventListener("click",e=>{const t=e.target.closest&&e.target.closest(".rd .tmini");if(!t)return;e.stopPropagation();e.preventDefault();t.classList.toggle("rec")},true);
 
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
@@ -4348,6 +4361,8 @@ function render(){
   try{montarAtalhos(r)}catch(e){console.error(e)}
   try{montarLive(r)}catch(e){console.error(e)}
   try{montarPubli(r)}catch(e){console.error(e)}
+  try{document.querySelectorAll("#app .cab-secao .linha-fina").forEach(lf=>{if(lf.dataset.c)return;lf.dataset.c="1";lf.hidden=true;const h1=lf.parentNode.querySelector(".manchete");if(!h1)return;const q=document.createElement("button");q.type="button";q.className="lf-q";q.textContent="?";q.setAttribute("aria-label","o que é isso");q.onclick=e=>{e.stopPropagation();lf.hidden=!lf.hidden};h1.appendChild(q)})}catch(e){}
+  try{document.querySelectorAll("#app .rd .tmini").forEach(t=>t.classList.add("rec"))}catch(e){}
   try{if(r==="mercado"){mkContador();mkPintar()}mkBadge()}catch(e){console.error(e)}
   if(UI._fichaMuseu&&window.MUSEU&&document.getElementById("popFicha")){const i=UI._fichaMuseu;UI._fichaMuseu=null;const pop=document.querySelector("#popFicha .pop-full");const sc=pop?pop.scrollTop:0;abrirJogador(i,UI.fichaPer);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc}
   if(UI._fichaEspera&&document.getElementById("popFicha")&&ehRange(UI.fichaPer)&&rangePronto(UI.fichaPer)){const i=UI._fichaEspera;UI._fichaEspera=null;abrirJogador(i,UI.fichaPer)}
@@ -4599,8 +4614,8 @@ function doca(){let dk=document.getElementById("fabDoca");if(!dk){dk=document.cr
   document.body.appendChild(dk);setTimeout(posDoca,0);
   const topo=e=>{e.preventDefault();e.stopPropagation();const se=document.scrollingElement||document.documentElement;try{window.scrollTo({top:0,behavior:"smooth"})}catch(x){window.scrollTo(0,0)}setTimeout(()=>{if(scrollY>5){se.scrollTop=0;document.body.scrollTop=0}},450)};
   const volta=e=>{e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha")){fecharFichaU();return}if(history.length>1&&(location.hash||"").length>1)history.back();else{location.hash="confrontos"}};
-  dk.querySelector("#fabTopo").addEventListener("click",topo);dk.querySelector("#fabVolta").addEventListener("click",volta)}
-  const h=(location.hash||"").replace("#","");const v=dk.querySelector("#fabVolta");if(v)v.hidden=(h===""||h==="confrontos");return dk}
+  dk.querySelector("#fabTopo").addEventListener("click",topo);const fv=dk.querySelector("#fabVolta");let lp=null,subiu=false;fv.addEventListener("pointerdown",()=>{subiu=false;lp=setTimeout(()=>{subiu=true;topo({preventDefault(){},stopPropagation(){}})},500)});["pointerup","pointercancel","pointerleave"].forEach(ev=>fv.addEventListener(ev,()=>clearTimeout(lp)));fv.addEventListener("contextmenu",e=>e.preventDefault());fv.addEventListener("click",e=>{if(subiu){e.preventDefault();e.stopPropagation();subiu=false;return}volta(e)});fv.title="toque: volta · segure: sobe pro topo"}
+  const h=(location.hash||"").replace("#","");const v=dk.querySelector("#fabVolta");if(v)v.hidden=(h===""||h==="confrontos");const tp=dk.querySelector("#fabTopo");if(tp&&!(h===""||h==="confrontos"))tp.hidden=true;return dk}
 function liveMin(){try{return localStorage.getItem("wbs.liveMin")==="1"}catch(e){return false}}
 function livePos(){try{return JSON.parse(localStorage.getItem("wbs.liveXY")||"null")}catch(e){return null}}
 function aplicaPosLive(b){const p=livePos();b.style.translate=p?`${p.x}px ${p.y}px`:"";if(!p)return;requestAnimationFrame(()=>{const r=b.getBoundingClientRect();let dx=0,dy=0;const M=6,top=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--topo"))||60;
@@ -4623,7 +4638,7 @@ function montarLive(r){const dk=doca();let b=document.getElementById("fabLive");
 /* enquanto digita, os botões flutuantes saem da frente */
 document.addEventListener("focusin",e=>{if(e.target&&e.target.matches&&e.target.matches("input:not([type=checkbox]):not([type=radio]),textarea,select"))document.documentElement.classList.add("digitando")});
 document.addEventListener("focusout",()=>setTimeout(()=>{const a=document.activeElement;if(!(a&&a.matches&&a.matches("input,textarea,select")))document.documentElement.classList.remove("digitando")},150));
-addEventListener("scroll",()=>{const t=document.getElementById("fabTopo")||doca().querySelector("#fabTopo");if(t)t.hidden=scrollY<500;posDoca()},{passive:true});
+addEventListener("scroll",()=>{const t=document.getElementById("fabTopo")||doca().querySelector("#fabTopo");const h=(location.hash||"").replace("#","");const casa=h===""||h==="confrontos";if(t)t.hidden=!casa||scrollY<500;posDoca()},{passive:true});
 /* o iPhone (app na tela inicial) erra a altura de position:fixed/sticky ancorado embaixo; ancoramos no topo e calculamos pela área visível real */
 function posDoca(){const dk=document.getElementById("fabDoca");if(!dk)return;const vv=window.visualViewport;let h=vv?vv.height+vv.offsetTop:innerHeight;const app=navigator.standalone||matchMedia("(display-mode: standalone)").matches;if(app&&screen.height>h&&Math.abs(screen.width-innerWidth)<4){const pt=parseFloat(getComputedStyle(document.documentElement).paddingTop)||0;h=screen.height-pt-44}dk.style.transform=`translateY(${Math.round(h)}px)`}
 if(window.visualViewport){visualViewport.addEventListener("resize",posDoca);visualViewport.addEventListener("scroll",posDoca)}addEventListener("resize",posDoca);setInterval(posDoca,1000);
