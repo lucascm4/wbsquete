@@ -2018,12 +2018,15 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-des-r{font-family:var(--display);font-size:20px;color:var(--amarelo);text-align:center;margin-top:6px}
 .mk-card.des .mk-fb-bts{margin-top:8px}.mk-card.des,.mk-card.top{cursor:default}
 .mk-comp select{width:100%;background:#000;color:var(--texto);border:2px solid var(--linha);border-radius:10px;padding:10px;font:15px var(--ui)}
-.mk-dest{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#000;border:2px solid var(--amarelo);padding:6px 8px;margin:6px 0}
-.mk-dest-l{display:flex;align-items:center;gap:6px;flex:1 1 150px;min-width:0}
-.mk-dest-k{font-size:16px}
-.mk-dj{display:inline-flex;align-items:center;gap:4px;cursor:pointer;min-width:0}
-.mk-dj img,.mk-dj .ini{width:24px;height:24px;border-radius:50%;object-fit:cover;flex:none}
-.mk-dj b{font-size:12px;color:var(--texto);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70px}
+.mk-dest{display:flex;align-items:stretch;background:#000;border:2px solid var(--amarelo);height:38px;margin:6px 0;overflow:hidden}
+.mk-dest-tag{flex:none;background:var(--amarelo);color:#000;border:0;font-family:var(--display);font-size:12px;letter-spacing:.06em;padding:0 8px;cursor:pointer;max-width:92px;line-height:1.05;text-align:left}
+.mk-dest-sh{flex:none;background:#000;border:0;border-left:1px solid var(--linha);padding:0 9px;font-size:15px;cursor:pointer}
+.mk-dest .tk-mov:active{animation-play-state:paused}
+.mk-dj{display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:0 4px}
+.mk-dj img,.mk-dj .ini{width:26px;height:26px;border-radius:50%;object-fit:cover;flex:none}
+.mk-dj b{font-size:13px;color:#fff}
+.mk-dj small{font-size:11px;color:var(--ouro)}
+.mk-dk{font-style:normal;font-size:12px}
 .mk-foto{display:block;max-width:100%;max-height:340px;border-radius:10px;border:1px solid var(--linha);margin:6px 0;cursor:zoom-in}
 .mk-fotoprev{display:flex;align-items:center;gap:8px}.mk-fotoprev img{height:64px;border-radius:8px;border:1px solid var(--linha)}
 .mk-fotobt{cursor:pointer;color:var(--texto)}
@@ -2096,11 +2099,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794322356"></script>
-<script src="radar.js?v=1794322356"></script>
-<script src="midia.js?v=1794322356"></script>
+<script src="hist.js?v=1794324631"></script>
+<script src="radar.js?v=1794324631"></script>
+<script src="midia.js?v=1794324631"></script>
 <script>
-const VERSAO_PAINEL="20261110115236";
+const VERSAO_PAINEL="20261110123031";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4367,14 +4370,18 @@ function mkDes(p){const D=p.extra.des;const d=DADOS;const A=T(D.a),B=T(D.b);cons
   return `<div class="mk-card des">${cab}${corpo}<small class="mk-card-rod">semana ${D.wk}</small></div>`}
 /* ---------- destaques da rodada na home ---------- */
 function mkDestHome(){const d=DADOS;if(!d||document.querySelector(".mk-dest"))return;const at=document.querySelector("#app .atalhos");if(!at)return;
-  let sp;try{sp=diaPadrao()}catch(e){return}const rows=[];d.P.filter(p=>!p.fora&&p.t).forEach(p=>{const v=p.dl&&p.dl[sp];if(v)rows.push({p,v,val:valorJogo(v),min:v[12]||0})});if(rows.length<6)return;
+  let sp="sem",rows=[];d.P.filter(p=>!p.fora&&p.t&&p.g).forEach(p=>rows.push({p,v:p.W,g:p.g,val:valorJogo(p.W)}));
+  if(rows.length<12){rows=[];try{sp=diaPadrao()}catch(e){return}d.P.filter(p=>!p.fora&&p.t).forEach(p=>{const v=p.dl&&p.dl[sp];if(v&&(v[12]||0)>=15)rows.push({p,v,g:1,val:valorJogo(v)})})}
+  if(rows.length<6)return;
   try{const R=rankLiga(sp).v||{};rows.forEach(r=>{if(R[r.p.id]!=null)r.val=R[r.p.id]})}catch(e){}
-  const best=rows.slice().sort((a,b)=>b.val-a.val).slice(0,3);const worst=rows.filter(r=>r.min>=15).sort((a,b)=>a.val-b.val).slice(0,3);
-  const pk=r=>[r.p.id,r.p.n,r.p.t,linhaReal(r.v)];window._TOPCARD={k:"top",rot:spRot(sp),b:best.map(pk),p:worst.map(pk)};
-  const chip=r=>`<span class="mk-dj clic" data-pj="${r.p.id}">${face(r.p.id,r.p.n,"")}<b>${esc(r.p.n.split(" ").slice(-1)[0])}</b></span>`;
+  const best=rows.slice().sort((a,b)=>b.val-a.val).slice(0,5);const mg=Math.max(...rows.map(r=>r.g));
+  const worst=rows.filter(r=>r.g>=mg/2&&!best.includes(r)).sort((a,b)=>a.val/a.g-b.val/b.g).slice(0,3);
+  const sem=sp==="sem";const pk=r=>[r.p.id,r.p.n,r.p.t,linhaReal(r.v)];window._TOPCARD={k:"top",rot:sem?"Semana "+d.wk:spRot(sp),b:best.slice(0,3).map(pk),p:worst.map(pk)};
+  const it=(r,ruim)=>`<span class="mk-dj clic" data-pj="${r.p.id}"><i class="mk-dk${ruim?" r":""}">${ruim?"💩":"⭐"}</i>${face(r.p.id,r.p.n,"")}<b>${esc(r.p.n.split(" ").slice(1).join(" ")||r.p.n)}</b><small>${esc(T(r.p.t)[0])} · ${esc(linhaReal(r.v).split(", ").slice(0,3).join(", "))}</small></span>`;
+  const html=best.map(r=>it(r)).concat(worst.map(r=>it(r,1))).join('<span class="tk-sep">◆</span>')+'<span class="tk-sep">◆</span>';
   const el=document.createElement("div");el.className="mk-dest";
-  el.innerHTML=`<div class="mk-dest-l"><span class="mk-dest-k">⭐</span>${best.map(chip).join("")}</div><div class="mk-dest-l"><span class="mk-dest-k">💩</span>${worst.map(chip).join("")}</div><button type="button" class="mk-mini" data-mkshtop aria-label="mandar os destaques pro Mercado">📤</button>`;
-  at.after(el)}
+  el.innerHTML=`<button type="button" class="mk-dest-tag" data-sel="${sp}">${sem?"SELEÇÃO DA SEMANA":"DESTAQUES DA NOITE"}</button><div class="tk-wrap"><div class="tk-mov">${html}${html}</div></div><button type="button" class="mk-dest-sh" data-mkshtop aria-label="mandar os destaques pro Mercado">📤</button>`;
+  at.after(el);const mov=el.querySelector(".tk-mov");mov.style.animationDuration=Math.max(25,Math.round(mov.scrollWidth/2/45))+"s"}
 /* ---------- foto no post ---------- */
 function mkFotos(){const ids=MK.posts.filter(p=>!p.apagado&&p.extra&&p.extra.foto&&MK.fotos[p.id]===undefined).slice(0,30).map(p=>p.id);if(!ids.length)return;
   sbGet("fotos?select=post_id,img&post_id=in.("+ids.join(",")+")").then(L=>{L.forEach(f=>MK.fotos[f.post_id]=f.img);ids.forEach(i=>{const p=MK.posts.find(x=>x.id===i);if(MK.fotos[i]===undefined&&p&&Date.now()-new Date(p.criado).getTime()>12e4)MK.fotos[i]=""});mkPintar()}).catch(()=>{})}
