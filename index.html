@@ -1971,6 +1971,23 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-reac>.mk-r.apaga{margin-left:auto}
 .jogo .lado .nm .seq{font:800 9px system-ui!important;padding:1px 4px!important;margin-left:5px;vertical-align:4px!important;border-radius:4px;white-space:nowrap}
 .jogo .lado .mg{font-size:10px!important;opacity:.85}
+/* reações por segurar */
+.mk-post{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;transition:background .15s}
+.mk-post.mk-pressa{background:rgba(255,212,0,.06)}
+.mk-nresp{font-size:12px;color:var(--apagado);align-self:center;margin-left:4px}
+.mk-folha-fundo{position:fixed;inset:0;z-index:330;background:rgba(0,0,0,0);transition:background .2s;display:flex;align-items:flex-end;justify-content:center}
+.mk-folha-fundo.on{background:rgba(0,0,0,.55)}
+.mk-folha{width:min(520px,100%);background:#1c1717;border-radius:18px 18px 0 0;padding:0 0 calc(16px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .22s ease;box-shadow:0 -10px 30px rgba(0,0,0,.5)}
+.mk-folha-fundo.on .mk-folha{transform:none}
+.mk-folha-cab{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:14px 16px;border-bottom:1px solid var(--linha)}
+.mk-folha-cab b{font-size:17px;color:var(--texto)}.mk-folha-cab button{all:unset;cursor:pointer;color:var(--amarelo);font:600 15px var(--ui)}
+.mk-folha-emo{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;padding:20px 16px}
+.mk-folha-emo button{width:58px;height:58px;border-radius:50%;border:2px solid var(--amarelo);background:#000;font-size:30px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.mk-folha-emo button.on{background:#3a3000;box-shadow:0 0 0 3px rgba(255,212,0,.35)}
+.mk-folha-acoes{display:flex;flex-direction:column;border-top:1px solid var(--linha)}
+.mk-folha-acoes button{all:unset;cursor:pointer;text-align:center;padding:14px;font:600 15px var(--ui);color:var(--texto);border-bottom:1px solid var(--linha)}
+.mk-folha-acoes button.apaga{color:var(--perigo)}
+@media (prefers-reduced-motion:reduce){.mk-folha,.mk-folha-fundo{transition:none}}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -2037,11 +2054,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794310888"></script>
-<script src="radar.js?v=1794310888"></script>
-<script src="midia.js?v=1794310888"></script>
+<script src="hist.js?v=1794311061"></script>
+<script src="radar.js?v=1794311061"></script>
+<script src="midia.js?v=1794311061"></script>
 <script>
-const VERSAO_PAINEL="20261110084128";
+const VERSAO_PAINEL="20261110084421";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4048,9 +4065,9 @@ function mkPost(p,filhos){const t=T(p.team);const meu=meuTime();const tp=TIPO_MK
     enq=`<div class="mk-enq">${p.extra.ops.map((o,i)=>{const q=V.filter(v=>v.opcao===i);const pc=tot?Math.round(q.length/tot*100):0;return `<button type="button" class="mk-opv ${meuV&&meuV.opcao===i?"on":""}" data-mkvoto="${p.id}:${i}"><i style="width:${pc}%"></i><span class="mk-opn">${p.extra.opsId&&p.extra.opsId[i]?face(p.extra.opsId[i],o,""):""}${esc(o)}</span><em>${pc}%${q.length?` · ${q.map(v=>esc(T(v.team)[0])).join(", ")}`:""}</em></button>`}).join("")}<small>${tot} voto${tot===1?"":"s"}</small></div>`}
   const X=p.extra||{};const av=X.av?`<div class="mk-av"><span class="mk-av-e">${esc(X.av)}</span>${X.linha?`<div class="mk-linha">📊 <b>${esc(X.rot||"")}</b>: ${esc(X.linha)}</div>`:""}</div>`:"";const card=X.card?mkCard(X.card):"";
   const lance=p.extra&&p.extra.lance?`<div class="mk-quote">LOYDÃO: ${esc(p.extra.lance)}</div>`:"";
-  const reac=`<div class="mk-reac">${EMO_MK.map(e=>{const q=R[e]||[];return `<button type="button" class="mk-r ${q.includes(meu)?"on":""}" data-mkreac="${p.id}:${e}" title="${q.map(x=>esc(T(x)[0])).join(", ")}">${e}${q.length?` <b>${q.length}</b>`:""}</button>`}).join("")}
-    ${p.parent?"":`<button type="button" class="mk-r" data-mkresp="${p.id}" title="responder" aria-label="responder">↩︎${filhos&&filhos.length?` <b>${filhos.length}</b>`:""}</button>`}${p.team===meu&&!p.apagado?`<button type="button" class="mk-r apaga" data-mkdel="${p.id}" title="apagar" aria-label="apagar">✕</button>`:""}</div>`;
-  return `<article class="mk-post ${p.parent?"filho":""}" style="--cor:${t[4]}"><div class="mk-cab">${logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.card?"📤 COMPARTILHOU":tp[0]+" "+tp[1]}</span></div>
+  const usados=EMO_MK.concat(Object.keys(R).filter(e=>!EMO_MK.includes(e))).filter(e=>(R[e]||[]).length);
+  const reac=(usados.length||(filhos&&filhos.length))?`<div class="mk-reac">${usados.map(e=>{const q=R[e];return `<button type="button" class="mk-r ${q.includes(meu)?"on":""}" data-mkreac="${p.id}:${e}" title="${q.map(x=>esc(T(x)[0])).join(", ")}">${e} <b>${q.length}</b></button>`}).join("")}${filhos&&filhos.length?`<span class="mk-nresp">↩︎ ${filhos.length}</span>`:""}</div>`:"";
+  return `<article class="mk-post ${p.parent?"filho":""}" data-mkpost="${p.id}" style="--cor:${t[4]}"><div class="mk-cab">${logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.card?"📤 COMPARTILHOU":tp[0]+" "+tp[1]}</span></div>
     ${lance}<div class="mk-txt ${p.apagado?"apagado":""}">${esc(p.texto)}</div>${chip}${av}${card}${enq}${p.apagado?"":reac}
     ${filhos&&filhos.length?`<div class="mk-filhos">${filhos.map(f=>mkPost(f)).join("")}</div>`:""}</article>`}
 function mkPintar(){if(rota()!=="mercado")return;
@@ -4058,7 +4075,7 @@ function mkPintar(){if(rota()!=="mercado")return;
   if(MK.err&&!MK.ok){const m=`<div class="mk-load">O Mercado não respondeu (${esc(MK.err)}). Tenta de novo daqui a pouco.</div>`;fe.innerHTML=`<div class="bloco-tit">FEED</div>`+m;vi.innerHTML=m;se.innerHTML=m;return}
   if(!MK.ok)return;
   const vivos=MK.posts.filter(p=>!p.apagado);const top=vivos.filter(p=>!p.parent);const fil=id=>vivos.filter(p=>p.parent===id).sort((a,b)=>a.id-b.id);
-  fe.innerHTML=`<div class="bloco-tit">FEED <small>${top.length} post${top.length===1?"":"s"}</small></div>`+(top.length?top.slice(0,60).map(p=>mkPost(p,fil(p.id))).join(""):`<div class="mk-load">Ninguém postou ainda. O primeiro leva a fama de carente.</div>`);
+  fe.innerHTML=`<div class="bloco-tit">FEED <small>segura num post pra reagir</small></div>`+(top.length?top.slice(0,60).map(p=>mkPost(p,fil(p.id))).join(""):`<div class="mk-load">Ninguém postou ainda. O primeiro leva a fama de carente.</div>`);
   const vend=MK.mer.filter(x=>x.tipo==="venda"&&x.team===donoAtual(x.player_id));const proc={};MK.mer.filter(x=>x.tipo==="interesse"&&x.team!==donoAtual(x.player_id)).forEach(x=>{(proc[x.player_id]=proc[x.player_id]||{n:x.player_nome,t:[]}).t.push(x.team)});
   const pr=Object.entries(proc).sort((a,b)=>b[1].t.length-a[1].t.length).slice(0,10);
   const linhaV=x=>{const ii=interessadosDe(x.player_id);return `<div class="mk-v clic" data-pj="${x.player_id}">${face(x.player_id,x.player_nome||"","")}<div><b>${esc(x.player_nome||"")} ${estDe(x.player_id)}</b><small>${esc(T(x.team)[0])}${x.pedido?` · quer: ${esc(x.pedido)}`:""}</small></div><em>${ii.length?`👀 ${ii.length}`:""}</em></div>`};
@@ -4198,6 +4215,30 @@ function fichaComparar(id){const pop=document.getElementById("popFicha");if(!pop
   const sub=pane.querySelector(".pj-grade");if(sub&&sub.parentNode===pane)sub.after(box);else pane.appendChild(box)}
 abrirJogador=(orig=>function(id){const r=orig.apply(this,arguments);try{fichaComparar(id)}catch(e){console.error(e)}return r})(abrirJogador);
 document.addEventListener("click",e=>{const t=e.target.closest&&e.target.closest(".rd .tmini");if(!t)return;e.stopPropagation();e.preventDefault();t.classList.toggle("rec")},true);
+/* segurar o post abre as reações (igual ESPN/WhatsApp) */
+function mkFolha(id){const p=MK.posts.find(x=>x.id===id);if(!p||p.apagado)return;const meu=meuTime();if(!meu){popCadastro();return}
+  document.getElementById("mkFolha")?.remove();const meus=new Set(MK.reac.filter(r=>r.post_id===id&&r.team===meu).map(r=>r.emoji));
+  const f=document.createElement("div");f.id="mkFolha";f.className="mk-folha-fundo";
+  f.innerHTML=`<div class="mk-folha" role="dialog" aria-label="Reações"><div class="mk-folha-cab"><button type="button" data-fx>Fechar</button><b>Reações</b><span></span></div>
+    <div class="mk-folha-emo">${EMO_MK.map(e=>`<button type="button" class="${meus.has(e)?"on":""}" data-fr="${e}" aria-label="reagir ${e}">${e}</button>`).join("")}</div>
+    <div class="mk-folha-acoes">${p.parent?"":`<button type="button" data-fresp>↩︎ Responder</button>`}${p.team===meu?`<button type="button" class="apaga" data-fdel>Apagar post</button>`:""}</div></div>`;
+  document.body.appendChild(f);requestAnimationFrame(()=>f.classList.add("on"));
+  const fecha=()=>{f.classList.remove("on");setTimeout(()=>f.remove(),220)};
+  f.addEventListener("click",async e=>{e.stopPropagation();if(e.target===f||e.target.closest("[data-fx]")){fecha();return}
+    const r=e.target.closest("[data-fr]");if(r){fecha();if(await comPin((tm,pin)=>sbRpc("reagir",{p_team:tm,p_pin:pin,p_post:id,p_emoji:r.dataset.fr})))mkCarregar(true);return}
+    if(e.target.closest("[data-fresp]")){fecha();MK.parent=id;MK.ref=null;MK.tipo="resenha";mkIrCompositor();document.querySelectorAll(".mk-tab").forEach(t=>t.classList.toggle("on",t.dataset.mktipo==="resenha"));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
+    const d=e.target.closest("[data-fdel]");if(d){if(d.dataset.conf!=="1"){d.dataset.conf="1";d.textContent="Toca de novo pra apagar";return}fecha();
+      if(await comPin(async(tm,pin)=>{await sbRpc("apagar_post",{p_team:tm,p_pin:pin,p_id:id});if((p.tipo==="venda"||p.tipo==="interesse")&&p.player_id!=null)await sbRpc("marcar",{p_team:tm,p_pin:pin,p_player:p.player_id,p_nome:p.player_nome,p_tipo:p.tipo,p_pedido:null,p_ativo:false})}))mkCarregar(true)}})}
+(()=>{let tm=null,x0=0,y0=0,alvo=null,abriu=false;
+  const cancela=()=>{clearTimeout(tm);tm=null};
+  document.addEventListener("pointerdown",e=>{const a=e.target.closest&&e.target.closest("[data-mkpost]");if(!a||e.target.closest("button,a,input,textarea,[data-pj],.mk-card"))return;
+    alvo=a;x0=e.clientX;y0=e.clientY;abriu=false;cancela();a.classList.add("mk-pressa");tm=setTimeout(()=>{abriu=true;a.classList.remove("mk-pressa");try{navigator.vibrate&&navigator.vibrate(12)}catch(x){}mkFolha(+a.dataset.mkpost)},450)},{passive:true});
+  document.addEventListener("pointermove",e=>{if(tm&&Math.hypot(e.clientX-x0,e.clientY-y0)>10){cancela();alvo&&alvo.classList.remove("mk-pressa")}},{passive:true});
+  ["pointerup","pointercancel"].forEach(ev=>document.addEventListener(ev,()=>{cancela();alvo&&alvo.classList.remove("mk-pressa")},{passive:true}));
+  addEventListener("scroll",()=>{cancela();alvo&&alvo.classList.remove("mk-pressa")},{passive:true});
+  document.addEventListener("click",e=>{if(abriu&&e.target.closest&&e.target.closest("[data-mkpost]")){e.preventDefault();e.stopPropagation();abriu=false}},true);
+  document.addEventListener("contextmenu",e=>{const a=e.target.closest&&e.target.closest("[data-mkpost]");if(a&&!e.target.closest("input,textarea")){e.preventDefault();cancela();mkFolha(+a.dataset.mkpost)}});
+})();
 
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
