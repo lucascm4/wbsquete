@@ -1905,6 +1905,15 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-n-c b{font-size:14px}.mk-n-c small{font-size:13px;color:var(--texto);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.mk-n-c em{font-style:normal;font-size:11px;color:var(--amarelo);margin-top:2px}
 .mk-n-c img{border-radius:50%}
 @media (prefers-reduced-motion:reduce){.mk-notif{transition:none}}
+.digitando .fab-doca{display:none!important}
+.fab-live{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:translate .15s}
+.fab-live.arrastando{transition:none;opacity:.9;box-shadow:0 10px 24px rgba(0,0,0,.6)}
+.fab-live .fl-min{margin-left:4px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.35);display:inline-flex;align-items:center;justify-content:center;font:900 16px system-ui,sans-serif;line-height:1}
+.fab-live.bola{width:52px;height:52px;padding:0;justify-content:center;gap:3px;font-size:20px}
+.fab-live.bola b{font-family:var(--display);font-weight:400}
+.mk-pk-lista{max-height:min(300px,40vh)}
+.fab-live.bola{width:52px!important;height:52px!important;min-height:52px;flex:none!important;border-radius:50%!important;box-sizing:border-box;padding:0!important}
+.fab-live.bola{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;gap:3px!important;line-height:1}.fab-live.bola i{width:7px!important;height:7px!important;flex:none}.fab-live.bola b{font-size:22px;line-height:1}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1971,11 +1980,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794278238"></script>
-<script src="radar.js?v=1794278238"></script>
-<script src="midia.js?v=1794278238"></script>
+<script src="hist.js?v=1794278597"></script>
+<script src="radar.js?v=1794278597"></script>
+<script src="midia.js?v=1794278597"></script>
 <script>
-const VERSAO_PAINEL="20261109233718";
+const VERSAO_PAINEL="20261109234317";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3857,6 +3866,254 @@ function vSemBox(w,a,b){const d=DADOS;if(!d)return vazio();const h0=(d.hist||[])
 /* quem foi pro outro lado numa troca do histórico (HIST.trocas): o jogador saiu de "de" e foi pra "para" */
 function comTroca(nome,temporada,de,para){const L=(HIST.trocas||[]).filter(t=>t.t===temporada);for(const t of L){const ida=t.l.find(x=>x.de===de&&x.para===para&&x.j.some(j=>j[0]===nome));if(ida){const volta=t.l.find(x=>x.de===para&&x.para===de);return volta?volta.j.map(j=>j[0]):[]}}return null}
 
+/* ================= MERCADO (Supabase) ================= */
+const SB={u:"https://ekigrttiteyxsxkeibih.supabase.co",k:"sb_publishable_dOIgruPeei5v5I6dpr7phw_72jrOjSk"};
+const SELOS=[["FEZES","💩"],["RUI DIMAI","🥴"],["DROPA","🗑️"],["VAI CAIR","📉"],["MVP","🏆"],["PIKA","👑"]];
+const NOTA_SELO={"FEZES":1,"RUI DIMAI":2,"DROPA":2,"VAI CAIR":3,"PIKA":4,"MVP":5};
+const EMO_MK=["🔥","🤡","🗑️","💎"];
+const MK={posts:[],reac:[],votos:[],car:[],mer:[],ok:false,err:null,t:0,carregando:null,tipo:"resenha",ref:null,parent:null,tick:null,jog:null,avEmo:"🔥"};
+const EMO_AV=["🔥","🐐","👑","💎","🍳","🧊","🧱","💩","🤡","🥶","😴","🚑"];
+async function sbGet(path){const r=await fetch(SB.u+"/rest/v1/"+path,{headers:{apikey:SB.k},cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
+async function sbRpc(fn,body){const r=await fetch(SB.u+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:SB.k,"Content-Type":"application/json"},body:JSON.stringify(body)});const t=await r.text();
+  if(!r.ok){let m=t;try{const j=JSON.parse(t);m=j.message||j.hint||t}catch(e){}throw new Error(m)}return t?JSON.parse(t):null}
+function mkCarregar(forca){
+  if(MK.carregando)return MK.carregando;if(!forca&&MK.ok&&Date.now()-MK.t<15000)return Promise.resolve();
+  MK.carregando=Promise.all([sbGet("posts?select=*&order=criado.desc&limit=200"),sbGet("reacoes?select=*"),sbGet("votos?select=*"),sbGet("carimbos?select=*"),sbGet("mercado?select=*&order=quando.desc")])
+    .then(([p,r,v,c,m])=>{MK.posts=p;MK.reac=r;MK.votos=v;MK.car=c;MK.mer=m;MK.ok=true;MK.err=null;MK.t=Date.now()})
+    .catch(e=>{MK.err=e.message||String(e)}).finally(()=>{MK.carregando=null;mkPintar();mkFichaAtual();mkBadge();mkNotif()});
+  return MK.carregando}
+/* ---------- PIN ---------- */
+function pinGuardado(t){try{return localStorage.getItem("wbs.pin."+t)||""}catch(e){return ""}}
+function pinSalvar(t,p){try{if(p)localStorage.setItem("wbs.pin."+t,p);else localStorage.removeItem("wbs.pin."+t)}catch(e){}}
+function mkModal(html,aoMontar){document.getElementById("popMk")?.remove();const w=document.createElement("div");w.id="popMk";w.className="rev-pop mk-pop";
+  w.innerHTML=`<div class="rev-box mk-box" role="dialog"><button type="button" class="pop-x" data-mkx aria-label="fechar">✕</button>${html}</div>`;
+  w.addEventListener("click",e=>{e.stopPropagation();if(e.target===w||e.target.closest("[data-mkx]"))w.remove()});document.body.appendChild(w);if(aoMontar)aoMontar(w);return w}
+function pedirPin(t){return new Promise(async res=>{let tem=null;try{tem=await sbRpc("tem_pin",{p_team:t})}catch(e){mostrarAviso("Mercado fora do ar: "+e.message);return res(null)}
+  const nm=T(t);const w=mkModal(`<div class="mk-pin"><div class="mk-pin-cab">${logo(nm[0],"width:44px;height:44px")}<div><b>${esc(nm[0])}</b><small>${tem?"Digita o PIN do teu time":"Primeira vez do "+esc(nm[2])+" no Mercado: cria um PIN de 4 números"}</small></div></div>
+    <input class="mk-pin-in" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="••••" aria-label="PIN de 4 números">
+    ${tem?"":`<p class="mk-obs">Anota. Quem souber o PIN posta como ${esc(nm[0])}. Esqueceu? Fala com o Lucas que ele zera.</p>`}
+    <button type="button" class="mk-bt amarelo" data-ok>${tem?"Entrar":"Criar PIN"}</button><p class="mk-erro" hidden></p></div>`);
+  const inp=w.querySelector("input"),er=w.querySelector(".mk-erro");setTimeout(()=>inp.focus(),50);
+  const vai=async()=>{const p=inp.value.trim();if(!/^\d{4}$/.test(p)){er.hidden=false;er.textContent="São 4 números, campeão.";return}
+    if(!tem){try{await sbRpc("criar_pin",{p_team:t,p_pin:p})}catch(e){er.hidden=false;er.textContent=e.message;return}}
+    pinSalvar(t,p);w.remove();res(p)};
+  w.querySelector("[data-ok]").onclick=vai;inp.addEventListener("keydown",e=>{if(e.key==="Enter")vai()});
+  const obs=new MutationObserver(()=>{if(!document.body.contains(w)){obs.disconnect();res(null)}});obs.observe(document.body,{childList:true})})}
+async function comPin(fn){const t=meuTime();if(!t){mostrarAviso("Primeiro escolhe teu time.");popCadastro();return false}
+  let p=pinGuardado(t);if(!p){p=await pedirPin(t);if(!p)return false}
+  try{await fn(t,p);return true}catch(e){const m=e.message||"";if(/PIN errado|SEM_PIN/.test(m)){pinSalvar(t,"");mostrarAviso(/SEM_PIN/.test(m)?"Teu time ainda não tem PIN.":"PIN errado. Tenta de novo.");p=await pedirPin(t);if(!p)return false;try{await fn(t,p);return true}catch(e2){mostrarAviso(e2.message);return false}}
+    mostrarAviso(m||"Deu ruim no Mercado.");return false}}
+/* ---------- helpers ---------- */
+const seloEmo=s=>(SELOS.find(x=>x[0]===s)||["",""])[1];
+function quandoMk(iso){const s=(Date.now()-new Date(iso).getTime())/1000;if(s<60)return "agora";if(s<3600)return Math.floor(s/60)+" min";if(s<86400)return Math.floor(s/3600)+" h";const d=new Date(iso);return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}
+function jogDoId(id){const d=DADOS;if(!d||id==null)return null;return d.P.find(q=>q.id===id&&!q.fora)||(d.fa||[]).find(q=>q.id===id)||d.P.find(q=>q.id===id)||null}
+function donoAtual(id){const p=DADOS&&DADOS.P.find(q=>q.id===id&&!q.fora);return p?p.t:0}
+function carimbosDe(id){const c={};MK.car.filter(x=>x.player_id===id).forEach(x=>{(c[x.selo]=c[x.selo]||[]).push(x.team)});return c}
+function notaGalera(id){const L=MK.car.filter(x=>x.player_id===id&&NOTA_SELO[x.selo]);if(!L.length)return null;return {m:L.reduce((s,x)=>s+NOTA_SELO[x.selo],0)/L.length,n:L.length}}
+function estrelas(m,cls){const r=Math.round(m*2)/2;let h="";for(let i=1;i<=5;i++)h+=r>=i?"★":r>=i-.5?'<i class="meia">★</i>':'<i class="vaz">★</i>';return `<span class="mk-est ${cls||""}" title="${m.toFixed(1)} de 5">${h}</span>`}
+function estDe(id,cls){const g=notaGalera(id);return g?`${estrelas(g.m,cls)}<small class="mk-estn">${g.m.toFixed(1)} · ${g.n}</small>`:""}
+function vendaDe(id){return MK.mer.filter(x=>x.player_id===id&&x.tipo==="venda"&&x.team===donoAtual(id))[0]||null}
+function interessadosDe(id){return MK.mer.filter(x=>x.player_id===id&&x.tipo==="interesse"&&x.team!==donoAtual(id))}
+const TIPO_MK={resenha:["💬","RESENHA"],enquete:["📊","ENQUETE"],venda:["🏷️","À VENDA"],interesse:["👀","QUERO"],proposta:["🤝","PROPOSTA"]};
+/* ---------- tela ---------- */
+function vMercado(){
+  mkCarregar();try{localStorage.setItem("wbs.mkVisto",String(Date.now()))}catch(e){}const meu=meuTime();
+  const tabs=[["resenha","💬 Resenha"],["avaliar","⭐ Avaliar"],["enquete","📊 Enquete"],["venda","🏷️ Vendo"],["interesse","👀 Quero"]];
+  const comp=meu?`<div class="card mk-comp" id="mkComp"><div class="mk-quem">${logo(T(meu)[0],"width:30px;height:30px")}<b>${esc(T(meu)[2])}</b><small>postando como ${esc(T(meu)[0])}</small></div>
+    <div class="mk-tabs" role="tablist">${tabs.map(([k,n])=>`<button type="button" class="mk-tab ${MK.tipo===k?"on":""}" data-mktipo="${k}">${n}</button>`).join("")}</div>
+    <div id="mkCampos">${mkCampos()}</div></div>`
+   :`<div class="card mk-comp vazio"><b>Escolhe teu time pra postar, carimbar e vender jogador.</b><button type="button" class="mk-bt amarelo" data-mkcad>Sou treinador</button></div>`;
+  return `<div class="card mk-hero"><div class="mk-hero-t">MERCADO<span>do Loydão</span></div><p>Resenha, enquete, quem tá vendendo, quem tá de olho. Tudo assinado com o escudo do time. O que se posta aqui, o grupo inteiro lê.</p></div>
+  ${comp}
+  <div class="card" id="mkVitrine"><div class="bloco-tit">VITRINE</div><div class="mk-load">carregando…</div></div>
+  <div class="card" id="mkLances"><div class="bloco-tit">LANCES DO LOYDÃO <small>responde aí</small></div>${mkLances()}</div>
+  <div class="card" id="mkFeed"><div class="bloco-tit">FEED</div><div class="mk-load">carregando…</div></div>
+  <div class="card" id="mkSelos"><div class="bloco-tit">NOTA DA GALERA</div><div class="mk-load">carregando…</div></div>`}
+function mkCampos(){const t=MK.tipo,meu=meuTime();
+  const refBox=MK.ref?`<div class="mk-ref">↩︎ respondendo ao lance: <i>${MK.ref.txt}</i> <button type="button" class="mk-mini" data-mkrefx>✕</button></div>`:"";
+  const pai=MK.parent?MK.posts.find(x=>x.id===MK.parent):null;
+  const paiBox=pai?`<div class="mk-ref">↩︎ respondendo ${esc(T(pai.team)[0])}: <i>${esc(pai.texto.slice(0,80))}</i> <button type="button" class="mk-mini" data-mkpaix>✕</button></div>`:"";
+  if(t==="venda"||t==="interesse"){
+    return `${mkPicker(t==="venda"?"meus":"outros",t==="venda"?"Quem você quer vender":"Quem você quer")}
+      <label class="mk-lab">${t==="venda"?"O que você quer em troca (opcional)":"O que você oferece (opcional)"}<input id="mkPed" maxlength="200" placeholder="${t==="venda"?"ex.: um pivô que dê toco":"ex.: Kuminga + pick imaginária"}"></label>
+      <textarea id="mkTxt" maxlength="500" rows="2" placeholder="${t==="venda"?"Faz o anúncio. Capricha que é Mercado Livre.":"Diz por que você quer. Ou só ameaça."}"></textarea>
+      <div class="mk-rod"><small>Aparece na ficha dele${t==="venda"?" com a faixa À VENDA":" na lista de interessados"}.</small><button type="button" class="mk-bt amarelo" data-mkpub>Publicar</button></div>`}
+  if(t==="avaliar")return `${mkPicker("todos","Quem você vai avaliar")}<div class="mk-lab">Tua nota em emoji</div><div class="mk-emos">${EMO_AV.map(e=>`<button type="button" class="mk-emo ${MK.avEmo===e?"on":""}" data-mkemo="${e}">${e}</button>`).join("")}</div>
+    <div id="mkLinha" class="mk-linha" hidden></div>
+    <textarea id="mkTxt" maxlength="300" rows="2" placeholder="Comenta (opcional). Ex.: esse homem é quebrado."></textarea>
+    <div class="mk-rod"><small>A linha de hoje dele vai junto no post.</small><button type="button" class="mk-bt amarelo" data-mkpub>Avaliar</button></div>`;
+  if(t==="enquete")return `${refBox}<textarea id="mkTxt" maxlength="300" rows="2" placeholder="A pergunta. Ex.: Quem é o pior manager da semana?"></textarea>
+    <div class="mk-ops">${[0,1,2,3].map(i=>`<input class="mk-op" maxlength="60" placeholder="Opção ${i+1}${i>1?" (opcional)":""}">`).join("")}</div>
+    <div class="mk-rod"><small>Cada time vota uma vez (dá pra mudar).</small><button type="button" class="mk-bt amarelo" data-mkpub>Publicar</button></div>`;
+  return `${refBox}${paiBox}${MK.parent?"":mkPicker("todos","Marcar jogador (opcional)")}<textarea id="mkTxt" maxlength="500" rows="3" placeholder="${MK.parent?"Responde à altura.":"Solta o verbo. Zoa, provoca, chora."}"></textarea><div class="mk-rod"><small><span id="mkCont">0</span>/500</small><button type="button" class="mk-bt amarelo" data-mkpub>${MK.parent?"Responder":"Postar"}</button></div>`}
+function mkListaJog(modo){const d=DADOS;if(!d)return [];const meu=meuTime();let L;
+  if(modo==="meus")L=d.P.filter(p=>p.t===meu&&!p.fora);else if(modo==="outros")L=d.P.filter(p=>p.t!==meu&&!p.fora).concat(d.fa||[]);else L=d.P.filter(p=>!p.fora).concat(d.fa||[]);
+  const vis=new Set();return L.filter(p=>p&&p.n&&!vis.has(p.id)&&vis.add(p.id))}
+function mkPicker(modo,rot){MK.jog=null;return `<div class="mk-pk" data-modo="${modo}"><div class="mk-lab">${rot}</div><div class="mk-pk-sel" hidden></div><input class="mk-pk-in" type="text" name="mk-busca-jog" placeholder="🔎 digita o nome do jogador" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="${esc(rot)}"><div class="mk-pk-lista" hidden></div></div>`}
+function mkPkLinha(p){return `<button type="button" class="mk-pk-op" data-mkpick="${p.id}">${face(p.id,p.n,"")}<span><b>${esc(p.n)}</b><small>${p.t?esc(T(p.t)[0]):"livre"}${NBA&&NBA[p.pro]?" · "+esc(NBA[p.pro]):""}</small></span>${p.t?logo(T(p.t)[0],"width:22px;height:22px"):""}</button>`}
+function mkPkFiltrar(inp){const pk=inp.closest(".mk-pk");const box=pk.querySelector(".mk-pk-lista");const q=semAcento(inp.value.trim());const L=mkListaJog(pk.dataset.modo);
+  let R=q?L.filter(p=>semAcento(p.n).includes(q)):(pk.dataset.modo==="meus"?L:L.filter(p=>p.t).sort((a,b)=>(b.nota||0)-(a.nota||0)));R=R.slice(0,12);
+  box.innerHTML=R.length?R.map(mkPkLinha).join(""):`<p class="mk-load">Ninguém com esse nome.</p>`;box.hidden=false}
+function mkPkEscolher(pk,id){const p=jogDoId(id);if(!p)return;MK.jog=id;const s=pk.querySelector(".mk-pk-sel");
+  s.innerHTML=`<div class="mk-chip">${face(p.id,p.n,"")}<div><b>${esc(p.n)} ${estDe(p.id)}</b><small>${p.t?esc(T(p.t)[0]):"livre"}</small></div><button type="button" class="mk-mini" data-mkpkx>trocar</button></div>`;s.hidden=false;
+  pk.querySelector(".mk-pk-in").hidden=true;pk.querySelector(".mk-pk-lista").hidden=true;
+  const ln=document.getElementById("mkLinha");if(ln){const l=linhaHoje(p);ln.hidden=false;ln.innerHTML=l?`📊 <b>${esc(l.rot)}</b>: ${esc(l.txt)}`:"Sem jogo recente na base. Vai sem a linha."}}
+function linhaHoje(p){const d=DADOS;if(!p||!p.dl||!d)return null;const sp=Object.keys(p.dl).map(Number).filter(s=>s<=d.cur).sort((a,b)=>b-a)[0];if(sp==null)return null;const v=p.dl[sp];if(!v)return null;
+  const g=sp===d.cur&&d.nba&&d.nba[p.pro];return {sp,txt:linhaReal(v)+((v[12]||0)?` em ${v[12]} min`:"")+(g&&g.live?" (ao vivo)":""),rot:sp===d.cur?"hoje":spRot(sp)}}
+function cardMt(i,foco){const d=DADOS;const mt=d&&d.mt[i];if(!mt)return null;const [a,b]=mt;const ta=EST.tot[a],tb=EST.tot[b];const sc=placar(ta,tb);
+  return {k:"mt",a,b,w:sc.w,l:sc.l,t:sc.t,wk:d.wk,rot:spRot(d.cur),foco:foco||null,v:CATS.map((c,j)=>[c.k,String(fmt(c,c.f(ta))),String(fmt(c,c.f(tb))),sc.r[j]])}}
+function cardJog(id){const p=jogDoId(id);if(!p)return null;const l=linhaHoje(p);return {k:"jog",id,n:p.n,t:p.t||0,linha:l?l.txt:null,rot:l?l.rot:null}}
+function mkCard(c){if(!c)return "";
+  if(c.k==="mt"){const A=T(c.a),B=T(c.b);const f=c.foco&&c.v.find(x=>x[0]===c.foco);
+    const dif=f?(()=>{const x=parseFloat(f[1]),y=parseFloat(f[2]);if(isNaN(x)||isNaN(y))return "";const df=Math.abs(x-y);return /%/.test(f[0])?df.toFixed(1)+" pontos":String(Math.round(df*10)/10)})():"";
+    return `<div class="mk-card mt clic" data-jogo="${DADOS?DADOS.mt.findIndex(m=>m[0]===c.a&&m[1]===c.b):""}"><div class="mk-mt-top"><span>${logo(A[0],"width:28px;height:28px")}<b>${esc(A[0])}</b></span><em class="num">${c.w}-${c.l}${c.t?"-"+c.t:""}</em><span class="dir"><b>${esc(B[0])}</b>${logo(B[0],"width:28px;height:28px")}</span></div>
+      ${f?`<div class="mk-foco"><span class="${f[3]>0?"g":""}">${esc(f[1])}</span><b>${esc(f[0])}</b><span class="${f[3]<0?"g":""}">${esc(f[2])}</span><small>${f[3]===0?"empatado":"diferença de "+esc(dif)}</small></div>`:""}
+      <div class="mk-mt-cats">${c.v.map(x=>`<div class="${x[0]===c.foco?"on":""}"><small>${esc(x[0])}</small><i class="${x[3]>0?"g":""}">${esc(x[1])}</i><i class="${x[3]<0?"g":""}">${esc(x[2])}</i></div>`).join("")}</div><small class="mk-card-rod">semana ${c.wk} · ${esc(c.rot||"")}</small></div>`}
+  if(c.k==="jog")return `<div class="mk-card jog clic" data-pj="${c.id}">${face(c.id,c.n,"")}<div><b>${esc(c.n)} ${estDe(c.id)}</b><small>${c.t?esc(T(c.t)[0]):"livre"}</small>${c.linha?`<div class="mk-linha">📊 <b>${esc(c.rot)}</b>: ${esc(c.linha)}</div>`:""}</div></div>`;
+  return ""}
+function mkCompartilhar(card){if(!card){mostrarAviso("Nada pra compartilhar aqui.");return}if(!meuTime()){popCadastro();return}
+  const w=mkModal(`<div class="mk-pin"><div class="mk-fb-t">📤 MANDAR PRO MERCADO</div>${card.k==="mt"?`<div class="mk-lab">Destacar categoria (opcional)</div><div class="mk-emos cats">${CATS.map(c=>`<button type="button" class="mk-emo ${card.foco===c.k?"on":""}" data-mkfoco="${c.k}">${c.k}</button>`).join("")}</div>`:""}
+    <div class="mk-prev">${mkCard(card)}</div><textarea id="mkShTxt" maxlength="500" rows="2" placeholder="Fala alguma coisa. Provoca."></textarea><button type="button" class="mk-bt amarelo" data-mkshok>Postar no Mercado</button></div>`);
+  w.addEventListener("click",async e=>{const f=e.target.closest("[data-mkfoco]");if(f){card.foco=card.foco===f.dataset.mkfoco?null:f.dataset.mkfoco;w.querySelectorAll("[data-mkfoco]").forEach(x=>x.classList.toggle("on",x.dataset.mkfoco===card.foco));w.querySelector(".mk-prev").innerHTML=mkCard(card);return}
+    const ok=e.target.closest("[data-mkshok]");if(!ok)return;ok.disabled=true;const txt=w.querySelector("#mkShTxt").value.trim()||(card.k==="mt"?(card.foco?`Olha esse ${card.foco}.`:"Olha esse confronto."):`Olha o ${card.n}.`);
+    const pid=card.k==="jog"?card.id:null;
+    const r=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:"resenha",p_texto:txt,p_player_id:null,p_player_nome:null,p_extra:{card},p_parent:null,p_ref:null}));ok.disabled=false;
+    if(r){w.remove();mostrarAviso("Postado no Mercado ✅");mkCarregar(true)}},true)}
+function mkLances(){let it=[];try{it=noticias().filter(x=>!x.pub).slice(0,6)}catch(e){}
+  if(!it.length)return `<div class="mk-load">Sem lance agora. Volta quando a bola subir.</div>`;
+  return it.map(x=>{const k=chaveNot(x);const n=MK.posts.filter(p=>p.ref===k&&!p.apagado).length;return `<div class="mk-lance"><b class="tkk">${esc(x.k)}</b><span>${x.t}</span><button type="button" class="mk-mini" data-mkref="${esc(k)}">💬 ${n?n+" · ":""}responder</button></div>`}).join("")}
+function mkPost(p,filhos){const t=T(p.team);const meu=meuTime();const tp=TIPO_MK[p.tipo]||TIPO_MK.resenha;
+  const R={};MK.reac.filter(r=>r.post_id===p.id).forEach(r=>{(R[r.emoji]=R[r.emoji]||[]).push(r.team)});
+  const jog=p.player_id!=null?jogDoId(p.player_id):null;
+  const chip=p.player_id!=null?`<div class="mk-chip clic" data-pj="${p.player_id}">${face(p.player_id,p.player_nome||"","")}<div><b>${esc(p.player_nome||(jog&&jog.n)||"")} ${estDe(p.player_id)}</b><small>${jog&&jog.t?esc(T(jog.t)[0]):"livre"}${p.extra&&p.extra.pedido?` · ${p.tipo==="venda"?"quer":"oferece"}: ${esc(p.extra.pedido)}`:""}</small></div></div>`:"";
+  let enq="";if(p.tipo==="enquete"&&p.extra&&Array.isArray(p.extra.ops)){const V=MK.votos.filter(v=>v.post_id===p.id);const tot=V.length;const meuV=V.find(v=>v.team===meu);
+    enq=`<div class="mk-enq">${p.extra.ops.map((o,i)=>{const q=V.filter(v=>v.opcao===i);const pc=tot?Math.round(q.length/tot*100):0;return `<button type="button" class="mk-opv ${meuV&&meuV.opcao===i?"on":""}" data-mkvoto="${p.id}:${i}"><i style="width:${pc}%"></i><span>${esc(o)}</span><em>${pc}%${q.length?` · ${q.map(v=>esc(T(v.team)[0])).join(", ")}`:""}</em></button>`}).join("")}<small>${tot} voto${tot===1?"":"s"}</small></div>`}
+  const X=p.extra||{};const av=X.av?`<div class="mk-av"><span class="mk-av-e">${esc(X.av)}</span>${X.linha?`<div class="mk-linha">📊 <b>${esc(X.rot||"")}</b>: ${esc(X.linha)}</div>`:""}</div>`:"";const card=X.card?mkCard(X.card):"";
+  const lance=p.extra&&p.extra.lance?`<div class="mk-quote">LOYDÃO: ${esc(p.extra.lance)}</div>`:"";
+  const reac=`<div class="mk-reac">${EMO_MK.map(e=>{const q=R[e]||[];return `<button type="button" class="mk-r ${q.includes(meu)?"on":""}" data-mkreac="${p.id}:${e}" title="${q.map(x=>esc(T(x)[0])).join(", ")}">${e}${q.length?` <b>${q.length}</b>`:""}</button>`}).join("")}
+    ${p.parent?"":`<button type="button" class="mk-r" data-mkresp="${p.id}">↩︎ responder</button>`}${p.team===meu&&!p.apagado?`<button type="button" class="mk-r apaga" data-mkdel="${p.id}" title="apagar">apagar</button>`:""}</div>`;
+  return `<article class="mk-post ${p.parent?"filho":""}" style="--cor:${t[4]}"><div class="mk-cab">${logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.card?"📤 COMPARTILHOU":tp[0]+" "+tp[1]}</span></div>
+    ${lance}<div class="mk-txt ${p.apagado?"apagado":""}">${esc(p.texto)}</div>${chip}${av}${card}${enq}${p.apagado?"":reac}
+    ${filhos&&filhos.length?`<div class="mk-filhos">${filhos.map(f=>mkPost(f)).join("")}</div>`:""}</article>`}
+function mkPintar(){if(rota()!=="mercado")return;
+  const fe=document.getElementById("mkFeed"),vi=document.getElementById("mkVitrine"),se=document.getElementById("mkSelos"),la=document.getElementById("mkLances");if(!fe)return;
+  if(MK.err&&!MK.ok){const m=`<div class="mk-load">O Mercado não respondeu (${esc(MK.err)}). Tenta de novo daqui a pouco.</div>`;fe.innerHTML=`<div class="bloco-tit">FEED</div>`+m;vi.innerHTML=`<div class="bloco-tit">VITRINE</div>`+m;se.innerHTML="";return}
+  if(!MK.ok)return;
+  const vivos=MK.posts;const top=vivos.filter(p=>!p.parent);const fil=id=>vivos.filter(p=>p.parent===id).sort((a,b)=>a.id-b.id);
+  fe.innerHTML=`<div class="bloco-tit">FEED <small>${top.length} post${top.length===1?"":"s"}</small></div>`+(top.length?top.slice(0,60).map(p=>mkPost(p,fil(p.id))).join(""):`<div class="mk-load">Ninguém postou ainda. O primeiro leva a fama de carente.</div>`);
+  const vend=MK.mer.filter(x=>x.tipo==="venda"&&x.team===donoAtual(x.player_id));const proc={};MK.mer.filter(x=>x.tipo==="interesse"&&x.team!==donoAtual(x.player_id)).forEach(x=>{(proc[x.player_id]=proc[x.player_id]||{n:x.player_nome,t:[]}).t.push(x.team)});
+  const pr=Object.entries(proc).sort((a,b)=>b[1].t.length-a[1].t.length).slice(0,10);
+  const linhaV=x=>{const ii=interessadosDe(x.player_id);return `<div class="mk-v clic" data-pj="${x.player_id}">${face(x.player_id,x.player_nome||"","")}<div><b>${esc(x.player_nome||"")} ${estDe(x.player_id)}</b><small>${esc(T(x.team)[0])}${x.pedido?` · quer: ${esc(x.pedido)}`:""}</small></div><em>${ii.length?`👀 ${ii.length}`:""}</em></div>`};
+  vi.innerHTML=`<div class="bloco-tit">VITRINE</div><div class="mk-vit"><div><h4>🏷️ À VENDA</h4>${vend.length?vend.map(linhaV).join(""):`<p class="mk-load">Ninguém vendendo. Ou todo mundo acha que tem time.</p>`}</div>
+    <div><h4>👀 MAIS PROCURADOS</h4>${pr.length?pr.map(([id,o])=>`<div class="mk-v clic" data-pj="${id}">${face(+id,o.n||"","")}<div><b>${esc(o.n||"")} ${estDe(+id)}</b><small>${o.t.map(t=>esc(T(t)[0])).join(", ")}</small></div><em>${o.t.length}</em></div>`).join(""):`<p class="mk-load">Ninguém de olho em ninguém.</p>`}</div></div>`;
+  const ids=[...new Set(MK.car.map(c=>c.player_id))].map(id=>({id,g:notaGalera(id),j:jogDoId(id)})).filter(x=>x.g);
+  const lin=x=>`<div class="mk-v clic" data-pj="${x.id}">${face(x.id,x.j?x.j.n:"","")}<div><b>${esc(x.j?x.j.n:"#"+x.id)}</b><small>${x.j&&x.j.t?esc(T(x.j.t)[0]):"livre"} · ${x.g.n} carimbo${x.g.n===1?"":"s"}${(()=>{const c=carimbosDe(x.id);const top=Object.entries(c).sort((a,b)=>b[1].length-a[1].length)[0];return top?` · ${SELOS.find(s=>s[0]===top[0])[1]} ${esc(top[0])}`:""})()}</small></div><em class="mk-nota">${estrelas(x.g.m)}<b>${x.g.m.toFixed(1)}</b></em></div>`;
+  const ord=(a,b)=>b.g.m-a.g.m||b.g.n-a.g.n;const melhores=ids.filter(x=>x.g.m>=3).sort(ord).slice(0,5);const piores=ids.filter(x=>x.g.m<3).sort((a,b)=>a.g.m-b.g.m||b.g.n-a.g.n).slice(0,5);
+  se.innerHTML=`<div class="bloco-tit">NOTA DA GALERA <small>💩=1 · 🥴 e 🗑️=2 · 📉=3 · 👑=4 · 🏆=5</small></div>`+(ids.length?`<div class="mk-vit"><div><h4>⭐ MAIS BEM AVALIADOS</h4>${melhores.length?melhores.map(lin).join(""):`<p class="mk-load">Ninguém passou de 3 estrelas.</p>`}</div><div><h4>💩 PIORES AVALIADOS</h4>${piores.length?piores.map(lin).join(""):`<p class="mk-load">Ninguém abaixo de 3 estrelas. Liga boazinha demais.</p>`}</div></div>`:`<p class="mk-load">Ninguém avaliado ainda. Abre a ficha de um jogador e carimba: cada carimbo vira estrela.</p>`);
+  if(la)la.innerHTML=`<div class="bloco-tit">LANCES DO LOYDÃO <small>responde aí</small></div>`+mkLances()}
+/* ---------- ações ---------- */
+async function mkPublicar(){const t=MK.tipo;const txt=(document.getElementById("mkTxt")||{}).value?.trim()||"";
+  if(t==="venda"||t==="interesse"){const ped=(document.getElementById("mkPed")||{}).value?.trim()||"";
+    const p=MK.jog!=null?jogDoId(MK.jog):null;if(!p){mostrarAviso("Escolhe o jogador na lista.");return}
+    if(t==="venda"&&p.t!==meuTime()){mostrarAviso("Só dá pra vender quem é teu.");return}
+    const texto=txt||(t==="venda"?`${p.n} está à venda.`:`De olho no ${p.n}.`);
+    const ok=await comPin(async(tm,pin)=>{await sbRpc("marcar",{p_team:tm,p_pin:pin,p_player:p.id,p_nome:p.n,p_tipo:t,p_pedido:ped||null,p_ativo:true});
+      await sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:t,p_texto:texto,p_player_id:p.id,p_player_nome:p.n,p_extra:ped?{pedido:ped}:{},p_parent:null,p_ref:null})});
+    if(ok){mostrarAviso(t==="venda"?"Anunciado. Boa sorte achando trouxa.":"Interesse registrado.");mkLimpar();mkCarregar(true)}return}
+  if(t==="avaliar"){const p=MK.jog!=null?jogDoId(MK.jog):null;if(!p){mostrarAviso("Escolhe quem vai ser avaliado.");return}const l=linhaHoje(p);
+    const ok=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:"resenha",p_texto:txt||`${MK.avEmo} pro ${p.n}.`,p_player_id:p.id,p_player_nome:p.n,p_extra:{av:MK.avEmo,linha:l?l.txt:null,rot:l?l.rot:null,sp:l?l.sp:null},p_parent:null,p_ref:null}));
+    if(ok){mkLimpar();mkCarregar(true)}return}
+  if(!txt){mostrarAviso("Escreve alguma coisa, poeta.");return}
+  let extra={};if(t==="enquete"){const ops=[...document.querySelectorAll(".mk-op")].map(i=>i.value.trim()).filter(Boolean);if(ops.length<2){mostrarAviso("Enquete precisa de pelo menos 2 opções.");return}extra.ops=ops}
+  if(MK.ref)extra.lance=MK.ref.raw;
+  const tipo=MK.parent?"resenha":t;
+  const ok=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:tipo,p_texto:txt,p_player_id:(!MK.parent&&MK.jog!=null)?MK.jog:null,p_player_nome:(!MK.parent&&MK.jog!=null&&jogDoId(MK.jog))?jogDoId(MK.jog).n:null,p_extra:extra,p_parent:MK.parent,p_ref:MK.ref?MK.ref.k:null}));
+  if(ok){mkLimpar();mkCarregar(true)}}
+function mkLimpar(){MK.ref=null;MK.parent=null;const c=document.getElementById("mkCampos");if(c)c.innerHTML=mkCampos();mkContador()}
+function mkContador(){const a=document.getElementById("mkTxt"),c=document.getElementById("mkCont");if(a&&c)a.oninput=()=>c.textContent=a.value.length}
+function mkIrCompositor(){const c=document.getElementById("mkComp");if(c){c.scrollIntoView({behavior:"smooth",block:"start"});setTimeout(()=>document.getElementById("mkTxt")?.focus(),350)}}
+document.addEventListener("click",async e=>{
+  const g=s=>e.target.closest(s);let b;
+  if((b=g("[data-mktipo]"))){MK.tipo=b.dataset.mktipo;MK.parent=null;document.querySelectorAll(".mk-tab").forEach(x=>x.classList.toggle("on",x===b));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
+  if(g("[data-mkcad]")){popCadastro();return}
+  if((b=g("[data-mkpick]"))){e.stopPropagation();mkPkEscolher(b.closest(".mk-pk"),+b.dataset.mkpick);return}
+  if((b=g("[data-mkpkx]"))){const pk=b.closest(".mk-pk");MK.jog=null;pk.querySelector(".mk-pk-sel").hidden=true;const i=pk.querySelector(".mk-pk-in");i.hidden=false;i.value="";i.focus();mkPkFiltrar(i);const ln=document.getElementById("mkLinha");if(ln)ln.hidden=true;return}
+  if((b=g("[data-mkemo]"))){MK.avEmo=b.dataset.mkemo;document.querySelectorAll("[data-mkemo]").forEach(x=>x.classList.toggle("on",x===b));return}
+  if((b=g("[data-mkshmt]"))){e.stopPropagation();mkCompartilhar(cardMt(+b.dataset.mkshmt,null));return}
+  if((b=g("[data-mkshcat]"))){e.stopPropagation();e.preventDefault();const [i,k]=b.dataset.mkshcat.split(":");mkCompartilhar(cardMt(+i,k));return}
+  if((b=g("[data-mkshj]"))){e.stopPropagation();mkCompartilhar(cardJog(+b.dataset.mkshj));return}
+  if(g("[data-mkpub]")){const bt=g("[data-mkpub]");bt.disabled=true;try{await mkPublicar()}finally{bt.disabled=false}return}
+  if(g("[data-mkrefx]")){MK.ref=null;document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
+  if(g("[data-mkpaix]")){MK.parent=null;document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
+  if((b=g("[data-mkref]"))){if(!meuTime()){popCadastro();return}const k=b.dataset.mkref;let it=[];try{it=noticias()}catch(x){}const x=it.find(y=>chaveNot(y)===k);
+    const raw=x?x.t.replace(/<[^>]+>/g,""):k;MK.ref={k,raw:raw.slice(0,280),txt:esc(raw.slice(0,140))};MK.parent=null;MK.tipo="resenha";document.querySelectorAll(".mk-tab").forEach(t=>t.classList.toggle("on",t.dataset.mktipo==="resenha"));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();mkIrCompositor();return}
+  if((b=g("[data-mkresp]"))){if(!meuTime()){popCadastro();return}MK.parent=+b.dataset.mkresp;MK.ref=null;MK.tipo="resenha";document.querySelectorAll(".mk-tab").forEach(t=>t.classList.toggle("on",t.dataset.mktipo==="resenha"));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();mkIrCompositor();return}
+  if((b=g("[data-mkreac]"))){const [id,em]=b.dataset.mkreac.split(":");if(await comPin((tm,pin)=>sbRpc("reagir",{p_team:tm,p_pin:pin,p_post:+id,p_emoji:em})))mkCarregar(true);return}
+  if((b=g("[data-mkvoto]"))){const [id,o]=b.dataset.mkvoto.split(":").map(Number);if(await comPin((tm,pin)=>sbRpc("votar",{p_team:tm,p_pin:pin,p_post:id,p_opcao:o})))mkCarregar(true);return}
+  if((b=g("[data-mkdel]"))){const id=+b.dataset.mkdel;if(b.dataset.conf!=="1"){b.dataset.conf="1";b.textContent="apagar mesmo?";setTimeout(()=>{if(b.isConnected){b.dataset.conf="";b.textContent="apagar"}},3000);return}
+    const p=MK.posts.find(x=>x.id===id);
+    if(await comPin(async(tm,pin)=>{await sbRpc("apagar_post",{p_team:tm,p_pin:pin,p_id:id});if(p&&(p.tipo==="venda"||p.tipo==="interesse")&&p.player_id!=null)await sbRpc("marcar",{p_team:tm,p_pin:pin,p_player:p.player_id,p_nome:p.player_nome,p_tipo:p.tipo,p_pedido:null,p_ativo:false})}))mkCarregar(true);return}
+  /* ficha */
+  if((b=g("[data-mktroca]"))){e.stopPropagation();MK.trocaSel=+b.dataset.mktroca;mkFicha(MK.trocaSel);return}
+  if((b=g("[data-mksel]"))){e.stopPropagation();const [id,s]=[+b.dataset.mkid,b.dataset.mksel];if(donoAtual(id)===meuTime()){mostrarAviso("Teu próprio jogador não dá pra carimbar. Só vender.");return}const ja=MK.car.find(c=>c.player_id===id&&c.team===meuTime());MK.trocaSel=null;
+    if(await comPin((tm,pin)=>sbRpc("carimbar",{p_team:tm,p_pin:pin,p_player:id,p_selo:ja&&ja.selo===s?null:s}))){await mkCarregar(true)}return}
+  if((b=g("[data-mkmarca]"))){e.stopPropagation();const id=+b.dataset.mkid;const tipo=b.dataset.mkmarca;const j=jogDoId(id);if(!j)return;const ativo=b.dataset.on!=="1";
+    if(tipo==="venda"&&ativo){fecharFicha();MK.tipo="venda";ir("mercado");setTimeout(()=>{const i=document.getElementById("mkJog");if(i){i.value=j.n;mkIrCompositor()}},300);return}
+    if(await comPin(async(tm,pin)=>{await sbRpc("marcar",{p_team:tm,p_pin:pin,p_player:id,p_nome:j.n,p_tipo:tipo,p_pedido:null,p_ativo:ativo});if(ativo&&tipo==="interesse")await sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:"interesse",p_texto:`De olho no ${j.n}.`,p_player_id:id,p_player_nome:j.n,p_extra:{},p_parent:null,p_ref:null})})){mostrarAviso(ativo?"Anotado. O dono vai ver.":"Tirado.");await mkCarregar(true)}return}
+},true);
+/* ---------- ficha do jogador ---------- */
+let MK_FICHA=null;
+function mkFicha(id){MK_FICHA=id;const pop=document.getElementById("popFicha");if(!pop)return;const topo=pop.querySelector(".pj-topo");if(!topo)return;
+  pop.querySelectorAll(".mk-faixa,.mk-fbox,.mk-tags").forEach(x=>x.remove());
+  const v=vendaDe(id);if(v){topo.classList.add("mk-avenda");const f=document.createElement("div");f.className="mk-faixa";f.textContent="À VENDA";topo.appendChild(f)}else topo.classList.remove("mk-avenda");
+  const meu=meuTime();const dono=donoAtual(id);const C=carimbosDe(id);const ii=interessadosDe(id);const meuSel=(MK.car.find(c=>c.player_id===id&&c.team===meu)||{}).selo;
+  /* tags da galera, do lado das tags do jogador (todo mundo vê) */
+  const gN=notaGalera(id);const usados=SELOS.filter(([s])=>(C[s]||[]).length);
+  if(gN){const tg=document.createElement("span");tg.className="mk-tags";
+    tg.innerHTML=`<span class="mk-tag est" title="nota da galera: ${gN.m.toFixed(1)} de 5">${estrelas(gN.m)}</span>${usados.map(([s,e])=>`<span class="mk-tag" title="${(C[s]||[]).map(t=>esc(T(t)[0])).join(", ")}">${e} ${esc(s)}${C[s].length>1?` <b>${C[s].length}</b>`:""}</span>`).join("")}`;
+    const info=topo.querySelector(".pj-selos")||null;if(info)info.after(tg);else{const alvo=[...topo.children].find(x=>x.querySelector&&x.querySelector("small"))||topo;const sm=alvo.querySelector("small");if(sm&&sm.parentNode===alvo)alvo.insertBefore(tg,sm);else alvo.appendChild(tg)}}
+  const podeCarimbar=meu&&dono!==meu;const trocando=MK.trocaSel===id;
+  const sel=podeCarimbar?(meuSel&&!trocando?`<div class="mk-fb-meu">Teu carimbo: <b>${seloEmo(meuSel)} ${esc(meuSel)}</b> <button type="button" class="mk-mini" data-mktroca="${id}">trocar</button></div>`
+    :`<div class="mk-fb-q">${meuSel?"Troca teu carimbo:":"Qual o carimbo dele?"}</div><div class="mk-fb-sel">${SELOS.map(([s,e])=>`<button type="button" class="mk-sb ${meuSel===s?"on":""}" data-mksel="${esc(s)}" data-mkid="${id}">${e} ${esc(s)}</button>`).join("")}</div>`):"";
+  const acao=meu?(dono===meu?`<button type="button" class="mk-bt ${v?"":"amarelo"}" data-mkmarca="venda" data-mkid="${id}" data-on="${v?1:0}">${v?"Tirar da vitrine":"🏷️ Colocar à venda"}</button>`
+     :`<button type="button" class="mk-bt ${ii.some(x=>x.team===meu)?"":"amarelo"}" data-mkmarca="interesse" data-mkid="${id}" data-on="${ii.some(x=>x.team===meu)?1:0}">${ii.some(x=>x.team===meu)?"Tirar interesse":"👀 Tenho interesse"}</button>`):"";
+  const info2=`${v?`<div class="mk-fb-v">🏷️ À venda pelo <b>${esc(T(v.team)[0])}</b>${v.pedido?` · quer: ${esc(v.pedido)}`:""}</div>`:""}${ii.length?`<div class="mk-fb-i">👀 De olho: ${ii.map(x=>`<span>${logo(T(x.team)[0],"width:18px;height:18px")} ${esc(T(x.team)[0])}</span>`).join("")}</div>`:""}`;
+  if(!meu&&!info2)return;
+  const box=document.createElement("div");box.className="mk-fbox";
+  box.innerHTML=`<div class="mk-fb-t">MERCADO</div>${info2}${sel}<div class="mk-fb-bts">${acao}${meu?`<button type="button" class="mk-bt" data-mkshj="${id}">📤 Mandar pro Mercado</button>`:`<small class="mk-obs">Escolhe teu time (botão no topo) pra carimbar e negociar.</small>`}</div>`;
+  const ref=pop.querySelector(".pj-rks")||topo.nextSibling;topo.parentNode.insertBefore(box,ref&&ref.parentNode===topo.parentNode?ref:topo.nextSibling)}
+function mkFichaAtual(){if(MK_FICHA!=null&&document.getElementById("popFicha"))mkFicha(MK_FICHA)}
+abrirJogador=(orig=>function(id){const r=orig.apply(this,arguments);try{if(document.getElementById("popFicha")){mkFicha(id);if(!MK.ok||Date.now()-MK.t>60000)mkCarregar()}}catch(e){console.error(e)}return r})(abrirJogador);
+/* atualiza sozinho enquanto o Mercado está aberto */
+setInterval(()=>{if(document.hidden)return;if(rota()==="mercado")mkCarregar(true);else if(Date.now()-MK.t>40000&&MK.ok)mkCarregar(true)},20000);
+setTimeout(()=>mkCarregar(),4000);
+function mkBadge(){const b=document.querySelector('.atalho[data-ir="mercado"]');if(!b||!MK.ok)return;let v=0;try{v=+localStorage.getItem("wbs.mkVisto")||0}catch(e){}
+  const meu=meuTime();const n=rota()==="mercado"?0:MK.posts.filter(p=>!p.apagado&&p.team!==meu&&new Date(p.criado).getTime()>v).length;let s=b.querySelector(".mk-badge");
+  if(!n){s&&s.remove();return}if(!s){s=document.createElement("i");s.className="mk-badge";b.appendChild(s)}s.textContent=n>9?"9+":n}
+document.addEventListener("input",e=>{if(e.target.classList&&e.target.classList.contains("mk-pk-in"))mkPkFiltrar(e.target)});
+document.addEventListener("focusin",e=>{if(e.target.classList&&e.target.classList.contains("mk-pk-in")){mkPkFiltrar(e.target);const el=e.target;setTimeout(()=>{const top=(parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--topo"))||110)+12;const r=el.getBoundingClientRect();if(r.top>top+40||r.top<top)scrollBy({top:r.top-top,behavior:"smooth"})},300)}});
+document.addEventListener("click",e=>{if(!e.target.closest(".mk-pk"))document.querySelectorAll(".mk-pk-lista").forEach(x=>x.hidden=true)});
+/* notificação estilo WhatsApp */
+function mkNotif(){if(!MK.ok)return;const meu=meuTime();let ult=0;try{ult=+localStorage.getItem("wbs.mkNotif")||0}catch(e){}
+  const vivos=MK.posts.filter(p=>!p.apagado);const max=vivos.reduce((s,p)=>Math.max(s,p.id),0);
+  const salvar=()=>{try{localStorage.setItem("wbs.mkNotif",String(max))}catch(e){}};
+  if(!ult||ult>max){salvar();return}
+  const novos=vivos.filter(p=>p.id>ult&&p.team!==meu).sort((a,b)=>b.id-a.id);salvar();
+  if(!novos.length||rota()==="mercado")return;
+  const meusJ=new Set(DADOS?DADOS.P.filter(q=>q.t===meu&&!q.fora).map(q=>q.id):[]);
+  const prio=novos.find(p=>p.player_id!=null&&meusJ.has(p.player_id))||novos.find(p=>p.parent&&MK.posts.some(q=>q.id===p.parent&&q.team===meu))||novos[0];
+  const t=T(prio.team);const X=prio.extra||{};
+  const pai=prio.parent?MK.posts.find(q=>q.id===prio.parent):null;
+  let txt=prio.tipo==="interesse"?`👀 de olho no ${meusJ.has(prio.player_id)?"teu ":""}${prio.player_nome||"jogador"}`:prio.tipo==="venda"?`🏷️ colocou ${prio.player_nome||"um jogador"} à venda`:X.av?`${X.av} avaliou ${prio.player_nome||""}`:prio.tipo==="enquete"?`📊 enquete: ${prio.texto}`:X.card?`📤 ${prio.texto}`:pai&&pai.team===meu?`↩︎ te respondeu: ${prio.texto}`:prio.texto;
+  mostrarNotif({esc:t[0],tit:`${t[0]} · ${t[2]}`,txt:txt.slice(0,120),mais:novos.length>1?`+${novos.length-1} no Mercado`:"",cor:t[4]})}
+function mostrarNotif(o){document.getElementById("mkNotif")?.remove();const n=document.createElement("button");n.type="button";n.id="mkNotif";n.className="mk-notif";n.style.setProperty("--cor",o.cor||"#555");
+  n.innerHTML=`<span class="mk-n-app">🛒 MERCADO DO LOYDÃO <i>agora</i></span><span class="mk-n-c">${logo(o.esc,"width:38px;height:38px")}<span><b>${esc(o.tit)}</b><small>${esc(o.txt)}</small>${o.mais?`<em>${esc(o.mais)}</em>`:""}</span></span>`;
+  document.body.appendChild(n);requestAnimationFrame(()=>n.classList.add("on"));
+  let y0=null;n.addEventListener("touchstart",e=>{y0=e.touches[0].clientY},{passive:true});n.addEventListener("touchmove",e=>{if(y0!=null&&e.touches[0].clientY-y0<-25){fecha()}},{passive:true});
+  const fecha=()=>{n.classList.remove("on");setTimeout(()=>n.remove(),300)};
+  n.addEventListener("click",e=>{e.stopPropagation();e.preventDefault();fecha();if(document.getElementById("popFicha"))fecharFicha();ir("mercado")},true);
+  setTimeout(fecha,7000)}
+
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
 const ajson=(u,h)=>fetch(u,{cache:"no-store",headers:h||{}}).then(r=>{if(!r.ok)throw new Error("ESPN respondeu "+r.status);return r.json()});
@@ -4275,10 +4532,28 @@ function doca(){let dk=document.getElementById("fabDoca");if(!dk){dk=document.cr
   const volta=e=>{e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha")){fecharFichaU();return}if(history.length>1&&(location.hash||"").length>1)history.back();else{location.hash="confrontos"}};
   dk.querySelector("#fabTopo").addEventListener("click",topo);dk.querySelector("#fabVolta").addEventListener("click",volta)}
   const h=(location.hash||"").replace("#","");const v=dk.querySelector("#fabVolta");if(v)v.hidden=(h===""||h==="confrontos");return dk}
+function liveMin(){try{return localStorage.getItem("wbs.liveMin")==="1"}catch(e){return false}}
+function livePos(){try{return JSON.parse(localStorage.getItem("wbs.liveXY")||"null")}catch(e){return null}}
+function aplicaPosLive(b){const p=livePos();b.style.translate=p?`${p.x}px ${p.y}px`:"";if(!p)return;requestAnimationFrame(()=>{const r=b.getBoundingClientRect();let dx=0,dy=0;const M=6,top=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--topo"))||60;
+  if(r.left<M)dx=M-r.left;if(r.right>innerWidth-M)dx=innerWidth-M-r.right;if(r.top<top)dy=top-r.top;const vh=window.visualViewport?visualViewport.height:innerHeight;if(r.bottom>vh-M)dy=vh-M-r.bottom;
+  if(dx||dy){const q={x:p.x+dx,y:p.y+dy};b.style.translate=`${q.x}px ${q.y}px`}})}
+function pintaLive(b,jg){const mn=liveMin();b.classList.toggle("bola",mn);b.setAttribute("aria-label",mn?`Ao vivo: ${jg.live} jogos. Toque pra abrir`:"Ao vivo");
+  b.innerHTML=mn?`<i></i><b>${jg.live}</b>`:`<i></i>AO VIVO <small>${jg.live} jogo${jg.live>1?"s":""}</small><span class="fl-min" data-flmin title="minimizar" aria-label="minimizar">–</span>`;aplicaPosLive(b)}
 function montarLive(r){const dk=doca();let b=document.getElementById("fabLive");const jg=typeof jogosAoVivo==="function"?jogosAoVivo():{live:0};
   if(!jg.live||r==="aovivo"){if(b)b.remove();return}
-  if(!b){b=document.createElement("a");b.id="fabLive";b.className="fab-live";b.href="#aovivo";dk.appendChild(b)}
-  b.innerHTML=`<i></i>AO VIVO <small>${jg.live} jogo${jg.live>1?"s":""}</small>`}
+  if(!b){b=document.createElement("a");b.id="fabLive";b.className="fab-live";b.href="#aovivo";dk.appendChild(b);
+    let x0=0,y0=0,p0=null,arr=false,id=null;
+    const mv=e=>{if(id!==e.pointerId||!p0)return;const dx=e.clientX-x0,dy=e.clientY-y0;if(!arr&&Math.hypot(dx,dy)<8)return;arr=true;b.classList.add("arrastando");b.style.translate=`${p0.x+dx}px ${p0.y+dy}px`;e.preventDefault()};
+    const solta=e=>{if(id!==e.pointerId)return;id=null;document.removeEventListener("pointermove",mv);document.removeEventListener("pointerup",solta);document.removeEventListener("pointercancel",solta);b.classList.remove("arrastando");
+      if(arr&&p0){const t=(b.style.translate||"0px 0px").split(" ").map(parseFloat);try{localStorage.setItem("wbs.liveXY",JSON.stringify({x:t[0]||0,y:t[1]||0}))}catch(x){}aplicaPosLive(b);b._arrastou=true;setTimeout(()=>b._arrastou=false,350)}p0=null;arr=false};
+    b.addEventListener("pointerdown",e=>{id=e.pointerId;x0=e.clientX;y0=e.clientY;p0=livePos()||{x:0,y:0};arr=false;b._minAlvo=!!(e.target.closest&&e.target.closest("[data-flmin]"));document.addEventListener("pointermove",mv,{passive:false});document.addEventListener("pointerup",solta);document.addEventListener("pointercancel",solta)});
+    b.addEventListener("click",e=>{if(b._arrastou){e.preventDefault();e.stopPropagation();return}
+      if(b._minAlvo||e.target.closest("[data-flmin]")){b._minAlvo=false;e.preventDefault();e.stopPropagation();try{localStorage.setItem("wbs.liveMin","1")}catch(x){}pintaLive(b,jogosAoVivo());return}
+      if(liveMin()){e.preventDefault();e.stopPropagation();try{localStorage.removeItem("wbs.liveMin")}catch(x){}pintaLive(b,jogosAoVivo());return}},true)}
+  pintaLive(b,jg)}
+/* enquanto digita, os botões flutuantes saem da frente */
+document.addEventListener("focusin",e=>{if(e.target&&e.target.matches&&e.target.matches("input:not([type=checkbox]):not([type=radio]),textarea,select"))document.documentElement.classList.add("digitando")});
+document.addEventListener("focusout",()=>setTimeout(()=>{const a=document.activeElement;if(!(a&&a.matches&&a.matches("input,textarea,select")))document.documentElement.classList.remove("digitando")},150));
 addEventListener("scroll",()=>{const t=document.getElementById("fabTopo")||doca().querySelector("#fabTopo");if(t)t.hidden=scrollY<500;posDoca()},{passive:true});
 /* o iPhone (app na tela inicial) erra a altura de position:fixed/sticky ancorado embaixo; ancoramos no topo e calculamos pela área visível real */
 function posDoca(){const dk=document.getElementById("fabDoca");if(!dk)return;const vv=window.visualViewport;let h=vv?vv.height+vv.offsetTop:innerHeight;const app=navigator.standalone||matchMedia("(display-mode: standalone)").matches;if(app&&screen.height>h&&Math.abs(screen.width-innerWidth)<4){const pt=parseFloat(getComputedStyle(document.documentElement).paddingTop)||0;h=screen.height-pt-44}dk.style.transform=`translateY(${Math.round(h)}px)`}
@@ -4415,253 +4690,5 @@ carregarRevista();
 document.addEventListener("visibilitychange",()=>{if(!document.hidden){inappFeito=false;carregarRevista()}});
 
 setTimeout(chipEu,0);document.addEventListener("change",e=>{if(e.target&&e.target.id==="meuTime")setTimeout(chipEu,0)});
-
-/* ================= MERCADO (Supabase) ================= */
-const SB={u:"https://ekigrttiteyxsxkeibih.supabase.co",k:"sb_publishable_dOIgruPeei5v5I6dpr7phw_72jrOjSk"};
-const SELOS=[["FEZES","💩"],["RUI DIMAI","🥴"],["DROPA","🗑️"],["VAI CAIR","📉"],["MVP","🏆"],["PIKA","👑"]];
-const NOTA_SELO={"FEZES":1,"RUI DIMAI":2,"DROPA":2,"VAI CAIR":3,"PIKA":4,"MVP":5};
-const EMO_MK=["🔥","🤡","🗑️","💎"];
-const MK={posts:[],reac:[],votos:[],car:[],mer:[],ok:false,err:null,t:0,carregando:null,tipo:"resenha",ref:null,parent:null,tick:null,jog:null,avEmo:"🔥"};
-const EMO_AV=["🔥","🐐","👑","💎","🍳","🧊","🧱","💩","🤡","🥶","😴","🚑"];
-async function sbGet(path){const r=await fetch(SB.u+"/rest/v1/"+path,{headers:{apikey:SB.k},cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
-async function sbRpc(fn,body){const r=await fetch(SB.u+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:SB.k,"Content-Type":"application/json"},body:JSON.stringify(body)});const t=await r.text();
-  if(!r.ok){let m=t;try{const j=JSON.parse(t);m=j.message||j.hint||t}catch(e){}throw new Error(m)}return t?JSON.parse(t):null}
-function mkCarregar(forca){
-  if(MK.carregando)return MK.carregando;if(!forca&&MK.ok&&Date.now()-MK.t<15000)return Promise.resolve();
-  MK.carregando=Promise.all([sbGet("posts?select=*&order=criado.desc&limit=200"),sbGet("reacoes?select=*"),sbGet("votos?select=*"),sbGet("carimbos?select=*"),sbGet("mercado?select=*&order=quando.desc")])
-    .then(([p,r,v,c,m])=>{MK.posts=p;MK.reac=r;MK.votos=v;MK.car=c;MK.mer=m;MK.ok=true;MK.err=null;MK.t=Date.now()})
-    .catch(e=>{MK.err=e.message||String(e)}).finally(()=>{MK.carregando=null;mkPintar();mkFichaAtual();mkBadge();mkNotif()});
-  return MK.carregando}
-/* ---------- PIN ---------- */
-function pinGuardado(t){try{return localStorage.getItem("wbs.pin."+t)||""}catch(e){return ""}}
-function pinSalvar(t,p){try{if(p)localStorage.setItem("wbs.pin."+t,p);else localStorage.removeItem("wbs.pin."+t)}catch(e){}}
-function mkModal(html,aoMontar){document.getElementById("popMk")?.remove();const w=document.createElement("div");w.id="popMk";w.className="rev-pop mk-pop";
-  w.innerHTML=`<div class="rev-box mk-box" role="dialog"><button type="button" class="pop-x" data-mkx aria-label="fechar">✕</button>${html}</div>`;
-  w.addEventListener("click",e=>{e.stopPropagation();if(e.target===w||e.target.closest("[data-mkx]"))w.remove()});document.body.appendChild(w);if(aoMontar)aoMontar(w);return w}
-function pedirPin(t){return new Promise(async res=>{let tem=null;try{tem=await sbRpc("tem_pin",{p_team:t})}catch(e){mostrarAviso("Mercado fora do ar: "+e.message);return res(null)}
-  const nm=T(t);const w=mkModal(`<div class="mk-pin"><div class="mk-pin-cab">${logo(nm[0],"width:44px;height:44px")}<div><b>${esc(nm[0])}</b><small>${tem?"Digita o PIN do teu time":"Primeira vez do "+esc(nm[2])+" no Mercado: cria um PIN de 4 números"}</small></div></div>
-    <input class="mk-pin-in" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="••••" aria-label="PIN de 4 números">
-    ${tem?"":`<p class="mk-obs">Anota. Quem souber o PIN posta como ${esc(nm[0])}. Esqueceu? Fala com o Lucas que ele zera.</p>`}
-    <button type="button" class="mk-bt amarelo" data-ok>${tem?"Entrar":"Criar PIN"}</button><p class="mk-erro" hidden></p></div>`);
-  const inp=w.querySelector("input"),er=w.querySelector(".mk-erro");setTimeout(()=>inp.focus(),50);
-  const vai=async()=>{const p=inp.value.trim();if(!/^\d{4}$/.test(p)){er.hidden=false;er.textContent="São 4 números, campeão.";return}
-    if(!tem){try{await sbRpc("criar_pin",{p_team:t,p_pin:p})}catch(e){er.hidden=false;er.textContent=e.message;return}}
-    pinSalvar(t,p);w.remove();res(p)};
-  w.querySelector("[data-ok]").onclick=vai;inp.addEventListener("keydown",e=>{if(e.key==="Enter")vai()});
-  const obs=new MutationObserver(()=>{if(!document.body.contains(w)){obs.disconnect();res(null)}});obs.observe(document.body,{childList:true})})}
-async function comPin(fn){const t=meuTime();if(!t){mostrarAviso("Primeiro escolhe teu time.");popCadastro();return false}
-  let p=pinGuardado(t);if(!p){p=await pedirPin(t);if(!p)return false}
-  try{await fn(t,p);return true}catch(e){const m=e.message||"";if(/PIN errado|SEM_PIN/.test(m)){pinSalvar(t,"");mostrarAviso(/SEM_PIN/.test(m)?"Teu time ainda não tem PIN.":"PIN errado. Tenta de novo.");p=await pedirPin(t);if(!p)return false;try{await fn(t,p);return true}catch(e2){mostrarAviso(e2.message);return false}}
-    mostrarAviso(m||"Deu ruim no Mercado.");return false}}
-/* ---------- helpers ---------- */
-const seloEmo=s=>(SELOS.find(x=>x[0]===s)||["",""])[1];
-function quandoMk(iso){const s=(Date.now()-new Date(iso).getTime())/1000;if(s<60)return "agora";if(s<3600)return Math.floor(s/60)+" min";if(s<86400)return Math.floor(s/3600)+" h";const d=new Date(iso);return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}
-function jogDoId(id){const d=DADOS;if(!d||id==null)return null;return d.P.find(q=>q.id===id&&!q.fora)||(d.fa||[]).find(q=>q.id===id)||d.P.find(q=>q.id===id)||null}
-function donoAtual(id){const p=DADOS&&DADOS.P.find(q=>q.id===id&&!q.fora);return p?p.t:0}
-function carimbosDe(id){const c={};MK.car.filter(x=>x.player_id===id).forEach(x=>{(c[x.selo]=c[x.selo]||[]).push(x.team)});return c}
-function notaGalera(id){const L=MK.car.filter(x=>x.player_id===id&&NOTA_SELO[x.selo]);if(!L.length)return null;return {m:L.reduce((s,x)=>s+NOTA_SELO[x.selo],0)/L.length,n:L.length}}
-function estrelas(m,cls){const r=Math.round(m*2)/2;let h="";for(let i=1;i<=5;i++)h+=r>=i?"★":r>=i-.5?'<i class="meia">★</i>':'<i class="vaz">★</i>';return `<span class="mk-est ${cls||""}" title="${m.toFixed(1)} de 5">${h}</span>`}
-function estDe(id,cls){const g=notaGalera(id);return g?`${estrelas(g.m,cls)}<small class="mk-estn">${g.m.toFixed(1)} · ${g.n}</small>`:""}
-function vendaDe(id){return MK.mer.filter(x=>x.player_id===id&&x.tipo==="venda"&&x.team===donoAtual(id))[0]||null}
-function interessadosDe(id){return MK.mer.filter(x=>x.player_id===id&&x.tipo==="interesse"&&x.team!==donoAtual(id))}
-const TIPO_MK={resenha:["💬","RESENHA"],enquete:["📊","ENQUETE"],venda:["🏷️","À VENDA"],interesse:["👀","QUERO"],proposta:["🤝","PROPOSTA"]};
-/* ---------- tela ---------- */
-function vMercado(){
-  mkCarregar();try{localStorage.setItem("wbs.mkVisto",String(Date.now()))}catch(e){}const meu=meuTime();
-  const tabs=[["resenha","💬 Resenha"],["avaliar","⭐ Avaliar"],["enquete","📊 Enquete"],["venda","🏷️ Vendo"],["interesse","👀 Quero"]];
-  const comp=meu?`<div class="card mk-comp" id="mkComp"><div class="mk-quem">${logo(T(meu)[0],"width:30px;height:30px")}<b>${esc(T(meu)[2])}</b><small>postando como ${esc(T(meu)[0])}</small></div>
-    <div class="mk-tabs" role="tablist">${tabs.map(([k,n])=>`<button type="button" class="mk-tab ${MK.tipo===k?"on":""}" data-mktipo="${k}">${n}</button>`).join("")}</div>
-    <div id="mkCampos">${mkCampos()}</div></div>`
-   :`<div class="card mk-comp vazio"><b>Escolhe teu time pra postar, carimbar e vender jogador.</b><button type="button" class="mk-bt amarelo" data-mkcad>Sou treinador</button></div>`;
-  return `<div class="card mk-hero"><div class="mk-hero-t">MERCADO<span>do Loydão</span></div><p>Resenha, enquete, quem tá vendendo, quem tá de olho. Tudo assinado com o escudo do time. O que se posta aqui, o grupo inteiro lê.</p></div>
-  ${comp}
-  <div class="card" id="mkVitrine"><div class="bloco-tit">VITRINE</div><div class="mk-load">carregando…</div></div>
-  <div class="card" id="mkLances"><div class="bloco-tit">LANCES DO LOYDÃO <small>responde aí</small></div>${mkLances()}</div>
-  <div class="card" id="mkFeed"><div class="bloco-tit">FEED</div><div class="mk-load">carregando…</div></div>
-  <div class="card" id="mkSelos"><div class="bloco-tit">NOTA DA GALERA</div><div class="mk-load">carregando…</div></div>`}
-function mkCampos(){const t=MK.tipo,meu=meuTime();
-  const refBox=MK.ref?`<div class="mk-ref">↩︎ respondendo ao lance: <i>${MK.ref.txt}</i> <button type="button" class="mk-mini" data-mkrefx>✕</button></div>`:"";
-  const pai=MK.parent?MK.posts.find(x=>x.id===MK.parent):null;
-  const paiBox=pai?`<div class="mk-ref">↩︎ respondendo ${esc(T(pai.team)[0])}: <i>${esc(pai.texto.slice(0,80))}</i> <button type="button" class="mk-mini" data-mkpaix>✕</button></div>`:"";
-  if(t==="venda"||t==="interesse"){
-    return `${mkPicker(t==="venda"?"meus":"outros",t==="venda"?"Quem você quer vender":"Quem você quer")}
-      <label class="mk-lab">${t==="venda"?"O que você quer em troca (opcional)":"O que você oferece (opcional)"}<input id="mkPed" maxlength="200" placeholder="${t==="venda"?"ex.: um pivô que dê toco":"ex.: Kuminga + pick imaginária"}"></label>
-      <textarea id="mkTxt" maxlength="500" rows="2" placeholder="${t==="venda"?"Faz o anúncio. Capricha que é Mercado Livre.":"Diz por que você quer. Ou só ameaça."}"></textarea>
-      <div class="mk-rod"><small>Aparece na ficha dele${t==="venda"?" com a faixa À VENDA":" na lista de interessados"}.</small><button type="button" class="mk-bt amarelo" data-mkpub>Publicar</button></div>`}
-  if(t==="avaliar")return `${mkPicker("todos","Quem você vai avaliar")}<div class="mk-lab">Tua nota em emoji</div><div class="mk-emos">${EMO_AV.map(e=>`<button type="button" class="mk-emo ${MK.avEmo===e?"on":""}" data-mkemo="${e}">${e}</button>`).join("")}</div>
-    <div id="mkLinha" class="mk-linha" hidden></div>
-    <textarea id="mkTxt" maxlength="300" rows="2" placeholder="Comenta (opcional). Ex.: esse homem é quebrado."></textarea>
-    <div class="mk-rod"><small>A linha de hoje dele vai junto no post.</small><button type="button" class="mk-bt amarelo" data-mkpub>Avaliar</button></div>`;
-  if(t==="enquete")return `${refBox}<textarea id="mkTxt" maxlength="300" rows="2" placeholder="A pergunta. Ex.: Quem é o pior manager da semana?"></textarea>
-    <div class="mk-ops">${[0,1,2,3].map(i=>`<input class="mk-op" maxlength="60" placeholder="Opção ${i+1}${i>1?" (opcional)":""}">`).join("")}</div>
-    <div class="mk-rod"><small>Cada time vota uma vez (dá pra mudar).</small><button type="button" class="mk-bt amarelo" data-mkpub>Publicar</button></div>`;
-  return `${refBox}${paiBox}${MK.parent?"":mkPicker("todos","Marcar jogador (opcional)")}<textarea id="mkTxt" maxlength="500" rows="3" placeholder="${MK.parent?"Responde à altura.":"Solta o verbo. Zoa, provoca, chora."}"></textarea><div class="mk-rod"><small><span id="mkCont">0</span>/500</small><button type="button" class="mk-bt amarelo" data-mkpub>${MK.parent?"Responder":"Postar"}</button></div>`}
-function mkListaJog(modo){const d=DADOS;if(!d)return [];const meu=meuTime();let L;
-  if(modo==="meus")L=d.P.filter(p=>p.t===meu&&!p.fora);else if(modo==="outros")L=d.P.filter(p=>p.t!==meu&&!p.fora).concat(d.fa||[]);else L=d.P.filter(p=>!p.fora).concat(d.fa||[]);
-  const vis=new Set();return L.filter(p=>p&&p.n&&!vis.has(p.id)&&vis.add(p.id))}
-function mkPicker(modo,rot){MK.jog=null;return `<div class="mk-pk" data-modo="${modo}"><div class="mk-lab">${rot}</div><div class="mk-pk-sel" hidden></div><input class="mk-pk-in" type="search" placeholder="🔎 digita o nome do jogador" autocomplete="off" aria-label="${esc(rot)}"><div class="mk-pk-lista" hidden></div></div>`}
-function mkPkLinha(p){return `<button type="button" class="mk-pk-op" data-mkpick="${p.id}">${face(p.id,p.n,"")}<span><b>${esc(p.n)}</b><small>${p.t?esc(T(p.t)[0]):"livre"}${NBA&&NBA[p.pro]?" · "+esc(NBA[p.pro]):""}</small></span>${p.t?logo(T(p.t)[0],"width:22px;height:22px"):""}</button>`}
-function mkPkFiltrar(inp){const pk=inp.closest(".mk-pk");const box=pk.querySelector(".mk-pk-lista");const q=semAcento(inp.value.trim());const L=mkListaJog(pk.dataset.modo);
-  let R=q?L.filter(p=>semAcento(p.n).includes(q)):(pk.dataset.modo==="meus"?L:L.filter(p=>p.t).sort((a,b)=>(b.nota||0)-(a.nota||0)));R=R.slice(0,12);
-  box.innerHTML=R.length?R.map(mkPkLinha).join(""):`<p class="mk-load">Ninguém com esse nome.</p>`;box.hidden=false}
-function mkPkEscolher(pk,id){const p=jogDoId(id);if(!p)return;MK.jog=id;const s=pk.querySelector(".mk-pk-sel");
-  s.innerHTML=`<div class="mk-chip">${face(p.id,p.n,"")}<div><b>${esc(p.n)} ${estDe(p.id)}</b><small>${p.t?esc(T(p.t)[0]):"livre"}</small></div><button type="button" class="mk-mini" data-mkpkx>trocar</button></div>`;s.hidden=false;
-  pk.querySelector(".mk-pk-in").hidden=true;pk.querySelector(".mk-pk-lista").hidden=true;
-  const ln=document.getElementById("mkLinha");if(ln){const l=linhaHoje(p);ln.hidden=false;ln.innerHTML=l?`📊 <b>${esc(l.rot)}</b>: ${esc(l.txt)}`:"Sem jogo recente na base. Vai sem a linha."}}
-function linhaHoje(p){const d=DADOS;if(!p||!p.dl||!d)return null;const sp=Object.keys(p.dl).map(Number).filter(s=>s<=d.cur).sort((a,b)=>b-a)[0];if(sp==null)return null;const v=p.dl[sp];if(!v)return null;
-  const g=sp===d.cur&&d.nba&&d.nba[p.pro];return {sp,txt:linhaReal(v)+((v[12]||0)?` em ${v[12]} min`:"")+(g&&g.live?" (ao vivo)":""),rot:sp===d.cur?"hoje":spRot(sp)}}
-function cardMt(i,foco){const d=DADOS;const mt=d&&d.mt[i];if(!mt)return null;const [a,b]=mt;const ta=EST.tot[a],tb=EST.tot[b];const sc=placar(ta,tb);
-  return {k:"mt",a,b,w:sc.w,l:sc.l,t:sc.t,wk:d.wk,rot:spRot(d.cur),foco:foco||null,v:CATS.map((c,j)=>[c.k,String(fmt(c,c.f(ta))),String(fmt(c,c.f(tb))),sc.r[j]])}}
-function cardJog(id){const p=jogDoId(id);if(!p)return null;const l=linhaHoje(p);return {k:"jog",id,n:p.n,t:p.t||0,linha:l?l.txt:null,rot:l?l.rot:null}}
-function mkCard(c){if(!c)return "";
-  if(c.k==="mt"){const A=T(c.a),B=T(c.b);const f=c.foco&&c.v.find(x=>x[0]===c.foco);
-    const dif=f?(()=>{const x=parseFloat(f[1]),y=parseFloat(f[2]);if(isNaN(x)||isNaN(y))return "";const df=Math.abs(x-y);return /%/.test(f[0])?df.toFixed(1)+" pontos":String(Math.round(df*10)/10)})():"";
-    return `<div class="mk-card mt clic" data-jogo="${DADOS?DADOS.mt.findIndex(m=>m[0]===c.a&&m[1]===c.b):""}"><div class="mk-mt-top"><span>${logo(A[0],"width:28px;height:28px")}<b>${esc(A[0])}</b></span><em class="num">${c.w}-${c.l}${c.t?"-"+c.t:""}</em><span class="dir"><b>${esc(B[0])}</b>${logo(B[0],"width:28px;height:28px")}</span></div>
-      ${f?`<div class="mk-foco"><span class="${f[3]>0?"g":""}">${esc(f[1])}</span><b>${esc(f[0])}</b><span class="${f[3]<0?"g":""}">${esc(f[2])}</span><small>${f[3]===0?"empatado":"diferença de "+esc(dif)}</small></div>`:""}
-      <div class="mk-mt-cats">${c.v.map(x=>`<div class="${x[0]===c.foco?"on":""}"><small>${esc(x[0])}</small><i class="${x[3]>0?"g":""}">${esc(x[1])}</i><i class="${x[3]<0?"g":""}">${esc(x[2])}</i></div>`).join("")}</div><small class="mk-card-rod">semana ${c.wk} · ${esc(c.rot||"")}</small></div>`}
-  if(c.k==="jog")return `<div class="mk-card jog clic" data-pj="${c.id}">${face(c.id,c.n,"")}<div><b>${esc(c.n)} ${estDe(c.id)}</b><small>${c.t?esc(T(c.t)[0]):"livre"}</small>${c.linha?`<div class="mk-linha">📊 <b>${esc(c.rot)}</b>: ${esc(c.linha)}</div>`:""}</div></div>`;
-  return ""}
-function mkCompartilhar(card){if(!card){mostrarAviso("Nada pra compartilhar aqui.");return}if(!meuTime()){popCadastro();return}
-  const w=mkModal(`<div class="mk-pin"><div class="mk-fb-t">📤 MANDAR PRO MERCADO</div>${card.k==="mt"?`<div class="mk-lab">Destacar categoria (opcional)</div><div class="mk-emos cats">${CATS.map(c=>`<button type="button" class="mk-emo ${card.foco===c.k?"on":""}" data-mkfoco="${c.k}">${c.k}</button>`).join("")}</div>`:""}
-    <div class="mk-prev">${mkCard(card)}</div><textarea id="mkShTxt" maxlength="500" rows="2" placeholder="Fala alguma coisa. Provoca."></textarea><button type="button" class="mk-bt amarelo" data-mkshok>Postar no Mercado</button></div>`);
-  w.addEventListener("click",async e=>{const f=e.target.closest("[data-mkfoco]");if(f){card.foco=card.foco===f.dataset.mkfoco?null:f.dataset.mkfoco;w.querySelectorAll("[data-mkfoco]").forEach(x=>x.classList.toggle("on",x.dataset.mkfoco===card.foco));w.querySelector(".mk-prev").innerHTML=mkCard(card);return}
-    const ok=e.target.closest("[data-mkshok]");if(!ok)return;ok.disabled=true;const txt=w.querySelector("#mkShTxt").value.trim()||(card.k==="mt"?(card.foco?`Olha esse ${card.foco}.`:"Olha esse confronto."):`Olha o ${card.n}.`);
-    const pid=card.k==="jog"?card.id:null;
-    const r=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:"resenha",p_texto:txt,p_player_id:null,p_player_nome:null,p_extra:{card},p_parent:null,p_ref:null}));ok.disabled=false;
-    if(r){w.remove();mostrarAviso("Postado no Mercado ✅");mkCarregar(true)}},true)}
-function mkLances(){let it=[];try{it=noticias().filter(x=>!x.pub).slice(0,6)}catch(e){}
-  if(!it.length)return `<div class="mk-load">Sem lance agora. Volta quando a bola subir.</div>`;
-  return it.map(x=>{const k=chaveNot(x);const n=MK.posts.filter(p=>p.ref===k&&!p.apagado).length;return `<div class="mk-lance"><b class="tkk">${esc(x.k)}</b><span>${x.t}</span><button type="button" class="mk-mini" data-mkref="${esc(k)}">💬 ${n?n+" · ":""}responder</button></div>`}).join("")}
-function mkPost(p,filhos){const t=T(p.team);const meu=meuTime();const tp=TIPO_MK[p.tipo]||TIPO_MK.resenha;
-  const R={};MK.reac.filter(r=>r.post_id===p.id).forEach(r=>{(R[r.emoji]=R[r.emoji]||[]).push(r.team)});
-  const jog=p.player_id!=null?jogDoId(p.player_id):null;
-  const chip=p.player_id!=null?`<div class="mk-chip clic" data-pj="${p.player_id}">${face(p.player_id,p.player_nome||"","")}<div><b>${esc(p.player_nome||(jog&&jog.n)||"")} ${estDe(p.player_id)}</b><small>${jog&&jog.t?esc(T(jog.t)[0]):"livre"}${p.extra&&p.extra.pedido?` · ${p.tipo==="venda"?"quer":"oferece"}: ${esc(p.extra.pedido)}`:""}</small></div></div>`:"";
-  let enq="";if(p.tipo==="enquete"&&p.extra&&Array.isArray(p.extra.ops)){const V=MK.votos.filter(v=>v.post_id===p.id);const tot=V.length;const meuV=V.find(v=>v.team===meu);
-    enq=`<div class="mk-enq">${p.extra.ops.map((o,i)=>{const q=V.filter(v=>v.opcao===i);const pc=tot?Math.round(q.length/tot*100):0;return `<button type="button" class="mk-opv ${meuV&&meuV.opcao===i?"on":""}" data-mkvoto="${p.id}:${i}"><i style="width:${pc}%"></i><span>${esc(o)}</span><em>${pc}%${q.length?` · ${q.map(v=>esc(T(v.team)[0])).join(", ")}`:""}</em></button>`}).join("")}<small>${tot} voto${tot===1?"":"s"}</small></div>`}
-  const X=p.extra||{};const av=X.av?`<div class="mk-av"><span class="mk-av-e">${esc(X.av)}</span>${X.linha?`<div class="mk-linha">📊 <b>${esc(X.rot||"")}</b>: ${esc(X.linha)}</div>`:""}</div>`:"";const card=X.card?mkCard(X.card):"";
-  const lance=p.extra&&p.extra.lance?`<div class="mk-quote">LOYDÃO: ${esc(p.extra.lance)}</div>`:"";
-  const reac=`<div class="mk-reac">${EMO_MK.map(e=>{const q=R[e]||[];return `<button type="button" class="mk-r ${q.includes(meu)?"on":""}" data-mkreac="${p.id}:${e}" title="${q.map(x=>esc(T(x)[0])).join(", ")}">${e}${q.length?` <b>${q.length}</b>`:""}</button>`}).join("")}
-    ${p.parent?"":`<button type="button" class="mk-r" data-mkresp="${p.id}">↩︎ responder</button>`}${p.team===meu&&!p.apagado?`<button type="button" class="mk-r apaga" data-mkdel="${p.id}" title="apagar">apagar</button>`:""}</div>`;
-  return `<article class="mk-post ${p.parent?"filho":""}" style="--cor:${t[4]}"><div class="mk-cab">${logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.card?"📤 COMPARTILHOU":tp[0]+" "+tp[1]}</span></div>
-    ${lance}<div class="mk-txt ${p.apagado?"apagado":""}">${esc(p.texto)}</div>${chip}${av}${card}${enq}${p.apagado?"":reac}
-    ${filhos&&filhos.length?`<div class="mk-filhos">${filhos.map(f=>mkPost(f)).join("")}</div>`:""}</article>`}
-function mkPintar(){if(rota()!=="mercado")return;
-  const fe=document.getElementById("mkFeed"),vi=document.getElementById("mkVitrine"),se=document.getElementById("mkSelos"),la=document.getElementById("mkLances");if(!fe)return;
-  if(MK.err&&!MK.ok){const m=`<div class="mk-load">O Mercado não respondeu (${esc(MK.err)}). Tenta de novo daqui a pouco.</div>`;fe.innerHTML=`<div class="bloco-tit">FEED</div>`+m;vi.innerHTML=`<div class="bloco-tit">VITRINE</div>`+m;se.innerHTML="";return}
-  if(!MK.ok)return;
-  const vivos=MK.posts;const top=vivos.filter(p=>!p.parent);const fil=id=>vivos.filter(p=>p.parent===id).sort((a,b)=>a.id-b.id);
-  fe.innerHTML=`<div class="bloco-tit">FEED <small>${top.length} post${top.length===1?"":"s"}</small></div>`+(top.length?top.slice(0,60).map(p=>mkPost(p,fil(p.id))).join(""):`<div class="mk-load">Ninguém postou ainda. O primeiro leva a fama de carente.</div>`);
-  const vend=MK.mer.filter(x=>x.tipo==="venda"&&x.team===donoAtual(x.player_id));const proc={};MK.mer.filter(x=>x.tipo==="interesse"&&x.team!==donoAtual(x.player_id)).forEach(x=>{(proc[x.player_id]=proc[x.player_id]||{n:x.player_nome,t:[]}).t.push(x.team)});
-  const pr=Object.entries(proc).sort((a,b)=>b[1].t.length-a[1].t.length).slice(0,10);
-  const linhaV=x=>{const ii=interessadosDe(x.player_id);return `<div class="mk-v clic" data-pj="${x.player_id}">${face(x.player_id,x.player_nome||"","")}<div><b>${esc(x.player_nome||"")} ${estDe(x.player_id)}</b><small>${esc(T(x.team)[0])}${x.pedido?` · quer: ${esc(x.pedido)}`:""}</small></div><em>${ii.length?`👀 ${ii.length}`:""}</em></div>`};
-  vi.innerHTML=`<div class="bloco-tit">VITRINE</div><div class="mk-vit"><div><h4>🏷️ À VENDA</h4>${vend.length?vend.map(linhaV).join(""):`<p class="mk-load">Ninguém vendendo. Ou todo mundo acha que tem time.</p>`}</div>
-    <div><h4>👀 MAIS PROCURADOS</h4>${pr.length?pr.map(([id,o])=>`<div class="mk-v clic" data-pj="${id}">${face(+id,o.n||"","")}<div><b>${esc(o.n||"")} ${estDe(+id)}</b><small>${o.t.map(t=>esc(T(t)[0])).join(", ")}</small></div><em>${o.t.length}</em></div>`).join(""):`<p class="mk-load">Ninguém de olho em ninguém.</p>`}</div></div>`;
-  const ids=[...new Set(MK.car.map(c=>c.player_id))].map(id=>({id,g:notaGalera(id),j:jogDoId(id)})).filter(x=>x.g);
-  const lin=x=>`<div class="mk-v clic" data-pj="${x.id}">${face(x.id,x.j?x.j.n:"","")}<div><b>${esc(x.j?x.j.n:"#"+x.id)}</b><small>${x.j&&x.j.t?esc(T(x.j.t)[0]):"livre"} · ${x.g.n} carimbo${x.g.n===1?"":"s"}${(()=>{const c=carimbosDe(x.id);const top=Object.entries(c).sort((a,b)=>b[1].length-a[1].length)[0];return top?` · ${SELOS.find(s=>s[0]===top[0])[1]} ${esc(top[0])}`:""})()}</small></div><em class="mk-nota">${estrelas(x.g.m)}<b>${x.g.m.toFixed(1)}</b></em></div>`;
-  const ord=(a,b)=>b.g.m-a.g.m||b.g.n-a.g.n;const melhores=ids.filter(x=>x.g.m>=3).sort(ord).slice(0,5);const piores=ids.filter(x=>x.g.m<3).sort((a,b)=>a.g.m-b.g.m||b.g.n-a.g.n).slice(0,5);
-  se.innerHTML=`<div class="bloco-tit">NOTA DA GALERA <small>💩=1 · 🥴 e 🗑️=2 · 📉=3 · 👑=4 · 🏆=5</small></div>`+(ids.length?`<div class="mk-vit"><div><h4>⭐ MAIS BEM AVALIADOS</h4>${melhores.length?melhores.map(lin).join(""):`<p class="mk-load">Ninguém passou de 3 estrelas.</p>`}</div><div><h4>💩 PIORES AVALIADOS</h4>${piores.length?piores.map(lin).join(""):`<p class="mk-load">Ninguém abaixo de 3 estrelas. Liga boazinha demais.</p>`}</div></div>`:`<p class="mk-load">Ninguém avaliado ainda. Abre a ficha de um jogador e carimba: cada carimbo vira estrela.</p>`);
-  if(la)la.innerHTML=`<div class="bloco-tit">LANCES DO LOYDÃO <small>responde aí</small></div>`+mkLances()}
-/* ---------- ações ---------- */
-async function mkPublicar(){const t=MK.tipo;const txt=(document.getElementById("mkTxt")||{}).value?.trim()||"";
-  if(t==="venda"||t==="interesse"){const ped=(document.getElementById("mkPed")||{}).value?.trim()||"";
-    const p=MK.jog!=null?jogDoId(MK.jog):null;if(!p){mostrarAviso("Escolhe o jogador na lista.");return}
-    if(t==="venda"&&p.t!==meuTime()){mostrarAviso("Só dá pra vender quem é teu.");return}
-    const texto=txt||(t==="venda"?`${p.n} está à venda.`:`De olho no ${p.n}.`);
-    const ok=await comPin(async(tm,pin)=>{await sbRpc("marcar",{p_team:tm,p_pin:pin,p_player:p.id,p_nome:p.n,p_tipo:t,p_pedido:ped||null,p_ativo:true});
-      await sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:t,p_texto:texto,p_player_id:p.id,p_player_nome:p.n,p_extra:ped?{pedido:ped}:{},p_parent:null,p_ref:null})});
-    if(ok){mostrarAviso(t==="venda"?"Anunciado. Boa sorte achando trouxa.":"Interesse registrado.");mkLimpar();mkCarregar(true)}return}
-  if(t==="avaliar"){const p=MK.jog!=null?jogDoId(MK.jog):null;if(!p){mostrarAviso("Escolhe quem vai ser avaliado.");return}const l=linhaHoje(p);
-    const ok=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:"resenha",p_texto:txt||`${MK.avEmo} pro ${p.n}.`,p_player_id:p.id,p_player_nome:p.n,p_extra:{av:MK.avEmo,linha:l?l.txt:null,rot:l?l.rot:null,sp:l?l.sp:null},p_parent:null,p_ref:null}));
-    if(ok){mkLimpar();mkCarregar(true)}return}
-  if(!txt){mostrarAviso("Escreve alguma coisa, poeta.");return}
-  let extra={};if(t==="enquete"){const ops=[...document.querySelectorAll(".mk-op")].map(i=>i.value.trim()).filter(Boolean);if(ops.length<2){mostrarAviso("Enquete precisa de pelo menos 2 opções.");return}extra.ops=ops}
-  if(MK.ref)extra.lance=MK.ref.raw;
-  const tipo=MK.parent?"resenha":t;
-  const ok=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:tipo,p_texto:txt,p_player_id:(!MK.parent&&MK.jog!=null)?MK.jog:null,p_player_nome:(!MK.parent&&MK.jog!=null&&jogDoId(MK.jog))?jogDoId(MK.jog).n:null,p_extra:extra,p_parent:MK.parent,p_ref:MK.ref?MK.ref.k:null}));
-  if(ok){mkLimpar();mkCarregar(true)}}
-function mkLimpar(){MK.ref=null;MK.parent=null;const c=document.getElementById("mkCampos");if(c)c.innerHTML=mkCampos();mkContador()}
-function mkContador(){const a=document.getElementById("mkTxt"),c=document.getElementById("mkCont");if(a&&c)a.oninput=()=>c.textContent=a.value.length}
-function mkIrCompositor(){const c=document.getElementById("mkComp");if(c){c.scrollIntoView({behavior:"smooth",block:"start"});setTimeout(()=>document.getElementById("mkTxt")?.focus(),350)}}
-document.addEventListener("click",async e=>{
-  const g=s=>e.target.closest(s);let b;
-  if((b=g("[data-mktipo]"))){MK.tipo=b.dataset.mktipo;MK.parent=null;document.querySelectorAll(".mk-tab").forEach(x=>x.classList.toggle("on",x===b));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
-  if(g("[data-mkcad]")){popCadastro();return}
-  if((b=g("[data-mkpick]"))){e.stopPropagation();mkPkEscolher(b.closest(".mk-pk"),+b.dataset.mkpick);return}
-  if((b=g("[data-mkpkx]"))){const pk=b.closest(".mk-pk");MK.jog=null;pk.querySelector(".mk-pk-sel").hidden=true;const i=pk.querySelector(".mk-pk-in");i.hidden=false;i.value="";i.focus();mkPkFiltrar(i);const ln=document.getElementById("mkLinha");if(ln)ln.hidden=true;return}
-  if((b=g("[data-mkemo]"))){MK.avEmo=b.dataset.mkemo;document.querySelectorAll("[data-mkemo]").forEach(x=>x.classList.toggle("on",x===b));return}
-  if((b=g("[data-mkshmt]"))){e.stopPropagation();mkCompartilhar(cardMt(+b.dataset.mkshmt,null));return}
-  if((b=g("[data-mkshcat]"))){e.stopPropagation();e.preventDefault();const [i,k]=b.dataset.mkshcat.split(":");mkCompartilhar(cardMt(+i,k));return}
-  if((b=g("[data-mkshj]"))){e.stopPropagation();mkCompartilhar(cardJog(+b.dataset.mkshj));return}
-  if(g("[data-mkpub]")){const bt=g("[data-mkpub]");bt.disabled=true;try{await mkPublicar()}finally{bt.disabled=false}return}
-  if(g("[data-mkrefx]")){MK.ref=null;document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
-  if(g("[data-mkpaix]")){MK.parent=null;document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
-  if((b=g("[data-mkref]"))){if(!meuTime()){popCadastro();return}const k=b.dataset.mkref;let it=[];try{it=noticias()}catch(x){}const x=it.find(y=>chaveNot(y)===k);
-    const raw=x?x.t.replace(/<[^>]+>/g,""):k;MK.ref={k,raw:raw.slice(0,280),txt:esc(raw.slice(0,140))};MK.parent=null;MK.tipo="resenha";document.querySelectorAll(".mk-tab").forEach(t=>t.classList.toggle("on",t.dataset.mktipo==="resenha"));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();mkIrCompositor();return}
-  if((b=g("[data-mkresp]"))){if(!meuTime()){popCadastro();return}MK.parent=+b.dataset.mkresp;MK.ref=null;MK.tipo="resenha";document.querySelectorAll(".mk-tab").forEach(t=>t.classList.toggle("on",t.dataset.mktipo==="resenha"));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();mkIrCompositor();return}
-  if((b=g("[data-mkreac]"))){const [id,em]=b.dataset.mkreac.split(":");if(await comPin((tm,pin)=>sbRpc("reagir",{p_team:tm,p_pin:pin,p_post:+id,p_emoji:em})))mkCarregar(true);return}
-  if((b=g("[data-mkvoto]"))){const [id,o]=b.dataset.mkvoto.split(":").map(Number);if(await comPin((tm,pin)=>sbRpc("votar",{p_team:tm,p_pin:pin,p_post:id,p_opcao:o})))mkCarregar(true);return}
-  if((b=g("[data-mkdel]"))){const id=+b.dataset.mkdel;if(b.dataset.conf!=="1"){b.dataset.conf="1";b.textContent="apagar mesmo?";setTimeout(()=>{if(b.isConnected){b.dataset.conf="";b.textContent="apagar"}},3000);return}
-    const p=MK.posts.find(x=>x.id===id);
-    if(await comPin(async(tm,pin)=>{await sbRpc("apagar_post",{p_team:tm,p_pin:pin,p_id:id});if(p&&(p.tipo==="venda"||p.tipo==="interesse")&&p.player_id!=null)await sbRpc("marcar",{p_team:tm,p_pin:pin,p_player:p.player_id,p_nome:p.player_nome,p_tipo:p.tipo,p_pedido:null,p_ativo:false})}))mkCarregar(true);return}
-  /* ficha */
-  if((b=g("[data-mktroca]"))){e.stopPropagation();MK.trocaSel=+b.dataset.mktroca;mkFicha(MK.trocaSel);return}
-  if((b=g("[data-mksel]"))){e.stopPropagation();const [id,s]=[+b.dataset.mkid,b.dataset.mksel];if(donoAtual(id)===meuTime()){mostrarAviso("Teu próprio jogador não dá pra carimbar. Só vender.");return}const ja=MK.car.find(c=>c.player_id===id&&c.team===meuTime());MK.trocaSel=null;
-    if(await comPin((tm,pin)=>sbRpc("carimbar",{p_team:tm,p_pin:pin,p_player:id,p_selo:ja&&ja.selo===s?null:s}))){await mkCarregar(true)}return}
-  if((b=g("[data-mkmarca]"))){e.stopPropagation();const id=+b.dataset.mkid;const tipo=b.dataset.mkmarca;const j=jogDoId(id);if(!j)return;const ativo=b.dataset.on!=="1";
-    if(tipo==="venda"&&ativo){fecharFicha();MK.tipo="venda";ir("mercado");setTimeout(()=>{const i=document.getElementById("mkJog");if(i){i.value=j.n;mkIrCompositor()}},300);return}
-    if(await comPin(async(tm,pin)=>{await sbRpc("marcar",{p_team:tm,p_pin:pin,p_player:id,p_nome:j.n,p_tipo:tipo,p_pedido:null,p_ativo:ativo});if(ativo&&tipo==="interesse")await sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:"interesse",p_texto:`De olho no ${j.n}.`,p_player_id:id,p_player_nome:j.n,p_extra:{},p_parent:null,p_ref:null})})){mostrarAviso(ativo?"Anotado. O dono vai ver.":"Tirado.");await mkCarregar(true)}return}
-},true);
-/* ---------- ficha do jogador ---------- */
-let MK_FICHA=null;
-function mkFicha(id){MK_FICHA=id;const pop=document.getElementById("popFicha");if(!pop)return;const topo=pop.querySelector(".pj-topo");if(!topo)return;
-  pop.querySelectorAll(".mk-faixa,.mk-fbox,.mk-tags").forEach(x=>x.remove());
-  const v=vendaDe(id);if(v){topo.classList.add("mk-avenda");const f=document.createElement("div");f.className="mk-faixa";f.textContent="À VENDA";topo.appendChild(f)}else topo.classList.remove("mk-avenda");
-  const meu=meuTime();const dono=donoAtual(id);const C=carimbosDe(id);const ii=interessadosDe(id);const meuSel=(MK.car.find(c=>c.player_id===id&&c.team===meu)||{}).selo;
-  /* tags da galera, do lado das tags do jogador (todo mundo vê) */
-  const gN=notaGalera(id);const usados=SELOS.filter(([s])=>(C[s]||[]).length);
-  if(gN){const tg=document.createElement("span");tg.className="mk-tags";
-    tg.innerHTML=`<span class="mk-tag est" title="nota da galera: ${gN.m.toFixed(1)} de 5">${estrelas(gN.m)}</span>${usados.map(([s,e])=>`<span class="mk-tag" title="${(C[s]||[]).map(t=>esc(T(t)[0])).join(", ")}">${e} ${esc(s)}${C[s].length>1?` <b>${C[s].length}</b>`:""}</span>`).join("")}`;
-    const info=topo.querySelector(".pj-selos")||null;if(info)info.after(tg);else{const alvo=[...topo.children].find(x=>x.querySelector&&x.querySelector("small"))||topo;const sm=alvo.querySelector("small");if(sm&&sm.parentNode===alvo)alvo.insertBefore(tg,sm);else alvo.appendChild(tg)}}
-  const podeCarimbar=meu&&dono!==meu;const trocando=MK.trocaSel===id;
-  const sel=podeCarimbar?(meuSel&&!trocando?`<div class="mk-fb-meu">Teu carimbo: <b>${seloEmo(meuSel)} ${esc(meuSel)}</b> <button type="button" class="mk-mini" data-mktroca="${id}">trocar</button></div>`
-    :`<div class="mk-fb-q">${meuSel?"Troca teu carimbo:":"Qual o carimbo dele?"}</div><div class="mk-fb-sel">${SELOS.map(([s,e])=>`<button type="button" class="mk-sb ${meuSel===s?"on":""}" data-mksel="${esc(s)}" data-mkid="${id}">${e} ${esc(s)}</button>`).join("")}</div>`):"";
-  const acao=meu?(dono===meu?`<button type="button" class="mk-bt ${v?"":"amarelo"}" data-mkmarca="venda" data-mkid="${id}" data-on="${v?1:0}">${v?"Tirar da vitrine":"🏷️ Colocar à venda"}</button>`
-     :`<button type="button" class="mk-bt ${ii.some(x=>x.team===meu)?"":"amarelo"}" data-mkmarca="interesse" data-mkid="${id}" data-on="${ii.some(x=>x.team===meu)?1:0}">${ii.some(x=>x.team===meu)?"Tirar interesse":"👀 Tenho interesse"}</button>`):"";
-  const info2=`${v?`<div class="mk-fb-v">🏷️ À venda pelo <b>${esc(T(v.team)[0])}</b>${v.pedido?` · quer: ${esc(v.pedido)}`:""}</div>`:""}${ii.length?`<div class="mk-fb-i">👀 De olho: ${ii.map(x=>`<span>${logo(T(x.team)[0],"width:18px;height:18px")} ${esc(T(x.team)[0])}</span>`).join("")}</div>`:""}`;
-  if(!meu&&!info2)return;
-  const box=document.createElement("div");box.className="mk-fbox";
-  box.innerHTML=`<div class="mk-fb-t">MERCADO</div>${info2}${sel}<div class="mk-fb-bts">${acao}${meu?`<button type="button" class="mk-bt" data-mkshj="${id}">📤 Mandar pro Mercado</button>`:`<small class="mk-obs">Escolhe teu time (botão no topo) pra carimbar e negociar.</small>`}</div>`;
-  const ref=pop.querySelector(".pj-rks")||topo.nextSibling;topo.parentNode.insertBefore(box,ref&&ref.parentNode===topo.parentNode?ref:topo.nextSibling)}
-function mkFichaAtual(){if(MK_FICHA!=null&&document.getElementById("popFicha"))mkFicha(MK_FICHA)}
-abrirJogador=(orig=>function(id){const r=orig.apply(this,arguments);try{if(document.getElementById("popFicha")){mkFicha(id);if(!MK.ok||Date.now()-MK.t>60000)mkCarregar()}}catch(e){console.error(e)}return r})(abrirJogador);
-/* atualiza sozinho enquanto o Mercado está aberto */
-setInterval(()=>{if(document.hidden)return;if(rota()==="mercado")mkCarregar(true);else if(Date.now()-MK.t>40000&&MK.ok)mkCarregar(true)},20000);
-setTimeout(()=>mkCarregar(),4000);
-function mkBadge(){const b=document.querySelector('.atalho[data-ir="mercado"]');if(!b||!MK.ok)return;let v=0;try{v=+localStorage.getItem("wbs.mkVisto")||0}catch(e){}
-  const meu=meuTime();const n=rota()==="mercado"?0:MK.posts.filter(p=>!p.apagado&&p.team!==meu&&new Date(p.criado).getTime()>v).length;let s=b.querySelector(".mk-badge");
-  if(!n){s&&s.remove();return}if(!s){s=document.createElement("i");s.className="mk-badge";b.appendChild(s)}s.textContent=n>9?"9+":n}
-document.addEventListener("input",e=>{if(e.target.classList&&e.target.classList.contains("mk-pk-in"))mkPkFiltrar(e.target)});
-document.addEventListener("focusin",e=>{if(e.target.classList&&e.target.classList.contains("mk-pk-in"))mkPkFiltrar(e.target)});
-document.addEventListener("click",e=>{if(!e.target.closest(".mk-pk"))document.querySelectorAll(".mk-pk-lista").forEach(x=>x.hidden=true)});
-/* notificação estilo WhatsApp */
-function mkNotif(){if(!MK.ok)return;const meu=meuTime();let ult=0;try{ult=+localStorage.getItem("wbs.mkNotif")||0}catch(e){}
-  const vivos=MK.posts.filter(p=>!p.apagado);const max=vivos.reduce((s,p)=>Math.max(s,p.id),0);
-  const salvar=()=>{try{localStorage.setItem("wbs.mkNotif",String(max))}catch(e){}};
-  if(!ult||ult>max){salvar();return}
-  const novos=vivos.filter(p=>p.id>ult&&p.team!==meu).sort((a,b)=>b.id-a.id);salvar();
-  if(!novos.length||rota()==="mercado")return;
-  const meusJ=new Set(DADOS?DADOS.P.filter(q=>q.t===meu&&!q.fora).map(q=>q.id):[]);
-  const prio=novos.find(p=>p.player_id!=null&&meusJ.has(p.player_id))||novos.find(p=>p.parent&&MK.posts.some(q=>q.id===p.parent&&q.team===meu))||novos[0];
-  const t=T(prio.team);const X=prio.extra||{};
-  const pai=prio.parent?MK.posts.find(q=>q.id===prio.parent):null;
-  let txt=prio.tipo==="interesse"?`👀 de olho no ${meusJ.has(prio.player_id)?"teu ":""}${prio.player_nome||"jogador"}`:prio.tipo==="venda"?`🏷️ colocou ${prio.player_nome||"um jogador"} à venda`:X.av?`${X.av} avaliou ${prio.player_nome||""}`:prio.tipo==="enquete"?`📊 enquete: ${prio.texto}`:X.card?`📤 ${prio.texto}`:pai&&pai.team===meu?`↩︎ te respondeu: ${prio.texto}`:prio.texto;
-  mostrarNotif({esc:t[0],tit:`${t[0]} · ${t[2]}`,txt:txt.slice(0,120),mais:novos.length>1?`+${novos.length-1} no Mercado`:"",cor:t[4]})}
-function mostrarNotif(o){document.getElementById("mkNotif")?.remove();const n=document.createElement("button");n.type="button";n.id="mkNotif";n.className="mk-notif";n.style.setProperty("--cor",o.cor||"#555");
-  n.innerHTML=`<span class="mk-n-app">🛒 MERCADO DO LOYDÃO <i>agora</i></span><span class="mk-n-c">${logo(o.esc,"width:38px;height:38px")}<span><b>${esc(o.tit)}</b><small>${esc(o.txt)}</small>${o.mais?`<em>${esc(o.mais)}</em>`:""}</span></span>`;
-  document.body.appendChild(n);requestAnimationFrame(()=>n.classList.add("on"));
-  let y0=null;n.addEventListener("touchstart",e=>{y0=e.touches[0].clientY},{passive:true});n.addEventListener("touchmove",e=>{if(y0!=null&&e.touches[0].clientY-y0<-25){fecha()}},{passive:true});
-  const fecha=()=>{n.classList.remove("on");setTimeout(()=>n.remove(),300)};
-  n.addEventListener("click",e=>{e.stopPropagation();e.preventDefault();fecha();if(document.getElementById("popFicha"))fecharFicha();ir("mercado")},true);
-  setTimeout(fecha,7000)}
 </script>
 </body></html>
