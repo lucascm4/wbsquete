@@ -26,8 +26,9 @@ window.RADAR={"quando":"sáb 07/11","notas":{
 "Devin Booker":"33 e 30 em dois dias. O Deco agradece."
 }};
 
-window.RADAR.lesoes={"quando":"seg 09/11 19:05","sp":21,"fonte":"Underdog NBA","itens":{
-"Zion Williamson":["OUT","descanso · fora hoje (Underdog, 18:45)"]
+window.RADAR.lesoes={"quando":"seg 09/11 21:30","sp":21,"fonte":"Underdog NBA","itens":{
+"Zion Williamson":["OUT","descanso · fora hoje (Underdog, 18:45)"],
+"Kyrie Irving":["IN","titular hoje pelo Mavs (Underdog, 21:30)"]
 }};
 
 /* alertas de status ao vivo (Underdog NBA): entram no noticiário com "hope he is ok" */
