@@ -2038,6 +2038,12 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-txtog{margin:6px 12px;align-self:flex-start}
 .mk-txj small{color:var(--apagado);font-size:10px}
 
+.mk-quem{display:block!important;max-height:50vh;overflow-y:auto;padding:4px 14px}
+.mk-quem>.mk-quem-l{width:100%;box-sizing:border-box}
+.mk-quem-l{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--linha)}
+.mk-quem-l>div{flex:1;min-width:0}.mk-quem-l b{display:block;font-size:15px;color:var(--texto)}.mk-quem-l small{color:var(--texto2,#aaa);font-size:12px}
+.mk-quem-l>span{font-size:22px}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -2103,11 +2109,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794327441"></script>
-<script src="radar.js?v=1794327441"></script>
-<script src="midia.js?v=1794327441"></script>
+<script src="hist.js?v=1794327511"></script>
+<script src="radar.js?v=1794327511"></script>
+<script src="midia.js?v=1794327511"></script>
 <script>
-const VERSAO_PAINEL="20261110131721";
+const VERSAO_PAINEL="20261110131831";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4202,7 +4208,7 @@ document.addEventListener("click",async e=>{
   if((b=g("[data-mkref]"))){if(!meuTime()){popCadastro();return}const k=b.dataset.mkref;let it=[];try{it=noticias()}catch(x){}const x=it.find(y=>chaveNot(y)===k);
     const raw=x?x.t.replace(/<[^>]+>/g,""):k;MK.ref={k,raw:raw.slice(0,280),txt:esc(raw.slice(0,140))};MK.parent=null;MK.tipo="resenha";document.querySelectorAll(".mk-tab").forEach(t=>t.classList.toggle("on",t.dataset.mktipo==="resenha"));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();mkIrCompositor();return}
   if((b=g("[data-mkresp]"))){if(!meuTime()){popCadastro();return}MK.parent=+b.dataset.mkresp;MK.ref=null;MK.tipo="resenha";document.querySelectorAll(".mk-tab").forEach(t=>t.classList.toggle("on",t.dataset.mktipo==="resenha"));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();mkIrCompositor();return}
-  if((b=g("[data-mkreac]"))){const [id,em]=b.dataset.mkreac.split(":");if(await comPin((tm,pin)=>sbRpc("reagir",{p_team:tm,p_pin:pin,p_post:+id,p_emoji:em})))mkCarregar(true);return}
+  if((b=g("[data-mkreac]"))){const [id,em]=b.dataset.mkreac.split(":");mkQuem(+id,em);return}
   if((b=g("[data-mkvoto]"))){const [id,o]=b.dataset.mkvoto.split(":").map(Number);if(await comPin((tm,pin)=>sbRpc("votar",{p_team:tm,p_pin:pin,p_post:id,p_opcao:o})))mkCarregar(true);return}
   if((b=g("[data-mkdel]"))){const id=+b.dataset.mkdel;if(b.dataset.conf!=="1"){b.dataset.conf="1";b.textContent="apagar?";setTimeout(()=>{if(b.isConnected){b.dataset.conf="";b.textContent="✕"}},3000);return}
     const p=MK.posts.find(x=>x.id===id);
@@ -4301,6 +4307,13 @@ function mkFolha(id){if(typeof id==="string"){mkReal(id).then(r=>{if(r)mkFolha(r
     if(e.target.closest("[data-fed]")){fecha();mkEditar(p);return}
     const d=e.target.closest("[data-fdel]");if(d){if(d.dataset.conf!=="1"){d.dataset.conf="1";d.textContent="Toca de novo pra apagar";return}fecha();
       if(await comPin(async(tm,pin)=>{await sbRpc("apagar_post",{p_team:tm,p_pin:pin,p_id:id});if((p.tipo==="venda"||p.tipo==="interesse")&&p.player_id!=null)await sbRpc("marcar",{p_team:tm,p_pin:pin,p_player:p.player_id,p_nome:p.player_nome,p_tipo:p.tipo,p_pedido:null,p_ativo:false})}))mkCarregar(true)}})}
+function mkQuem(id,foco){const L=MK.reac.filter(r=>r.post_id===id);if(!L.length)return;const meu=meuTime();document.getElementById("mkQuem")?.remove();
+  const ord=EMO_MK.concat([...new Set(L.map(r=>r.emoji))].filter(e=>!EMO_MK.includes(e))).filter(e=>L.some(r=>r.emoji===e));if(foco&&ord.includes(foco)){ord.splice(ord.indexOf(foco),1);ord.unshift(foco)}
+  const lin=r=>{const t=T(r.team);return `<div class="mk-quem-l">${logo(t[0],"width:30px;height:30px")}<div><b>${esc(t[0])}</b><small>${esc(t[2]||"")}</small></div><span>${r.emoji}</span></div>`};
+  const f=document.createElement("div");f.id="mkQuem";f.className="mk-folha-fundo";
+  f.innerHTML=`<div class="mk-folha" role="dialog" aria-label="Quem reagiu"><div class="mk-folha-cab"><button type="button" data-qx>Fechar</button><b>Quem reagiu</b><span></span></div><div class="mk-quem">${ord.map(e=>L.filter(r=>r.emoji===e).map(lin).join("")).join("")}</div>${meu?`<div class="mk-folha-acoes"><button type="button" data-qreag>Reagir também</button></div>`:""}</div>`;
+  document.body.appendChild(f);requestAnimationFrame(()=>f.classList.add("on"));const fecha=()=>{f.classList.remove("on");setTimeout(()=>f.remove(),220)};
+  f.addEventListener("click",e=>{e.stopPropagation();if(e.target===f||e.target.closest("[data-qx]")){fecha();return}if(e.target.closest("[data-qreag]")){fecha();setTimeout(()=>mkFolha(id),230)}})}
 function mkEditar(p){document.getElementById("mkEd")?.remove();const f=document.createElement("div");f.id="mkEd";f.className="mk-folha-fundo";
   f.innerHTML=`<div class="mk-folha" role="dialog" aria-label="Editar post"><div class="mk-folha-cab"><button type="button" data-ex>Cancelar</button><b>Editar post</b><span></span></div><div style="padding:12px;display:flex;flex-direction:column;gap:10px"><textarea id="mkEdTx" maxlength="500" rows="4" style="width:100%;box-sizing:border-box;font:15px var(--ui);background:var(--fundo2,#111);color:var(--texto);border:1px solid var(--linha);border-radius:10px;padding:10px"></textarea><button type="button" data-eok style="all:unset;box-sizing:border-box;width:100%;text-align:center;cursor:pointer;background:var(--amarelo);color:#000;font-family:var(--display);font-size:18px;letter-spacing:.06em;padding:12px;border-radius:10px">SALVAR</button></div></div>`;
   document.body.appendChild(f);const tx=f.querySelector("#mkEdTx");tx.value=p.texto||"";requestAnimationFrame(()=>{f.classList.add("on");tx.focus()});
