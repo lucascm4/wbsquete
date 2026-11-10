@@ -1937,6 +1937,13 @@ svg.cad{width:18px;height:18px;display:block}
 #btnEu{position:relative}
 .mk-fb-bts{gap:6px}.mk-fb-bts .mk-bt{flex:0 0 auto!important;padding:6px 10px;font-size:12px;border-radius:999px;box-shadow:none}
 .mk-fb-bts .mk-bt.amarelo{box-shadow:2px 2px 0 #000}
+.mk-abas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.mk-aba{all:unset;box-sizing:border-box;text-align:center;cursor:pointer;background:#000;color:var(--amarelo);border:2px solid var(--amarelo);padding:10px 4px;font-family:var(--display);font-size:16px;letter-spacing:.03em;box-shadow:3px 3px 0 #000}
+.mk-aba.on{background:var(--amarelo);color:#000}
+[data-mkpane]{display:flex;flex-direction:column;gap:inherit}
+[data-mkpane][hidden]{display:none!important}
+.cmp{margin-top:12px}.cmp-sel{display:flex;align-items:center;gap:8px;margin:6px 0}.cmp-sel select{flex:1;min-width:0;background:#000;color:var(--texto);border:2px solid var(--linha);border-radius:8px;padding:7px;font:600 14px var(--ui)}.cmp-sel span{color:var(--apagado)}
+.cmp-t{overflow-x:auto}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -2003,11 +2010,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794279405"></script>
-<script src="radar.js?v=1794279405"></script>
-<script src="midia.js?v=1794279405"></script>
+<script src="hist.js?v=1794279724"></script>
+<script src="radar.js?v=1794279724"></script>
+<script src="midia.js?v=1794279724"></script>
 <script>
-const VERSAO_PAINEL="20261109235645";
+const VERSAO_PAINEL="20261110000204";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2062,7 +2069,8 @@ const zero=()=>Array(11).fill(0);
 function placar(a,b){let w=0,l=0,t=0;const r=CATS.map(c=>{let x=c.f(a),y=c.f(b);if(c.inv){[x,y]=[y,x]}const s=x>y?1:x<y?-1:0;s>0?w++:s<0?l++:t++;return s});return {w,l,t,r};}
 const rtxt=(w,l,t)=>`${w}-${l}${t?"-"+t:""}`;
 function linhaStats(s){return `${s[0]} pts · ${s[1]} reb · ${s[2]} ast · ${s[3]} rb · ${s[4]} tc · ${s[5]} 3pt · ${s[7]}/${s[8]} fg · ${s[9]}/${s[10]} ft · ${s[6]} to`}
-function tabMini(a7,av){ // 7 dias x temporada, uma coluna por stat, e a variação embaixo
+function tabRd(p){return p.av&&p.av[11]?tabMini(p.l7&&p.l7[11]?p.l7:p.av,p.av):""}
+function tabMini(a7,av,ra,rb){ra=ra||"7d";rb=rb||"Temp."; // 7 dias x temporada, uma coluna por stat, e a variação embaixo
   const pc=(m,t)=>t?100*m/t:null;
   const C=[["PTS",0],["REB",1],["AST",2],["STL",3],["BLK",4],["3PM",5],["TO",6,1],["FG%","fg"],["FT%","ft"]];
   const val=(a,c)=>c[1]==="fg"?pc(a[7],a[8]):c[1]==="ft"?pc(a[9],a[10]):a[c[1]];
@@ -2071,8 +2079,8 @@ function tabMini(a7,av){ // 7 dias x temporada, uma coluna por stat, e a variaç
     let d,txt;if(c[1]==="fg"||c[1]==="ft"){d=x-y;txt=(d>0?"+":"")+d.toFixed(0)}else{if(!y&&!x)return `<td class="z">0</td>`;d=y?100*(x-y)/y:100;txt=(d>0?"+":"")+d.toFixed(0)+"%"}
     const bom=c[2]?d<0:d>0;const forte=Math.abs(d)>=(c[1]==="fg"||c[1]==="ft"?4:25);return `<td class="${Math.abs(d)<0.5?"z":bom?"up":"dn"}${forte?" f":""}">${txt}</td>`};
   return `<table class="tmini"><thead><tr><th></th>${C.map(c=>`<th>${c[0]}</th>`).join("")}</tr></thead><tbody>
-   <tr><th>7d</th>${C.map(c=>`<td>${f(val(a7,c),c)}</td>`).join("")}</tr>
-   <tr><th>Temp.</th>${C.map(c=>`<td>${f(val(av,c),c)}</td>`).join("")}</tr>
+   <tr><th>${ra}</th>${C.map(c=>`<td>${f(val(a7,c),c)}</td>`).join("")}</tr>
+   <tr><th>${rb}</th>${C.map(c=>`<td>${f(val(av,c),c)}</td>`).join("")}</tr>
    <tr class="dl"><th>Δ</th>${C.map(dlt).join("")}</tr></tbody></table>`;
 }
 function linhaMedia(a){return `${a[0]} pts · ${a[1]} reb · ${a[2]} ast · ${a[3]} rb · ${a[4]} tc · ${a[5]} 3pt`}
@@ -3571,7 +3579,7 @@ function vRadar(){
     const L=elenco.filter(p=>HIST.draft[p.n]&&p.rk&&p.rk[0]>0).map(p=>({p,pk:HIST.draft[p.n],rk:p.rk[0],dl:HIST.draft[p.n]-p.rk[0]}));
     const sobe=L.filter(x=>x.dl>0).sort((x,y)=>y.dl-x.dl).slice(0,8),afunda=L.filter(x=>x.dl<0&&x.pk<=80).sort((x,y)=>x.dl-y.dl).slice(0,8);
     h+=`<h1 class="manchete">QUEM SOBE, QUEM AFUNDA</h1><p class="linha-fina">Pick do draft ➜ ranking da ESPN na temporada. Igual à página da revista, só que ao vivo.</p></div>${pills}
-    <div class="radar-grid"><div class="card"><div class="bloco-tit">SOBE</div>${sobe.map(({p,pk,rk})=>linhaRd(p,"up",`${rk}<small>RK · PICK ${pk}</small>`,linhaMedia(p.av||zero()))).join("")}</div><div class="card"><div class="bloco-tit">AFUNDA</div>${afunda.map(({p,pk,rk})=>linhaRd(p,"dn",`${rk}<small>RK · PICK ${pk}</small>`,linhaMedia(p.av||zero()))).join("")}</div></div>`;
+    <div class="radar-grid"><div class="card"><div class="bloco-tit">SOBE</div>${sobe.map(({p,pk,rk})=>linhaRd(p,"up",`${rk}<small>RK · PICK ${pk}</small>`,linhaMedia(p.av||zero()),"",tabRd(p))).join("")}</div><div class="card"><div class="bloco-tit">AFUNDA</div>${afunda.map(({p,pk,rk})=>linhaRd(p,"dn",`${rk}<small>RK · PICK ${pk}</small>`,linhaMedia(p.av||zero()),"",tabRd(p))).join("")}</div></div>`;
     return h;
   }
   if(f==="pegar"){
@@ -3594,7 +3602,7 @@ function vRadar(){
   // lixo
   const L=elenco.filter(p=>p.rk&&p.rk[0]>130&&p.slot!==13&&p.inj!=="OUT").map(p=>({p,sc:p.rk[0]+(p.l7&&p.l7[11]>=2?p.rk[1]:p.rk[0])})).sort((x,y)=>y.sc-x.sc).slice(0,15);
   h+=`<h1 class="manchete">PÁGINA DO LIXO</h1><p class="linha-fina">Quem ocupa vaga nos elencos da liga com o pior ranking da ESPN (temporada e últimos 7 dias). Quem tem, que se explique.</p></div>${pills}
-  <div class="card">${L.map(({p})=>linhaRd(p,"dn",`${p.rk[0]}<small>RK 9CAT · PICK ${HIST.draft[p.n]||"FA"}</small>`,`${POS[p.pos]||""} · ${NBA[p.pro]||""} · ${SLOT[p.slot]||""} · ${p.av?linhaMedia(p.av):"sem jogos"}`)).join("")}</div>`;
+  <div class="card">${L.map(({p})=>linhaRd(p,"dn",`${p.rk[0]}<small>RK 9CAT · PICK ${HIST.draft[p.n]||"FA"}</small>`,`${POS[p.pos]||""} · ${NBA[p.pro]||""} · ${SLOT[p.slot]||""} · ${p.av?linhaMedia(p.av):"sem jogos"}`,"",tabRd(p))).join("")}</div>`;
   return h;
 }
 
@@ -3946,10 +3954,11 @@ function vMercado(){
    :`<div class="card mk-comp vazio"><b>Escolhe teu time pra postar, carimbar e vender jogador.</b><button type="button" class="mk-bt amarelo" data-mkcad>Sou treinador</button></div>`;
   const sino=("Notification" in window)&&navigator.setAppBadge&&Notification.permission==="default"?`<button type="button" class="mk-mini mk-sino" data-mksino>🔔 Contador no ícone do app</button>`:"";
   return `<div class="mk-topo"><div class="mk-hero-t">MERCADO<span>do Loydão</span></div>${sino}</div>
-  ${comp}
-  <div id="mkVitrine" class="mk-strip" hidden></div>
-  <div class="card" id="mkFeed"><div class="bloco-tit">FEED</div><div class="mk-load">carregando…</div></div>
-  <div class="card" id="mkSelos"><div class="bloco-tit">NOTA DA GALERA</div><div class="mk-load">carregando…</div></div>`}
+  <div class="mk-abas" role="tablist">${[["chat","💬 Chat"],["venda","🏷️ À venda"],["aval","⭐ Avaliações"]].map(([k,n])=>`<button type="button" role="tab" class="mk-aba ${(MK.aba||"chat")===k?"on":""}" data-mkaba="${k}" aria-selected="${(MK.aba||"chat")===k}">${n}</button>`).join("")}</div>
+  <div data-mkpane="chat" ${(MK.aba||"chat")==="chat"?"":"hidden"}>${comp}
+  <div class="card" id="mkFeed"><div class="bloco-tit">FEED</div><div class="mk-load">carregando…</div></div></div>
+  <div data-mkpane="venda" ${MK.aba==="venda"?"":"hidden"}><div class="card" id="mkVitrine"><div class="mk-load">carregando…</div></div></div>
+  <div data-mkpane="aval" ${MK.aba==="aval"?"":"hidden"}><div class="card" id="mkSelos"><div class="mk-load">carregando…</div></div></div>`}
 function mkCampos(){const t=MK.tipo,meu=meuTime();
   const refBox=MK.ref?`<div class="mk-ref">↩︎ respondendo ao lance: <i>${MK.ref.txt}</i> <button type="button" class="mk-mini" data-mkrefx>✕</button></div>`:"";
   const pai=MK.parent?MK.posts.find(x=>x.id===MK.parent):null;
@@ -4018,21 +4027,20 @@ function mkPost(p,filhos){const t=T(p.team);const meu=meuTime();const tp=TIPO_MK
     ${filhos&&filhos.length?`<div class="mk-filhos">${filhos.map(f=>mkPost(f)).join("")}</div>`:""}</article>`}
 function mkPintar(){if(rota()!=="mercado")return;
   const fe=document.getElementById("mkFeed"),vi=document.getElementById("mkVitrine"),se=document.getElementById("mkSelos"),la=document.getElementById("mkLances");if(!fe)return;
-  if(MK.err&&!MK.ok){const m=`<div class="mk-load">O Mercado não respondeu (${esc(MK.err)}). Tenta de novo daqui a pouco.</div>`;fe.innerHTML=`<div class="bloco-tit">FEED</div>`+m;vi.hidden=true;se.innerHTML="";return}
+  if(MK.err&&!MK.ok){const m=`<div class="mk-load">O Mercado não respondeu (${esc(MK.err)}). Tenta de novo daqui a pouco.</div>`;fe.innerHTML=`<div class="bloco-tit">FEED</div>`+m;vi.innerHTML=m;se.innerHTML=m;return}
   if(!MK.ok)return;
   const vivos=MK.posts.filter(p=>!p.apagado);const top=vivos.filter(p=>!p.parent);const fil=id=>vivos.filter(p=>p.parent===id).sort((a,b)=>a.id-b.id);
   fe.innerHTML=`<div class="bloco-tit">FEED <small>${top.length} post${top.length===1?"":"s"}</small></div>`+(top.length?top.slice(0,60).map(p=>mkPost(p,fil(p.id))).join(""):`<div class="mk-load">Ninguém postou ainda. O primeiro leva a fama de carente.</div>`);
   const vend=MK.mer.filter(x=>x.tipo==="venda"&&x.team===donoAtual(x.player_id));const proc={};MK.mer.filter(x=>x.tipo==="interesse"&&x.team!==donoAtual(x.player_id)).forEach(x=>{(proc[x.player_id]=proc[x.player_id]||{n:x.player_nome,t:[]}).t.push(x.team)});
   const pr=Object.entries(proc).sort((a,b)=>b[1].t.length-a[1].t.length).slice(0,10);
-  const it=x=>`<button type="button" class="mk-si clic" data-pj="${x.id}">${face(x.id,x.n||"","")}<b>${esc((x.n||"").replace(/^(\S)\S*\s/,"$1. "))}</b><small>${x.s}</small></button>`;
-  const L1=vend.map(x=>({id:x.player_id,n:x.player_nome,s:`${esc(T(x.team)[0])}${interessadosDe(x.player_id).length?` · 👀 ${interessadosDe(x.player_id).length}`:""}`}));
-  const L2=pr.map(([id,o])=>({id:+id,n:o.n,s:`👀 ${o.t.length} time${o.t.length>1?"s":""}`}));
-  vi.hidden=!(L1.length||L2.length);
-  vi.innerHTML=`${L1.length?`<div class="mk-sg"><h4>🏷️ À VENDA</h4><div class="mk-sl">${L1.map(it).join("")}</div></div>`:""}${L2.length?`<div class="mk-sg"><h4>👀 MAIS PROCURADOS</h4><div class="mk-sl">${L2.map(it).join("")}</div></div>`:""}`;
+  const linhaV=x=>{const ii=interessadosDe(x.player_id);return `<div class="mk-v clic" data-pj="${x.player_id}">${face(x.player_id,x.player_nome||"","")}<div><b>${esc(x.player_nome||"")} ${estDe(x.player_id)}</b><small>${esc(T(x.team)[0])}${x.pedido?` · quer: ${esc(x.pedido)}`:""}</small></div><em>${ii.length?`👀 ${ii.length}`:""}</em></div>`};
+  vi.innerHTML=`<div class="mk-vit"><div><h4>🏷️ À VENDA</h4>${vend.length?vend.map(linhaV).join(""):`<p class="mk-load">Ninguém vendendo. Abre a ficha de um jogador teu e toca em "Colocar à venda".</p>`}</div>
+    <div><h4>👀 MAIS PROCURADOS</h4>${pr.length?pr.map(([id,o])=>`<div class="mk-v clic" data-pj="${id}">${face(+id,o.n||"","")}<div><b>${esc(o.n||"")} ${estDe(+id)}</b><small>${o.t.map(t=>esc(T(t)[0])).join(", ")}</small></div><em>${o.t.length}</em></div>`).join(""):`<p class="mk-load">Ninguém de olho em ninguém.</p>`}</div></div>`;
   const ids=[...new Set(MK.car.map(c=>c.player_id))].map(id=>({id,g:notaGalera(id),j:jogDoId(id)})).filter(x=>x.g);
   const lin=x=>`<div class="mk-v clic" data-pj="${x.id}">${face(x.id,x.j?x.j.n:"","")}<div><b>${esc(x.j?x.j.n:"#"+x.id)}</b><small>${x.j&&x.j.t?esc(T(x.j.t)[0]):"livre"} · ${x.g.n} carimbo${x.g.n===1?"":"s"}${(()=>{const c=carimbosDe(x.id);const top=Object.entries(c).sort((a,b)=>b[1].length-a[1].length)[0];return top?` · ${SELOS.find(s=>s[0]===top[0])[1]} ${esc(top[0])}`:""})()}</small></div><em class="mk-nota">${estrelas(x.g.m)}<b>${x.g.m.toFixed(1)}</b></em></div>`;
   const ord=(a,b)=>b.g.m-a.g.m||b.g.n-a.g.n;const melhores=ids.filter(x=>x.g.m>=3).sort(ord).slice(0,5);const piores=ids.filter(x=>x.g.m<3).sort((a,b)=>a.g.m-b.g.m||b.g.n-a.g.n).slice(0,5);
-  se.innerHTML=`<div class="bloco-tit">NOTA DA GALERA <small>💩=1 · 🥴 e 🗑️=2 · 📉=3 · 👑=4 · 🏆=5</small></div>`+(ids.length?`<div class="mk-vit"><div><h4>⭐ MAIS BEM AVALIADOS</h4>${melhores.length?melhores.map(lin).join(""):`<p class="mk-load">Ninguém passou de 3 estrelas.</p>`}</div><div><h4>💩 PIORES AVALIADOS</h4>${piores.length?piores.map(lin).join(""):`<p class="mk-load">Ninguém abaixo de 3 estrelas. Liga boazinha demais.</p>`}</div></div>`:`<p class="mk-load">Ninguém avaliado ainda. Abre a ficha de um jogador e carimba: cada carimbo vira estrela.</p>`);
+  const porSelo=SELOS.map(([s,e])=>{const L=ids.map(x=>({...x,q:(carimbosDe(x.id)[s]||[]).length})).filter(x=>x.q).sort((a,b)=>b.q-a.q||b.g.n-a.g.n).slice(0,3);return L.length?`<div class="mk-sel"><h4>${e} TOP ${esc(s)}</h4>${L.map(x=>`<div class="mk-v clic" data-pj="${x.id}">${face(x.id,x.j?x.j.n:"","")}<div><b>${esc(x.j?x.j.n:"#"+x.id)}</b><small>${x.j&&x.j.t?esc(T(x.j.t)[0]):"livre"}</small></div><em>${x.q}</em></div>`).join("")}</div>`:""}).join("");
+  se.innerHTML=ids.length?`<div class="bloco-tit">NOTA DA GALERA <small>💩=1 · 🥴 e 🗑️=2 · 📉=3 · 👑=4 · 🏆=5</small></div><div class="mk-vit"><div><h4>⭐ MAIS BEM AVALIADOS</h4>${melhores.length?melhores.map(lin).join(""):`<p class="mk-load">Ninguém passou de 3 estrelas.</p>`}</div><div><h4>💩 PIORES AVALIADOS</h4>${piores.length?piores.map(lin).join(""):`<p class="mk-load">Ninguém abaixo de 3 estrelas.</p>`}</div></div><div class="bloco-tit">TOP DE CADA CARIMBO</div><div class="mk-sels">${porSelo}</div>`:`<div class="bloco-tit">NOTA DA GALERA</div><p class="mk-load">Ninguém avaliado ainda. Abre a ficha de um jogador e carimba: cada carimbo vira estrela.</p>`;
   if(la)la.innerHTML=`<div class="bloco-tit">LANCES DO LOYDÃO <small>responde aí</small></div>`+mkLances()}
 /* ---------- ações ---------- */
 async function mkPublicar(){const t=MK.tipo;const txt=(document.getElementById("mkTxt")||{}).value?.trim()||"";
@@ -4061,6 +4069,7 @@ document.addEventListener("click",async e=>{
   const g=s=>e.target.closest(s);let b;
   if((b=g("[data-mktipo]"))){MK.tipo=b.dataset.mktipo;MK.parent=null;document.querySelectorAll(".mk-tab").forEach(x=>x.classList.toggle("on",x===b));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
   if(g("[data-mkcad]")){popCadastro();return}
+  if((b=g("[data-mkaba]"))){MK.aba=b.dataset.mkaba;document.querySelectorAll("[data-mkaba]").forEach(x=>{x.classList.toggle("on",x===b);x.setAttribute("aria-selected",x===b)});document.querySelectorAll("[data-mkpane]").forEach(p=>p.hidden=p.dataset.mkpane!==MK.aba);return}
   if(g("[data-mkabre]")){mkAbrir(!MK.aberto);if(MK.aberto)setTimeout(()=>document.getElementById("mkTxt")?.focus(),200);return}
   if(g("[data-mksino]")){try{const r=await Notification.requestPermission();if(r==="granted"){mostrarAviso("Pronto: o número de novidades aparece no ícone do app.");g("[data-mksino]")?.remove();mkBadge()}else mostrarAviso("Sem permissão, sem contador. Dá pra liberar nos Ajustes do iPhone.")}catch(x){}return}
   if((b=g("[data-mkopj]"))){const r=b.closest(".mk-opr");const i=r.dataset.i;r.innerHTML=`<div class="mk-pk" data-modo="todos" data-op="${i}"><div class="mk-pk-sel" hidden></div><input class="mk-pk-in" type="text" placeholder="🔎 jogador da opção ${+i+1}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><div class="mk-pk-lista" hidden></div></div><button type="button" class="mk-opj" data-mkoptxt title="escrever texto">✏️</button>`;r.querySelector(".mk-pk-in").focus();return}
@@ -4146,6 +4155,20 @@ function mostrarNotif(o){document.getElementById("mkNotif")?.remove();const n=do
 /* tocar de novo na busca (já aberta) fecha a lista */
 document.addEventListener("pointerdown",e=>{const i=e.target.closest&&e.target.closest(".mk-pk-in");if(!i)return;const l=i.closest(".mk-pk").querySelector(".mk-pk-lista");i._fechar=document.activeElement===i&&l&&!l.hidden},true);
 document.addEventListener("click",e=>{const i=e.target.closest&&e.target.closest(".mk-pk-in");if(!i)return;const l=i.closest(".mk-pk").querySelector(".mk-pk-lista");if(i._fechar){l.hidden=true;i._fechar=false;i.blur()}else if(l.hidden)mkPkFiltrar(i)});
+/* ficha: comparar períodos (7d, 30d, temporada, projeção) */
+const CMP_OP=[["l7","7 dias"],["l30","30 dias"],["av","Temporada"],["pj","Projeção"]];
+function fichaComparar(id){const pop=document.getElementById("popFicha");if(!pop)return;const pane=pop.querySelector('[data-pane="num"]');if(!pane)return;pane.querySelector(".cmp")?.remove();
+  const d=DADOS;const p=d&&(d.P.find(q=>q.id===id&&!q.fora)||(d.fa||[]).find(q=>q.id===id)||d.P.find(q=>q.id===id));if(!p)return;
+  const X=(typeof EXTRA!=="undefined"&&EXTRA[id])||{};const arr=k=>{const a=p[k]||X[k];return a&&a[11]?a:null};const ops=CMP_OP.filter(([k])=>arr(k));if(ops.length<2)return;
+  let A=UI.cmpA||"l7",B=UI.cmpB||"av";if(!arr(A))A=ops[0][0];if(!arr(B)||B===A)B=(ops.find(o=>o[0]!==A)||ops[1])[0];
+  const nm=k=>(CMP_OP.find(o=>o[0]===k)||["",""])[1];
+  const box=document.createElement("div");box.className="cmp";
+  const sel=(id2,v)=>`<select data-cmp="${id2}">${ops.map(([k,n])=>`<option value="${k}" ${k===v?"selected":""}>${n}</option>`).join("")}</select>`;
+  box.innerHTML=`<div class="pj-sec">COMPARAR</div><div class="cmp-sel">${sel("A",A)}<span>x</span>${sel("B",B)}</div><div class="cmp-t">${tabMini(arr(A),arr(B),nm(A).replace(" dias","d").replace("Temporada","Temp.").replace("Projeção","Proj."),nm(B).replace(" dias","d").replace("Temporada","Temp.").replace("Projeção","Proj."))}</div>`;
+  box.addEventListener("change",e=>{const s=e.target.closest("[data-cmp]");if(!s)return;e.stopPropagation();if(s.dataset.cmp==="A")UI.cmpA=s.value;else UI.cmpB=s.value;fichaComparar(id)});
+  box.addEventListener("click",e=>e.stopPropagation());
+  const sub=pane.querySelector(".pj-grade");if(sub&&sub.parentNode===pane)sub.after(box);else pane.appendChild(box)}
+abrirJogador=(orig=>function(id){const r=orig.apply(this,arguments);try{fichaComparar(id)}catch(e){console.error(e)}return r})(abrirJogador);
 
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
