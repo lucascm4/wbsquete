@@ -1856,11 +1856,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794274814"></script>
-<script src="radar.js?v=1794274814"></script>
-<script src="midia.js?v=1794274814"></script>
+<script src="hist.js?v=1794274934"></script>
+<script src="radar.js?v=1794274934"></script>
+<script src="midia.js?v=1794274934"></script>
 <script>
-const VERSAO_PAINEL="20261109224014";
+const VERSAO_PAINEL="20261109224214";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3090,6 +3090,8 @@ function abrirJogador(id,perF){
   const linhasCar=(p.av?[{yr:2027,t:p.pro,a:p.av,atual:1,mn:p.mn&&p.mn.av}]:[]).concat(car||[]);
   // temporadas sem dado da ESPN: usa o que ele fez como titular na liga (museu)
   Object.keys(SPL).forEach(k=>{const yr=+k.slice(0,4)+1;if(linhasCar.some(l=>l.yr===yr))return;const cs=Object.values(SPL[k]);const g=cs.reduce((x,c)=>x+c.g,0);if(!g)return;const sm=zero();cs.forEach(c=>c.s.forEach((v,i)=>sm[i]+=v));linhasCar.push({yr,a:sm.map(v=>v/g).concat([g]),soLiga:1})});
+  // anos em que ele esteve num elenco da liga mas não entrou em quadra (lesão o ano todo, por exemplo): a linha aparece com os times
+  Object.keys(FT).forEach(k=>{const yr=+k.slice(0,4)+1;if(!yr||linhasCar.some(l=>l.yr===yr))return;linhasCar.push({yr,a:zero().concat([0]),soLiga:1,semJogo:1})});
   linhasCar.sort((x,y)=>y.yr-x.yr);
   const tmsDe=yr=>{const k=rotT(yr);const f=FT[k]||{ts:[],drop:null};const sp=SPL[k]||{};const ts=f.ts.slice();Object.keys(sp).sort((a,b)=>sp[a].w1-sp[b].w1).forEach(t=>{if(!ts.includes(t))ts.push(t)});
     if(yr===2027){const cur=d.P.find(q=>q.id===id&&!q.fora);d.P.filter(q=>q.id===id).forEach(q=>{const nm=T(q.t)[0];if(nm&&!ts.includes(nm))ts.push(nm)});if(cur){const nm=T(cur.t)[0];ts.splice(ts.indexOf(nm),1);ts.push(nm)}}
@@ -3133,7 +3135,7 @@ function abrirJogador(id,perF){
     return `<details class="car-l ${cls||""}"><summary class="cr"><div class="cr-1"><b class="cr-ano">${rot}</b>${yr!=null?`<span class="cr-tj">${trilha(yr)}</span>`:""}</div>
       <div class="cr-2">${yr!=null?dr(yr):""}<span class="cr-st"><b>${jj}</b> j${liga?" na liga":""} · <b>${n1(a[0])}</b> pts · <b>${n1(a[1])}</b> reb · <b>${n1(a[2])}</b> ast</span></div></summary>
     ${yr!=null?trilhaDet(yr):""}${mais(a,mn)}${cortes?`<div class="car-sub">JOGOS POR MANAGER <button type="button" class="qq mini" data-expl aria-label="explicação">?</button></div><div class="expl" hidden>Jogos que ele fez / jogos que o time dele na NBA teve enquanto estava naquele elenco. Mostra quanto ele faltou por lesão ou descanso com cada dono.</div>${cortes}`:""}</details>`};
-  const carreira=car&&car.length?`<div class="car">${tot?linCar("Total",tot,"car-tot",null,(()=>{const L2=LT.filter(l=>l.mn!=null);const g=L2.reduce((x,l)=>x+l.a[11],0);return g?L2.reduce((x,l)=>x+l.mn*l.a[11],0)/g:null})()):""}${linhasCar.map(l=>linCar(rotA(l.yr),l.a,(l.atual?"car-at":"")+(l.soLiga?" car-liga":""),l.yr,l.mn)).join("")}</div>`:"";
+  const carreira=linhasCar.length?`<div class="car">${tot?linCar("Total",tot,"car-tot",null,(()=>{const L2=LT.filter(l=>l.mn!=null);const g=L2.reduce((x,l)=>x+l.a[11],0);return g?L2.reduce((x,l)=>x+l.mn*l.a[11],0)/g:null})()):""}${linhasCar.map(l=>linCar(rotA(l.yr),l.a,(l.atual?"car-at":"")+(l.soLiga?" car-liga":""),l.yr,l.mn)).join("")}</div>`:"";
   // últimos jogos (boxes guardados)
   const glx=typeof GL!=="undefined"&&Array.isArray(GL[id])&&GL[id].length?GL[id]:null;
   const donoDia=sp=>{if(typeof BOX==="undefined"||!BOX.dias[sp])return "";const l=BOX.dias[sp].find(l=>l[0]===id);return l?`${logo(T(l[1])[0])}${l[2]>=12?'<u>banco</u>':""}`:'<span class="dn-fa">FA</span>'};
