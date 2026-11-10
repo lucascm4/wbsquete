@@ -2004,6 +2004,29 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-sheet-corpo{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:10px 10px calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px}
 .mk-sheet-corpo .mk-topo{display:none}
 @media (prefers-reduced-motion:reduce){.mk-sheet,.mk-sheet-fundo{transition:none}}
+/* transações, desafio, destaques, foto */
+.mk-tx{background:#000;border:1px solid var(--linha);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:8px;margin:6px 0}
+.mk-tx-t{font-family:var(--display);color:var(--amarelo);font-size:15px;letter-spacing:.04em}
+.mk-tx-l{display:flex;gap:8px;align-items:flex-start}.mk-tx-l>div{flex:1;min-width:0}
+.mk-tx-j{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:2px}
+.mk-txj{display:inline-flex;align-items:center;gap:4px;font-size:13px;cursor:pointer}
+.mk-txj img,.mk-txj .ini{width:20px;height:20px;border-radius:50%;object-fit:cover}
+.mk-txj.add{color:var(--verde)}.mk-txj.drop{color:var(--perigo)}
+.mk-des-c{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:6px}
+.mk-des-c span{display:flex;align-items:center;gap:6px;min-width:0}.mk-des-c span.dir{justify-content:flex-end}.mk-des-c b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mk-des-c em{font-family:var(--display);font-style:normal;font-size:22px;color:var(--amarelo)}
+.mk-des-r{font-family:var(--display);font-size:20px;color:var(--amarelo);text-align:center;margin-top:6px}
+.mk-card.des .mk-fb-bts{margin-top:8px}.mk-card.des,.mk-card.top{cursor:default}
+.mk-comp select{width:100%;background:#000;color:var(--texto);border:2px solid var(--linha);border-radius:10px;padding:10px;font:15px var(--ui)}
+.mk-dest{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#000;border:2px solid var(--amarelo);padding:6px 8px;margin:6px 0}
+.mk-dest-l{display:flex;align-items:center;gap:6px;flex:1 1 150px;min-width:0}
+.mk-dest-k{font-size:16px}
+.mk-dj{display:inline-flex;align-items:center;gap:4px;cursor:pointer;min-width:0}
+.mk-dj img,.mk-dj .ini{width:24px;height:24px;border-radius:50%;object-fit:cover;flex:none}
+.mk-dj b{font-size:12px;color:var(--texto);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70px}
+.mk-foto{display:block;max-width:100%;max-height:340px;border-radius:10px;border:1px solid var(--linha);margin:6px 0;cursor:zoom-in}
+.mk-fotoprev{display:flex;align-items:center;gap:8px}.mk-fotoprev img{height:64px;border-radius:8px;border:1px solid var(--linha)}
+.mk-fotobt{cursor:pointer;color:var(--texto)}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -2070,11 +2093,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794320092"></script>
-<script src="radar.js?v=1794320092"></script>
-<script src="midia.js?v=1794320092"></script>
+<script src="hist.js?v=1794321493"></script>
+<script src="radar.js?v=1794321493"></script>
+<script src="midia.js?v=1794321493"></script>
 <script>
-const VERSAO_PAINEL="20261110111452";
+const VERSAO_PAINEL="20261110113813";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3961,7 +3984,7 @@ const SB={u:"https://ekigrttiteyxsxkeibih.supabase.co",k:"sb_publishable_dOIgruP
 const SELOS=[["FEZES","💩"],["RUI DIMAI","🥴"],["DROPA","🗑️"],["VAI CAIR","📉"],["MVP","🏆"],["PIKA","👑"]];
 const NOTA_SELO={"FEZES":1,"RUI DIMAI":2,"DROPA":2,"VAI CAIR":3,"PIKA":4,"MVP":5};
 const EMO_MK=["🐐","😍","🤮","💩","🗑️"];
-const MK={posts:[],reac:[],votos:[],car:[],mer:[],ok:false,err:null,t:0,carregando:null,tipo:"resenha",ref:null,parent:null,tick:null,jog:null,avEmo:"🔥"};
+const MK={posts:[],reac:[],votos:[],car:[],mer:[],ok:false,err:null,t:0,carregando:null,tipo:"resenha",ref:null,parent:null,tick:null,jog:null,avEmo:"🔥",fotos:{},foto:null,virt:[],des:null};
 const EMO_AV=["🔥","🐐","👑","💎","🍳","🧊","🧱","💩","🤡","🥶","😴","🚑"];
 async function sbGet(path){const r=await fetch(SB.u+"/rest/v1/"+path,{headers:{apikey:SB.k},cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
 async function sbRpc(fn,body){const r=await fetch(SB.u+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:SB.k,"Content-Type":"application/json"},body:JSON.stringify(body)});const t=await r.text();
@@ -3969,7 +3992,7 @@ async function sbRpc(fn,body){const r=await fetch(SB.u+"/rest/v1/rpc/"+fn,{metho
 function mkCarregar(forca){
   if(MK.carregando)return MK.carregando;if(!forca&&MK.ok&&Date.now()-MK.t<15000)return Promise.resolve();
   MK.carregando=Promise.all([sbGet("posts?select=*&order=criado.desc&limit=200"),sbGet("reacoes?select=*"),sbGet("votos?select=*"),sbGet("carimbos?select=*"),sbGet("mercado?select=*&order=quando.desc")])
-    .then(([p,r,v,c,m])=>{MK.posts=p;MK.reac=r;MK.votos=v;MK.car=c;MK.mer=m;MK.ok=true;MK.err=null;MK.t=Date.now()})
+    .then(([p,r,v,c,m])=>{MK.posts=p;MK.reac=r;MK.votos=v;MK.car=c;MK.mer=m;MK.ok=true;MK.err=null;MK.t=Date.now();mkFotos()})
     .catch(e=>{MK.err=e.message||String(e)}).finally(()=>{MK.carregando=null;mkPintar();mkFichaAtual();mkBadge()});
   return MK.carregando}
 /* ---------- PIN ---------- */
@@ -4008,7 +4031,7 @@ const TIPO_MK={resenha:["💬","RESENHA"],enquete:["📊","ENQUETE"],venda:["�
 /* ---------- tela ---------- */
 function vMercado(){
   mkCarregar();try{localStorage.setItem("wbs.mkVisto",String(Date.now()))}catch(e){}const meu=meuTime();
-  const tabs=[["resenha","💬 Resenha"],["avaliar","⭐ Avaliar"],["enquete","📊 Enquete"],["venda","🏷️ Vendo"],["interesse","👀 Quero"]];
+  const tabs=[["resenha","💬 Resenha"],["avaliar","⭐ Avaliar"],["enquete","📊 Enquete"],["desafio","🥊 Desafio"],["venda","🏷️ Vendo"],["interesse","👀 Quero"]];
   const comp=meu?`<div class="card mk-comp ${MK.aberto?"aberto":""}" id="mkComp"><button type="button" class="mk-postar" data-mkabre>${logo(T(meu)[0],"width:30px;height:30px")}<span>${MK.aberto?"Postando como "+esc(T(meu)[0]):"✍️ Escrever no Mercado…"}</span><b>${MK.aberto?"✕":"POSTAR"}</b></button>
     <div class="mk-comp-in" ${MK.aberto?"":"hidden"}><div class="mk-tabs" role="tablist">${tabs.map(([k,n])=>`<button type="button" class="mk-tab ${MK.tipo===k?"on":""}" data-mktipo="${k}">${n}</button>`).join("")}</div>
     <div id="mkCampos">${MK.aberto?mkCampos():""}</div></div></div>`
@@ -4033,10 +4056,15 @@ function mkCampos(){const t=MK.tipo,meu=meuTime();
     <div id="mkLinha" class="mk-linha" hidden></div>
     <textarea id="mkTxt" maxlength="300" rows="2" placeholder="Comenta (opcional). Ex.: esse homem é quebrado."></textarea>
     <div class="mk-rod"><small>A linha de hoje dele vai junto no post.</small><button type="button" class="mk-bt amarelo" data-mkpub>Avaliar</button></div>`;
+  if(t==="desafio"){const d=DADOS;const adv=(MK.des&&MK.des.b)||(typeof opDe==="function"&&opDe(meu))||(meu===1?2:1);MK.des={b:adv,cat:(MK.des&&MK.des.cat)||"PTS"};
+    return `<label class="mk-lab">Quem você desafia<select id="mkDesB">${Object.keys(TIMES).map(Number).filter(i=>i!==meu).map(i=>`<option value="${i}" ${i===adv?"selected":""}>${esc(T(i)[0])} (${esc(T(i)[2])})</option>`).join("")}</select></label>
+    <div class="mk-lab">Em qual categoria (essa semana)</div><div class="mk-ax-sub">${CATS.map(c=>`<button type="button" class="mk-mini ${MK.des.cat===c.k?"on":""}" data-mkdescat="${c.k}">${c.k}</button>`).join("")}</div>
+    <textarea id="mkTxt" maxlength="300" rows="2" placeholder="Provoca (opcional). Ex.: quem perder paga a pizza."></textarea>
+    <div class="mk-rod"><small>Ele aceita ou arrega. O painel mostra o placar ao vivo e cobra no domingo.</small><button type="button" class="mk-bt amarelo" data-mkpub>Desafiar</button></div>`}
   if(t==="enquete")return `${refBox}<textarea id="mkTxt" maxlength="300" rows="2" placeholder="A pergunta. Ex.: Quem é o pior manager da semana?"></textarea>
     <div class="mk-ops">${[0,1,2,3].map(i=>`<div class="mk-opr" data-i="${i}"><input class="mk-op" maxlength="60" placeholder="Opção ${i+1}${i>1?" (opcional)":""}"><button type="button" class="mk-opj" data-mkopj title="colocar jogador">👤</button></div>`).join("")}</div>
     <div class="mk-rod"><small>👤 põe jogador com foto. Cada time vota uma vez.</small><button type="button" class="mk-bt amarelo" data-mkpub>Publicar</button></div>`;
-  return `${refBox}${paiBox}${MK.parent?"":mkPicker("todos","Marcar jogador (opcional)")+`<div id="mkAnexo" class="mk-anexo" hidden></div>`}<textarea id="mkTxt" maxlength="500" rows="3" placeholder="${MK.parent?"Responde à altura.":"Solta o verbo. Zoa, provoca, chora."}"></textarea><div class="mk-rod"><small><span id="mkCont">0</span>/500</small><button type="button" class="mk-bt amarelo" data-mkpub>${MK.parent?"Responder":"Postar"}</button></div>`}
+  return `${refBox}${paiBox}${MK.parent?"":mkPicker("todos","Marcar jogador (opcional)")+`<div id="mkAnexo" class="mk-anexo" hidden></div>`}<textarea id="mkTxt" maxlength="500" rows="3" placeholder="${MK.parent?"Responde à altura.":"Solta o verbo. Zoa, provoca, chora."}"></textarea><div id="mkFotoPrev" class="mk-fotoprev" hidden></div><div class="mk-rod"><small><span id="mkCont">0</span>/500</small>${MK.parent?"":`<label class="mk-mini mk-fotobt">📷 Foto<input type="file" accept="image/*" id="mkFotoIn" hidden></label>`}<button type="button" class="mk-bt amarelo" data-mkpub>${MK.parent?"Responder":"Postar"}</button></div>`}
 function mkListaJog(modo){const d=DADOS;if(!d)return [];const meu=meuTime();let L;
   if(modo==="meus")L=d.P.filter(p=>p.t===meu&&!p.fora);else if(modo==="outros")L=d.P.filter(p=>p.t!==meu&&!p.fora).concat(d.fa||[]);else L=d.P.filter(p=>!p.fora).concat(d.fa||[]);
   const vis=new Set();return L.filter(p=>p&&p.n&&!vis.has(p.id)&&vis.add(p.id))}
@@ -4061,37 +4089,40 @@ function mkCard(c){if(!c)return "";
     return `<div class="mk-card mt clic" data-jogo="${DADOS?DADOS.mt.findIndex(m=>m[0]===c.a&&m[1]===c.b):""}"><div class="mk-mt-top"><span>${logo(A[0],"width:28px;height:28px")}<b>${esc(A[0])}</b></span><em class="num">${c.w}-${c.l}${c.t?"-"+c.t:""}</em><span class="dir"><b>${esc(B[0])}</b>${logo(B[0],"width:28px;height:28px")}</span></div>
       ${f?`<div class="mk-foco"><span class="${f[3]>0?"g":""}">${esc(f[1])}</span><b>${esc(f[0])}</b><span class="${f[3]<0?"g":""}">${esc(f[2])}</span><small>${f[3]===0?"empatado":"diferença de "+esc(dif)}</small></div>`:""}
       <div class="mk-mt-cats">${c.v.map(x=>`<div class="${x[0]===c.foco?"on":""}"><small>${esc(x[0])}</small><i class="${x[3]>0?"g":""}">${esc(x[1])}</i><i class="${x[3]<0?"g":""}">${esc(x[2])}</i></div>`).join("")}</div><small class="mk-card-rod">semana ${c.wk} · ${esc(c.rot||"")}</small></div>`}
+  if(c.k==="top"){const col=(tit,L)=>`<div><h4>${tit}</h4>${(L||[]).map(x=>`<div class="mk-v clic" data-pj="${x[0]}">${face(x[0],x[1],"")}<div><b>${esc(x[1])}</b><small>${x[2]?esc(T(x[2])[0]):""} · ${esc(x[3]||"")}</small></div></div>`).join("")}</div>`;
+    return `<div class="mk-card top"><div class="mk-vit" style="padding:0">${col("⭐ MELHORES",c.b)}${col("💩 PIORES",c.p)}</div><small class="mk-card-rod">${esc(c.rot||"")}</small></div>`}
   if(c.k==="jog")return `<div class="mk-card jog clic" data-pj="${c.id}">${face(c.id,c.n,"")}<div><b>${esc(c.n)} ${estDe(c.id)}</b><small>${c.t?esc(T(c.t)[0]):"livre"}</small>${c.linha?`<div class="mk-linha">📊 <b>${esc(c.rot)}</b>: ${esc(c.linha)}</div>`:""}</div></div>`;
   return ""}
 function mkCompartilhar(card){if(!card){mostrarAviso("Nada pra compartilhar aqui.");return}if(!meuTime()){popCadastro();return}
   const w=mkModal(`<div class="mk-pin"><div class="mk-fb-t">📤 MANDAR PRO MERCADO</div>${card.k==="mt"?`<div class="mk-lab">Destacar categoria (opcional)</div><div class="mk-emos cats">${CATS.map(c=>`<button type="button" class="mk-emo ${card.foco===c.k?"on":""}" data-mkfoco="${c.k}">${c.k}</button>`).join("")}</div>`:""}
     <div class="mk-prev">${mkCard(card)}</div><textarea id="mkShTxt" maxlength="500" rows="2" placeholder="Fala alguma coisa. Provoca."></textarea><button type="button" class="mk-bt amarelo" data-mkshok>Postar no Mercado</button></div>`);
   w.addEventListener("click",async e=>{const f=e.target.closest("[data-mkfoco]");if(f){card.foco=card.foco===f.dataset.mkfoco?null:f.dataset.mkfoco;w.querySelectorAll("[data-mkfoco]").forEach(x=>x.classList.toggle("on",x.dataset.mkfoco===card.foco));w.querySelector(".mk-prev").innerHTML=mkCard(card);return}
-    const ok=e.target.closest("[data-mkshok]");if(!ok)return;ok.disabled=true;const txt=w.querySelector("#mkShTxt").value.trim()||(card.k==="mt"?(card.foco?`Olha esse ${card.foco}.`:"Olha esse confronto."):`Olha o ${card.n}.`);
+    const ok=e.target.closest("[data-mkshok]");if(!ok)return;ok.disabled=true;const txt=w.querySelector("#mkShTxt").value.trim()||(card.k==="mt"?(card.foco?`Olha esse ${card.foco}.`:"Olha esse confronto."):card.k==="top"?"Os destaques da rodada.":`Olha o ${card.n}.`);
     const pid=card.k==="jog"?card.id:null;
     const r=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:"resenha",p_texto:txt,p_player_id:null,p_player_nome:null,p_extra:{card},p_parent:null,p_ref:null}));ok.disabled=false;
     if(r){w.remove();mostrarAviso("Postado no Mercado ✅");mkCarregar(true)}},true)}
 function mkLances(){let it=[];try{it=noticias().filter(x=>!x.pub).slice(0,6)}catch(e){}
   if(!it.length)return `<div class="mk-load">Sem lance agora. Volta quando a bola subir.</div>`;
   return it.map(x=>{const k=chaveNot(x);const n=MK.posts.filter(p=>p.ref===k&&!p.apagado).length;return `<div class="mk-lance"><b class="tkk">${esc(x.k)}</b><span>${x.t}</span><button type="button" class="mk-mini" data-mkref="${esc(k)}">💬 ${n?n+" · ":""}responder</button></div>`}).join("")}
-function mkPost(p,filhos){const t=T(p.team);const meu=meuTime();const tp=TIPO_MK[p.tipo]||TIPO_MK.resenha;
+function mkPost(p,filhos){const loy=p.team===0;const t=loy?["Loydão","","redação","LOY","#ffd400"]:T(p.team);const meu=meuTime();const tp=TIPO_MK[p.tipo]||TIPO_MK.resenha;
   const R={};MK.reac.filter(r=>r.post_id===p.id).forEach(r=>{(R[r.emoji]=R[r.emoji]||[]).push(r.team)});
   const jog=p.player_id!=null?jogDoId(p.player_id):null;
   const chip=p.player_id!=null?`<div class="mk-chip clic" data-pj="${p.player_id}">${face(p.player_id,p.player_nome||"","")}<div><b>${esc(p.player_nome||(jog&&jog.n)||"")} ${estDe(p.player_id)}</b><small>${jog&&jog.t?esc(T(jog.t)[0]):"livre"}${p.extra&&p.extra.pedido?` · ${p.tipo==="venda"?"quer":"oferece"}: ${esc(p.extra.pedido)}`:""}</small></div></div>`:"";
   let enq="";if(p.tipo==="enquete"&&p.extra&&Array.isArray(p.extra.ops)){const V=MK.votos.filter(v=>v.post_id===p.id);const tot=V.length;const meuV=V.find(v=>v.team===meu);
     enq=`<div class="mk-enq">${p.extra.ops.map((o,i)=>{const q=V.filter(v=>v.opcao===i);const pc=tot?Math.round(q.length/tot*100):0;return `<button type="button" class="mk-opv ${meuV&&meuV.opcao===i?"on":""}" data-mkvoto="${p.id}:${i}"><i style="width:${pc}%"></i><span class="mk-opn">${p.extra.opsId&&p.extra.opsId[i]?face(p.extra.opsId[i],o,""):""}${esc(o)}</span><em>${pc}%${q.length?` · ${q.map(v=>esc(T(v.team)[0])).join(", ")}`:""}</em></button>`}).join("")}<small>${tot} voto${tot===1?"":"s"}</small></div>`}
   const X=p.extra||{};const av=X.av?`<div class="mk-av"><span class="mk-av-e">${esc(X.av)}</span>${X.linha?`<div class="mk-linha">📊 <b>${esc(X.rot||"")}</b>: ${esc(X.linha)}</div>`:""}</div>`:"";const card=X.card?mkCard(X.card):"";const lin=!X.av&&X.linha?`<div class="mk-linha">📊 <b>${esc(X.rot||"")}</b>: ${esc(X.linha)}</div>`:"";
+  const txc=X.tx?mkTx(X.tx):"";const desc=X.des?mkDes(p):"";const foto=X.foto&&MK.fotos[p.id]?`<img class="mk-foto" src="${MK.fotos[p.id]}" alt="foto do post" data-mkfotoz="${p.id}">`:"";
   const lance=p.extra&&p.extra.lance?`<div class="mk-quote">LOYDÃO: ${esc(p.extra.lance)}</div>`:"";
   const usados=EMO_MK.concat(Object.keys(R).filter(e=>!EMO_MK.includes(e))).filter(e=>(R[e]||[]).length);
   const reac=(usados.length||(filhos&&filhos.length))?`<div class="mk-reac">${usados.map(e=>{const q=R[e];return `<button type="button" class="mk-r ${q.includes(meu)?"on":""}" data-mkreac="${p.id}:${e}" title="${q.map(x=>esc(T(x)[0])).join(", ")}">${e} <b>${q.length}</b></button>`}).join("")}${filhos&&filhos.length?`<span class="mk-nresp">↩︎ ${filhos.length}</span>`:""}</div>`:"";
-  return `<article class="mk-post ${p.parent?"filho":""}" data-mkpost="${p.id}" style="--cor:${t[4]}"><div class="mk-cab">${logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.card?"📤 COMPARTILHOU":tp[0]+" "+tp[1]}</span></div>
-    ${lance}<div class="mk-txt ${p.apagado?"apagado":""}">${esc(p.texto)}</div>${chip}${lin}${av}${card}${enq}${p.apagado?"":reac}
+  return `<article class="mk-post ${p.parent?"filho":""}" data-mkpost="${p.id}" style="--cor:${t[4]}"><div class="mk-cab">${loy?`<img src="img/app/apple-180.png" alt="" style="width:34px;height:34px;border-radius:50%">`:logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.tx?(X.tx.w?"🧾 WAIVER":"🔁 TRANSAÇÃO"):X.des?"🥊 DESAFIO":X.card?(X.card.k==="top"?"⭐ DESTAQUES":"📤 COMPARTILHOU"):tp[0]+" "+tp[1]}</span></div>
+    ${lance}${X.tx?"":`<div class="mk-txt ${p.apagado?"apagado":""}">${esc(p.texto)}</div>`}${foto}${chip}${lin}${av}${card}${txc}${desc}${enq}${p.apagado?"":reac}
     ${filhos&&filhos.length?`<div class="mk-filhos">${filhos.map(f=>mkPost(f)).join("")}</div>`:""}</article>`}
 function mkPintar(){if(!document.getElementById("mkFeed"))return;
   const fe=document.getElementById("mkFeed"),vi=document.getElementById("mkVitrine"),se=document.getElementById("mkSelos"),la=document.getElementById("mkLances");if(!fe)return;
   if(MK.err&&!MK.ok){const m=`<div class="mk-load">O Mercado não respondeu (${esc(MK.err)}). Tenta de novo daqui a pouco.</div>`;fe.innerHTML=`<div class="bloco-tit">FEED</div>`+m;vi.innerHTML=m;se.innerHTML=m;return}
   if(!MK.ok)return;
-  const vivos=MK.posts.filter(p=>!p.apagado);const top=vivos.filter(p=>!p.parent);const fil=id=>vivos.filter(p=>p.parent===id).sort((a,b)=>a.id-b.id);
+  const vivos=MK.posts.filter(p=>!p.apagado);let virt=[];try{virt=mkVirt()}catch(e){console.error(e)}MK.virt=virt;const reais=new Set(vivos.filter(p=>p.team===0&&p.ref).map(p=>p.ref));const top=vivos.filter(p=>!p.parent).concat(virt.filter(v=>!reais.has(v.ref))).sort((a,b)=>new Date(b.criado)-new Date(a.criado));const fil=id=>vivos.filter(p=>p.parent===id).sort((a,b)=>a.id-b.id);
   fe.innerHTML=`<div class="bloco-tit">FEED <small>segura num post pra reagir</small></div>`+(top.length?top.slice(0,60).map(p=>mkPost(p,fil(p.id))).join(""):`<div class="mk-load">Ninguém postou ainda. O primeiro leva a fama de carente.</div>`);
   const vend=MK.mer.filter(x=>x.tipo==="venda"&&x.team===donoAtual(x.player_id));const proc={};MK.mer.filter(x=>x.tipo==="interesse"&&x.team!==donoAtual(x.player_id)).forEach(x=>{(proc[x.player_id]=proc[x.player_id]||{n:x.player_nome,t:[]}).t.push(x.team)});
   const pr=Object.entries(proc).sort((a,b)=>b[1].t.length-a[1].t.length).slice(0,10);
@@ -4116,16 +4147,19 @@ async function mkPublicar(){const t=MK.tipo;const txt=(document.getElementById("
   if(t==="avaliar"){const p=MK.jog!=null?jogDoId(MK.jog):null;if(!p){mostrarAviso("Escolhe quem vai ser avaliado.");return}const l=linhaHoje(p);
     const ok=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:"resenha",p_texto:txt||`${MK.avEmo} pro ${p.n}.`,p_player_id:p.id,p_player_nome:p.n,p_extra:{av:MK.avEmo,linha:l?l.txt:null,rot:l?l.rot:null,sp:l?l.sp:null},p_parent:null,p_ref:null}));
     if(ok){mkLimpar();mkCarregar(true)}return}
-  if(!txt){mostrarAviso("Escreve alguma coisa, poeta.");return}
+  if(t==="desafio"&&!MK.parent){const meu=meuTime();const b=+((document.getElementById("mkDesB")||{}).value||MK.des.b);const cat=MK.des.cat;
+    const ok=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:"proposta",p_texto:txt||`Aposto que ganho ${cat} do ${T(b)[0]} essa semana.`,p_player_id:null,p_player_nome:null,p_extra:{des:{a:meu,b,cat,wk:DADOS?DADOS.wk:0}},p_parent:null,p_ref:null}));
+    if(ok){mkLimpar();mkCarregar(true)}return}
+  if(!txt&&!MK.foto){mostrarAviso("Escreve alguma coisa, poeta.");return}
   let extra={};if(t==="enquete"){const R=[...document.querySelectorAll(".mk-opr")].map(r=>{const pk=r.querySelector(".mk-pk");if(pk){const p=pk.dataset.pid?jogDoId(+pk.dataset.pid):null;return p?{t:p.n,id:p.id}:null}const v=(r.querySelector(".mk-op")||{}).value;return v&&v.trim()?{t:v.trim(),id:null}:null}).filter(Boolean);
     if(R.length<2){mostrarAviso("Enquete precisa de pelo menos 2 opções.");return}extra.ops=R.map(x=>x.t);if(R.some(x=>x.id))extra.opsId=R.map(x=>x.id)}
   if(MK.ref)extra.lance=MK.ref.raw;
   const pj=(!MK.parent&&t==="resenha"&&MK.jog!=null)?MK.jog:null;
   if(pj!=null&&MK.anexo){const a=statAnexo(jogDoId(pj),MK.anexo);if(a){extra.linha=a.txt;extra.rot=a.rot}}
-  const tipo=MK.parent?"resenha":t;
-  const ok=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:tipo,p_texto:txt,p_player_id:pj!=null?pj:null,p_player_nome:pj!=null&&jogDoId(pj)?jogDoId(pj).n:null,p_extra:extra,p_parent:MK.parent,p_ref:MK.ref?MK.ref.k:null}));
+  const tipo=MK.parent?"resenha":t;const fotoD=(!MK.parent&&t==="resenha")?MK.foto:null;if(fotoD)extra.foto=1;
+  const ok=await comPin(async(tm,pin)=>{const nid=await sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:tipo,p_texto:txt||"📷",p_player_id:pj!=null?pj:null,p_player_nome:pj!=null&&jogDoId(pj)?jogDoId(pj).n:null,p_extra:extra,p_parent:MK.parent,p_ref:MK.ref?MK.ref.k:null});if(fotoD&&nid){try{await sbRpc("anexar_foto",{p_team:tm,p_pin:pin,p_post:nid,p_img:fotoD});MK.fotos[nid]=fotoD}catch(e){mostrarAviso("O post foi, a foto não: "+(e.message||""))}}});
   if(ok){mkLimpar();mkCarregar(true)}}
-function mkLimpar(){MK.ref=null;MK.parent=null;mkAbrir(false)}
+function mkLimpar(){MK.ref=null;MK.parent=null;MK.foto=null;mkAbrir(false)}
 function mkContador(){const a=document.getElementById("mkTxt"),c=document.getElementById("mkCont");if(a&&c)a.oninput=()=>c.textContent=a.value.length}
 function mkAbrir(on){MK.aberto=on;const c=document.getElementById("mkComp");if(!c)return;c.classList.toggle("aberto",on);const meu=meuTime();c.querySelector(".mk-postar span").textContent=on?"Postando como "+T(meu)[0]:"✍️ Escrever no Mercado…";c.querySelector(".mk-postar b").textContent=on?"✕":"POSTAR";const i=c.querySelector(".mk-comp-in");i.hidden=!on;if(on){document.getElementById("mkCampos").innerHTML=mkCampos();mkContador()}else{MK.ref=null;MK.parent=null}}
 function mkIrCompositor(){mkAbrir(true);const c=document.getElementById("mkComp");if(c){c.scrollIntoView({behavior:"smooth",block:"start"});setTimeout(()=>document.getElementById("mkTxt")?.focus(),350)}}
@@ -4133,6 +4167,10 @@ document.addEventListener("click",async e=>{
   const g=s=>e.target.closest(s);let b;
   if((b=g("[data-mktipo]"))){MK.tipo=b.dataset.mktipo;MK.parent=null;MK.jog=null;MK.anexo=null;document.querySelectorAll(".mk-tab").forEach(x=>x.classList.toggle("on",x===b));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
   if(g("[data-mkcad]")){popCadastro();return}
+  if((b=g("[data-mkdescat]"))){if(MK.des)MK.des.cat=b.dataset.mkdescat;document.querySelectorAll("[data-mkdescat]").forEach(x=>x.classList.toggle("on",x===b));return}
+  if((b=g("[data-mkshtop]"))){e.stopPropagation();mkCompartilhar(window._TOPCARD?JSON.parse(JSON.stringify(window._TOPCARD)):null);return}
+  if((b=g("[data-mkfotox]"))){MK.foto=null;const pv=document.getElementById("mkFotoPrev");if(pv){pv.hidden=true;pv.innerHTML=""}return}
+  if((b=g("[data-mkfotoz]"))){e.stopPropagation();const src=MK.fotos[+b.dataset.mkfotoz];if(src)mkModal(`<img src="${src}" alt="" style="max-width:100%;max-height:75vh;display:block;margin:auto">`);return}
   if((b=g("[data-mkaba]"))){MK.aba=b.dataset.mkaba;document.querySelectorAll("[data-mkaba]").forEach(x=>{x.classList.toggle("on",x===b);x.setAttribute("aria-selected",x===b)});document.querySelectorAll("[data-mkpane]").forEach(p=>p.hidden=p.dataset.mkpane!==MK.aba);return}
   if(g("[data-mkabre]")){mkAbrir(!MK.aberto);if(MK.aberto)setTimeout(()=>document.getElementById("mkTxt")?.focus(),200);return}
   if(g("[data-mksino]")){try{const r=await Notification.requestPermission();if(r==="granted"){mostrarAviso("Pronto: o número de novidades aparece no ícone do app.");g("[data-mksino]")?.remove();mkBadge()}else mostrarAviso("Sem permissão, sem contador. Dá pra liberar nos Ajustes do iPhone.")}catch(x){}return}
@@ -4238,7 +4276,7 @@ function fichaComparar(id){const pop=document.getElementById("popFicha");if(!pop
 abrirJogador=(orig=>function(id){const r=orig.apply(this,arguments);try{fichaComparar(id)}catch(e){console.error(e)}return r})(abrirJogador);
 document.addEventListener("click",e=>{const t=e.target.closest&&e.target.closest(".rd .tmini");if(!t)return;e.stopPropagation();e.preventDefault();t.classList.toggle("rec")},true);
 /* segurar o post abre as reações (igual ESPN/WhatsApp) */
-function mkFolha(id){const p=MK.posts.find(x=>x.id===id);if(!p||p.apagado)return;const meu=meuTime();if(!meu){popCadastro();return}
+function mkFolha(id){if(typeof id==="string"){mkReal(id).then(r=>{if(r)mkFolha(r)});return}const p=MK.posts.find(x=>x.id===id);if(!p||p.apagado)return;const meu=meuTime();if(!meu){popCadastro();return}
   document.getElementById("mkFolha")?.remove();const meus=new Set(MK.reac.filter(r=>r.post_id===id&&r.team===meu).map(r=>r.emoji));
   const f=document.createElement("div");f.id="mkFolha";f.className="mk-folha-fundo";
   f.innerHTML=`<div class="mk-folha" role="dialog" aria-label="Reações"><div class="mk-folha-cab"><button type="button" data-fx>Fechar</button><b>Reações</b><span></span></div>
@@ -4254,12 +4292,12 @@ function mkFolha(id){const p=MK.posts.find(x=>x.id===id);if(!p||p.apagado)return
 (()=>{let tm=null,x0=0,y0=0,alvo=null,abriu=false;
   const cancela=()=>{clearTimeout(tm);tm=null};
   document.addEventListener("pointerdown",e=>{const a=e.target.closest&&e.target.closest("[data-mkpost]");if(!a||e.target.closest("button,a,input,textarea,[data-pj],.mk-card"))return;
-    alvo=a;x0=e.clientX;y0=e.clientY;abriu=false;cancela();a.classList.add("mk-pressa");tm=setTimeout(()=>{abriu=true;a.classList.remove("mk-pressa");try{navigator.vibrate&&navigator.vibrate(12)}catch(x){}mkFolha(+a.dataset.mkpost)},450)},{passive:true});
+    alvo=a;x0=e.clientX;y0=e.clientY;abriu=false;cancela();a.classList.add("mk-pressa");tm=setTimeout(()=>{abriu=true;a.classList.remove("mk-pressa");try{navigator.vibrate&&navigator.vibrate(12)}catch(x){}mkFolha(mkPid(a.dataset.mkpost))},450)},{passive:true});
   document.addEventListener("pointermove",e=>{if(tm&&Math.hypot(e.clientX-x0,e.clientY-y0)>10){cancela();alvo&&alvo.classList.remove("mk-pressa")}},{passive:true});
   ["pointerup","pointercancel"].forEach(ev=>document.addEventListener(ev,()=>{cancela();alvo&&alvo.classList.remove("mk-pressa")},{passive:true}));
   addEventListener("scroll",()=>{cancela();alvo&&alvo.classList.remove("mk-pressa")},{passive:true});
   document.addEventListener("click",e=>{if(abriu&&e.target.closest&&e.target.closest("[data-mkpost]")){e.preventDefault();e.stopPropagation();abriu=false}},true);
-  document.addEventListener("contextmenu",e=>{const a=e.target.closest&&e.target.closest("[data-mkpost]");if(a&&!e.target.closest("input,textarea")){e.preventDefault();cancela();mkFolha(+a.dataset.mkpost)}});
+  document.addEventListener("contextmenu",e=>{const a=e.target.closest&&e.target.closest("[data-mkpost]");if(a&&!e.target.closest("input,textarea")){e.preventDefault();cancela();mkFolha(mkPid(a.dataset.mkpost))}});
 })();
 /* anexar números do jogador no post */
 const AX_CATS=[["PTS",0,"pontos"],["REB",1,"rebotes"],["AST",2,"assistências"],["STL",3,"roubos"],["BLK",4,"tocos"],["3PM",5,"bolas de 3"],["TO",6,"turnovers"],["FG%","fg","FG%"],["FT%","ft","FT%"]];
@@ -4295,6 +4333,48 @@ function mkSheet(abre){const old=document.getElementById("mkSheet");
     if(e.target.closest("[data-pj],[data-jogo],.mk-card"))setTimeout(()=>s.remove(),0)});
   try{mkContador();mkPintar();mkBadge()}catch(e){}}
 addEventListener("hashchange",()=>document.getElementById("mkSheet")?.remove());
+/* ---------- transações do Loydão no feed ---------- */
+function mkPid(v){return isNaN(+v)?v:+v}
+function nmJ(id){const p=jogDoId(id);return p?p.n:"jogador"}
+function mkVirt(){const d=DADOS;const mov=(d&&d.tx&&d.tx.mov)||[];const lim=Date.now()-72*36e5;const out=[];const wv={};
+  mov.filter(x=>x.ms>lim).forEach(x=>{const item={t:x.t,a:x.a.map(i=>[i,nmJ(i)]),d:x.d.map(i=>[i,nmJ(i)])};
+    if(x.w){const dia=new Date(x.ms).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});const k="wv:"+new Date(x.ms).toISOString().slice(0,10);(wv[k]=wv[k]||{ms:0,l:[],dia}).l.push(item);wv[k].ms=Math.max(wv[k].ms,x.ms)}
+    else out.push({id:"tx:"+x.id,virt:true,team:0,tipo:"resenha",texto:`${T(x.t)[0]} mexeu no time.`,criado:new Date(x.ms).toISOString(),extra:{tx:{l:[item]}},ref:"tx:"+x.id,parent:null})});
+  Object.entries(wv).forEach(([k,o])=>out.push({id:k,virt:true,team:0,tipo:"resenha",texto:`Resultado do waiver de ${o.dia}.`,criado:new Date(o.ms).toISOString(),extra:{tx:{w:1,dia:o.dia,l:o.l}},ref:k,parent:null}));
+  return out}
+function mkTx(tx){const j=(x,c,s)=>`<span class="mk-txj ${c} clic" data-pj="${x[0]}">${s} ${face(x[0],x[1],"")} ${esc(x[1])}</span>`;
+  return `<div class="mk-tx">${tx.w?`<div class="mk-tx-t">RESULTADO DO WAIVER · ${esc(tx.dia||"")}</div>`:""}${(tx.l||[]).map(i=>`<div class="mk-tx-l">${logo(T(i.t)[0],"width:26px;height:26px")}<div><b>${esc(T(i.t)[0])}</b><div class="mk-tx-j">${(i.a||[]).map(x=>j(x,"add","+")).join("")}${(i.d||[]).map(x=>j(x,"drop","−")).join("")}</div></div></div>`).join("")}</div>`}
+async function mkReal(ref){const v=(MK.virt||[]).find(x=>x.ref===ref);if(!v)return null;let rid=null;
+  const ok=await comPin(async(tm,pin)=>{rid=await sbRpc("loydao_post",{p_team:tm,p_pin:pin,p_ref:ref,p_texto:v.texto,p_extra:v.extra})});if(!ok)return null;await mkCarregar(true);return rid}
+/* ---------- desafio ---------- */
+function mkDes(p){const D=p.extra.des;const d=DADOS;const A=T(D.a),B=T(D.b);const meu=meuTime();const vb=MK.votos.find(v=>v.post_id===p.id&&v.team===D.b);
+  const cab=`<div class="mk-des-c"><span>${logo(A[0],"width:26px;height:26px")}<b>${esc(A[0])}</b></span><em>${esc(D.cat)}</em><span class="dir"><b>${esc(B[0])}</b>${logo(B[0],"width:26px;height:26px")}</span></div>`;
+  let corpo="";
+  if(!vb)corpo=meu===D.b?`<div class="mk-fb-bts"><button type="button" class="mk-bt amarelo" data-mkvoto="${p.id}:0">🥊 Aceitar</button><button type="button" class="mk-bt" data-mkvoto="${p.id}:1">🐔 Arregar</button></div>`:`<small class="mk-obs">Esperando o ${esc(B[2])} aceitar ou arregar.</small>`;
+  else if(vb.opcao===1)corpo=`<div class="mk-des-r">🐔 ${esc(B[0])} ARREGOU</div>`;
+  else{let va=null,vbv=null,fim=false,res=0;const ci=CATS.findIndex(c=>c.k===D.cat);
+    try{if(d&&D.wk===d.wk&&EST.tot[D.a]&&EST.tot[D.b]&&ci>=0){const c=CATS[ci];va=fmt(c,c.f(EST.tot[D.a]));vbv=fmt(c,c.f(EST.tot[D.b]));res=placar(EST.tot[D.a],EST.tot[D.b]).r[ci]}
+      else if(d&&D.wk<d.wk){fim=true;const K=["PTS","REB","AST","STL","BLK","3PM","FG%","FT%","TO"];const k=K.indexOf(D.cat);const tot=t=>{const h=(d.hist||[]).find(m=>m[0]===D.wk&&(m[1]===t||m[2]===t));return h?(h[1]===t?h[5]:h[6]):null};const x=tot(D.a),y=tot(D.b);
+        if(x&&y&&k>=0){const f=v=>k===6||k===7?(+v).toFixed(3).replace(/^0/,""):String(Math.round(v));va=f(x[k]);vbv=f(y[k]);res=x[k]===y[k]?0:((x[k]>y[k])!==(k===8)?1:-1)}}}catch(e){}
+    corpo=va!=null?`<div class="mk-foco"><span class="${res>0?"g":""}">${esc(String(va))}</span><b>${fim?"FINAL":"AO VIVO"}</b><span class="${res<0?"g":""}">${esc(String(vbv))}</span><small>${res===0?"empatado":(fim?"ganhou: ":"na frente: ")+esc(res>0?A[0]:B[0])}</small></div>`:`<small class="mk-obs">Aceito. Placar aparece quando a semana ${D.wk} tiver jogo.</small>`}
+  return `<div class="mk-card des">${cab}${corpo}<small class="mk-card-rod">semana ${D.wk}</small></div>`}
+/* ---------- destaques da rodada na home ---------- */
+function mkDestHome(){const d=DADOS;if(!d||document.querySelector(".mk-dest"))return;const at=document.querySelector("#app .atalhos");if(!at)return;
+  let sp;try{sp=diaPadrao()}catch(e){return}const rows=[];d.P.filter(p=>!p.fora&&p.t).forEach(p=>{const v=p.dl&&p.dl[sp];if(v)rows.push({p,v,val:valorJogo(v),min:v[12]||0})});if(rows.length<6)return;
+  try{const R=rankLiga(sp).v||{};rows.forEach(r=>{if(R[r.p.id]!=null)r.val=R[r.p.id]})}catch(e){}
+  const best=rows.slice().sort((a,b)=>b.val-a.val).slice(0,3);const worst=rows.filter(r=>r.min>=15).sort((a,b)=>a.val-b.val).slice(0,3);
+  const pk=r=>[r.p.id,r.p.n,r.p.t,linhaReal(r.v)];window._TOPCARD={k:"top",rot:spRot(sp),b:best.map(pk),p:worst.map(pk)};
+  const chip=r=>`<span class="mk-dj clic" data-pj="${r.p.id}">${face(r.p.id,r.p.n,"")}<b>${esc(r.p.n.split(" ").slice(-1)[0])}</b></span>`;
+  const el=document.createElement("div");el.className="mk-dest";
+  el.innerHTML=`<div class="mk-dest-l"><span class="mk-dest-k">⭐</span>${best.map(chip).join("")}</div><div class="mk-dest-l"><span class="mk-dest-k">💩</span>${worst.map(chip).join("")}</div><button type="button" class="mk-mini" data-mkshtop aria-label="mandar os destaques pro Mercado">📤</button>`;
+  at.after(el)}
+/* ---------- foto no post ---------- */
+function mkFotos(){const ids=MK.posts.filter(p=>!p.apagado&&p.extra&&p.extra.foto&&MK.fotos[p.id]===undefined).slice(0,30).map(p=>p.id);if(!ids.length)return;
+  sbGet("fotos?select=post_id,img&post_id=in.("+ids.join(",")+")").then(L=>{L.forEach(f=>MK.fotos[f.post_id]=f.img);ids.forEach(i=>{const p=MK.posts.find(x=>x.id===i);if(MK.fotos[i]===undefined&&p&&Date.now()-new Date(p.criado).getTime()>12e4)MK.fotos[i]=""});mkPintar()}).catch(()=>{})}
+function mkComprime(file){return new Promise((res,rej)=>{const img=new Image();const u=URL.createObjectURL(file);img.onload=()=>{const faz=(mx,q)=>{const k=Math.min(1,mx/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext("2d").drawImage(img,0,0,c.width,c.height);return c.toDataURL("image/jpeg",q)};
+    let o=faz(1000,.72);if(o.length>380000)o=faz(760,.6);if(o.length>380000)o=faz(560,.5);URL.revokeObjectURL(u);o.length>390000?rej(new Error("Foto grande demais")):res(o)};img.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("Não consegui ler a foto"))};img.src=u})}
+document.addEventListener("change",async e=>{if(e.target&&e.target.id==="mkFotoIn"){const f=e.target.files&&e.target.files[0];if(!f)return;try{MK.foto=await mkComprime(f);const pv=document.getElementById("mkFotoPrev");if(pv){pv.hidden=false;pv.innerHTML=`<img src="${MK.foto}" alt="prévia"><button type="button" class="mk-mini" data-mkfotox>tirar foto</button>`}}catch(x){mostrarAviso(x.message)}e.target.value=""}
+  if(e.target&&e.target.id==="mkDesB"&&MK.des)MK.des.b=+e.target.value});
 
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
@@ -4362,12 +4442,12 @@ async function baixarNBA(sp){ // placar dos jogos da NBA do dia (site.api.espn.c
   return out;
 }
 async function baixarTrocas(cur){ // uma vez por dia: adds/drops e aceites de troca da temporada toda
-  const ch="wbs.tx3."+cur+"."+Math.floor(Date.now()/36e5);const c=lerCache(ch);if(c)return c;
-  const adds=new Set(),ac=[],lst=[],tr=[],vistos=new Set();
+  const ch="wbs.tx4."+cur+"."+Math.floor(Date.now()/12e5);const c=lerCache(ch);if(c)return c;
+  const adds=new Set(),ac=[],lst=[],tr=[],vistos=new Set(),mov=[],movV=new Set();
   const lotes=[];for(let sp=1;sp<=cur;sp++)lotes.push(ajson(AO.LG+"?view=mTransactions2&scoringPeriodId="+sp).then(r=>[sp,r]).catch(()=>[sp,{}]));
-  (await Promise.all(lotes)).forEach(([sp,r])=>(r.transactions||[]).forEach(t=>{if(t.status==="EXECUTED"&&["FREEAGENT","WAIVER"].includes(t.type))(t.items||[]).forEach(i=>{if(i.type==="ADD"){adds.add(i.playerId);lst.push([i.playerId,sp,i.toTeamId||t.teamId])}});if(t.type==="TRADE_ACCEPT")ac.push(t.processDate||t.proposedDate);
+  (await Promise.all(lotes)).forEach(([sp,r])=>(r.transactions||[]).forEach(t=>{if(t.status==="EXECUTED"&&["FREEAGENT","WAIVER"].includes(t.type)&&sp>=cur-3&&!movV.has(t.id)){movV.add(t.id);const A=[],D=[];(t.items||[]).forEach(i=>{if(i.type==="ADD")A.push(i.playerId);if(i.type==="DROP")D.push(i.playerId)});if(A.length||D.length)mov.push({id:t.id,ms:t.processDate||t.proposedDate||0,t:t.teamId,w:t.type==="WAIVER",a:A,d:D})}if(t.status==="EXECUTED"&&["FREEAGENT","WAIVER"].includes(t.type))(t.items||[]).forEach(i=>{if(i.type==="ADD"){adds.add(i.playerId);lst.push([i.playerId,sp,i.toTeamId||t.teamId])}});if(t.type==="TRADE_ACCEPT")ac.push(t.processDate||t.proposedDate);
     if(/TRADE/.test(t.type||"")&&t.status==="EXECUTED")(t.items||[]).forEach(i=>{if(i.type!=="TRADE"||!i.playerId)return;const k=i.playerId+"|"+i.fromTeamId+"|"+i.toTeamId;if(vistos.has(k))return;vistos.add(k);tr.push([i.playerId,i.fromTeamId,i.toTeamId,sp,t.processDate||t.proposedDate||0])})}));
-  const out={adds:[...adds],ac:ac.sort(),lst,tr};gravarCache(ch,out);return out;
+  const out={adds:[...adds],ac:ac.sort(),lst,tr,mov};gravarCache(ch,out);return out;
 }
 async function coletarAoVivo(){
   const cur=spHoje();const wk=cur<=6?1:Math.floor((cur-7)/7)+2;
@@ -4463,7 +4543,7 @@ function render(){
   try{montarPubli(r)}catch(e){console.error(e)}
   try{document.querySelectorAll("#app .cab-secao .linha-fina").forEach(lf=>{if(lf.dataset.c)return;lf.dataset.c="1";lf.hidden=true;const h1=lf.parentNode.querySelector(".manchete");if(!h1)return;const q=document.createElement("button");q.type="button";q.className="lf-q";q.textContent="?";q.setAttribute("aria-label","o que é isso");q.onclick=e=>{e.stopPropagation();lf.hidden=!lf.hidden};h1.appendChild(q)})}catch(e){}
   try{document.querySelectorAll("#app .rd .tmini").forEach(t=>t.classList.add("rec"))}catch(e){}
-  try{if(r==="mercado"){document.getElementById("mkSheet")?.remove();mkContador();mkPintar()}montarChat(r);mkBadge()}catch(e){console.error(e)}
+  try{if(r==="mercado"){document.getElementById("mkSheet")?.remove();mkContador();mkPintar()}montarChat(r);mkBadge();if(r==="confrontos"||!r)mkDestHome()}catch(e){console.error(e)}
   if(UI._fichaMuseu&&window.MUSEU&&document.getElementById("popFicha")){const i=UI._fichaMuseu;UI._fichaMuseu=null;const pop=document.querySelector("#popFicha .pop-full");const sc=pop?pop.scrollTop:0;abrirJogador(i,UI.fichaPer);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc}
   if(UI._fichaEspera&&document.getElementById("popFicha")&&ehRange(UI.fichaPer)&&rangePronto(UI.fichaPer)){const i=UI._fichaEspera;UI._fichaEspera=null;abrirJogador(i,UI.fichaPer)}
 }
@@ -4745,7 +4825,7 @@ if(window.visualViewport){visualViewport.addEventListener("resize",posDoca);visu
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="avTime"){UI.avF=+e.target.value||0;render()}if(e.target&&e.target.id==="avDuelo"){UI.avDuelo=+e.target.value||0;try{if(UI.avDuelo&&!meuTime())localStorage.setItem("painel.meu",UI.avDuelo)}catch(x){}render()}});
 
 /* anúncios: cartão no meio das páginas + tarja pop-up de vez em quando (estilo TV) */
-function montarPubli(r){try{if(semPubli())return;const app=document.getElementById("app");if(!app||app.querySelector(".publi")||!DADOS)return;
+function montarPubli(r){return;try{if(semPubli())return;const app=document.getElementById("app");if(!app||app.querySelector(".publi")||!DADOS)return;
   const O=ofertasBet();if(!O.length)return;const cards=[...app.querySelectorAll(":scope > .card, :scope > .jogo, :scope > .grade > *, :scope > .tabela-wrap")].filter(c=>!c.classList.contains("publi"));
   const div=document.createElement("div");div.innerHTML=publiCard(O[0]);const el=div.firstElementChild;
   if(!cards.length){app.appendChild(el);return}
@@ -4758,9 +4838,9 @@ function tarja(){try{if(semPubli()||_tarjas>=4||document.hidden||document.getEle
   const el=document.createElement("div");el.id="tarjaBet";el.className="tarja";
   el.innerHTML=`<div class="tarja-in" ${of.j!=null?`data-jogo="${of.j}"`:""}><span class="tarja-m"><i>BET</i>LOYDE</span><div class="tarja-c"><small>${esc(of.s)}</small><b>${esc(of.t)}: de ${fmtO(of.de)} para <u>${fmtO(of.para)}</u></b></div><span class="tarja-18">+18</span><button type="button" class="tarja-x" aria-label="fechar anúncio">✕</button></div><button type="button" class="tarja-nunca" data-publinunca>não quero mais ver anúncios</button><small class="tarja-leg">Publicidade de mentira · odds do modelo do Loydão · aposte com responsabilidade (aqui ninguém aposta nada)</small>`;
   el.querySelector(".tarja-x").onclick=ev=>{ev.stopPropagation();el.remove()};document.body.appendChild(el);setTimeout(()=>{el.classList.add("sai");setTimeout(()=>el.remove(),400)},11000)}catch(e){}}
-setTimeout(tarja,60*1000);setInterval(tarja,60*1000);
+/* tarja de propaganda desligada (10/11): BETLOYDE só nas odds e no rodízio de pop-ups */
 
-new MutationObserver(()=>{const f=document.querySelector("#popFicha .pop-full");if(f&&!f.querySelector(".publi")&&typeof ofertasBet==="function"&&!semPubli()){try{const O=ofertasBet();if(O.length){const d=document.createElement("div");d.innerHTML=publiCard(O[0]);f.appendChild(d.firstElementChild)}}catch(e){}}}).observe(document.body,{childList:true});
+new MutationObserver(()=>{const f=document.querySelector("#popFicha .pop-full");if(false&&f&&!f.querySelector(".publi")&&typeof ofertasBet==="function"&&!semPubli()){try{const O=ofertasBet();if(O.length){const d=document.createElement("div");d.innerHTML=publiCard(O[0]);f.appendChild(d.firstElementChild)}}catch(e){}}}).observe(document.body,{childList:true});
 
 /* alertas de lesão automáticos (sem X): relatório de lesões e notícias da ESPN, filtrados pelos jogadores da liga */
 AO.alertas=(lerCache("wbs.lesAlert2")||[]);
