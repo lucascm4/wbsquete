@@ -2029,6 +2029,7 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-fotobt{cursor:pointer;color:var(--texto)}
 .cab-secao .mk-dest{order:3;flex:1 1 100%}
 .mk-txtog{margin:6px 12px;align-self:flex-start}
+.mk-txj small{color:var(--apagado);font-size:10px}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -2095,11 +2096,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794322051"></script>
-<script src="radar.js?v=1794322051"></script>
-<script src="midia.js?v=1794322051"></script>
+<script src="hist.js?v=1794322356"></script>
+<script src="radar.js?v=1794322356"></script>
+<script src="midia.js?v=1794322356"></script>
 <script>
-const VERSAO_PAINEL="20261110114731";
+const VERSAO_PAINEL="20261110115236";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4117,15 +4118,15 @@ function mkPost(p,filhos){const loy=p.team===0;const t=loy?["Loydão","","redaç
   const lance=p.extra&&p.extra.lance?`<div class="mk-quote">LOYDÃO: ${esc(p.extra.lance)}</div>`:"";
   const usados=EMO_MK.concat(Object.keys(R).filter(e=>!EMO_MK.includes(e))).filter(e=>(R[e]||[]).length);
   const reac=(usados.length||(filhos&&filhos.length))?`<div class="mk-reac">${usados.map(e=>{const q=R[e];return `<button type="button" class="mk-r ${q.includes(meu)?"on":""}" data-mkreac="${p.id}:${e}" title="${q.map(x=>esc(T(x)[0])).join(", ")}">${e} <b>${q.length}</b></button>`}).join("")}${filhos&&filhos.length?`<span class="mk-nresp">↩︎ ${filhos.length}</span>`:""}</div>`:"";
-  return `<article class="mk-post ${p.parent?"filho":""}" data-mkpost="${p.id}" style="--cor:${t[4]}"><div class="mk-cab">${loy?`<img src="img/app/apple-180.png" alt="" style="width:34px;height:34px;border-radius:50%">`:logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.tx?(X.tx.w?"🧾 WAIVER":"🔁 TRANSAÇÃO"):X.des?"🥊 DESAFIO":X.card?(X.card.k==="top"?"⭐ DESTAQUES":"📤 COMPARTILHOU"):tp[0]+" "+tp[1]}</span></div>
+  return `<article class="mk-post ${p.parent?"filho":""}" data-mkpost="${p.id}" style="--cor:${t[4]}"><div class="mk-cab">${loy?`<img src="img/app/apple-180.png" alt="" style="width:34px;height:34px;border-radius:50%">`:logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.tx?(X.tx.w?"🧾 WAIVER":X.tx.res?"🔁 MOVIMENTAÇÕES":"🔁 TRANSAÇÃO"):X.des?"🥊 DESAFIO":X.card?(X.card.k==="top"?"⭐ DESTAQUES":"📤 COMPARTILHOU"):tp[0]+" "+tp[1]}</span></div>
     ${lance}${X.tx?"":`<div class="mk-txt ${p.apagado?"apagado":""}">${esc(p.texto)}</div>`}${foto}${chip}${lin}${av}${card}${txc}${desc}${enq}${p.apagado?"":reac}
     ${filhos&&filhos.length?`<div class="mk-filhos">${filhos.map(f=>mkPost(f)).join("")}</div>`:""}</article>`}
 function mkPintar(){if(!document.getElementById("mkFeed"))return;
   const fe=document.getElementById("mkFeed"),vi=document.getElementById("mkVitrine"),se=document.getElementById("mkSelos"),la=document.getElementById("mkLances");if(!fe)return;
   if(MK.err&&!MK.ok){const m=`<div class="mk-load">O Mercado não respondeu (${esc(MK.err)}). Tenta de novo daqui a pouco.</div>`;fe.innerHTML=`<div class="bloco-tit">FEED</div>`+m;vi.innerHTML=m;se.innerHTML=m;return}
   if(!MK.ok)return;
-  const vivos=MK.posts.filter(p=>!p.apagado);let virt=[];try{virt=mkVirt()}catch(e){console.error(e)}MK.virt=virt;vivos.forEach(p=>{if(p.team===0&&p.ref){const v=virt.find(x=>x.ref===p.ref);if(v)p.extra=Object.assign({},p.extra,{tx:v.extra.tx})}});const reais=new Set(vivos.filter(p=>p.team===0&&p.ref).map(p=>p.ref));const top=vivos.filter(p=>!p.parent).concat(virt.filter(v=>!reais.has(v.ref))).sort((a,b)=>new Date(b.criado)-new Date(a.criado)).filter(p=>!(mkSemTx()&&p.extra&&p.extra.tx));const nTx=virt.length;const fil=id=>vivos.filter(p=>p.parent===id).sort((a,b)=>a.id-b.id);
-  fe.innerHTML=`<div class="bloco-tit">FEED <small>segura num post pra reagir</small></div>${nTx?`<button type="button" class="mk-mini mk-txtog" data-mktxtog>🔁 ${mkSemTx()?"mostrar":"esconder"} transações (${nTx})</button>`:""}`+(top.length?top.slice(0,60).map(p=>mkPost(p,fil(p.id))).join(""):`<div class="mk-load">Ninguém postou ainda. O primeiro leva a fama de carente.</div>`);
+  const vivos=MK.posts.filter(p=>!p.apagado);let virt=[];try{virt=mkVirt()}catch(e){console.error(e)}MK.virt=virt;vivos.forEach(p=>{if(p.team===0&&p.ref){const v=virt.find(x=>x.ref===p.ref);if(v)p.extra=Object.assign({},p.extra,{tx:v.extra.tx})}});const reais=new Set(vivos.filter(p=>p.team===0&&p.ref).map(p=>p.ref));const top=vivos.filter(p=>!p.parent).concat(virt.filter(v=>!reais.has(v.ref))).sort((a,b)=>new Date(b.criado)-new Date(a.criado)).filter(p=>!(p.team===0&&p.ref&&/^(tx:t|tx:[0-9a-f]{8}-|wv:)/.test(p.ref)));const nTx=virt.length;const fil=id=>vivos.filter(p=>p.parent===id).sort((a,b)=>a.id-b.id);
+  fe.innerHTML=`<div class="bloco-tit">FEED <small>segura num post pra reagir</small></div>`+(top.length?top.slice(0,60).map(p=>mkPost(p,fil(p.id))).join(""):`<div class="mk-load">Ninguém postou ainda. O primeiro leva a fama de carente.</div>`);
   const vend=MK.mer.filter(x=>x.tipo==="venda"&&x.team===donoAtual(x.player_id));const proc={};MK.mer.filter(x=>x.tipo==="interesse"&&x.team!==donoAtual(x.player_id)).forEach(x=>{(proc[x.player_id]=proc[x.player_id]||{n:x.player_nome,t:[]}).t.push(x.team)});
   const pr=Object.entries(proc).sort((a,b)=>b[1].t.length-a[1].t.length).slice(0,10);
   const linhaV=x=>{const ii=interessadosDe(x.player_id);return `<div class="mk-v clic" data-pj="${x.player_id}">${face(x.player_id,x.player_nome||"","")}<div><b>${esc(x.player_nome||"")} ${estDe(x.player_id)}</b><small>${esc(T(x.team)[0])}${x.pedido?` · quer: ${esc(x.pedido)}`:""}</small></div><em>${ii.length?`👀 ${ii.length}`:""}</em></div>`};
@@ -4339,17 +4340,17 @@ addEventListener("hashchange",()=>document.getElementById("mkSheet")?.remove());
 /* ---------- transações do Loydão no feed ---------- */
 function mkPid(v){return isNaN(+v)?v:+v}
 function nmJ(id){const p=jogDoId(id);const nm=(DADOS&&DADOS.tx&&DADOS.tx.nm)||{};return p?p.n:(nm[id]||"jogador")}
-function mkVirt(){const d=DADOS;const mov=(d&&d.tx&&d.tx.mov)||[];const lim=Date.now()-48*36e5;const out=[];const G={};
-  mov.filter(x=>x.ms>lim).sort((a,b)=>a.ms-b.ms).forEach(x=>{const dt=new Date(x.ms-3*36e5);const iso=dt.toISOString().slice(0,10);const dia=iso.slice(8,10)+"/"+iso.slice(5,7);
-    const k=x.w?"wv:"+iso:"tx:t"+x.t+"-"+iso;const g=G[k]=G[k]||{ms:0,w:x.w,dia,t:x.t,por:{}};g.ms=Math.max(g.ms,x.ms);
-    const it=g.por[x.t]=g.por[x.t]||{t:x.t,a:[],d:[]};x.a.forEach(i=>it.a.push([i,nmJ(i)]));x.d.forEach(i=>it.d.push([i,nmJ(i)]))});
+function mkVirt(){const d=DADOS;const mov=(d&&d.tx&&d.tx.mov)||[];const lim=Date.now()-72*36e5;const out=[];const G={};
+  mov.filter(x=>x.ms>lim).sort((a,b)=>a.ms-b.ms).forEach(x=>{const iso=new Date(x.ms-3*36e5).toISOString().slice(0,10);const dia=iso.slice(8,10)+"/"+iso.slice(5,7);
+    const k="tx:d-"+iso;const g=G[k]=G[k]||{ms:0,dia,por:{}};g.ms=Math.max(g.ms,x.ms);
+    const it=g.por[x.t]=g.por[x.t]||{t:x.t,a:[],d:[],ms:0};it.ms=Math.max(it.ms,x.ms);x.a.forEach(i=>it.a.push([i,nmJ(i),x.w?1:0]));x.d.forEach(i=>it.d.push([i,nmJ(i)]))});
   Object.entries(G).forEach(([k,g])=>{const l=Object.values(g.por);/* quem entrou e saiu no mesmo dia some dos dois lados */
     l.forEach(it=>{const A=new Set(it.a.map(x=>x[0])),D=new Set(it.d.map(x=>x[0]));it.a=it.a.filter(x=>!D.has(x[0]));it.d=it.d.filter(x=>!A.has(x[0]))});
-    const l2=l.filter(it=>it.a.length||it.d.length);if(!l2.length)return;
-    out.push({id:k,virt:true,team:0,tipo:"resenha",texto:g.w?`Resultado do waiver de ${g.dia}.`:`${T(g.t)[0]} mexeu no time em ${g.dia}.`,criado:new Date(g.ms).toISOString(),extra:{tx:g.w?{w:1,dia:g.dia,l:l2}:{dia:g.dia,l:l2}},ref:k,parent:null})});
+    const l2=l.filter(it=>it.a.length||it.d.length).sort((a,b)=>b.ms-a.ms);if(!l2.length)return;
+    out.push({id:k,virt:true,team:0,tipo:"resenha",texto:`Movimentações de ${g.dia}.`,criado:new Date(g.ms).toISOString(),extra:{tx:{dia:g.dia,res:1,l:l2}},ref:k,parent:null})});
   return out}
-function mkTx(tx){const j=(x,c,s)=>`<span class="mk-txj ${c} clic" data-pj="${x[0]}">${s} ${face(x[0],x[1],"")} ${esc(x[1])}</span>`;
-  return `<div class="mk-tx">${tx.w?`<div class="mk-tx-t">RESULTADO DO WAIVER · ${esc(tx.dia||"")}</div>`:""}${(tx.l||[]).map(i=>`<div class="mk-tx-l">${logo(T(i.t)[0],"width:26px;height:26px")}<div><b>${esc(T(i.t)[0])}</b><div class="mk-tx-j">${(i.a||[]).map(x=>j(x,"add","+")).join("")}${(i.d||[]).map(x=>j(x,"drop","−")).join("")}</div></div></div>`).join("")}</div>`}
+function mkTx(tx){const j=(x,c,s)=>`<span class="mk-txj ${c} clic" data-pj="${x[0]}">${s} ${face(x[0],x[1],"")} ${esc(x[1])}${x[2]?" <small>(waiver)</small>":""}</span>`;
+  return `<div class="mk-tx">${tx.w?`<div class="mk-tx-t">RESULTADO DO WAIVER · ${esc(tx.dia||"")}</div>`:tx.res?`<div class="mk-tx-t">MOVIMENTAÇÕES · ${esc(tx.dia||"")}</div>`:""}${(tx.l||[]).map(i=>`<div class="mk-tx-l">${logo(T(i.t)[0],"width:26px;height:26px")}<div><b>${esc(T(i.t)[0])}</b><div class="mk-tx-j">${(i.a||[]).map(x=>j(x,"add","+")).join("")}${(i.d||[]).map(x=>j(x,"drop","−")).join("")}</div></div></div>`).join("")}</div>`}
 async function mkReal(ref){const v=(MK.virt||[]).find(x=>x.ref===ref);if(!v)return null;let rid=null;
   const ok=await comPin(async(tm,pin)=>{rid=await sbRpc("loydao_post",{p_team:tm,p_pin:pin,p_ref:ref,p_texto:v.texto,p_extra:v.extra})});if(!ok)return null;await mkCarregar(true);return rid}
 /* ---------- desafio ---------- */
