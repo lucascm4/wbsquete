@@ -1850,11 +1850,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794272301"></script>
-<script src="radar.js?v=1794272301"></script>
-<script src="midia.js?v=1794272301"></script>
+<script src="hist.js?v=1794273477"></script>
+<script src="radar.js?v=1794273477"></script>
+<script src="midia.js?v=1794273477"></script>
 <script>
-const VERSAO_PAINEL="20261109215821";
+const VERSAO_PAINEL="20261109221757";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2735,7 +2735,7 @@ function vNoite(){
   {const RKx=rankLiga(sp);const RKv=RKx.v||{};rows.forEach(r=>{if(RKv[r.p.id]!=null)r.val=RKv[r.p.id];r.c=RKx.c&&RKx.c[r.p.id]})}
   rows.sort((x,y)=>modo==="piores"?x.val-y.val:y.val-x.val);
   let coco="";
-  if(modo==="piores"){const cand=rows.filter(r=>ehMedia(sp)?true:(sp==="sem"||ehRange(sp))?r.g>=2:(r.min||0)>=15).sort((x,y)=>x.val-y.val);const dono=escalaMelhor(cand);
+  if(modo==="piores"){const ok=(r,lim)=>ehMedia(sp)?true:(sp==="sem"||ehRange(sp))?r.g>=lim.g:(r.min||0)>=lim.m;let cand=rows.filter(r=>ok(r,{g:2,m:15}));if(cand.length<9)cand=rows.filter(r=>ok(r,{g:1,m:8}));if(cand.length<9)cand=rows.slice();cand.sort((x,y)=>x.val-y.val);const dono=escalaMelhor(cand);
     const tot=zero();dono.forEach(r=>{if(r)r.s.forEach((x,i)=>tot[i]+=x)});tot.forEach((x,i)=>tot[i]=Math.round(x*10)/10);window._SEL=[];coco=quadraSelecao(dono,tot,sp,true);}
   const L=ordenaLj(rows);
   const RKV=rkVer(sp,"periodo");
