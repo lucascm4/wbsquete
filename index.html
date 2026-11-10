@@ -2003,11 +2003,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794279205"></script>
-<script src="radar.js?v=1794279205"></script>
-<script src="midia.js?v=1794279205"></script>
+<script src="hist.js?v=1794279405"></script>
+<script src="radar.js?v=1794279405"></script>
+<script src="midia.js?v=1794279405"></script>
 <script>
-const VERSAO_PAINEL="20261109235325";
+const VERSAO_PAINEL="20261109235645";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2498,7 +2498,7 @@ function vConfrontos(){
   const mais=ordem.slice().sort((x,y)=>Math.abs(x.s.pa-x.s.pb)-Math.abs(y.s.pa-y.s.pb))[0];
   const dia=d.cur-d.s0+1;
   let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
-  <div class="atalhos"><button type="button" class="atalho" data-sel="sem">${ICS.sel} <span>Seleção</span></button><button type="button" class="atalho" data-ir="times">${ICS.rk} <span>Ranking</span></button><button type="button" class="atalho" data-ir="perfis">${ICS.perfis} <span>Perfis</span></button><button type="button" class="atalho mk-at" data-ir="mercado">${ICS.mk} <span>Mercado</span></button><button type="button" class="atalho" data-ir="radar">${ICS.radar} <span>Radar</span></button><button type="button" class="atalho" data-ir="museu">${ICS.museu} <span>Museu</span></button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="baixar" data-instalar>📲 Baixar o app</button>`:""}<label class="meu">Meu time <select id="meuTime"><option value="0">escolher</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===meu?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></label></div></div><div class="grade">`;
+  <div class="atalhos"><button type="button" class="atalho" data-sel="sem">${ICS.sel} <span>Seleção</span></button><button type="button" class="atalho" data-ir="times">${ICS.rk} <span>Ranking</span></button><button type="button" class="atalho" data-ir="perfis">${ICS.perfis} <span>Perfis</span></button><button type="button" class="atalho mk-at" data-ir="mercado">${ICS.mk} <span>Mercado</span></button><button type="button" class="atalho" data-ir="radar">${ICS.radar} <span>Radar</span></button><button type="button" class="atalho" data-ir="museu">${ICS.museu} <span>Museu</span></button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="baixar" data-instalar>📲 Baixar o app</button>`:""}</div></div><div class="grade">`;
   ordem.forEach(({m,i,sc,s})=>{
     const [a,b]=m,A=T(a),B=T(b);
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
@@ -2510,7 +2510,6 @@ function vConfrontos(){
       </div>
       ${miniTabela(a,b,sc)}
       ${chipsPremios(a,b)}
-      ${betFaixa(a,b,s)}
     </button>`;
   });
   return h+`</div>`;
@@ -2785,7 +2784,7 @@ function vJogo(i){
   const [a,b]=m,A=T(a),B=T(b);const ta=EST.tot[a],tb=EST.tot[b],pa=EST.proj[a],pb=EST.proj[b];
   const sc=placar(ta,tb),s=simula(a,b);const dsel=UI.dia[i]??(d.last===d.cur?d.cur:"sem");const dia=d.cur-d.s0+1;
   const sub=UI.subJogo||"placar";const n=d.mt.length;const prev=(i+n-1)%n,next=(i+1)%n;
-  const abas=[["placar","📊","Placar"],["jogadores","👥","Jogadores"],["odds","🎲","Odds"],["destaques","⭐","Destaques"],["premios","🏆","Prêmios"]];
+  const abas=[["placar","📊","Placar"],["jogadores","👥","Jogadores"],["odds","🎲","Odds"],["premios","🏆","Prêmios"]];
   let h=`<div class="jogo-nav"><button class="jn-home" type="button" data-ir="confrontos" aria-label="Início">⌂</button><button type="button" class="jn-b" data-jogo="${prev}" aria-label="confronto anterior">‹</button><div class="jn-mini"><a href="#time-${a}"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></a><b>${esc(A[3]||A[0])}</b><span class="num"><em class="${sc.w>sc.l?"v":""}">${sc.w}</em>-<em class="${sc.l>sc.w?"v":""}">${sc.l}</em>${sc.t?"-"+sc.t:""}</span><b>${esc(B[3]||B[0])}</b><a href="#time-${b}"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></a><small>${i+1}/${n}</small></div><button type="button" class="jn-b" data-jogo="${next}" aria-label="próximo confronto">›</button></div>
   <div class="sub-wrap">  <div class="subabas sb2" role="tablist">${abas.map(([k,ic,nm])=>`<button type="button" role="tab" data-sub="${k}" aria-selected="${sub===k}"><i>${ic}</i>${nm}</button>`).join("")}</div></div>`;
   if(sub==="placar"){
@@ -2804,7 +2803,7 @@ function vJogo(i){
     h+=`</div>${listaJuntos(a,b,dsel)}`;
   }else if(sub==="odds"){h+=abaOdds(a,b,ta,tb,pa,pb,s)
   }else if(sub==="destaques"){h+=destaques(a,b)||'<div class="card"><div class="vazio">Ainda sem jogos na semana.</div></div>'}
-  else{h+=cardPremios(a,b)||'<div class="card"><div class="vazio">Prêmios saem depois do primeiro jogo da semana.</div></div>'}
+  else{const pr=(cardPremios(a,b)||"")+(destaques(a,b)||"");h+=pr||'<div class="card"><div class="vazio">Prêmios saem depois do primeiro jogo da semana.</div></div>'}
   return h;
 }
 
@@ -3307,9 +3306,8 @@ function abrirJogador(id,perF){
   if(r&&r7){if(r-r7>=40)L.push(["🔥","PEGANDO FOGO","bom"]);else if(r7-r>=60)L.push(["🧊","ESFRIOU","ruim"])}
   return L})();
   const todos=tp.map(([e,n,c])=>`<span class="pj-selo ${c}" title="temporada"><i class="pj-em">${e}</i>${n}</span>`).concat(mine.map(x=>`<span class="pj-selo ${x.cls||""}" title="semana: ${esc(x.d)}">${seloPr(x.k)}${esc(x.n)} <small>sem.</small></span>`));
-  return todos.length?`<span class="pj-selos">${todos.join("")}</span>`:""}catch(e){return ""}})()}${APELIDO[p.n]?`<em class="pj-ap">“${esc(APELIDO[p.n][0])}”</em>`:""}<small><img src="img/l/${T(t)[1]}.webp" alt=""> ${esc(T(t)[0])} · ${esc(NBA[p.pro]||"")} · ${esc(POS[p.pos]||"")}${p.inj&&p.inj!=="ACTIVE"?` · <u>${esc(p.inj)}</u>`:""}</small></div></div>
+  return todos.length?`<span class="pj-selos">${todos.join("")}</span>`:""}catch(e){return ""}})()}<small><img src="img/l/${T(t)[1]}.webp" alt=""> ${esc(T(t)[0])} · ${esc(NBA[p.pro]||"")} · ${esc(POS[p.pos]||"")}${p.inj&&p.inj!=="ACTIVE"?` · <u>${esc(p.inj)}</u>`:""}</small></div></div>
    <div class="pj-rks">${rks.map(([k,v])=>`<div><small>${esc(k)}</small><b>#${v}${k==="Temporada"&&v<=3?' <i class="bode" title="top 3 da temporada">🐐</i>':""}</b></div>`).join("")}</div>
-   ${lei[3]?`<p class="lei-inj">${esc(lei[3])}</p>`:""}
    <div class="pj-tabs" role="tablist">${[["num","📊 Números"],["car","🏀 Carreira"],["jog","📅 Jogos"]].map(([k,n])=>`<button type="button" role="tab" data-ptab="${k}" aria-selected="${(UI.fichaAba||"num")===k}">${n}</button>`).join("")}</div>
    <div class="pj-pane" data-pane="num" ${(UI.fichaAba||"num")==="num"?"":"hidden"}><div class="pj-sec">PERÍODO</div>${filtroPer}${st?`<div class="pj-sub">${esc(rotPer(sp,1))}${(sp==="sem"||ehRange(sp))&&r.g?` · ${r.g?jp(r.g,p,sp):""} jogos (total)`:(ehMedia(sp)||r.ly)?` · média por jogo · ${jp(r.g,p,r.ly?"ly":sp)} jogos`:""}${r.rk?(r.ly?` · nível de <b>#${r.rk}</b> na régua de hoje`:` · <b>#${r.rk}</b> de ${r.n} no período`):""}</div><div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`:`<p class="pj-txt">${r.carregando?(sp==="ly"?"Buscando a temporada passada…":"Buscando os boxes…"):sp==="ly"?"Não jogou na temporada passada.":"Não jogou nesse período."}</p>`}</div>
    <div class="pj-pane" data-pane="car" ${(UI.fichaAba||"num")==="car"?"":"hidden"}><div class="pj-sec">TEMPORADAS <button type="button" class="qq mini" data-expl aria-label="explicação">?</button></div><div class="expl" hidden>Toque no ano para abrir. As bolinhas são os times da liga por onde ele passou, na ordem: → largado e pego por outro, ⇄ troca. Antes de 25/26 os números são só dos jogos como titular na liga.</div>${carreira?carreira:`<p class="pj-txt">${typeof LY!=="undefined"&&LY[id]===undefined?"Buscando as temporadas anteriores…":"Nenhuma temporada anterior registrada na ESPN."}</p>`}</div>
@@ -3903,7 +3901,7 @@ function mkCarregar(forca){
   if(MK.carregando)return MK.carregando;if(!forca&&MK.ok&&Date.now()-MK.t<15000)return Promise.resolve();
   MK.carregando=Promise.all([sbGet("posts?select=*&order=criado.desc&limit=200"),sbGet("reacoes?select=*"),sbGet("votos?select=*"),sbGet("carimbos?select=*"),sbGet("mercado?select=*&order=quando.desc")])
     .then(([p,r,v,c,m])=>{MK.posts=p;MK.reac=r;MK.votos=v;MK.car=c;MK.mer=m;MK.ok=true;MK.err=null;MK.t=Date.now()})
-    .catch(e=>{MK.err=e.message||String(e)}).finally(()=>{MK.carregando=null;mkPintar();mkFichaAtual();mkBadge();mkNotif()});
+    .catch(e=>{MK.err=e.message||String(e)}).finally(()=>{MK.carregando=null;mkPintar();mkFichaAtual();mkBadge()});
   return MK.carregando}
 /* ---------- PIN ---------- */
 function pinGuardado(t){try{return localStorage.getItem("wbs.pin."+t)||""}catch(e){return ""}}
@@ -3951,7 +3949,6 @@ function vMercado(){
   ${comp}
   <div id="mkVitrine" class="mk-strip" hidden></div>
   <div class="card" id="mkFeed"><div class="bloco-tit">FEED</div><div class="mk-load">carregando…</div></div>
-  <div class="card" id="mkLances"><div class="bloco-tit">LANCES DO LOYDÃO <small>responde aí</small></div>${mkLances()}</div>
   <div class="card" id="mkSelos"><div class="bloco-tit">NOTA DA GALERA</div><div class="mk-load">carregando…</div></div>`}
 function mkCampos(){const t=MK.tipo,meu=meuTime();
   const refBox=MK.ref?`<div class="mk-ref">↩︎ respondendo ao lance: <i>${MK.ref.txt}</i> <button type="button" class="mk-mini" data-mkrefx>✕</button></div>`:"";
@@ -4498,7 +4495,7 @@ function instalarApp(){
 }
 /* convite pra baixar: pop-up pequeno, dá pra fechar; volta só depois de 7 dias */
 function fecharConvite(){const c=document.getElementById("convApp");if(c)c.remove()}
-function convidarApp(){try{if(jaInstalado())return;const t=+localStorage.getItem("wbs.convite")||0;if(Date.now()-t<7*864e5)return}catch(e){return}
+function convidarApp(){try{if(jaInstalado())return;if(localStorage.getItem("wbs.convite"))return;localStorage.setItem("wbs.convite",String(Date.now()))}catch(e){return}
   if(document.getElementById("convApp")||document.getElementById("popRev"))return;const c=document.createElement("div");c.id="convApp";c.className="conv";
   c.innerHTML=`<img src="img/app/apple-180.png" alt=""><div><b>Baixe o app do Loydão</b><small>Tela cheia, sem barra do navegador, abre num toque.</small></div><button type="button" class="conv-v" data-instalar>Como baixar</button><button type="button" class="conv-x" aria-label="agora não">✕</button>`;
   c.querySelector(".conv-x").onclick=()=>{try{localStorage.setItem("wbs.convite",Date.now())}catch(e){}c.remove()};
