@@ -1856,11 +1856,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794274083"></script>
-<script src="radar.js?v=1794274083"></script>
-<script src="midia.js?v=1794274083"></script>
+<script src="hist.js?v=1794274715"></script>
+<script src="radar.js?v=1794274715"></script>
+<script src="midia.js?v=1794274715"></script>
 <script>
-const VERSAO_PAINEL="20261109222803";
+const VERSAO_PAINEL="20261109223835";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2889,7 +2889,7 @@ const APELIDO={
 "Dyson Daniels":["O BATEDOR DE CARTEIRA","\"Dyson 4 steals. We back!\" Rouba bola como quem rouba celular no metrô. \"Dyson, I love you\" — no ataque, ninguém sabe o que ele faz, nem ele."],
 "Kawhi Leonard":["O ROBÔ DO B2B","\"Kawhi: 'vou jogar b2b' / Clippers: 'vai sim filho, confia'\". Garra de ferro e software de gestão de carga. Quando joga, é vintage."],
 "Trae Young":["ICE TRAE","Passe, ponto e turnover em escala industrial. Defende igual estátua de shopping. \"Necks sobrevive uma semana sem TRAE\" — e às vezes sobrevive melhor."],
-"Kyrie Irving":["UNCLE DREW","Drible de outro planeta e opinião de outro planeta também. Na IR do lado do Dejounte: \"esse tá com medo do stand up\"."],
+"Kyrie Irving":["UNCLE DREW","Drible de outro planeta e opinião de outro planeta também. Ficou a temporada passada inteira fora pelo joelho e voltou titular do Mavs: o Guigi apostou no tio e o tio ainda dribla."],
 "Paolo Banchero":["PAOLO, SEMPRE UMA % PRO SACO","\"Paolo: sempre alguma % vai pro saco\". \"Sou hater do Paolo\", disse a mídia — até ele jogar bem e todo mundo virar fã."],
 "Chet Holmgren":["SLIM CHET","\"Chet desaprendeu a dar BLK? Vtnc\". Tem o corpo de um espeto e dá toco em todo mundo — quando o Hartenstein deixa."],
 "Naz Reid":["NAZ","\"Valorizar o Naz Reid nos dias bons 👏\" — ou seja, quase nunca. O sexto homem que vira titular quando alguém machuca."],
@@ -3161,7 +3161,7 @@ function abrirJogador(id,perF){
    <div class="lei"><b class="lei-t">${lei[0]}</b>${lei[2]?`<small class="lei-a">${esc(lei[2])}</small>`:""}<p>${lei[1]}</p>${lei[3]?`<p class="lei-inj">${esc(lei[3])}</p>`:""}</div>
    <div class="pj-tabs" role="tablist">${[["num","📊 Números"],["car","🏀 Carreira"],["jog","📅 Jogos"]].map(([k,n])=>`<button type="button" role="tab" data-ptab="${k}" aria-selected="${(UI.fichaAba||"num")===k}">${n}</button>`).join("")}</div>
    <div class="pj-pane" data-pane="num" ${(UI.fichaAba||"num")==="num"?"":"hidden"}><div class="pj-sec">PERÍODO</div>${filtroPer}${st?`<div class="pj-sub">${esc(rotPer(sp,1))}${(sp==="sem"||ehRange(sp))&&r.g?` · ${r.g?jp(r.g,p,sp):""} jogos (total)`:(ehMedia(sp)||r.ly)?` · média por jogo · ${jp(r.g,p,r.ly?"ly":sp)} jogos`:""}${r.rk?(r.ly?` · nível de <b>#${r.rk}</b> na régua de hoje`:` · <b>#${r.rk}</b> de ${r.n} no período`):""}</div><div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`:`<p class="pj-txt">${r.carregando?(sp==="ly"?"Buscando a temporada passada…":"Buscando os boxes…"):sp==="ly"?"Não jogou na temporada passada.":"Não jogou nesse período."}</p>`}</div>
-   <div class="pj-pane" data-pane="car" ${(UI.fichaAba||"num")==="car"?"":"hidden"}><div class="pj-sec">TEMPORADAS <button type="button" class="qq mini" data-expl aria-label="explicação">?</button></div><div class="expl" hidden>Toque no ano para abrir. As bolinhas são os times da liga por onde ele passou, na ordem: → largado e pego por outro, ⇄ troca. Antes de 25/26 os números são só dos jogos como titular na liga.</div>${carreira?carreira:`<p class="pj-txt">${typeof LY!=="undefined"&&LY[id]===undefined?"Buscando as temporadas anteriores…":"Sem temporadas anteriores na ESPN (estreante)."}</p>`}</div>
+   <div class="pj-pane" data-pane="car" ${(UI.fichaAba||"num")==="car"?"":"hidden"}><div class="pj-sec">TEMPORADAS <button type="button" class="qq mini" data-expl aria-label="explicação">?</button></div><div class="expl" hidden>Toque no ano para abrir. As bolinhas são os times da liga por onde ele passou, na ordem: → largado e pego por outro, ⇄ troca. Antes de 25/26 os números são só dos jogos como titular na liga.</div>${carreira?carreira:`<p class="pj-txt">${typeof LY!=="undefined"&&LY[id]===undefined?"Buscando as temporadas anteriores…":"Nenhuma temporada anterior registrada na ESPN."}</p>`}</div>
    <div class="pj-pane" data-pane="jog" ${(UI.fichaAba||"num")==="jog"?"":"hidden"}>${jogos?`<div class="pj-sec">TODOS OS JOGOS 26/27 <small>${ult.length} jogos</small></div><div class="pj-scroll">${jogos}</div>`:`<p class="pj-txt">${typeof GL!=="undefined"&&GL[id]===undefined?"Buscando os jogos…":"Sem jogos nesta temporada."}</p>`}</div></div>`;
   if(typeof LY!=="undefined"&&LY[id]===undefined)seasonPassada(id).then(()=>{const pop=document.getElementById("popFicha");if(pop&&pop.dataset.id==String(id)){const sc=pop.querySelector(".pop-full").scrollTop;abrirJogador(id,UI.fichaPer);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc}});
   {const rer=()=>{const pop=document.getElementById("popFicha");if(pop&&pop.dataset.id==String(id)){const sc=pop.querySelector(".pop-full").scrollTop;abrirJogador(id,UI.fichaPer);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc}};
@@ -3776,14 +3776,14 @@ async function garantirBoxes(ate){
   }finally{BOX.carregando=false;BOX.pronto=Object.keys(BOX.dias).length;render()}
 }
 /* temporadas anteriores (time da NBA + médias), sob demanda, guardadas no aparelho */
-const LY={},CAR={},EXTRA={};const ANOS_CAR=[2026];
+const LY={},CAR={},EXTRA={};const ANOS_CAR=[2022,2023,2024,2025,2026];
 function lerStatsCar(p,out){(p.stats||[]).forEach(x=>{const m=/^00(\d{4})$/.exec(x.id||"");if(!m||x.statSplitTypeId!==0||x.statSourceId!==0||!x.stats||!x.stats["42"])return;const yr=+m[1];if(yr>=2027||out[yr])return;
   const g=x.stats["42"];out[yr]={yr,t:x.proTeamId||null,mn:+((x.stats["40"]||0)/g).toFixed(1),a:[...AO.K.map(k=>+((x.stats[k]||0)/g).toFixed(1)),g]}})}
 async function seasonPassada(id){
-  if(LY[id]!==undefined)return LY[id];const c=lerCache("wbs.car4."+id);if(c){CAR[id]=c.v;EXTRA[id]=c.x||null;LY[id]=(c.v.find(x=>x.yr===2026)||{}).a||null;return LY[id]}
+  if(LY[id]!==undefined)return LY[id];const c=lerCache("wbs.car5."+id);if(c){CAR[id]=c.v;EXTRA[id]=c.x||null;LY[id]=(c.v.find(x=>x.yr===2026)||{}).a||null;return LY[id]}
   const out={};const filtro=yrs=>JSON.stringify({players:{filterIds:{value:[id]},filterStatsForTopScoringPeriodIds:{value:2,additionalValue:yrs.map(y=>"00"+y).concat(["002027","012027","032027","102027"])}}});let x=null;
   try{const r=await ajson(AO.LG+"?view=kona_player_info",{"X-Fantasy-Filter":filtro(ANOS_CAR)});const pl=(((r.players||[])[0]||{}).player)||{};lerStatsCar(pl,out);try{const m=metaDe(pl,{});x={av:m.av,l7:m.l7,l30:m.l30,pj:m.pj,mn:m.mn}}catch(e){}}catch(e){}EXTRA[id]=x;
-  const v=Object.values(out).sort((x,y)=>y.yr-x.yr);CAR[id]=v;LY[id]=(v.find(x=>x.yr===2026)||{}).a||null;gravarCache("wbs.car4."+id,{v,x});return LY[id]
+  const v=Object.values(out).sort((x,y)=>y.yr-x.yr);CAR[id]=v;LY[id]=(v.find(x=>x.yr===2026)||{}).a||null;gravarCache("wbs.car5."+id,{v,x});return LY[id]
 }
 async function baixarFA(sp){
   const f={players:{filterStatus:{value:["FREEAGENT","WAIVERS"]},filterSlotIds:{value:[0,1,2,3,4,5,6,7,8,9,10,11]},limit:80,offset:0,sortPercOwned:{sortPriority:1,sortAsc:false},filterRanksForScoringPeriodIds:{value:[sp]},filterStatsForTopScoringPeriodIds:{value:2,additionalValue:["002027","012027"]}}};
