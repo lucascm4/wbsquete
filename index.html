@@ -1893,6 +1893,18 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-share-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0}.mk-share-bar small{color:#fff;text-shadow:1px 1px 0 #000}
 .mk-shc{background:none;border:none;font-size:13px;cursor:pointer;padding:0 0 0 4px;opacity:.8}
 .mk-pk-lista{position:static;max-height:300px}
+.mk-tags{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}
+.mk-tag{display:inline-flex;align-items:center;gap:3px;background:#000;border:1px solid var(--ouro);color:var(--texto);border-radius:999px;padding:2px 8px;font:700 11px var(--ui);letter-spacing:.03em}
+.mk-tag b{color:var(--amarelo)}.mk-tag.est{border-color:var(--amarelo)}.mk-tag.est .mk-est{font-size:13px}
+.mk-fb-meu,.mk-fb-q{font-size:13px;color:var(--apagado)}.mk-fb-meu b{color:var(--texto)}
+.mk-fb-bts{display:flex;flex-wrap:wrap;gap:8px}.mk-fb-bts .mk-bt{flex:1 1 160px}
+.mk-notif{all:unset;box-sizing:border-box;position:fixed;z-index:500;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translate(-50%,-140%);width:min(420px,calc(100% - 16px));background:rgba(28,22,22,.97);border-radius:18px;padding:10px 12px;box-shadow:0 10px 30px rgba(0,0,0,.6);border-left:4px solid var(--cor,#555);cursor:pointer;transition:transform .3s ease;display:flex;flex-direction:column;gap:6px;color:var(--texto)}
+.mk-notif.on{transform:translate(-50%,0)}
+.mk-n-app{font:700 11px var(--ui);letter-spacing:.06em;color:var(--apagado);display:flex;justify-content:space-between}.mk-n-app i{font-style:normal;font-weight:400}
+.mk-n-c{display:flex;gap:10px;align-items:center}.mk-n-c>span{flex:1;min-width:0;display:flex;flex-direction:column}
+.mk-n-c b{font-size:14px}.mk-n-c small{font-size:13px;color:var(--texto);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.mk-n-c em{font-style:normal;font-size:11px;color:var(--amarelo);margin-top:2px}
+.mk-n-c img{border-radius:50%}
+@media (prefers-reduced-motion:reduce){.mk-notif{transition:none}}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1959,11 +1971,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794277930"></script>
-<script src="radar.js?v=1794277930"></script>
-<script src="midia.js?v=1794277930"></script>
+<script src="hist.js?v=1794278238"></script>
+<script src="radar.js?v=1794278238"></script>
+<script src="midia.js?v=1794278238"></script>
 <script>
-const VERSAO_PAINEL="20261109233210";
+const VERSAO_PAINEL="20261109233718";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3965,7 +3977,8 @@ function primeiroJogo(sp){if(!AO.sch)return null;let ini=Infinity;AO.sch.setting
 function cronometro(){ // próximo trancamento de escalação = primeiro jogo do dia
   const el=$("#crono");if(!el||!AO.sch)return;const n=Date.now();let sp=spHoje(),ini=primeiroJogo(sp),rot="hoje";
   if(ini==null||ini<n){for(let k=1;k<=3;k++){const x=primeiroJogo(sp+k);if(x!=null&&x>n){ini=x;rot=k===1?"amanhã":spRot(sp+k);break}}}
-  if(ini==null||ini<n){el.hidden=true;return}
+  const aoVivo=typeof DADOS!=="undefined"&&DADOS&&DADOS.nba&&Object.values(DADOS.nba).some(g=>g&&g.live);
+  if(ini==null||ini<n||aoVivo){if(!el.hidden){el.hidden=true;try{topoAltura()}catch(e){}}return}
   const ms=ini-n,h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4);const hm=new Date(ini).toLocaleTimeString("pt-BR",{timeZone:"America/Sao_Paulo",hour:"2-digit",minute:"2-digit"});
   el.hidden=false;el.innerHTML=`<span class="cr-k">⏱ ESCALAÇÃO TRANCA</span><span class="cr-q">${rot==="hoje"?"hoje":rot==="amanhã"?"amanhã":rot} às ${hm}</span><span class="cr-t">${h?h+"h ":""}${dd(m)}min</span>`;el.title="Primeiro jogo da NBA do dia. A escalação tranca jogador a jogador no horário de cada jogo.";
 }
@@ -4034,7 +4047,7 @@ document.addEventListener("click",e=>{
   if(e.target.closest("[data-rkc]")){const t2=e.target.closest("[data-rkc]");UI.rkCat=UI.rkCat===t2.dataset.rkc?null:t2.dataset.rkc;render();return}
   if(e.target.closest("[data-h2hlista]")&&UI._h2h){const el=document.createElement("div");el.className="pop-fundo";el.id="popLista";el.innerHTML=`<div class="inst"><button type="button" class="pop-x" data-fecha aria-label="fechar">✕</button><div class="inst-cab"><div><b>HISTÓRICO DIRETO</b><small>${esc(UI._h2h.t)} · toque para abrir o box</small></div></div>${UI._h2h.h}</div>`;
     el.addEventListener("click",ev=>{if(ev.target===el||ev.target.closest("[data-fecha]")){el.remove();return}if(ev.target.closest("[data-mj]"))el.remove()},true);document.body.appendChild(el);return}
-  if(e.target.closest(".topo .belt,.topo .mast")){location.hash="confrontos";scrollTo(0,0);return}
+  if(e.target.closest(".topo .belt,.topo .mast,.topo .mast-sub")){e.preventDefault();e.stopPropagation();["popFicha","popMk","popLista","popRev","popCad","menuEu"].forEach(x=>document.getElementById(x)?.remove());document.querySelectorAll(".pop-fundo").forEach(x=>x.remove());document.body.style.overflow="";document.documentElement.classList.remove("trava");if(location.hash&&location.hash!=="#confrontos")location.hash="confrontos";else render();scrollTo(0,0);return}
   {const fn=e.target.closest("[data-fnav]");if(fn){irFicha(+fn.dataset.fnav);return}}
   {const bu=e.target.closest("[data-burro]");if(bu){e.preventDefault();e.stopPropagation();mostrarAviso("🫏 "+bu.dataset.burro);return}}
   if(e.target.closest("[data-publix]")){e.stopPropagation();const p=e.target.closest(".publi");if(p)p.remove();return}
@@ -4417,7 +4430,7 @@ function mkCarregar(forca){
   if(MK.carregando)return MK.carregando;if(!forca&&MK.ok&&Date.now()-MK.t<15000)return Promise.resolve();
   MK.carregando=Promise.all([sbGet("posts?select=*&order=criado.desc&limit=200"),sbGet("reacoes?select=*"),sbGet("votos?select=*"),sbGet("carimbos?select=*"),sbGet("mercado?select=*&order=quando.desc")])
     .then(([p,r,v,c,m])=>{MK.posts=p;MK.reac=r;MK.votos=v;MK.car=c;MK.mer=m;MK.ok=true;MK.err=null;MK.t=Date.now()})
-    .catch(e=>{MK.err=e.message||String(e)}).finally(()=>{MK.carregando=null;mkPintar();mkFichaAtual();mkBadge()});
+    .catch(e=>{MK.err=e.message||String(e)}).finally(()=>{MK.carregando=null;mkPintar();mkFichaAtual();mkBadge();mkNotif()});
   return MK.carregando}
 /* ---------- PIN ---------- */
 function pinGuardado(t){try{return localStorage.getItem("wbs.pin."+t)||""}catch(e){return ""}}
@@ -4591,7 +4604,8 @@ document.addEventListener("click",async e=>{
     const p=MK.posts.find(x=>x.id===id);
     if(await comPin(async(tm,pin)=>{await sbRpc("apagar_post",{p_team:tm,p_pin:pin,p_id:id});if(p&&(p.tipo==="venda"||p.tipo==="interesse")&&p.player_id!=null)await sbRpc("marcar",{p_team:tm,p_pin:pin,p_player:p.player_id,p_nome:p.player_nome,p_tipo:p.tipo,p_pedido:null,p_ativo:false})}))mkCarregar(true);return}
   /* ficha */
-  if((b=g("[data-mksel]"))){e.stopPropagation();const [id,s]=[+b.dataset.mkid,b.dataset.mksel];const ja=MK.car.find(c=>c.player_id===id&&c.team===meuTime());
+  if((b=g("[data-mktroca]"))){e.stopPropagation();MK.trocaSel=+b.dataset.mktroca;mkFicha(MK.trocaSel);return}
+  if((b=g("[data-mksel]"))){e.stopPropagation();const [id,s]=[+b.dataset.mkid,b.dataset.mksel];if(donoAtual(id)===meuTime()){mostrarAviso("Teu próprio jogador não dá pra carimbar. Só vender.");return}const ja=MK.car.find(c=>c.player_id===id&&c.team===meuTime());MK.trocaSel=null;
     if(await comPin((tm,pin)=>sbRpc("carimbar",{p_team:tm,p_pin:pin,p_player:id,p_selo:ja&&ja.selo===s?null:s}))){await mkCarregar(true)}return}
   if((b=g("[data-mkmarca]"))){e.stopPropagation();const id=+b.dataset.mkid;const tipo=b.dataset.mkmarca;const j=jogDoId(id);if(!j)return;const ativo=b.dataset.on!=="1";
     if(tipo==="venda"&&ativo){fecharFicha();MK.tipo="venda";ir("mercado");setTimeout(()=>{const i=document.getElementById("mkJog");if(i){i.value=j.n;mkIrCompositor()}},300);return}
@@ -4600,24 +4614,28 @@ document.addEventListener("click",async e=>{
 /* ---------- ficha do jogador ---------- */
 let MK_FICHA=null;
 function mkFicha(id){MK_FICHA=id;const pop=document.getElementById("popFicha");if(!pop)return;const topo=pop.querySelector(".pj-topo");if(!topo)return;
-  pop.querySelectorAll(".mk-faixa,.mk-fbox").forEach(x=>x.remove());
+  pop.querySelectorAll(".mk-faixa,.mk-fbox,.mk-tags").forEach(x=>x.remove());
   const v=vendaDe(id);if(v){topo.classList.add("mk-avenda");const f=document.createElement("div");f.className="mk-faixa";f.textContent="À VENDA";topo.appendChild(f)}else topo.classList.remove("mk-avenda");
   const meu=meuTime();const dono=donoAtual(id);const C=carimbosDe(id);const ii=interessadosDe(id);const meuSel=(MK.car.find(c=>c.player_id===id&&c.team===meu)||{}).selo;
+  /* tags da galera, do lado das tags do jogador (todo mundo vê) */
+  const gN=notaGalera(id);const usados=SELOS.filter(([s])=>(C[s]||[]).length);
+  if(gN){const tg=document.createElement("span");tg.className="mk-tags";
+    tg.innerHTML=`<span class="mk-tag est" title="nota da galera: ${gN.m.toFixed(1)} de 5">${estrelas(gN.m)}</span>${usados.map(([s,e])=>`<span class="mk-tag" title="${(C[s]||[]).map(t=>esc(T(t)[0])).join(", ")}">${e} ${esc(s)}${C[s].length>1?` <b>${C[s].length}</b>`:""}</span>`).join("")}`;
+    const info=topo.querySelector(".pj-selos")||null;if(info)info.after(tg);else{const alvo=[...topo.children].find(x=>x.querySelector&&x.querySelector("small"))||topo;const sm=alvo.querySelector("small");if(sm&&sm.parentNode===alvo)alvo.insertBefore(tg,sm);else alvo.appendChild(tg)}}
+  const podeCarimbar=meu&&dono!==meu;const trocando=MK.trocaSel===id;
+  const sel=podeCarimbar?(meuSel&&!trocando?`<div class="mk-fb-meu">Teu carimbo: <b>${seloEmo(meuSel)} ${esc(meuSel)}</b> <button type="button" class="mk-mini" data-mktroca="${id}">trocar</button></div>`
+    :`<div class="mk-fb-q">${meuSel?"Troca teu carimbo:":"Qual o carimbo dele?"}</div><div class="mk-fb-sel">${SELOS.map(([s,e])=>`<button type="button" class="mk-sb ${meuSel===s?"on":""}" data-mksel="${esc(s)}" data-mkid="${id}">${e} ${esc(s)}</button>`).join("")}</div>`):"";
+  const acao=meu?(dono===meu?`<button type="button" class="mk-bt ${v?"":"amarelo"}" data-mkmarca="venda" data-mkid="${id}" data-on="${v?1:0}">${v?"Tirar da vitrine":"🏷️ Colocar à venda"}</button>`
+     :`<button type="button" class="mk-bt ${ii.some(x=>x.team===meu)?"":"amarelo"}" data-mkmarca="interesse" data-mkid="${id}" data-on="${ii.some(x=>x.team===meu)?1:0}">${ii.some(x=>x.team===meu)?"Tirar interesse":"👀 Tenho interesse"}</button>`):"";
+  const info2=`${v?`<div class="mk-fb-v">🏷️ À venda pelo <b>${esc(T(v.team)[0])}</b>${v.pedido?` · quer: ${esc(v.pedido)}`:""}</div>`:""}${ii.length?`<div class="mk-fb-i">👀 De olho: ${ii.map(x=>`<span>${logo(T(x.team)[0],"width:18px;height:18px")} ${esc(T(x.team)[0])}</span>`).join("")}</div>`:""}`;
+  if(!meu&&!info2)return;
   const box=document.createElement("div");box.className="mk-fbox";
-  const gN=notaGalera(id);box.innerHTML=`<div class="mk-fb-t">MERCADO</div>
-   <div class="mk-fb-est">${gN?`${estrelas(gN.m,"grande")}<span><b>${gN.m.toFixed(1)}</b> de 5 · nota da galera (${gN.n} carimbo${gN.n===1?"":"s"})</span>`:`<span class="mk-obs">Sem nota da galera ainda. Carimba aí: 💩 vale 1 estrela, 🏆 MVP vale 5.</span>`}</div>
-   ${v?`<div class="mk-fb-v">🏷️ À venda pelo <b>${esc(T(v.team)[0])}</b>${v.pedido?` · quer: ${esc(v.pedido)}`:""}</div>`:""}
-   ${ii.length?`<div class="mk-fb-i">👀 De olho: ${ii.map(x=>`<span>${logo(T(x.team)[0],"width:18px;height:18px")} ${esc(T(x.team)[0])}</span>`).join("")}</div>`:""}
-   <div class="mk-fb-sel">${SELOS.map(([s,e])=>{const q=C[s]||[];return `<button type="button" class="mk-sb ${meuSel===s?"on":""}" data-mksel="${esc(s)}" data-mkid="${id}" title="${q.map(t=>esc(T(t)[0])).join(", ")}">${e} ${esc(s)}${q.length?` <b>${q.length}</b>`:""}</button>`}).join("")}</div>
-   ${meu?(dono===meu?`<button type="button" class="mk-bt ${v?"":"amarelo"}" data-mkmarca="venda" data-mkid="${id}" data-on="${v?1:0}">${v?"Tirar da vitrine":"🏷️ Colocar à venda"}</button>`
-     :`<button type="button" class="mk-bt ${ii.some(x=>x.team===meu)?"":"amarelo"}" data-mkmarca="interesse" data-mkid="${id}" data-on="${ii.some(x=>x.team===meu)?1:0}">${ii.some(x=>x.team===meu)?"Tirar interesse":"👀 Tenho interesse"}</button>`)
-     :`<small class="mk-obs">Escolhe teu time (botão no topo) pra carimbar.</small>`}
-   ${meu?`<button type="button" class="mk-bt" data-mkshj="${id}">📤 Mandar pro Mercado</button>`:""}`;
+  box.innerHTML=`<div class="mk-fb-t">MERCADO</div>${info2}${sel}<div class="mk-fb-bts">${acao}${meu?`<button type="button" class="mk-bt" data-mkshj="${id}">📤 Mandar pro Mercado</button>`:`<small class="mk-obs">Escolhe teu time (botão no topo) pra carimbar e negociar.</small>`}</div>`;
   const ref=pop.querySelector(".pj-rks")||topo.nextSibling;topo.parentNode.insertBefore(box,ref&&ref.parentNode===topo.parentNode?ref:topo.nextSibling)}
 function mkFichaAtual(){if(MK_FICHA!=null&&document.getElementById("popFicha"))mkFicha(MK_FICHA)}
 abrirJogador=(orig=>function(id){const r=orig.apply(this,arguments);try{if(document.getElementById("popFicha")){mkFicha(id);if(!MK.ok||Date.now()-MK.t>60000)mkCarregar()}}catch(e){console.error(e)}return r})(abrirJogador);
 /* atualiza sozinho enquanto o Mercado está aberto */
-setInterval(()=>{if(document.hidden)return;if(rota()==="mercado")mkCarregar(true);else if(Date.now()-MK.t>120000&&MK.ok)mkCarregar(true)},20000);
+setInterval(()=>{if(document.hidden)return;if(rota()==="mercado")mkCarregar(true);else if(Date.now()-MK.t>40000&&MK.ok)mkCarregar(true)},20000);
 setTimeout(()=>mkCarregar(),4000);
 function mkBadge(){const b=document.querySelector('.atalho[data-ir="mercado"]');if(!b||!MK.ok)return;let v=0;try{v=+localStorage.getItem("wbs.mkVisto")||0}catch(e){}
   const meu=meuTime();const n=rota()==="mercado"?0:MK.posts.filter(p=>!p.apagado&&p.team!==meu&&new Date(p.criado).getTime()>v).length;let s=b.querySelector(".mk-badge");
@@ -4625,5 +4643,25 @@ function mkBadge(){const b=document.querySelector('.atalho[data-ir="mercado"]');
 document.addEventListener("input",e=>{if(e.target.classList&&e.target.classList.contains("mk-pk-in"))mkPkFiltrar(e.target)});
 document.addEventListener("focusin",e=>{if(e.target.classList&&e.target.classList.contains("mk-pk-in"))mkPkFiltrar(e.target)});
 document.addEventListener("click",e=>{if(!e.target.closest(".mk-pk"))document.querySelectorAll(".mk-pk-lista").forEach(x=>x.hidden=true)});
+/* notificação estilo WhatsApp */
+function mkNotif(){if(!MK.ok)return;const meu=meuTime();let ult=0;try{ult=+localStorage.getItem("wbs.mkNotif")||0}catch(e){}
+  const vivos=MK.posts.filter(p=>!p.apagado);const max=vivos.reduce((s,p)=>Math.max(s,p.id),0);
+  const salvar=()=>{try{localStorage.setItem("wbs.mkNotif",String(max))}catch(e){}};
+  if(!ult||ult>max){salvar();return}
+  const novos=vivos.filter(p=>p.id>ult&&p.team!==meu).sort((a,b)=>b.id-a.id);salvar();
+  if(!novos.length||rota()==="mercado")return;
+  const meusJ=new Set(DADOS?DADOS.P.filter(q=>q.t===meu&&!q.fora).map(q=>q.id):[]);
+  const prio=novos.find(p=>p.player_id!=null&&meusJ.has(p.player_id))||novos.find(p=>p.parent&&MK.posts.some(q=>q.id===p.parent&&q.team===meu))||novos[0];
+  const t=T(prio.team);const X=prio.extra||{};
+  const pai=prio.parent?MK.posts.find(q=>q.id===prio.parent):null;
+  let txt=prio.tipo==="interesse"?`👀 de olho no ${meusJ.has(prio.player_id)?"teu ":""}${prio.player_nome||"jogador"}`:prio.tipo==="venda"?`🏷️ colocou ${prio.player_nome||"um jogador"} à venda`:X.av?`${X.av} avaliou ${prio.player_nome||""}`:prio.tipo==="enquete"?`📊 enquete: ${prio.texto}`:X.card?`📤 ${prio.texto}`:pai&&pai.team===meu?`↩︎ te respondeu: ${prio.texto}`:prio.texto;
+  mostrarNotif({esc:t[0],tit:`${t[0]} · ${t[2]}`,txt:txt.slice(0,120),mais:novos.length>1?`+${novos.length-1} no Mercado`:"",cor:t[4]})}
+function mostrarNotif(o){document.getElementById("mkNotif")?.remove();const n=document.createElement("button");n.type="button";n.id="mkNotif";n.className="mk-notif";n.style.setProperty("--cor",o.cor||"#555");
+  n.innerHTML=`<span class="mk-n-app">🛒 MERCADO DO LOYDÃO <i>agora</i></span><span class="mk-n-c">${logo(o.esc,"width:38px;height:38px")}<span><b>${esc(o.tit)}</b><small>${esc(o.txt)}</small>${o.mais?`<em>${esc(o.mais)}</em>`:""}</span></span>`;
+  document.body.appendChild(n);requestAnimationFrame(()=>n.classList.add("on"));
+  let y0=null;n.addEventListener("touchstart",e=>{y0=e.touches[0].clientY},{passive:true});n.addEventListener("touchmove",e=>{if(y0!=null&&e.touches[0].clientY-y0<-25){fecha()}},{passive:true});
+  const fecha=()=>{n.classList.remove("on");setTimeout(()=>n.remove(),300)};
+  n.addEventListener("click",e=>{e.stopPropagation();e.preventDefault();fecha();if(document.getElementById("popFicha"))fecharFicha();ir("mercado")},true);
+  setTimeout(fecha,7000)}
 </script>
 </body></html>
