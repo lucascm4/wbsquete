@@ -2027,6 +2027,8 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-foto{display:block;max-width:100%;max-height:340px;border-radius:10px;border:1px solid var(--linha);margin:6px 0;cursor:zoom-in}
 .mk-fotoprev{display:flex;align-items:center;gap:8px}.mk-fotoprev img{height:64px;border-radius:8px;border:1px solid var(--linha)}
 .mk-fotobt{cursor:pointer;color:var(--texto)}
+.cab-secao .mk-dest{order:3;flex:1 1 100%}
+.mk-txtog{margin:6px 12px;align-self:flex-start}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -2093,11 +2095,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794321493"></script>
-<script src="radar.js?v=1794321493"></script>
-<script src="midia.js?v=1794321493"></script>
+<script src="hist.js?v=1794322051"></script>
+<script src="radar.js?v=1794322051"></script>
+<script src="midia.js?v=1794322051"></script>
 <script>
-const VERSAO_PAINEL="20261110113813";
+const VERSAO_PAINEL="20261110114731";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2123,7 +2125,7 @@ const IC={
  prancheta:'<rect x="5" y="4" width="14" height="17" rx="1.5"/><path d="M9 4V3h6v1"/><path d="M8 10l3 3M11 10l-3 3"/><circle cx="15.5" cy="11.5" r="1.6"/><path d="M8 17h8"/>',
  binoculo:'<circle cx="7" cy="14" r="4"/><circle cx="17" cy="14" r="4"/><path d="M11 13h2M8 10l1-5h6l1 5"/>',
  museu:'<path d="M4 20h16M5 17h14M6 10v7M10 10v7M14 10v7M18 10v7M4 10h16"/><path d="M9 7h6l-1-3h-4z"/><path d="M12 4V2"/>'};
-const NAVS=[["confrontos","Início",IC.ringue],["noite","Seleção",IC.quadra],["times","Ranking",IC.cinturao],["perfis","Perfis",IC.prancheta],["radar","Radar",IC.binoculo],["museu","Museu",IC.museu]];
+const NAVS=[["confrontos","Início",IC.ringue],["noite","Seleção",IC.quadra],["times","Ranking",IC.cinturao],["perfis","Perfis",IC.prancheta],["mercado","Mercado",'<path d="M3 9l1.5-5h15L21 9"/><path d="M3 9h18v2a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z"/><path d="M5 13v7h14v-7"/><path d="M10 20v-4h4v4"/>'],["radar","Radar",IC.binoculo],["museu","Museu",IC.museu]];
 
 /* ---------- utilidades ---------- */
 const $=s=>document.querySelector(s);
@@ -4056,7 +4058,7 @@ function mkCampos(){const t=MK.tipo,meu=meuTime();
     <div id="mkLinha" class="mk-linha" hidden></div>
     <textarea id="mkTxt" maxlength="300" rows="2" placeholder="Comenta (opcional). Ex.: esse homem é quebrado."></textarea>
     <div class="mk-rod"><small>A linha de hoje dele vai junto no post.</small><button type="button" class="mk-bt amarelo" data-mkpub>Avaliar</button></div>`;
-  if(t==="desafio"){const d=DADOS;const adv=(MK.des&&MK.des.b)||(typeof opDe==="function"&&opDe(meu))||(meu===1?2:1);MK.des={b:adv,cat:(MK.des&&MK.des.cat)||"PTS"};
+  if(t==="desafio"){const d=DADOS;const par=(d&&d.mt||[]).find(x=>x[0]===meu||x[1]===meu);const adv=(MK.des&&MK.des.b)||(par?(par[0]===meu?par[1]:par[0]):(meu===1?2:1));MK.des={b:adv,cat:(MK.des&&MK.des.cat)||"PTS"};
     return `<label class="mk-lab">Quem você desafia<select id="mkDesB">${Object.keys(TIMES).map(Number).filter(i=>i!==meu).map(i=>`<option value="${i}" ${i===adv?"selected":""}>${esc(T(i)[0])} (${esc(T(i)[2])})</option>`).join("")}</select></label>
     <div class="mk-lab">Em qual categoria (essa semana)</div><div class="mk-ax-sub">${CATS.map(c=>`<button type="button" class="mk-mini ${MK.des.cat===c.k?"on":""}" data-mkdescat="${c.k}">${c.k}</button>`).join("")}</div>
     <textarea id="mkTxt" maxlength="300" rows="2" placeholder="Provoca (opcional). Ex.: quem perder paga a pizza."></textarea>
@@ -4122,8 +4124,8 @@ function mkPintar(){if(!document.getElementById("mkFeed"))return;
   const fe=document.getElementById("mkFeed"),vi=document.getElementById("mkVitrine"),se=document.getElementById("mkSelos"),la=document.getElementById("mkLances");if(!fe)return;
   if(MK.err&&!MK.ok){const m=`<div class="mk-load">O Mercado não respondeu (${esc(MK.err)}). Tenta de novo daqui a pouco.</div>`;fe.innerHTML=`<div class="bloco-tit">FEED</div>`+m;vi.innerHTML=m;se.innerHTML=m;return}
   if(!MK.ok)return;
-  const vivos=MK.posts.filter(p=>!p.apagado);let virt=[];try{virt=mkVirt()}catch(e){console.error(e)}MK.virt=virt;const reais=new Set(vivos.filter(p=>p.team===0&&p.ref).map(p=>p.ref));const top=vivos.filter(p=>!p.parent).concat(virt.filter(v=>!reais.has(v.ref))).sort((a,b)=>new Date(b.criado)-new Date(a.criado));const fil=id=>vivos.filter(p=>p.parent===id).sort((a,b)=>a.id-b.id);
-  fe.innerHTML=`<div class="bloco-tit">FEED <small>segura num post pra reagir</small></div>`+(top.length?top.slice(0,60).map(p=>mkPost(p,fil(p.id))).join(""):`<div class="mk-load">Ninguém postou ainda. O primeiro leva a fama de carente.</div>`);
+  const vivos=MK.posts.filter(p=>!p.apagado);let virt=[];try{virt=mkVirt()}catch(e){console.error(e)}MK.virt=virt;vivos.forEach(p=>{if(p.team===0&&p.ref){const v=virt.find(x=>x.ref===p.ref);if(v)p.extra=Object.assign({},p.extra,{tx:v.extra.tx})}});const reais=new Set(vivos.filter(p=>p.team===0&&p.ref).map(p=>p.ref));const top=vivos.filter(p=>!p.parent).concat(virt.filter(v=>!reais.has(v.ref))).sort((a,b)=>new Date(b.criado)-new Date(a.criado)).filter(p=>!(mkSemTx()&&p.extra&&p.extra.tx));const nTx=virt.length;const fil=id=>vivos.filter(p=>p.parent===id).sort((a,b)=>a.id-b.id);
+  fe.innerHTML=`<div class="bloco-tit">FEED <small>segura num post pra reagir</small></div>${nTx?`<button type="button" class="mk-mini mk-txtog" data-mktxtog>🔁 ${mkSemTx()?"mostrar":"esconder"} transações (${nTx})</button>`:""}`+(top.length?top.slice(0,60).map(p=>mkPost(p,fil(p.id))).join(""):`<div class="mk-load">Ninguém postou ainda. O primeiro leva a fama de carente.</div>`);
   const vend=MK.mer.filter(x=>x.tipo==="venda"&&x.team===donoAtual(x.player_id));const proc={};MK.mer.filter(x=>x.tipo==="interesse"&&x.team!==donoAtual(x.player_id)).forEach(x=>{(proc[x.player_id]=proc[x.player_id]||{n:x.player_nome,t:[]}).t.push(x.team)});
   const pr=Object.entries(proc).sort((a,b)=>b[1].t.length-a[1].t.length).slice(0,10);
   const linhaV=x=>{const ii=interessadosDe(x.player_id);return `<div class="mk-v clic" data-pj="${x.player_id}">${face(x.player_id,x.player_nome||"","")}<div><b>${esc(x.player_nome||"")} ${estDe(x.player_id)}</b><small>${esc(T(x.team)[0])}${x.pedido?` · quer: ${esc(x.pedido)}`:""}</small></div><em>${ii.length?`👀 ${ii.length}`:""}</em></div>`};
@@ -4167,6 +4169,7 @@ document.addEventListener("click",async e=>{
   const g=s=>e.target.closest(s);let b;
   if((b=g("[data-mktipo]"))){MK.tipo=b.dataset.mktipo;MK.parent=null;MK.jog=null;MK.anexo=null;document.querySelectorAll(".mk-tab").forEach(x=>x.classList.toggle("on",x===b));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
   if(g("[data-mkcad]")){popCadastro();return}
+  if(g("[data-mktxtog]")){try{mkSemTx()?localStorage.removeItem("wbs.mkSemTx"):localStorage.setItem("wbs.mkSemTx","1")}catch(x){}mkPintar();return}
   if((b=g("[data-mkdescat]"))){if(MK.des)MK.des.cat=b.dataset.mkdescat;document.querySelectorAll("[data-mkdescat]").forEach(x=>x.classList.toggle("on",x===b));return}
   if((b=g("[data-mkshtop]"))){e.stopPropagation();mkCompartilhar(window._TOPCARD?JSON.parse(JSON.stringify(window._TOPCARD)):null);return}
   if((b=g("[data-mkfotox]"))){MK.foto=null;const pv=document.getElementById("mkFotoPrev");if(pv){pv.hidden=true;pv.innerHTML=""}return}
@@ -4335,12 +4338,15 @@ function mkSheet(abre){const old=document.getElementById("mkSheet");
 addEventListener("hashchange",()=>document.getElementById("mkSheet")?.remove());
 /* ---------- transações do Loydão no feed ---------- */
 function mkPid(v){return isNaN(+v)?v:+v}
-function nmJ(id){const p=jogDoId(id);return p?p.n:"jogador"}
-function mkVirt(){const d=DADOS;const mov=(d&&d.tx&&d.tx.mov)||[];const lim=Date.now()-72*36e5;const out=[];const wv={};
-  mov.filter(x=>x.ms>lim).forEach(x=>{const item={t:x.t,a:x.a.map(i=>[i,nmJ(i)]),d:x.d.map(i=>[i,nmJ(i)])};
-    if(x.w){const dia=new Date(x.ms).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});const k="wv:"+new Date(x.ms).toISOString().slice(0,10);(wv[k]=wv[k]||{ms:0,l:[],dia}).l.push(item);wv[k].ms=Math.max(wv[k].ms,x.ms)}
-    else out.push({id:"tx:"+x.id,virt:true,team:0,tipo:"resenha",texto:`${T(x.t)[0]} mexeu no time.`,criado:new Date(x.ms).toISOString(),extra:{tx:{l:[item]}},ref:"tx:"+x.id,parent:null})});
-  Object.entries(wv).forEach(([k,o])=>out.push({id:k,virt:true,team:0,tipo:"resenha",texto:`Resultado do waiver de ${o.dia}.`,criado:new Date(o.ms).toISOString(),extra:{tx:{w:1,dia:o.dia,l:o.l}},ref:k,parent:null}));
+function nmJ(id){const p=jogDoId(id);const nm=(DADOS&&DADOS.tx&&DADOS.tx.nm)||{};return p?p.n:(nm[id]||"jogador")}
+function mkVirt(){const d=DADOS;const mov=(d&&d.tx&&d.tx.mov)||[];const lim=Date.now()-48*36e5;const out=[];const G={};
+  mov.filter(x=>x.ms>lim).sort((a,b)=>a.ms-b.ms).forEach(x=>{const dt=new Date(x.ms-3*36e5);const iso=dt.toISOString().slice(0,10);const dia=iso.slice(8,10)+"/"+iso.slice(5,7);
+    const k=x.w?"wv:"+iso:"tx:t"+x.t+"-"+iso;const g=G[k]=G[k]||{ms:0,w:x.w,dia,t:x.t,por:{}};g.ms=Math.max(g.ms,x.ms);
+    const it=g.por[x.t]=g.por[x.t]||{t:x.t,a:[],d:[]};x.a.forEach(i=>it.a.push([i,nmJ(i)]));x.d.forEach(i=>it.d.push([i,nmJ(i)]))});
+  Object.entries(G).forEach(([k,g])=>{const l=Object.values(g.por);/* quem entrou e saiu no mesmo dia some dos dois lados */
+    l.forEach(it=>{const A=new Set(it.a.map(x=>x[0])),D=new Set(it.d.map(x=>x[0]));it.a=it.a.filter(x=>!D.has(x[0]));it.d=it.d.filter(x=>!A.has(x[0]))});
+    const l2=l.filter(it=>it.a.length||it.d.length);if(!l2.length)return;
+    out.push({id:k,virt:true,team:0,tipo:"resenha",texto:g.w?`Resultado do waiver de ${g.dia}.`:`${T(g.t)[0]} mexeu no time em ${g.dia}.`,criado:new Date(g.ms).toISOString(),extra:{tx:g.w?{w:1,dia:g.dia,l:l2}:{dia:g.dia,l:l2}},ref:k,parent:null})});
   return out}
 function mkTx(tx){const j=(x,c,s)=>`<span class="mk-txj ${c} clic" data-pj="${x[0]}">${s} ${face(x[0],x[1],"")} ${esc(x[1])}</span>`;
   return `<div class="mk-tx">${tx.w?`<div class="mk-tx-t">RESULTADO DO WAIVER · ${esc(tx.dia||"")}</div>`:""}${(tx.l||[]).map(i=>`<div class="mk-tx-l">${logo(T(i.t)[0],"width:26px;height:26px")}<div><b>${esc(T(i.t)[0])}</b><div class="mk-tx-j">${(i.a||[]).map(x=>j(x,"add","+")).join("")}${(i.d||[]).map(x=>j(x,"drop","−")).join("")}</div></div></div>`).join("")}</div>`}
@@ -4375,6 +4381,7 @@ function mkComprime(file){return new Promise((res,rej)=>{const img=new Image();c
     let o=faz(1000,.72);if(o.length>380000)o=faz(760,.6);if(o.length>380000)o=faz(560,.5);URL.revokeObjectURL(u);o.length>390000?rej(new Error("Foto grande demais")):res(o)};img.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("Não consegui ler a foto"))};img.src=u})}
 document.addEventListener("change",async e=>{if(e.target&&e.target.id==="mkFotoIn"){const f=e.target.files&&e.target.files[0];if(!f)return;try{MK.foto=await mkComprime(f);const pv=document.getElementById("mkFotoPrev");if(pv){pv.hidden=false;pv.innerHTML=`<img src="${MK.foto}" alt="prévia"><button type="button" class="mk-mini" data-mkfotox>tirar foto</button>`}}catch(x){mostrarAviso(x.message)}e.target.value=""}
   if(e.target&&e.target.id==="mkDesB"&&MK.des)MK.des.b=+e.target.value});
+function mkSemTx(){try{return localStorage.getItem("wbs.mkSemTx")==="1"}catch(e){return false}}
 
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
@@ -4442,12 +4449,13 @@ async function baixarNBA(sp){ // placar dos jogos da NBA do dia (site.api.espn.c
   return out;
 }
 async function baixarTrocas(cur){ // uma vez por dia: adds/drops e aceites de troca da temporada toda
-  const ch="wbs.tx4."+cur+"."+Math.floor(Date.now()/12e5);const c=lerCache(ch);if(c)return c;
+  const ch="wbs.tx5."+cur+"."+Math.floor(Date.now()/12e5);const c=lerCache(ch);if(c)return c;
   const adds=new Set(),ac=[],lst=[],tr=[],vistos=new Set(),mov=[],movV=new Set();
   const lotes=[];for(let sp=1;sp<=cur;sp++)lotes.push(ajson(AO.LG+"?view=mTransactions2&scoringPeriodId="+sp).then(r=>[sp,r]).catch(()=>[sp,{}]));
   (await Promise.all(lotes)).forEach(([sp,r])=>(r.transactions||[]).forEach(t=>{if(t.status==="EXECUTED"&&["FREEAGENT","WAIVER"].includes(t.type)&&sp>=cur-3&&!movV.has(t.id)){movV.add(t.id);const A=[],D=[];(t.items||[]).forEach(i=>{if(i.type==="ADD")A.push(i.playerId);if(i.type==="DROP")D.push(i.playerId)});if(A.length||D.length)mov.push({id:t.id,ms:t.processDate||t.proposedDate||0,t:t.teamId,w:t.type==="WAIVER",a:A,d:D})}if(t.status==="EXECUTED"&&["FREEAGENT","WAIVER"].includes(t.type))(t.items||[]).forEach(i=>{if(i.type==="ADD"){adds.add(i.playerId);lst.push([i.playerId,sp,i.toTeamId||t.teamId])}});if(t.type==="TRADE_ACCEPT")ac.push(t.processDate||t.proposedDate);
     if(/TRADE/.test(t.type||"")&&t.status==="EXECUTED")(t.items||[]).forEach(i=>{if(i.type!=="TRADE"||!i.playerId)return;const k=i.playerId+"|"+i.fromTeamId+"|"+i.toTeamId;if(vistos.has(k))return;vistos.add(k);tr.push([i.playerId,i.fromTeamId,i.toTeamId,sp,t.processDate||t.proposedDate||0])})}));
-  const out={adds:[...adds],ac:ac.sort(),lst,tr,mov};gravarCache(ch,out);return out;
+  const nm={};try{const ids=[...new Set(mov.flatMap(x=>x.a.concat(x.d)))];if(ids.length){const r=await ajson(AO.LG+"?view=kona_player_info&scoringPeriodId="+cur,{"X-Fantasy-Filter":JSON.stringify({players:{filterIds:{value:ids},limit:ids.length+5}})});(r.players||[]).forEach(o=>{if(o.player)nm[o.player.id]=o.player.fullName})}}catch(e){}
+  const out={adds:[...adds],ac:ac.sort(),lst,tr,mov,nm};gravarCache(ch,out);return out;
 }
 async function coletarAoVivo(){
   const cur=spHoje();const wk=cur<=6?1:Math.floor((cur-7)/7)+2;
