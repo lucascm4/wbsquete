@@ -1784,6 +1784,12 @@ svg.cad{width:18px;height:18px;display:block}
 .cad-t.on{border-color:var(--amarelo);background:#221c08}
 .cad-t:active{transform:scale(.96)}
 @media (max-width:440px){.btn-eu{padding:3px}.btn-eu span{display:none}.btn-eu:not(:has(img)) span{display:inline;padding:0 6px}}
+.sw-cat{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.sw-cat th,.sw-cat td{padding:8px 10px;text-align:center;font-size:16px}
+.sw-cat thead th{color:var(--amarelo);font-size:13px}
+.sw-cat tbody th{color:#aaa;font-size:13px;font-weight:700}
+.sw-cat td{color:#bbb;font-weight:800}
+.sw-cat td.v{background:var(--amarelo);color:#000}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1850,11 +1856,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794273708"></script>
-<script src="radar.js?v=1794273708"></script>
-<script src="midia.js?v=1794273708"></script>
+<script src="hist.js?v=1794274083"></script>
+<script src="radar.js?v=1794274083"></script>
+<script src="midia.js?v=1794274083"></script>
 <script>
-const VERSAO_PAINEL="20261109222148";
+const VERSAO_PAINEL="20261109222803";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2202,7 +2208,7 @@ function prepMuseu(){
 function confrontosDe(nome){
   const out=[];
   if(DADOS&&DADOS.hist)DADOS.hist.forEach(h=>{const [w,a,b,r,v]=h;const A=T(a)[0],B=T(b)[0];if(A!==nome&&B!==nome)return;
-    out.push({t:"2026/27",w,a:A,b:B,r,v:v?T(v)[0]:"TIE",ty:"NONE",atual:1})});
+    out.push({t:"2026/27",w,a:A,b:B,r,v:v?T(v)[0]:"TIE",ty:"NONE",atual:1,ia:a,ib:b})});
   if(window.MUSEU)window.MUSEU.slice().reverse().forEach(m=>{if(m.a===nome||m.b===nome)out.push(m)});
   return out.sort((x,y)=>y.t.localeCompare(x.t)||y.w-x.w);
 }
@@ -3334,12 +3340,12 @@ function vTime(id){
   const atual=confrontosDe(nome).filter(m=>m.t==="2026/27");
   let semana="";if(d){const mi=d.mt.findIndex(m=>m.includes(id));if(mi>=0){const m=d.mt[mi];const s=placar(EST.tot[m[0]],EST.tot[m[1]]);const eu=m[0]===id;semana=`<a class="qd2 ao" href="#jogo-${mi}"><b>${rtxt(eu?s.w:s.l,eu?s.l:s.w,s.t)}</b><small>agora</small></a>`}}
   const fut=(d&&d.fut||[]).filter(f=>f[0]>d.wk&&(f[1]===id||f[2]===id)).slice(0,4);
-  h+=`<div class="card"><div class="bloco-tit">TEMPORADA 26/27 <small>semana a semana</small></div><div style="padding:12px"><div class="qds">${atual.slice().reverse().map(m=>{const o=doLado(m,nome);return `<button type="button" class="qd2 ${o.res}" ${m.i!=null?`data-mj="${m.i}"`:"disabled"} title="S${m.w} x ${esc(o.op)} ${rtxt(o.w,o.l,o.t)}"><b>${o.res==="v"?"V":o.res==="d"?"D":"E"}</b><small>${T(IDN[o.op])[3]}</small></button>`}).join("")}${semana}${fut.map(f=>`<span class="qd2 fut"><b>S${f[0]}</b><small>${T(f[1]===id?f[2]:f[1])[3]}</small></span>`).join("")}</div></div></div>`;
+  h+=`<div class="card"><div class="bloco-tit">TEMPORADA 26/27 <small>semana a semana</small></div><div style="padding:12px"><div class="qds">${atual.slice().reverse().map(m=>{const o=doLado(m,nome);return `<button type="button" class="qd2 ${o.res}" ${m.i!=null?`data-mj="${m.i}"`:m.atual?`data-sw="${m.w}-${m.ia}-${m.ib}"`:"disabled"} title="S${m.w} x ${esc(o.op)} ${rtxt(o.w,o.l,o.t)}"><b>${o.res==="v"?"V":o.res==="d"?"D":"E"}</b><small>${T(IDN[o.op])[3]}</small></button>`}).join("")}${semana}${fut.map(f=>`<span class="qd2 fut"><b>S${f[0]}</b><small>${T(f[1]===id?f[2]:f[1])[3]}</small></span>`).join("")}</div></div></div>`;
   if(d)h+=elencoTabela(id);
   if(window.MUSEU)h+=perfilTreinador(id,nome);
   const ult=confrontosDe(nome).slice(0,15);
   h+=`<div class="card"><div class="bloco-tit">ÚLTIMOS CONFRONTOS <small>toque para ver o box</small></div>${window.MUSEU?`<div class="qds" style="padding:10px 12px">${ult.map(m=>{const o=doLado(m,nome);const [w,l,t]=m.r;const rot=rotulo(m);
-    return `<button class="qd2 ${o.res}${rot&&!/CONSOLA/.test(rot)?" mm":""}" type="button" ${m.i!=null?`data-mj="${m.i}"`:"disabled"} title="${esc(m.t)} sem ${m.w} · ${esc(m.a)} ${rtxt(w,l,t)} ${esc(m.b)}"><b>${o.res==="v"?"V":o.res==="d"?"D":"E"}</b><small>${esc(T(IDN[o.op])[3]||o.op.slice(0,3).toUpperCase())}</small></button>`}).join("")}</div><p class="qd-leg">mais recente à esquerda · borda dourada = mata-mata</p>`:'<div class="vazio">Abrindo o acervo…</div>'}</div>`;
+    return `<button class="qd2 ${o.res}${rot&&!/CONSOLA/.test(rot)?" mm":""}" type="button" ${m.i!=null?`data-mj="${m.i}"`:m.atual?`data-sw="${m.w}-${m.ia}-${m.ib}"`:"disabled"} title="${esc(m.t)} sem ${m.w} · ${esc(m.a)} ${rtxt(w,l,t)} ${esc(m.b)}"><b>${o.res==="v"?"V":o.res==="d"?"D":"E"}</b><small>${esc(T(IDN[o.op])[3]||o.op.slice(0,3).toUpperCase())}</small></button>`}).join("")}</div><p class="qd-leg">mais recente à esquerda · borda dourada = mata-mata</p>`:'<div class="vazio">Abrindo o acervo…</div>'}</div>`;
   if(window.MUSEU){
     const rivais=[...new Set(confrontosDe(nome).map(m=>m.a===nome?m.b:m.a))];
     const rows=rivais.map(r=>{const x=h2hEntre(nome,r);let c=[0,0];x.l.forEach(m=>{const eu=m.a===nome;c[0]+=eu?m.r[0]:m.r[1];c[1]+=eu?m.r[1]:m.r[0]});return [r,x,c]}).sort((p,q)=>(q[1].va-q[1].vb)-(p[1].va-p[1].vb));
@@ -3711,6 +3717,24 @@ function irFicha(i){const L=UI.fichaLista;if(!L)return;const x=L[i];if(!x)return
 function semPubli(){try{return localStorage.getItem("wbs.semPubli")==="1"}catch(e){return false}}
 function publiCard(of){if(!of||semPubli())return "";return `<div class="publi" ${of.j!=null?`data-jogo="${of.j}"`:""}><div class="publi-l"><span class="publi-tag">PUBLICIDADE</span><b class="publi-m"><i>BET</i>LOYDE</b></div><div class="publi-c"><span class="publi-sup">${esc(of.s)}</span><b class="publi-t">${esc(of.t)}:</b><span class="publi-o">de <s>${fmtO(of.de)}</s> para <b>${fmtO(of.para)}</b></span></div><div class="publi-r"><span class="publi-18">+18</span><small>${esc(PUBLI_SLOGAN[Math.floor(Math.random()*PUBLI_SLOGAN.length)])}</small></div><small class="publi-leg">Odds de mentira calculadas pelo modelo do Loydão. Ninguém aposta nada aqui.</small><button type="button" class="publi-x" data-publix aria-label="fechar anúncio">✕</button><button type="button" class="publi-nunca" data-publinunca>não quero mais ver</button></div>`}
 
+/* box de uma semana fechada desta temporada: categorias (placar da ESPN) + jogadores titulares somados na semana */
+function vSemBox(w,a,b){const d=DADOS;if(!d)return vazio();const h0=(d.hist||[]).find(m=>m[0]===w&&((m[1]===a&&m[2]===b)||(m[1]===b&&m[2]===a)));if(!h0)return `<div class="card vazio">Não achei esse confronto.</div>`;
+  const [,A,B,rec,win,ca,cb]=h0;const ini=w<=1?1:7+(w-2)*7,fim=w<=1?6:ini+6;
+  const K=[["PTS",0],["REB",1],["AST",2],["STL",3],["BLK",4],["3PM",5],["FG%",6],["FT%",7],["TO",8]];
+  const fmt=(v,i)=>i===6||i===7?(v<1?v.toFixed(3).replace(/^0/,""):String(v)):String(Math.round(v));
+  const cats=K.map(([n,i])=>{const x=ca[i],y=cb[i];const ga=n==="TO"?x<y:x>y,gb=n==="TO"?y<x:y>x;return `<tr><td class="${ga?"v":""}">${fmt(x,i)}</td><th>${n}</th><td class="${gb?"v":""}">${fmt(y,i)}</td></tr>`}).join("");
+  let jog="";
+  const pronto=(()=>{for(let x=ini;x<=fim;x++)if(!(typeof BOX!=="undefined"&&BOX.dias[x]))return false;return true})();
+  if(!pronto){garantirBoxes(fim);jog=`<div class="vazio">Buscando os jogos da semana ${w} na ESPN…</div>`}
+  else{const acc={};for(let x=ini;x<=fim;x++)(BOX.dias[x]||[]).forEach(l=>{const [id,tm,slot]=l;if((tm!==A&&tm!==B)||slot>=12)return;const k=id+"@"+tm;let r=acc[k];if(!r){r=acc[k]={id,t:tm,s:zero(),g:0}}l.slice(3,14).forEach((y,i)=>r.s[i]+=y);r.g++});
+    const lista=t=>Object.values(acc).filter(r=>r.t===t).map(r=>{const p=d.P.find(q=>q.id===r.id)||(d.fa||[]).find(q=>q.id===r.id)||{id:r.id,n:(BOX.meta[r.id]||{}).n||("jogador "+r.id)};return Object.assign(r,{p,val:valorJogo(r.s)})}).sort((x,y)=>y.val-x.val);
+    const tab=t=>{const L=lista(t);return `<div class="bloco-tit">${esc(T(t)[0])} <small>titulares, somado na semana</small></div><table class="lj">${cabLj()}<tbody>${L.map(r=>{const st=r.s;return `<tr data-pj="${r.p.id}" class="clic" style="--cor:${T(t)[4]}"><td class="jg"><div class="jg-in">${face(r.p.id,r.p.n,"")}<div><b>${esc(r.p.n)}</b><small>${r.g} jogo${r.g>1?"s":""}</small></div></div></td><td class="pts">${st[0]}</td><td>${st[1]}</td><td>${st[2]}</td><td>${st[3]}</td><td>${st[4]}</td><td>${st[5]}</td><td>${st[6]}</td><td class="fgft">${fgc(st[7],st[8])}</td><td class="fgft">${fgc(st[9],st[10])}</td></tr>`}).join("")||`<tr><td colspan="10" class="esp">sem jogos</td></tr>`}</tbody></table>`};
+    jog=tab(A)+tab(B)}
+  const pa=rec[0],pb=rec[1],pe=rec[2];
+  return `<div class="cab-secao cab-c"><span class="sobre">SEMANA ${w} · 26/27 · FECHADA</span><h1 class="manchete">${esc(T(A)[0])} ${pa}-${pb}${pe?"-"+pe:""} ${esc(T(B)[0])}</h1><p class="linha-fina">${win?`Vitória do <b>${esc(T(win)[0])}</b>.`:"Empate."} Categorias da semana inteira e os titulares de cada lado.</p></div>
+  <div class="card"><div class="bloco-tit">CATEGORIAS</div><table class="sw-cat"><thead><tr><th>${esc(T(A)[3]||T(A)[0])}</th><th></th><th>${esc(T(B)[3]||T(B)[0])}</th></tr></thead><tbody>${cats}</tbody></table></div>
+  <div class="card lj-wrap">${jog}</div>`}
+
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
 const ajson=(u,h)=>fetch(u,{cache:"no-store",headers:h||{}}).then(r=>{if(!r.ok)throw new Error("ESPN respondeu "+r.status);return r.json()});
@@ -3864,6 +3888,7 @@ function render(){
   try{
     if(r.startsWith("jogo-"))h=vJogo(+r.slice(5));
     else if(r.startsWith("museu-"))h=vMuseuJogo(+r.slice(6));
+    else if(r.startsWith("sem-")){const [w,x,y]=r.slice(4).split("-").map(Number);h=vSemBox(w,x,y)}
     else if(r.startsWith("acervo-")){UI.museuFiltro=r.slice(7);h=vMuseu()}
     else if(r.startsWith("time-"))h=vTime(+r.slice(5));
     else h=({confrontos:vConfrontos,perfis:vPerfis,aovivo:vAoVivo,noite:vNoite,desempenhos:vDesempenhos,times:vTimes,radar:vRadar,museu:vMuseuCapa}[r]||vConfrontos)();
@@ -3920,6 +3945,7 @@ document.addEventListener("click",e=>{
   else if(ds.dia){const r=rota();UI.dia[+r.slice(5)]=ds.dia==="sem"?"sem":+ds.dia;render()}
   else if(ds.mf){ir("acervo-"+ds.mf)}
   else if(ds.mj)ir("museu-"+ds.mj);
+  else if(ds.sw)ir("sem-"+ds.sw);
   else if(ds.time)ir("time-"+ds.time);
   else if(ds.jf){UI.jogFiltro=ds.jf;render()}
   else if(ds.jo){UI.jogOrd=ds.jo;render()}
