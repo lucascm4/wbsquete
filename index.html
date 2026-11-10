@@ -1856,11 +1856,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794274934"></script>
-<script src="radar.js?v=1794274934"></script>
-<script src="midia.js?v=1794274934"></script>
+<script src="hist.js?v=1794275150"></script>
+<script src="radar.js?v=1794275150"></script>
+<script src="midia.js?v=1794275150"></script>
 <script>
-const VERSAO_PAINEL="20261109224214";
+const VERSAO_PAINEL="20261109224550";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2880,7 +2880,7 @@ const APELIDO={
 "Mikal Bridges":["A PONTE PRA LUGAR NENHUM","Pegaram no 3º round — loucura total — e já em cenário de drop. Joga todo jogo e some em todos. Útil só pra quem punta vitória, ou seja: o Baianas."],
 "Lauri Markkanen":["MARKKANEAN","\"Markkanean tava com medo do Seridó\" e depois \"foi descansar pra season 26/27\". Finlandês voador que joga em time ruim de propósito."],
 "Jalen Brunson":["BRUNSON (NUNCA CRITICADO)","\"Brunson (nunca criticado pela mídia) clutch 47 piece\" — uma semana depois de \"Brunson me irrita\". Pequeno, gordinho e assassino no quarto período."],
-"Jalen Duren":["DUREN DOIS PATINHOS","\"Duren dois patinhos na lagoa 2x (22 pts e 22 reb)\". \"Top 50 é realidade, top 20 era ilusão pura\". Agora: posterior de coxa e 2 semanas de molho."],
+"Jalen Duren":["DUREN DOIS PATINHOS","\"Duren dois patinhos na lagoa 2x (22 pts e 22 reb)\". \"Top 50 é realidade, top 20 era ilusão pura\". Rebote de sobra; o resto depende do humor do dia."],
 "Jaylen Brown":["HARRY STYLES DO BASQUETE","\"Ganhou protagonismo sozinho e tá brilhando\" (mídia antiga). \"Quanto maior, maior a queda\" — e o dono finge que não leu."],
 "Devin Booker":["BOOK","\"Devin Booker está passando por problemas psicológicos. Eu cuido\". Pontuador de novela: bonito, eficiente e totalmente sem defesa."],
 "Brandon Miller":["BM, INIMIGO DO ARO","\"Brandon Miller fez cosplay de Jordan Poole: 1/13 FG\". Quando acerta, \"finalmente pagando o que eu paguei\"."],
@@ -2889,7 +2889,7 @@ const APELIDO={
 "Dyson Daniels":["O BATEDOR DE CARTEIRA","\"Dyson 4 steals. We back!\" Rouba bola como quem rouba celular no metrô. \"Dyson, I love you\" — no ataque, ninguém sabe o que ele faz, nem ele."],
 "Kawhi Leonard":["O ROBÔ DO B2B","\"Kawhi: 'vou jogar b2b' / Clippers: 'vai sim filho, confia'\". Garra de ferro e software de gestão de carga. Quando joga, é vintage."],
 "Trae Young":["ICE TRAE","Passe, ponto e turnover em escala industrial. Defende igual estátua de shopping. \"Necks sobrevive uma semana sem TRAE\" — e às vezes sobrevive melhor."],
-"Kyrie Irving":["UNCLE DREW","Drible de outro planeta e opinião de outro planeta também. Ficou a temporada passada inteira fora pelo joelho e voltou titular do Mavs: o Guigi apostou no tio e o tio ainda dribla."],
+"Kyrie Irving":["UNCLE DREW","Drible de outro planeta e opinião de outro planeta também. Ficou a temporada passada inteira fora pelo joelho e voltou titular do Mavs. O tio ainda dribla."],
 "Paolo Banchero":["PAOLO, SEMPRE UMA % PRO SACO","\"Paolo: sempre alguma % vai pro saco\". \"Sou hater do Paolo\", disse a mídia — até ele jogar bem e todo mundo virar fã."],
 "Chet Holmgren":["SLIM CHET","\"Chet desaprendeu a dar BLK? Vtnc\". Tem o corpo de um espeto e dá toco em todo mundo — quando o Hartenstein deixa."],
 "Naz Reid":["NAZ","\"Valorizar o Naz Reid nos dias bons 👏\" — ou seja, quase nunca. O sexto homem que vira titular quando alguém machuca."],
@@ -3116,8 +3116,10 @@ function abrirJogador(id,perF){
   const trilhaDet=yr=>{const tj=trajDe(yr);if(!tj||!tj.p.length||(tj.p.length===1&&tj.p[0][1]==="draft"&&!tj.f))return "";
     return `<div class="tr-det">${tj.p.map((x,i)=>`${i?(x[1]==="troca"?'<i class="tr-x">⇄</i>':'<i class="tr-s">→</i>'):""}<span class="tr-n">${logo(x[0])}<em>${esc((()=>{const q=d.teams.find(q=>T(q.id)[0]===x[0]);return q?T(q.id)[3]:x[0].replace(/[^A-Za-zÀ-ú]/g,"").slice(0,3).toUpperCase()})())}</em><small>${x[1]==="draft"?"draft":x[1]==="troca"?"troca":"FA"}</small></span>`).join("")}${tj.f?'<i class="tr-s">→</i><span class="tr-n"><b class="tr-fa">FA</b><small>largado</small></span>':""}</div>`};
   const linhaTempo=yr=>{const tj=trajDe(yr);if(!tj||!tj.p.length||(tj.p.length===1&&tj.p[0][1]==="draft"&&!tj.f))return "";
-    const it=tj.p.map((x,i)=>{const [tm,como,com]=x;const como2=como==="draft"?"draftado":como==="troca"?`chegou por troca${com&&com.length?` (foi ${esc(com.map(curto).join(", "))} pro outro lado)`:""}`:"pegou na FA";
-      const saiu=i<tj.p.length-1?(tj.p[i+1][1]==="troca"?"trocado":"largado"):(tj.f?"largado":"terminou o ano");
+    const it=tj.p.map((x,i)=>{const [tm,como]=x;const ant=i>0?tj.p[i-1][0]:null;const com=x[2]&&x[2].length?x[2]:(como==="troca"&&ant?comTroca(p.n,rotT(yr),ant,tm):null);
+      const como2=como==="draft"?"draftado":como==="troca"?`veio do ${esc(ant||"?")} numa troca${com&&com.length?`: o ${esc(ant||"outro lado")} levou ${esc(com.join(", "))}`:""}`:"pegou na FA";
+      const prox=i<tj.p.length-1?tj.p[i+1]:null;const comP=prox&&prox[1]==="troca"?(prox[2]&&prox[2].length?prox[2]:comTroca(p.n,rotT(yr),tm,prox[0])):null;
+      const saiu=prox?(prox[1]==="troca"?`trocado pro ${esc(prox[0])}${comP&&comP.length?` por ${esc(comP.join(", "))}`:""}`:"largado"):(tj.f?"largado":"terminou o ano");
       return `<li>${logo(tm)}<b>${esc(tm)}</b><span>${como2} · ${saiu}</span></li>`}).join("");
     return `<div class="car-sub">CAMINHO NA LIGA</div><ol class="tj-lista">${it}</ol>`};
   const LT=linhasCar.filter(l=>!l.soLiga);const tot=LT.length>1?(()=>{const g=LT.reduce((x,l)=>x+l.a[11],0);const m=zero().map((_,i)=>LT.reduce((x,l)=>x+l.a[i]*l.a[11],0)/Math.max(1,g));return [...m,g]})():null;
@@ -3736,6 +3738,9 @@ function vSemBox(w,a,b){const d=DADOS;if(!d)return vazio();const h0=(d.hist||[])
   return `<div class="cab-secao cab-c"><span class="sobre">SEMANA ${w} · 26/27 · FECHADA</span><h1 class="manchete">${esc(T(A)[0])} ${pa}-${pb}${pe?"-"+pe:""} ${esc(T(B)[0])}</h1><p class="linha-fina">${win?`Vitória do <b>${esc(T(win)[0])}</b>.`:"Empate."} Categorias da semana inteira e os titulares de cada lado.</p></div>
   <div class="card"><div class="bloco-tit">CATEGORIAS</div><table class="sw-cat"><thead><tr><th>${esc(T(A)[3]||T(A)[0])}</th><th></th><th>${esc(T(B)[3]||T(B)[0])}</th></tr></thead><tbody>${cats}</tbody></table></div>
   <div class="card lj-wrap">${jog}</div>`}
+
+/* quem foi pro outro lado numa troca do histórico (HIST.trocas): o jogador saiu de "de" e foi pra "para" */
+function comTroca(nome,temporada,de,para){const L=(HIST.trocas||[]).filter(t=>t.t===temporada);for(const t of L){const ida=t.l.find(x=>x.de===de&&x.para===para&&x.j.some(j=>j[0]===nome));if(ida){const volta=t.l.find(x=>x.de===para&&x.para===de);return volta?volta.j.map(j=>j[0]):[]}}return null}
 
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
