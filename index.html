@@ -1991,6 +1991,19 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-anexo{display:flex;flex-direction:column;gap:6px}
 .mk-ax-sub{display:flex;flex-wrap:wrap;gap:6px}
 .mk-mini.on{border-color:var(--amarelo);color:#000;background:var(--amarelo)}
+/* chat flutuante */
+.fab-chat{position:relative;font-size:20px}
+.fab-chat .mk-badge{top:-4px;right:-4px}
+.mk-sheet-fundo{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0);transition:background .2s;display:flex;align-items:flex-end;justify-content:center}
+.mk-sheet-fundo.on{background:rgba(0,0,0,.6)}
+.mk-sheet{width:min(560px,100%);height:min(88dvh,88vh);background:var(--vermelho);border-radius:18px 18px 0 0;border:3px solid #000;border-bottom:none;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .22s ease;overflow:hidden}
+.mk-sheet-fundo.on .mk-sheet{transform:none}
+.mk-sheet-cab{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#000;padding:8px 12px}
+.mk-sheet-pega{position:absolute;left:50%;top:6px;width:44px;height:4px;border-radius:4px;background:#555;transform:translateX(-50%)}
+.mk-sheet-x{all:unset;cursor:pointer;color:var(--texto);font-size:20px;padding:4px 8px}
+.mk-sheet-corpo{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:10px 10px calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px}
+.mk-sheet-corpo .mk-topo{display:none}
+@media (prefers-reduced-motion:reduce){.mk-sheet,.mk-sheet-fundo{transition:none}}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -2057,11 +2070,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794319840"></script>
-<script src="radar.js?v=1794319840"></script>
-<script src="midia.js?v=1794319840"></script>
+<script src="hist.js?v=1794320092"></script>
+<script src="radar.js?v=1794320092"></script>
+<script src="midia.js?v=1794320092"></script>
 <script>
-const VERSAO_PAINEL="20261110111040";
+const VERSAO_PAINEL="20261110111452";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4074,7 +4087,7 @@ function mkPost(p,filhos){const t=T(p.team);const meu=meuTime();const tp=TIPO_MK
   return `<article class="mk-post ${p.parent?"filho":""}" data-mkpost="${p.id}" style="--cor:${t[4]}"><div class="mk-cab">${logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.card?"📤 COMPARTILHOU":tp[0]+" "+tp[1]}</span></div>
     ${lance}<div class="mk-txt ${p.apagado?"apagado":""}">${esc(p.texto)}</div>${chip}${lin}${av}${card}${enq}${p.apagado?"":reac}
     ${filhos&&filhos.length?`<div class="mk-filhos">${filhos.map(f=>mkPost(f)).join("")}</div>`:""}</article>`}
-function mkPintar(){if(rota()!=="mercado")return;
+function mkPintar(){if(!document.getElementById("mkFeed"))return;
   const fe=document.getElementById("mkFeed"),vi=document.getElementById("mkVitrine"),se=document.getElementById("mkSelos"),la=document.getElementById("mkLances");if(!fe)return;
   if(MK.err&&!MK.ok){const m=`<div class="mk-load">O Mercado não respondeu (${esc(MK.err)}). Tenta de novo daqui a pouco.</div>`;fe.innerHTML=`<div class="bloco-tit">FEED</div>`+m;vi.innerHTML=m;se.innerHTML=m;return}
   if(!MK.ok)return;
@@ -4177,12 +4190,12 @@ function mkFicha(id){MK_FICHA=id;const pop=document.getElementById("popFicha");i
 function mkFichaAtual(){if(MK_FICHA!=null&&document.getElementById("popFicha"))mkFicha(MK_FICHA)}
 abrirJogador=(orig=>function(id){const r=orig.apply(this,arguments);try{if(document.getElementById("popFicha")){mkFicha(id);if(!MK.ok||Date.now()-MK.t>60000)mkCarregar()}}catch(e){console.error(e)}return r})(abrirJogador);
 /* atualiza sozinho enquanto o Mercado está aberto */
-setInterval(()=>{if(document.hidden)return;if(rota()==="mercado")mkCarregar(true);else if(Date.now()-MK.t>40000&&MK.ok)mkCarregar(true)},20000);
+setInterval(()=>{if(document.hidden)return;if(rota()==="mercado"||document.getElementById("mkSheet"))mkCarregar(true);else if(Date.now()-MK.t>40000&&MK.ok)mkCarregar(true)},20000);
 setTimeout(()=>mkCarregar(),4000);
 function mkBadge(){if(!MK.ok)return;let v=0;try{v=+localStorage.getItem("wbs.mkVisto")||0}catch(e){}
-  const meu=meuTime();const n=rota()==="mercado"?0:MK.posts.filter(p=>!p.apagado&&p.team!==meu&&new Date(p.criado).getTime()>v).length;
+  const meu=meuTime();const n=(rota()==="mercado"||document.getElementById("mkSheet"))?0:MK.posts.filter(p=>!p.apagado&&p.team!==meu&&new Date(p.criado).getTime()>v).length;
   try{if(navigator.setAppBadge){if(n)navigator.setAppBadge(n);else navigator.clearAppBadge()}}catch(e){}
-  document.querySelectorAll('.atalho[data-ir="mercado"],#btnEu').forEach(b=>{let s=b.querySelector(".mk-badge");if(!n){s&&s.remove();return}if(!s){s=document.createElement("i");s.className="mk-badge";b.appendChild(s)}s.textContent=n>99?"99+":n})}
+  document.querySelectorAll('.atalho[data-ir="mercado"],#btnEu,#fabChat').forEach(b=>{let s=b.querySelector(".mk-badge");if(!n){s&&s.remove();return}if(!s){s=document.createElement("i");s.className="mk-badge";b.appendChild(s)}s.textContent=n>99?"99+":n})}
 document.addEventListener("input",e=>{if(e.target.classList&&e.target.classList.contains("mk-pk-in"))mkPkFiltrar(e.target)});
 document.addEventListener("focusin",e=>{if(e.target.classList&&e.target.classList.contains("mk-pk-in")){mkPkFiltrar(e.target);const el=e.target;setTimeout(()=>{const top=(parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--topo"))||110)+12;const r=el.getBoundingClientRect();if(r.top>top+40||r.top<top)scrollBy({top:r.top-top,behavior:"smooth"})},300)}});
 document.addEventListener("click",e=>{if(!e.target.closest(".mk-pk"))document.querySelectorAll(".mk-pk-lista").forEach(x=>x.hidden=true)});
@@ -4266,6 +4279,22 @@ function mkAnexoUI(p){const ax=MK.anexo;const tem=k=>!!arrPer(p,k);
   let prev="";if(ax){const s=statAnexo(p,ax.k==="temp"?{k:"av"}:ax);prev=s?`<div class="mk-linha">📊 <b>${esc(s.rot)}</b>: ${esc(s.txt)}</div>`:""}
   const stat=ax&&ax.k==="stat"?`<div class="mk-ax-sub">${AX_CATS.map(c=>`<button type="button" class="mk-mini ${ax.cat===c[0]?"on":""}" data-mkaxcat="${c[0]}">${c[0]}</button>`).join("")}</div><div class="mk-ax-sub">${AX_PER.filter(x=>tem(x[0])).map(x=>`<button type="button" class="mk-mini ${ax.per===x[0]?"on":""}" data-mkaxper="${x[0]}">${x[1]}</button>`).join("")}</div>`:"";
   return `<div class="mk-lab">Anexar números (opcional)</div><div class="mk-ax-sub">${ops.map(([kk,n])=>`<button type="button" class="mk-mini ${ax&&ax.k===kk?"on":""}" data-mkax="${kk}">${n}</button>`).join("")}</div>${stat}${prev}`}
+/* chat flutuante: bolinha sempre na tela, abre o Mercado por cima de qualquer página */
+function montarChat(r){const dk=doca();let b=document.getElementById("fabChat");
+  if(r==="mercado"){if(b)b.remove();return}
+  if(!b){b=document.createElement("button");b.type="button";b.id="fabChat";b.className="fab-topo fab-chat";b.setAttribute("aria-label","abrir o chat do Mercado");b.textContent="💬";
+    b.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();mkSheet(true)});
+    const mini=dk.querySelector(".fab-mini");(mini||dk).insertBefore(b,(mini||dk).firstChild)}}
+function mkSheet(abre){const old=document.getElementById("mkSheet");
+  if(!abre){if(old){old.classList.remove("on");setTimeout(()=>old.remove(),200);setTimeout(mkBadge,250)}return}
+  if(old)return;MK.aba="chat";const s=document.createElement("div");s.id="mkSheet";s.className="mk-sheet-fundo";
+  s.innerHTML=`<div class="mk-sheet" role="dialog" aria-label="Mercado"><div class="mk-sheet-cab"><span class="mk-sheet-pega"></span><button type="button" class="mk-mini" data-mkcheia>⤢ tela cheia</button><button type="button" class="mk-sheet-x" data-mksx aria-label="fechar">✕</button></div><div class="mk-sheet-corpo">${vMercado()}</div></div>`;
+  document.body.appendChild(s);requestAnimationFrame(()=>s.classList.add("on"));
+  s.addEventListener("click",e=>{if(e.target===s||e.target.closest("[data-mksx]")){mkSheet(false);return}
+    if(e.target.closest("[data-mkcheia]")){s.remove();ir("mercado");return}
+    if(e.target.closest("[data-pj],[data-jogo],.mk-card"))setTimeout(()=>s.remove(),0)});
+  try{mkContador();mkPintar();mkBadge()}catch(e){}}
+addEventListener("hashchange",()=>document.getElementById("mkSheet")?.remove());
 
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
@@ -4434,7 +4463,7 @@ function render(){
   try{montarPubli(r)}catch(e){console.error(e)}
   try{document.querySelectorAll("#app .cab-secao .linha-fina").forEach(lf=>{if(lf.dataset.c)return;lf.dataset.c="1";lf.hidden=true;const h1=lf.parentNode.querySelector(".manchete");if(!h1)return;const q=document.createElement("button");q.type="button";q.className="lf-q";q.textContent="?";q.setAttribute("aria-label","o que é isso");q.onclick=e=>{e.stopPropagation();lf.hidden=!lf.hidden};h1.appendChild(q)})}catch(e){}
   try{document.querySelectorAll("#app .rd .tmini").forEach(t=>t.classList.add("rec"))}catch(e){}
-  try{if(r==="mercado"){mkContador();mkPintar()}mkBadge()}catch(e){console.error(e)}
+  try{if(r==="mercado"){document.getElementById("mkSheet")?.remove();mkContador();mkPintar()}montarChat(r);mkBadge()}catch(e){console.error(e)}
   if(UI._fichaMuseu&&window.MUSEU&&document.getElementById("popFicha")){const i=UI._fichaMuseu;UI._fichaMuseu=null;const pop=document.querySelector("#popFicha .pop-full");const sc=pop?pop.scrollTop:0;abrirJogador(i,UI.fichaPer);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc}
   if(UI._fichaEspera&&document.getElementById("popFicha")&&ehRange(UI.fichaPer)&&rangePronto(UI.fichaPer)){const i=UI._fichaEspera;UI._fichaEspera=null;abrirJogador(i,UI.fichaPer)}
 }
@@ -4684,7 +4713,7 @@ function doca(){let dk=document.getElementById("fabDoca");if(!dk){dk=document.cr
   dk.innerHTML='<div class="fab-mini"><button type="button" id="fabVolta" class="fab-topo" aria-label="voltar uma página">‹</button><button type="button" id="fabTopo" class="fab-topo" aria-label="voltar ao topo" hidden>↑</button></div>';
   document.body.appendChild(dk);setTimeout(posDoca,0);
   const topo=e=>{e.preventDefault();e.stopPropagation();const se=document.scrollingElement||document.documentElement;try{window.scrollTo({top:0,behavior:"smooth"})}catch(x){window.scrollTo(0,0)}setTimeout(()=>{if(scrollY>5){se.scrollTop=0;document.body.scrollTop=0}},450)};
-  const volta=e=>{e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha")){fecharFichaU();return}if(history.length>1&&(location.hash||"").length>1)history.back();else{location.hash="confrontos"}};
+  const volta=e=>{e.preventDefault();e.stopPropagation();if(document.getElementById("mkSheet")){mkSheet(false);return}if(document.getElementById("popFicha")){fecharFichaU();return}if(history.length>1&&(location.hash||"").length>1)history.back();else{location.hash="confrontos"}};
   dk.querySelector("#fabTopo").addEventListener("click",topo);const fv=dk.querySelector("#fabVolta");let lp=null,subiu=false;fv.addEventListener("pointerdown",()=>{subiu=false;lp=setTimeout(()=>{subiu=true;topo({preventDefault(){},stopPropagation(){}})},500)});["pointerup","pointercancel","pointerleave"].forEach(ev=>fv.addEventListener(ev,()=>clearTimeout(lp)));fv.addEventListener("contextmenu",e=>e.preventDefault());fv.addEventListener("click",e=>{if(subiu){e.preventDefault();e.stopPropagation();subiu=false;return}volta(e)});fv.title="toque: volta · segure: sobe pro topo"}
   const h=(location.hash||"").replace("#","");const v=dk.querySelector("#fabVolta");if(v)v.hidden=(h===""||h==="confrontos");const tp=dk.querySelector("#fabTopo");if(tp&&!(h===""||h==="confrontos"))tp.hidden=true;return dk}
 function liveMin(){try{return localStorage.getItem("wbs.liveMin")==="1"}catch(e){return false}}
