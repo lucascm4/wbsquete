@@ -1988,6 +1988,9 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-folha-acoes button{all:unset;cursor:pointer;text-align:center;padding:14px;font:600 15px var(--ui);color:var(--texto);border-bottom:1px solid var(--linha)}
 .mk-folha-acoes button.apaga{color:var(--perigo)}
 @media (prefers-reduced-motion:reduce){.mk-folha,.mk-folha-fundo{transition:none}}
+.mk-anexo{display:flex;flex-direction:column;gap:6px}
+.mk-ax-sub{display:flex;flex-wrap:wrap;gap:6px}
+.mk-mini.on{border-color:var(--amarelo);color:#000;background:var(--amarelo)}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -2054,11 +2057,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794311061"></script>
-<script src="radar.js?v=1794311061"></script>
-<script src="midia.js?v=1794311061"></script>
+<script src="hist.js?v=1794319840"></script>
+<script src="radar.js?v=1794319840"></script>
+<script src="midia.js?v=1794319840"></script>
 <script>
-const VERSAO_PAINEL="20261110084421";
+const VERSAO_PAINEL="20261110111040";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4020,7 +4023,7 @@ function mkCampos(){const t=MK.tipo,meu=meuTime();
   if(t==="enquete")return `${refBox}<textarea id="mkTxt" maxlength="300" rows="2" placeholder="A pergunta. Ex.: Quem é o pior manager da semana?"></textarea>
     <div class="mk-ops">${[0,1,2,3].map(i=>`<div class="mk-opr" data-i="${i}"><input class="mk-op" maxlength="60" placeholder="Opção ${i+1}${i>1?" (opcional)":""}"><button type="button" class="mk-opj" data-mkopj title="colocar jogador">👤</button></div>`).join("")}</div>
     <div class="mk-rod"><small>👤 põe jogador com foto. Cada time vota uma vez.</small><button type="button" class="mk-bt amarelo" data-mkpub>Publicar</button></div>`;
-  return `${refBox}${paiBox}${MK.parent?"":mkPicker("todos","Marcar jogador (opcional)")}<textarea id="mkTxt" maxlength="500" rows="3" placeholder="${MK.parent?"Responde à altura.":"Solta o verbo. Zoa, provoca, chora."}"></textarea><div class="mk-rod"><small><span id="mkCont">0</span>/500</small><button type="button" class="mk-bt amarelo" data-mkpub>${MK.parent?"Responder":"Postar"}</button></div>`}
+  return `${refBox}${paiBox}${MK.parent?"":mkPicker("todos","Marcar jogador (opcional)")+`<div id="mkAnexo" class="mk-anexo" hidden></div>`}<textarea id="mkTxt" maxlength="500" rows="3" placeholder="${MK.parent?"Responde à altura.":"Solta o verbo. Zoa, provoca, chora."}"></textarea><div class="mk-rod"><small><span id="mkCont">0</span>/500</small><button type="button" class="mk-bt amarelo" data-mkpub>${MK.parent?"Responder":"Postar"}</button></div>`}
 function mkListaJog(modo){const d=DADOS;if(!d)return [];const meu=meuTime();let L;
   if(modo==="meus")L=d.P.filter(p=>p.t===meu&&!p.fora);else if(modo==="outros")L=d.P.filter(p=>p.t!==meu&&!p.fora).concat(d.fa||[]);else L=d.P.filter(p=>!p.fora).concat(d.fa||[]);
   const vis=new Set();return L.filter(p=>p&&p.n&&!vis.has(p.id)&&vis.add(p.id))}
@@ -4032,6 +4035,7 @@ function mkPkFiltrar(inp){const pk=inp.closest(".mk-pk");const box=pk.querySelec
 function mkPkEscolher(pk,id){const p=jogDoId(id);if(!p)return;if(pk.dataset.op!=null)pk.dataset.pid=id;else MK.jog=id;const s=pk.querySelector(".mk-pk-sel");
   s.innerHTML=`<div class="mk-chip">${face(p.id,p.n,"")}<div><b>${esc(p.n)} ${estDe(p.id)}</b><small>${p.t?esc(T(p.t)[0]):"livre"}</small></div><button type="button" class="mk-mini" data-mkpkx>trocar</button></div>`;s.hidden=false;
   pk.querySelector(".mk-pk-in").hidden=true;pk.querySelector(".mk-pk-lista").hidden=true;
+  const ax=pk.dataset.op!=null?null:document.getElementById("mkAnexo");if(ax){MK.anexo=null;ax.hidden=false;ax.innerHTML=mkAnexoUI(p)}
   const ln=pk.dataset.op!=null?null:document.getElementById("mkLinha");if(ln){const l=linhaHoje(p);ln.hidden=false;ln.innerHTML=l?`📊 <b>${esc(l.rot)}</b>: ${esc(l.txt)}`:"Sem jogo recente na base. Vai sem a linha."}}
 function linhaHoje(p){const d=DADOS;if(!p||!p.dl||!d)return null;const sp=Object.keys(p.dl).map(Number).filter(s=>s<=d.cur).sort((a,b)=>b-a)[0];if(sp==null)return null;const v=p.dl[sp];if(!v)return null;
   const g=sp===d.cur&&d.nba&&d.nba[p.pro];return {sp,txt:linhaReal(v)+((v[12]||0)?` em ${v[12]} min`:"")+(g&&g.live?" (ao vivo)":""),rot:sp===d.cur?"hoje":spRot(sp)}}
@@ -4063,12 +4067,12 @@ function mkPost(p,filhos){const t=T(p.team);const meu=meuTime();const tp=TIPO_MK
   const chip=p.player_id!=null?`<div class="mk-chip clic" data-pj="${p.player_id}">${face(p.player_id,p.player_nome||"","")}<div><b>${esc(p.player_nome||(jog&&jog.n)||"")} ${estDe(p.player_id)}</b><small>${jog&&jog.t?esc(T(jog.t)[0]):"livre"}${p.extra&&p.extra.pedido?` · ${p.tipo==="venda"?"quer":"oferece"}: ${esc(p.extra.pedido)}`:""}</small></div></div>`:"";
   let enq="";if(p.tipo==="enquete"&&p.extra&&Array.isArray(p.extra.ops)){const V=MK.votos.filter(v=>v.post_id===p.id);const tot=V.length;const meuV=V.find(v=>v.team===meu);
     enq=`<div class="mk-enq">${p.extra.ops.map((o,i)=>{const q=V.filter(v=>v.opcao===i);const pc=tot?Math.round(q.length/tot*100):0;return `<button type="button" class="mk-opv ${meuV&&meuV.opcao===i?"on":""}" data-mkvoto="${p.id}:${i}"><i style="width:${pc}%"></i><span class="mk-opn">${p.extra.opsId&&p.extra.opsId[i]?face(p.extra.opsId[i],o,""):""}${esc(o)}</span><em>${pc}%${q.length?` · ${q.map(v=>esc(T(v.team)[0])).join(", ")}`:""}</em></button>`}).join("")}<small>${tot} voto${tot===1?"":"s"}</small></div>`}
-  const X=p.extra||{};const av=X.av?`<div class="mk-av"><span class="mk-av-e">${esc(X.av)}</span>${X.linha?`<div class="mk-linha">📊 <b>${esc(X.rot||"")}</b>: ${esc(X.linha)}</div>`:""}</div>`:"";const card=X.card?mkCard(X.card):"";
+  const X=p.extra||{};const av=X.av?`<div class="mk-av"><span class="mk-av-e">${esc(X.av)}</span>${X.linha?`<div class="mk-linha">📊 <b>${esc(X.rot||"")}</b>: ${esc(X.linha)}</div>`:""}</div>`:"";const card=X.card?mkCard(X.card):"";const lin=!X.av&&X.linha?`<div class="mk-linha">📊 <b>${esc(X.rot||"")}</b>: ${esc(X.linha)}</div>`:"";
   const lance=p.extra&&p.extra.lance?`<div class="mk-quote">LOYDÃO: ${esc(p.extra.lance)}</div>`:"";
   const usados=EMO_MK.concat(Object.keys(R).filter(e=>!EMO_MK.includes(e))).filter(e=>(R[e]||[]).length);
   const reac=(usados.length||(filhos&&filhos.length))?`<div class="mk-reac">${usados.map(e=>{const q=R[e];return `<button type="button" class="mk-r ${q.includes(meu)?"on":""}" data-mkreac="${p.id}:${e}" title="${q.map(x=>esc(T(x)[0])).join(", ")}">${e} <b>${q.length}</b></button>`}).join("")}${filhos&&filhos.length?`<span class="mk-nresp">↩︎ ${filhos.length}</span>`:""}</div>`:"";
   return `<article class="mk-post ${p.parent?"filho":""}" data-mkpost="${p.id}" style="--cor:${t[4]}"><div class="mk-cab">${logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.card?"📤 COMPARTILHOU":tp[0]+" "+tp[1]}</span></div>
-    ${lance}<div class="mk-txt ${p.apagado?"apagado":""}">${esc(p.texto)}</div>${chip}${av}${card}${enq}${p.apagado?"":reac}
+    ${lance}<div class="mk-txt ${p.apagado?"apagado":""}">${esc(p.texto)}</div>${chip}${lin}${av}${card}${enq}${p.apagado?"":reac}
     ${filhos&&filhos.length?`<div class="mk-filhos">${filhos.map(f=>mkPost(f)).join("")}</div>`:""}</article>`}
 function mkPintar(){if(rota()!=="mercado")return;
   const fe=document.getElementById("mkFeed"),vi=document.getElementById("mkVitrine"),se=document.getElementById("mkSelos"),la=document.getElementById("mkLances");if(!fe)return;
@@ -4103,8 +4107,10 @@ async function mkPublicar(){const t=MK.tipo;const txt=(document.getElementById("
   let extra={};if(t==="enquete"){const R=[...document.querySelectorAll(".mk-opr")].map(r=>{const pk=r.querySelector(".mk-pk");if(pk){const p=pk.dataset.pid?jogDoId(+pk.dataset.pid):null;return p?{t:p.n,id:p.id}:null}const v=(r.querySelector(".mk-op")||{}).value;return v&&v.trim()?{t:v.trim(),id:null}:null}).filter(Boolean);
     if(R.length<2){mostrarAviso("Enquete precisa de pelo menos 2 opções.");return}extra.ops=R.map(x=>x.t);if(R.some(x=>x.id))extra.opsId=R.map(x=>x.id)}
   if(MK.ref)extra.lance=MK.ref.raw;
+  const pj=(!MK.parent&&t==="resenha"&&MK.jog!=null)?MK.jog:null;
+  if(pj!=null&&MK.anexo){const a=statAnexo(jogDoId(pj),MK.anexo);if(a){extra.linha=a.txt;extra.rot=a.rot}}
   const tipo=MK.parent?"resenha":t;
-  const ok=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:tipo,p_texto:txt,p_player_id:(!MK.parent&&MK.jog!=null)?MK.jog:null,p_player_nome:(!MK.parent&&MK.jog!=null&&jogDoId(MK.jog))?jogDoId(MK.jog).n:null,p_extra:extra,p_parent:MK.parent,p_ref:MK.ref?MK.ref.k:null}));
+  const ok=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:tipo,p_texto:txt,p_player_id:pj!=null?pj:null,p_player_nome:pj!=null&&jogDoId(pj)?jogDoId(pj).n:null,p_extra:extra,p_parent:MK.parent,p_ref:MK.ref?MK.ref.k:null}));
   if(ok){mkLimpar();mkCarregar(true)}}
 function mkLimpar(){MK.ref=null;MK.parent=null;mkAbrir(false)}
 function mkContador(){const a=document.getElementById("mkTxt"),c=document.getElementById("mkCont");if(a&&c)a.oninput=()=>c.textContent=a.value.length}
@@ -4112,7 +4118,7 @@ function mkAbrir(on){MK.aberto=on;const c=document.getElementById("mkComp");if(!
 function mkIrCompositor(){mkAbrir(true);const c=document.getElementById("mkComp");if(c){c.scrollIntoView({behavior:"smooth",block:"start"});setTimeout(()=>document.getElementById("mkTxt")?.focus(),350)}}
 document.addEventListener("click",async e=>{
   const g=s=>e.target.closest(s);let b;
-  if((b=g("[data-mktipo]"))){MK.tipo=b.dataset.mktipo;MK.parent=null;document.querySelectorAll(".mk-tab").forEach(x=>x.classList.toggle("on",x===b));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
+  if((b=g("[data-mktipo]"))){MK.tipo=b.dataset.mktipo;MK.parent=null;MK.jog=null;MK.anexo=null;document.querySelectorAll(".mk-tab").forEach(x=>x.classList.toggle("on",x===b));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
   if(g("[data-mkcad]")){popCadastro();return}
   if((b=g("[data-mkaba]"))){MK.aba=b.dataset.mkaba;document.querySelectorAll("[data-mkaba]").forEach(x=>{x.classList.toggle("on",x===b);x.setAttribute("aria-selected",x===b)});document.querySelectorAll("[data-mkpane]").forEach(p=>p.hidden=p.dataset.mkpane!==MK.aba);return}
   if(g("[data-mkabre]")){mkAbrir(!MK.aberto);if(MK.aberto)setTimeout(()=>document.getElementById("mkTxt")?.focus(),200);return}
@@ -4120,7 +4126,10 @@ document.addEventListener("click",async e=>{
   if((b=g("[data-mkopj]"))){const r=b.closest(".mk-opr");const i=r.dataset.i;r.innerHTML=`<div class="mk-pk" data-modo="todos" data-op="${i}"><div class="mk-pk-sel" hidden></div><input class="mk-pk-in" type="text" placeholder="🔎 jogador da opção ${+i+1}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><div class="mk-pk-lista" hidden></div></div><button type="button" class="mk-opj" data-mkoptxt title="escrever texto">✏️</button>`;r.querySelector(".mk-pk-in").focus();return}
   if((b=g("[data-mkoptxt]"))){const r=b.closest(".mk-opr");const i=+r.dataset.i;r.innerHTML=`<input class="mk-op" maxlength="60" placeholder="Opção ${i+1}${i>1?" (opcional)":""}"><button type="button" class="mk-opj" data-mkopj title="colocar jogador">👤</button>`;return}
   if((b=g("[data-mkpick]"))){e.stopPropagation();mkPkEscolher(b.closest(".mk-pk"),+b.dataset.mkpick);return}
-  if((b=g("[data-mkpkx]"))){const pk=b.closest(".mk-pk");if(pk.dataset.op!=null)delete pk.dataset.pid;else MK.jog=null;pk.querySelector(".mk-pk-sel").hidden=true;const i=pk.querySelector(".mk-pk-in");i.hidden=false;i.value="";i.focus();mkPkFiltrar(i);const ln=document.getElementById("mkLinha");if(ln)ln.hidden=true;return}
+  if((b=g("[data-mkpkx]"))){const pk=b.closest(".mk-pk");if(pk.dataset.op!=null)delete pk.dataset.pid;else{MK.jog=null;MK.anexo=null;const ax=document.getElementById("mkAnexo");if(ax){ax.hidden=true;ax.innerHTML=""}}pk.querySelector(".mk-pk-sel").hidden=true;const i=pk.querySelector(".mk-pk-in");i.hidden=false;i.value="";i.focus();mkPkFiltrar(i);const ln=document.getElementById("mkLinha");if(ln)ln.hidden=true;return}
+  if((b=g("[data-mkax]"))){const k=b.dataset.mkax;MK.anexo=MK.anexo&&MK.anexo.k===k&&k!=="stat"?null:{k,cat:(MK.anexo&&MK.anexo.cat)||"PTS",per:(MK.anexo&&MK.anexo.per)||"av"};const p=jogDoId(MK.jog);const ax=document.getElementById("mkAnexo");if(ax&&p)ax.innerHTML=mkAnexoUI(p);return}
+  if((b=g("[data-mkaxcat]"))){if(MK.anexo){MK.anexo.cat=b.dataset.mkaxcat;const p=jogDoId(MK.jog);document.getElementById("mkAnexo").innerHTML=mkAnexoUI(p)}return}
+  if((b=g("[data-mkaxper]"))){if(MK.anexo){MK.anexo.per=b.dataset.mkaxper;const p=jogDoId(MK.jog);document.getElementById("mkAnexo").innerHTML=mkAnexoUI(p)}return}
   if((b=g("[data-mkemo]"))){MK.avEmo=b.dataset.mkemo;document.querySelectorAll("[data-mkemo]").forEach(x=>x.classList.toggle("on",x===b));return}
   if((b=g("[data-mkshmt]"))){e.stopPropagation();mkCompartilhar(cardMt(+b.dataset.mkshmt,null));return}
   if((b=g("[data-mkshcat]"))){e.stopPropagation();e.preventDefault();const [i,k]=b.dataset.mkshcat.split(":");mkCompartilhar(cardMt(+i,k));return}
@@ -4239,6 +4248,24 @@ function mkFolha(id){const p=MK.posts.find(x=>x.id===id);if(!p||p.apagado)return
   document.addEventListener("click",e=>{if(abriu&&e.target.closest&&e.target.closest("[data-mkpost]")){e.preventDefault();e.stopPropagation();abriu=false}},true);
   document.addEventListener("contextmenu",e=>{const a=e.target.closest&&e.target.closest("[data-mkpost]");if(a&&!e.target.closest("input,textarea")){e.preventDefault();cancela();mkFolha(+a.dataset.mkpost)}});
 })();
+/* anexar números do jogador no post */
+const AX_CATS=[["PTS",0,"pontos"],["REB",1,"rebotes"],["AST",2,"assistências"],["STL",3,"roubos"],["BLK",4,"tocos"],["3PM",5,"bolas de 3"],["TO",6,"turnovers"],["FG%","fg","FG%"],["FT%","ft","FT%"]];
+const AX_PER=[["av","Temporada"],["l7","7 dias"],["l30","30 dias"]];
+function arrPer(p,k){const X=(typeof EXTRA!=="undefined"&&EXTRA[p.id])||{};const a=p[k]||X[k];return a&&a[11]?a:null}
+function fmtCat(a,c){if(c[1]==="fg")return a[8]?(100*a[7]/a[8]).toFixed(1)+"% ("+(+a[7]).toFixed(1)+"/"+(+a[8]).toFixed(1)+")":"–";if(c[1]==="ft")return a[10]?(100*a[9]/a[10]).toFixed(1)+"% ("+(+a[9]).toFixed(1)+"/"+(+a[10]).toFixed(1)+")":"–";return (+a[c[1]]).toFixed(1).replace(".0","")+" "+c[2]}
+function linhaMediaTxt(a){const f=x=>(+x).toFixed(1).replace(".0","");return `${f(a[0])} pts, ${f(a[1])} reb, ${f(a[2])} ast, ${f(a[3])} roubos, ${f(a[4])} tocos, ${f(a[5])} de 3, ${a[8]?(100*a[7]/a[8]).toFixed(0):"–"}% FG, ${a[10]?(100*a[9]/a[10]).toFixed(0):"–"}% FT, ${f(a[6])} TO`}
+function statAnexo(p,ax){if(!p||!ax)return null;
+  if(ax.k==="ult"){const l=linhaHoje(p);return l?{rot:l.rot==="hoje"?"hoje":"último jogo, "+l.rot,txt:l.txt}:null}
+  const per=ax.k==="stat"?ax.per:(ax.k==="temp"?"av":ax.k);const a=arrPer(p,per);if(!a)return null;const nm=(AX_PER.find(x=>x[0]===per)||["","Temporada"])[1];
+  if(ax.k==="stat"){const c=AX_CATS.find(x=>x[0]===ax.cat)||AX_CATS[0];return {rot:nm+" ("+a[11]+" jogos)",txt:fmtCat(a,c)+" por jogo"}}
+  return {rot:nm+" ("+a[11]+" jogos)",txt:linhaMediaTxt(a)}}
+function mkAnexoUI(p){const ax=MK.anexo;const tem=k=>!!arrPer(p,k);
+  const ops=[["temp","📊 Temporada",tem("av")],["l7","🔥 7 dias",tem("l7")],["ult","📅 Último jogo",!!linhaHoje(p)],["stat","🎯 Uma stat",tem("av")]].filter(o=>o[2]);
+  if(!ops.length)return `<small class="mk-obs">Sem números desse jogador na base.</small>`;
+  const k=ax&&ax.k==="temp"?{k:"av"}:ax;
+  let prev="";if(ax){const s=statAnexo(p,ax.k==="temp"?{k:"av"}:ax);prev=s?`<div class="mk-linha">📊 <b>${esc(s.rot)}</b>: ${esc(s.txt)}</div>`:""}
+  const stat=ax&&ax.k==="stat"?`<div class="mk-ax-sub">${AX_CATS.map(c=>`<button type="button" class="mk-mini ${ax.cat===c[0]?"on":""}" data-mkaxcat="${c[0]}">${c[0]}</button>`).join("")}</div><div class="mk-ax-sub">${AX_PER.filter(x=>tem(x[0])).map(x=>`<button type="button" class="mk-mini ${ax.per===x[0]?"on":""}" data-mkaxper="${x[0]}">${x[1]}</button>`).join("")}</div>`:"";
+  return `<div class="mk-lab">Anexar números (opcional)</div><div class="mk-ax-sub">${ops.map(([kk,n])=>`<button type="button" class="mk-mini ${ax&&ax.k===kk?"on":""}" data-mkax="${kk}">${n}</button>`).join("")}</div>${stat}${prev}`}
 
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
