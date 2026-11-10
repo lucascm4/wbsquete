@@ -1862,6 +1862,37 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-estn{font-size:11px;color:var(--apagado);font-weight:400;margin-left:3px}
 .mk-fb-est{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.mk-fb-est span{font-size:13px;color:var(--apagado)}.mk-fb-est b{color:var(--texto);font-size:16px}
 .mk-v em.mk-nota{display:flex;flex-direction:column;align-items:flex-end;font-family:var(--ui);font-size:12px}.mk-v em.mk-nota b{font-family:var(--display);font-size:18px;color:var(--amarelo)}
+/* picker */
+.mk-pk{position:relative;display:flex;flex-direction:column;gap:4px}
+.mk-pk-lista{position:absolute;left:0;right:0;top:100%;z-index:30;max-height:320px;overflow:auto;background:#0a0707;border:2px solid var(--amarelo);border-radius:12px;margin-top:4px;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.mk-pk-op{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:10px;padding:8px 10px;cursor:pointer;border-bottom:1px solid var(--linha)}
+.mk-pk-op:hover,.mk-pk-op:focus-visible{background:#1b0002}
+.mk-pk-op img.ft,.mk-pk-op .ini,.mk-pk-op>img:first-child{width:36px;height:36px;border-radius:50%;object-fit:cover;flex:none}
+.mk-pk-op span{flex:1;min-width:0}.mk-pk-op b{display:block;color:var(--texto)}.mk-pk-op small{color:var(--apagado);font-size:12px}
+.mk-pk-sel .mk-chip{cursor:default}
+.mk-emos{display:flex;flex-wrap:wrap;gap:6px}
+.mk-emo{background:#000;border:2px solid var(--linha);border-radius:12px;font-size:22px;line-height:1;padding:8px;cursor:pointer;color:var(--texto)}
+.mk-emos.cats .mk-emo{font:700 13px var(--ui);padding:7px 10px}
+.mk-emo.on{border-color:var(--amarelo);background:#2a2200}
+.mk-linha{font-size:13px;color:var(--texto);background:#000;border:1px solid var(--linha);border-radius:8px;padding:6px 8px;margin-top:4px}.mk-linha b{color:var(--amarelo)}
+.mk-av{display:flex;align-items:center;gap:10px;margin:6px 0}.mk-av-e{font-size:44px;line-height:1}.mk-av .mk-linha{flex:1;min-width:0;margin:0}
+.mk-tipo.t-av{background:var(--ouro);color:#000;border-color:#000}
+/* cards compartilhados */
+.mk-card{display:block;background:#000;border:2px solid var(--ouro);border-radius:12px;padding:10px;margin:6px 0;cursor:pointer;color:var(--texto)}
+.mk-card.jog{display:flex;gap:10px;align-items:flex-start}.mk-card.jog>img,.mk-card.jog>.ini{width:48px;height:48px;border-radius:50%;object-fit:cover;flex:none}.mk-card.jog>div{flex:1;min-width:0}.mk-card.jog small{display:block;color:var(--apagado)}
+.mk-mt-top{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:6px}
+.mk-mt-top span{display:flex;align-items:center;gap:6px;min-width:0}.mk-mt-top span.dir{justify-content:flex-end}.mk-mt-top b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mk-mt-top em{font-family:var(--display);font-style:normal;font-size:26px;color:var(--amarelo)}
+.mk-foco{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;text-align:center;margin:8px 0;padding:6px;background:#1b0002;border-radius:8px}
+.mk-foco span{font-family:var(--display);font-size:30px;color:var(--apagado)}.mk-foco span.g{color:var(--amarelo)}.mk-foco b{font-family:var(--display);font-size:18px;letter-spacing:.05em}.mk-foco small{grid-column:1/-1;color:var(--apagado)}
+.mk-mt-cats{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:2px;margin-top:6px;text-align:center}
+.mk-mt-cats div{display:flex;flex-direction:column;background:#120c0c;border-radius:4px;padding:3px 0}.mk-mt-cats div.on{outline:2px solid var(--amarelo)}
+.mk-mt-cats small{font-size:9px;color:var(--apagado)}.mk-mt-cats i{font-style:normal;font-size:11px;color:var(--apagado)}.mk-mt-cats i.g{color:var(--amarelo);font-weight:700}
+.mk-card-rod{display:block;margin-top:6px;color:var(--apagado);font-size:11px}
+.mk-prev{max-height:45vh;overflow:auto}
+.mk-share-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0}.mk-share-bar small{color:#fff;text-shadow:1px 1px 0 #000}
+.mk-shc{background:none;border:none;font-size:13px;cursor:pointer;padding:0 0 0 4px;opacity:.8}
+.mk-pk-lista{position:static;max-height:300px}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1928,11 +1959,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794277330"></script>
-<script src="radar.js?v=1794277330"></script>
-<script src="midia.js?v=1794277330"></script>
+<script src="hist.js?v=1794277930"></script>
+<script src="radar.js?v=1794277930"></script>
+<script src="midia.js?v=1794277930"></script>
 <script>
-const VERSAO_PAINEL="20261109232210";
+const VERSAO_PAINEL="20261109233210";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2555,11 +2586,11 @@ function boxTime(tid,sp){
 
 /* placar aberto das 9 categorias, com previsão de fechamento */
 function tabelaCategorias(a,b,ta,tb,pa,pb,sim){
-  const sc=placar(ta,tb);const A=T(a),B=T(b);
+  const sc=placar(ta,tb);const A=T(a),B=T(b);const mi=(typeof EST!=="undefined"&&EST.tot&&ta===EST.tot[a]&&DADOS)?DADOS.mt.findIndex(m=>m[0]===a&&m[1]===b):-1;
   let h=`<table class="tabcat tc3"><colgroup><col class="c1"><col class="c3"><col class="c1"></colgroup><thead><tr><th class="lg"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></th><th>categoria <small class="tc-leg">${tip("prev","")}</small></th><th class="lg"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></th></tr></thead><tbody>`;
   CATS.forEach((c,j)=>{const r=sc.r[j];const px=c.f(pa),py=c.f(pb);const pr=c.inv?(px<py?1:px>py?-1:0):(px>py?1:px<py?-1:0);
     const pv=(v,k)=>`<small class="pv2 ${k>0?"ganha":k<0?"perde":""}"><i class="bola ${k>0?"vd":k<0?"vm":"cz"}"></i>${v}</small>`;
-    h+=`<tr><td class="${r>0?"g":r<0?"p":""}"><span class="v">${fmt(c,c.f(ta))}</span>${pv(fmt(c,px),pr)}</td><td><span class="cn">${c.k}</span></td><td class="${r<0?"g":r>0?"p":""}"><span class="v">${fmt(c,c.f(tb))}</span>${pv(fmt(c,py),-pr)}</td></tr>`});
+    h+=`<tr><td class="${r>0?"g":r<0?"p":""}"><span class="v">${fmt(c,c.f(ta))}</span>${pv(fmt(c,px),pr)}</td><td><span class="cn">${c.k}</span>${mi>=0?`<button type="button" class="mk-shc" data-mkshcat="${mi}:${c.k}" aria-label="mandar ${c.k} pro Mercado">📤</button>`:""}</td><td class="${r<0?"g":r>0?"p":""}"><span class="v">${fmt(c,c.f(tb))}</span>${pv(fmt(c,py),-pr)}</td></tr>`});
   const ps=placar(pa,pb);
   h+=`<tr class="resumo"><td colspan="3">Agora <b>${rtxt(sc.w,sc.l,sc.t)}</b> · deve fechar <b>${rtxt(ps.w,ps.l,ps.t)}</b> · faltam ${EST.jr[a]} jogos do ${esc(A[0])} e ${EST.jr[b]} do ${esc(B[0])}</td></tr>`;
   return h+`</tbody></table>`;
@@ -2715,7 +2746,7 @@ function vJogo(i){
   <div class="sub-wrap">  <div class="subabas sb2" role="tablist">${abas.map(([k,ic,nm])=>`<button type="button" role="tab" data-sub="${k}" aria-selected="${sub===k}"><i>${ic}</i>${nm}</button>`).join("")}</div></div>`;
   if(sub==="placar"){
     const hh=window.MUSEU?h2hEntre(A[0],B[0]):null;const mm=hh?hh.l.filter(x=>!x.atual&&seloFase(x)&&!/CONSOLA/.test(seloFase(x))).length:0;
-    h+=`<div class="card">${tabelaCategorias(a,b,ta,tb,pa,pb,s)}</div>
+    h+=`<div class="card">${tabelaCategorias(a,b,ta,tb,pa,pb,s)}</div><div class="mk-share-bar"><button type="button" class="mk-bt" data-mkshmt="${i}">📤 Mandar o confronto pro Mercado</button><small>ou toca no 📤 de uma categoria</small></div>
     ${hh?`<div class="card"><div class="bloco-tit">HISTÓRICO DIRETO</div><div class="saldo-h2h"><span class="${hh.va>hh.vb?"lid":""}">${esc(A[0])} <b>${hh.va}</b></span><span class="x">${hh.e?hh.e+" emp.":"x"}</span><span class="${hh.vb>hh.va?"lid":""}"><b>${hh.vb}</b> ${esc(B[0])}</span><small>desde 22/23${mm?` · ${mm} em mata-mata`:""}</small></div>${(()=>{UI._h2h={t:`${A[0]} x ${B[0]} desde 22/23`,h:`<div class="hist-lista">${hh.l.map(m2=>{const [w,lo,t]=m2.r;return `<button type="button" ${m2.atual?"disabled":`data-mj="${m2.i}"`}><span class="qd">${temporadaCurta(m2.t)} · sem ${m2.w}</span><span><span class="${m2.v===m2.a?"w":""}">${esc(m2.a)}</span> x <span class="${m2.v===m2.b?"w":""}">${esc(m2.b)}</span>${seloFase(m2)}</span><span class="rs num">${rtxt(w,lo,t)}</span></button>`}).join("")||'<div class="vazio">Nunca se enfrentaram desde 22/23.</div>'}</div>`};return hh.l.length?`<button type="button" class="ver-lista" data-h2hlista>Ver os ${hh.l.length} confrontos ›</button>`:'<div class="vazio">Nunca se enfrentaram desde 22/23.</div>'})()}</div>`:""}`;
     if(window.MUSEU)h+=blocoGlobal(A[0],B[0]);
   }else if(sub==="jogadores"){
@@ -4377,7 +4408,8 @@ const SB={u:"https://ekigrttiteyxsxkeibih.supabase.co",k:"sb_publishable_dOIgruP
 const SELOS=[["FEZES","💩"],["RUI DIMAI","🥴"],["DROPA","🗑️"],["VAI CAIR","📉"],["MVP","🏆"],["PIKA","👑"]];
 const NOTA_SELO={"FEZES":1,"RUI DIMAI":2,"DROPA":2,"VAI CAIR":3,"PIKA":4,"MVP":5};
 const EMO_MK=["🔥","🤡","🗑️","💎"];
-const MK={posts:[],reac:[],votos:[],car:[],mer:[],ok:false,err:null,t:0,carregando:null,tipo:"resenha",ref:null,parent:null,tick:null};
+const MK={posts:[],reac:[],votos:[],car:[],mer:[],ok:false,err:null,t:0,carregando:null,tipo:"resenha",ref:null,parent:null,tick:null,jog:null,avEmo:"🔥"};
+const EMO_AV=["🔥","🐐","👑","💎","🍳","🧊","🧱","💩","🤡","🥶","😴","🚑"];
 async function sbGet(path){const r=await fetch(SB.u+"/rest/v1/"+path,{headers:{apikey:SB.k},cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
 async function sbRpc(fn,body){const r=await fetch(SB.u+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:SB.k,"Content-Type":"application/json"},body:JSON.stringify(body)});const t=await r.text();
   if(!r.ok){let m=t;try{const j=JSON.parse(t);m=j.message||j.hint||t}catch(e){}throw new Error(m)}return t?JSON.parse(t):null}
@@ -4423,7 +4455,7 @@ const TIPO_MK={resenha:["💬","RESENHA"],enquete:["📊","ENQUETE"],venda:["�
 /* ---------- tela ---------- */
 function vMercado(){
   mkCarregar();try{localStorage.setItem("wbs.mkVisto",String(Date.now()))}catch(e){}const meu=meuTime();
-  const tabs=[["resenha","💬 Resenha"],["enquete","📊 Enquete"],["venda","🏷️ Vendo"],["interesse","👀 Quero"]];
+  const tabs=[["resenha","💬 Resenha"],["avaliar","⭐ Avaliar"],["enquete","📊 Enquete"],["venda","🏷️ Vendo"],["interesse","👀 Quero"]];
   const comp=meu?`<div class="card mk-comp" id="mkComp"><div class="mk-quem">${logo(T(meu)[0],"width:30px;height:30px")}<b>${esc(T(meu)[2])}</b><small>postando como ${esc(T(meu)[0])}</small></div>
     <div class="mk-tabs" role="tablist">${tabs.map(([k,n])=>`<button type="button" class="mk-tab ${MK.tipo===k?"on":""}" data-mktipo="${k}">${n}</button>`).join("")}</div>
     <div id="mkCampos">${mkCampos()}</div></div>`
@@ -4438,16 +4470,52 @@ function mkCampos(){const t=MK.tipo,meu=meuTime();
   const refBox=MK.ref?`<div class="mk-ref">↩︎ respondendo ao lance: <i>${MK.ref.txt}</i> <button type="button" class="mk-mini" data-mkrefx>✕</button></div>`:"";
   const pai=MK.parent?MK.posts.find(x=>x.id===MK.parent):null;
   const paiBox=pai?`<div class="mk-ref">↩︎ respondendo ${esc(T(pai.team)[0])}: <i>${esc(pai.texto.slice(0,80))}</i> <button type="button" class="mk-mini" data-mkpaix>✕</button></div>`:"";
-  if(t==="venda"||t==="interesse"){const d=DADOS;const L=t==="venda"?(d?d.P.filter(p=>p.t===meu&&!p.fora):[]):(d?d.P.filter(p=>p.t!==meu&&!p.fora).concat((d.fa||[]).slice(0,150)):[]);
-    L.sort((a,b)=>a.n.localeCompare(b.n));
-    return `<label class="mk-lab">${t==="venda"?"Quem você quer vender":"Quem você quer"}<input list="mkLista" id="mkJog" placeholder="nome do jogador" autocomplete="off"></label><datalist id="mkLista">${L.map(p=>`<option value="${esc(p.n)}">${p.t?esc(T(p.t)[0]):"livre"}</option>`).join("")}</datalist>
+  if(t==="venda"||t==="interesse"){
+    return `${mkPicker(t==="venda"?"meus":"outros",t==="venda"?"Quem você quer vender":"Quem você quer")}
       <label class="mk-lab">${t==="venda"?"O que você quer em troca (opcional)":"O que você oferece (opcional)"}<input id="mkPed" maxlength="200" placeholder="${t==="venda"?"ex.: um pivô que dê toco":"ex.: Kuminga + pick imaginária"}"></label>
       <textarea id="mkTxt" maxlength="500" rows="2" placeholder="${t==="venda"?"Faz o anúncio. Capricha que é Mercado Livre.":"Diz por que você quer. Ou só ameaça."}"></textarea>
       <div class="mk-rod"><small>Aparece na ficha dele${t==="venda"?" com a faixa À VENDA":" na lista de interessados"}.</small><button type="button" class="mk-bt amarelo" data-mkpub>Publicar</button></div>`}
+  if(t==="avaliar")return `${mkPicker("todos","Quem você vai avaliar")}<div class="mk-lab">Tua nota em emoji</div><div class="mk-emos">${EMO_AV.map(e=>`<button type="button" class="mk-emo ${MK.avEmo===e?"on":""}" data-mkemo="${e}">${e}</button>`).join("")}</div>
+    <div id="mkLinha" class="mk-linha" hidden></div>
+    <textarea id="mkTxt" maxlength="300" rows="2" placeholder="Comenta (opcional). Ex.: esse homem é quebrado."></textarea>
+    <div class="mk-rod"><small>A linha de hoje dele vai junto no post.</small><button type="button" class="mk-bt amarelo" data-mkpub>Avaliar</button></div>`;
   if(t==="enquete")return `${refBox}<textarea id="mkTxt" maxlength="300" rows="2" placeholder="A pergunta. Ex.: Quem é o pior manager da semana?"></textarea>
     <div class="mk-ops">${[0,1,2,3].map(i=>`<input class="mk-op" maxlength="60" placeholder="Opção ${i+1}${i>1?" (opcional)":""}">`).join("")}</div>
     <div class="mk-rod"><small>Cada time vota uma vez (dá pra mudar).</small><button type="button" class="mk-bt amarelo" data-mkpub>Publicar</button></div>`;
-  return `${refBox}${paiBox}<textarea id="mkTxt" maxlength="500" rows="3" placeholder="${MK.parent?"Responde à altura.":"Solta o verbo. Zoa, provoca, chora."}"></textarea><div class="mk-rod"><small><span id="mkCont">0</span>/500</small><button type="button" class="mk-bt amarelo" data-mkpub>${MK.parent?"Responder":"Postar"}</button></div>`}
+  return `${refBox}${paiBox}${MK.parent?"":mkPicker("todos","Marcar jogador (opcional)")}<textarea id="mkTxt" maxlength="500" rows="3" placeholder="${MK.parent?"Responde à altura.":"Solta o verbo. Zoa, provoca, chora."}"></textarea><div class="mk-rod"><small><span id="mkCont">0</span>/500</small><button type="button" class="mk-bt amarelo" data-mkpub>${MK.parent?"Responder":"Postar"}</button></div>`}
+function mkListaJog(modo){const d=DADOS;if(!d)return [];const meu=meuTime();let L;
+  if(modo==="meus")L=d.P.filter(p=>p.t===meu&&!p.fora);else if(modo==="outros")L=d.P.filter(p=>p.t!==meu&&!p.fora).concat(d.fa||[]);else L=d.P.filter(p=>!p.fora).concat(d.fa||[]);
+  const vis=new Set();return L.filter(p=>p&&p.n&&!vis.has(p.id)&&vis.add(p.id))}
+function mkPicker(modo,rot){MK.jog=null;return `<div class="mk-pk" data-modo="${modo}"><div class="mk-lab">${rot}</div><div class="mk-pk-sel" hidden></div><input class="mk-pk-in" type="search" placeholder="🔎 digita o nome do jogador" autocomplete="off" aria-label="${esc(rot)}"><div class="mk-pk-lista" hidden></div></div>`}
+function mkPkLinha(p){return `<button type="button" class="mk-pk-op" data-mkpick="${p.id}">${face(p.id,p.n,"")}<span><b>${esc(p.n)}</b><small>${p.t?esc(T(p.t)[0]):"livre"}${NBA&&NBA[p.pro]?" · "+esc(NBA[p.pro]):""}</small></span>${p.t?logo(T(p.t)[0],"width:22px;height:22px"):""}</button>`}
+function mkPkFiltrar(inp){const pk=inp.closest(".mk-pk");const box=pk.querySelector(".mk-pk-lista");const q=semAcento(inp.value.trim());const L=mkListaJog(pk.dataset.modo);
+  let R=q?L.filter(p=>semAcento(p.n).includes(q)):(pk.dataset.modo==="meus"?L:L.filter(p=>p.t).sort((a,b)=>(b.nota||0)-(a.nota||0)));R=R.slice(0,12);
+  box.innerHTML=R.length?R.map(mkPkLinha).join(""):`<p class="mk-load">Ninguém com esse nome.</p>`;box.hidden=false}
+function mkPkEscolher(pk,id){const p=jogDoId(id);if(!p)return;MK.jog=id;const s=pk.querySelector(".mk-pk-sel");
+  s.innerHTML=`<div class="mk-chip">${face(p.id,p.n,"")}<div><b>${esc(p.n)} ${estDe(p.id)}</b><small>${p.t?esc(T(p.t)[0]):"livre"}</small></div><button type="button" class="mk-mini" data-mkpkx>trocar</button></div>`;s.hidden=false;
+  pk.querySelector(".mk-pk-in").hidden=true;pk.querySelector(".mk-pk-lista").hidden=true;
+  const ln=document.getElementById("mkLinha");if(ln){const l=linhaHoje(p);ln.hidden=false;ln.innerHTML=l?`📊 <b>${esc(l.rot)}</b>: ${esc(l.txt)}`:"Sem jogo recente na base. Vai sem a linha."}}
+function linhaHoje(p){const d=DADOS;if(!p||!p.dl||!d)return null;const sp=Object.keys(p.dl).map(Number).filter(s=>s<=d.cur).sort((a,b)=>b-a)[0];if(sp==null)return null;const v=p.dl[sp];if(!v)return null;
+  const g=sp===d.cur&&d.nba&&d.nba[p.pro];return {sp,txt:linhaReal(v)+((v[12]||0)?` em ${v[12]} min`:"")+(g&&g.live?" (ao vivo)":""),rot:sp===d.cur?"hoje":spRot(sp)}}
+function cardMt(i,foco){const d=DADOS;const mt=d&&d.mt[i];if(!mt)return null;const [a,b]=mt;const ta=EST.tot[a],tb=EST.tot[b];const sc=placar(ta,tb);
+  return {k:"mt",a,b,w:sc.w,l:sc.l,t:sc.t,wk:d.wk,rot:spRot(d.cur),foco:foco||null,v:CATS.map((c,j)=>[c.k,String(fmt(c,c.f(ta))),String(fmt(c,c.f(tb))),sc.r[j]])}}
+function cardJog(id){const p=jogDoId(id);if(!p)return null;const l=linhaHoje(p);return {k:"jog",id,n:p.n,t:p.t||0,linha:l?l.txt:null,rot:l?l.rot:null}}
+function mkCard(c){if(!c)return "";
+  if(c.k==="mt"){const A=T(c.a),B=T(c.b);const f=c.foco&&c.v.find(x=>x[0]===c.foco);
+    const dif=f?(()=>{const x=parseFloat(f[1]),y=parseFloat(f[2]);if(isNaN(x)||isNaN(y))return "";const df=Math.abs(x-y);return /%/.test(f[0])?df.toFixed(1)+" pontos":String(Math.round(df*10)/10)})():"";
+    return `<div class="mk-card mt clic" data-jogo="${DADOS?DADOS.mt.findIndex(m=>m[0]===c.a&&m[1]===c.b):""}"><div class="mk-mt-top"><span>${logo(A[0],"width:28px;height:28px")}<b>${esc(A[0])}</b></span><em class="num">${c.w}-${c.l}${c.t?"-"+c.t:""}</em><span class="dir"><b>${esc(B[0])}</b>${logo(B[0],"width:28px;height:28px")}</span></div>
+      ${f?`<div class="mk-foco"><span class="${f[3]>0?"g":""}">${esc(f[1])}</span><b>${esc(f[0])}</b><span class="${f[3]<0?"g":""}">${esc(f[2])}</span><small>${f[3]===0?"empatado":"diferença de "+esc(dif)}</small></div>`:""}
+      <div class="mk-mt-cats">${c.v.map(x=>`<div class="${x[0]===c.foco?"on":""}"><small>${esc(x[0])}</small><i class="${x[3]>0?"g":""}">${esc(x[1])}</i><i class="${x[3]<0?"g":""}">${esc(x[2])}</i></div>`).join("")}</div><small class="mk-card-rod">semana ${c.wk} · ${esc(c.rot||"")}</small></div>`}
+  if(c.k==="jog")return `<div class="mk-card jog clic" data-pj="${c.id}">${face(c.id,c.n,"")}<div><b>${esc(c.n)} ${estDe(c.id)}</b><small>${c.t?esc(T(c.t)[0]):"livre"}</small>${c.linha?`<div class="mk-linha">📊 <b>${esc(c.rot)}</b>: ${esc(c.linha)}</div>`:""}</div></div>`;
+  return ""}
+function mkCompartilhar(card){if(!card){mostrarAviso("Nada pra compartilhar aqui.");return}if(!meuTime()){popCadastro();return}
+  const w=mkModal(`<div class="mk-pin"><div class="mk-fb-t">📤 MANDAR PRO MERCADO</div>${card.k==="mt"?`<div class="mk-lab">Destacar categoria (opcional)</div><div class="mk-emos cats">${CATS.map(c=>`<button type="button" class="mk-emo ${card.foco===c.k?"on":""}" data-mkfoco="${c.k}">${c.k}</button>`).join("")}</div>`:""}
+    <div class="mk-prev">${mkCard(card)}</div><textarea id="mkShTxt" maxlength="500" rows="2" placeholder="Fala alguma coisa. Provoca."></textarea><button type="button" class="mk-bt amarelo" data-mkshok>Postar no Mercado</button></div>`);
+  w.addEventListener("click",async e=>{const f=e.target.closest("[data-mkfoco]");if(f){card.foco=card.foco===f.dataset.mkfoco?null:f.dataset.mkfoco;w.querySelectorAll("[data-mkfoco]").forEach(x=>x.classList.toggle("on",x.dataset.mkfoco===card.foco));w.querySelector(".mk-prev").innerHTML=mkCard(card);return}
+    const ok=e.target.closest("[data-mkshok]");if(!ok)return;ok.disabled=true;const txt=w.querySelector("#mkShTxt").value.trim()||(card.k==="mt"?(card.foco?`Olha esse ${card.foco}.`:"Olha esse confronto."):`Olha o ${card.n}.`);
+    const pid=card.k==="jog"?card.id:null;
+    const r=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:"resenha",p_texto:txt,p_player_id:null,p_player_nome:null,p_extra:{card},p_parent:null,p_ref:null}));ok.disabled=false;
+    if(r){w.remove();mostrarAviso("Postado no Mercado ✅");mkCarregar(true)}},true)}
 function mkLances(){let it=[];try{it=noticias().filter(x=>!x.pub).slice(0,6)}catch(e){}
   if(!it.length)return `<div class="mk-load">Sem lance agora. Volta quando a bola subir.</div>`;
   return it.map(x=>{const k=chaveNot(x);const n=MK.posts.filter(p=>p.ref===k&&!p.apagado).length;return `<div class="mk-lance"><b class="tkk">${esc(x.k)}</b><span>${x.t}</span><button type="button" class="mk-mini" data-mkref="${esc(k)}">💬 ${n?n+" · ":""}responder</button></div>`}).join("")}
@@ -4457,11 +4525,12 @@ function mkPost(p,filhos){const t=T(p.team);const meu=meuTime();const tp=TIPO_MK
   const chip=p.player_id!=null?`<div class="mk-chip clic" data-pj="${p.player_id}">${face(p.player_id,p.player_nome||"","")}<div><b>${esc(p.player_nome||(jog&&jog.n)||"")} ${estDe(p.player_id)}</b><small>${jog&&jog.t?esc(T(jog.t)[0]):"livre"}${p.extra&&p.extra.pedido?` · ${p.tipo==="venda"?"quer":"oferece"}: ${esc(p.extra.pedido)}`:""}</small></div></div>`:"";
   let enq="";if(p.tipo==="enquete"&&p.extra&&Array.isArray(p.extra.ops)){const V=MK.votos.filter(v=>v.post_id===p.id);const tot=V.length;const meuV=V.find(v=>v.team===meu);
     enq=`<div class="mk-enq">${p.extra.ops.map((o,i)=>{const q=V.filter(v=>v.opcao===i);const pc=tot?Math.round(q.length/tot*100):0;return `<button type="button" class="mk-opv ${meuV&&meuV.opcao===i?"on":""}" data-mkvoto="${p.id}:${i}"><i style="width:${pc}%"></i><span>${esc(o)}</span><em>${pc}%${q.length?` · ${q.map(v=>esc(T(v.team)[0])).join(", ")}`:""}</em></button>`}).join("")}<small>${tot} voto${tot===1?"":"s"}</small></div>`}
+  const X=p.extra||{};const av=X.av?`<div class="mk-av"><span class="mk-av-e">${esc(X.av)}</span>${X.linha?`<div class="mk-linha">📊 <b>${esc(X.rot||"")}</b>: ${esc(X.linha)}</div>`:""}</div>`:"";const card=X.card?mkCard(X.card):"";
   const lance=p.extra&&p.extra.lance?`<div class="mk-quote">LOYDÃO: ${esc(p.extra.lance)}</div>`:"";
   const reac=`<div class="mk-reac">${EMO_MK.map(e=>{const q=R[e]||[];return `<button type="button" class="mk-r ${q.includes(meu)?"on":""}" data-mkreac="${p.id}:${e}" title="${q.map(x=>esc(T(x)[0])).join(", ")}">${e}${q.length?` <b>${q.length}</b>`:""}</button>`}).join("")}
     ${p.parent?"":`<button type="button" class="mk-r" data-mkresp="${p.id}">↩︎ responder</button>`}${p.team===meu&&!p.apagado?`<button type="button" class="mk-r apaga" data-mkdel="${p.id}" title="apagar">apagar</button>`:""}</div>`;
-  return `<article class="mk-post ${p.parent?"filho":""}" style="--cor:${t[4]}"><div class="mk-cab">${logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${p.tipo}">${tp[0]} ${tp[1]}</span></div>
-    ${lance}<div class="mk-txt ${p.apagado?"apagado":""}">${esc(p.texto)}</div>${chip}${enq}${p.apagado?"":reac}
+  return `<article class="mk-post ${p.parent?"filho":""}" style="--cor:${t[4]}"><div class="mk-cab">${logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.card?"📤 COMPARTILHOU":tp[0]+" "+tp[1]}</span></div>
+    ${lance}<div class="mk-txt ${p.apagado?"apagado":""}">${esc(p.texto)}</div>${chip}${av}${card}${enq}${p.apagado?"":reac}
     ${filhos&&filhos.length?`<div class="mk-filhos">${filhos.map(f=>mkPost(f)).join("")}</div>`:""}</article>`}
 function mkPintar(){if(rota()!=="mercado")return;
   const fe=document.getElementById("mkFeed"),vi=document.getElementById("mkVitrine"),se=document.getElementById("mkSelos"),la=document.getElementById("mkLances");if(!fe)return;
@@ -4481,18 +4550,21 @@ function mkPintar(){if(rota()!=="mercado")return;
   if(la)la.innerHTML=`<div class="bloco-tit">LANCES DO LOYDÃO <small>responde aí</small></div>`+mkLances()}
 /* ---------- ações ---------- */
 async function mkPublicar(){const t=MK.tipo;const txt=(document.getElementById("mkTxt")||{}).value?.trim()||"";
-  if(t==="venda"||t==="interesse"){const nome=(document.getElementById("mkJog")||{}).value?.trim()||"";const ped=(document.getElementById("mkPed")||{}).value?.trim()||"";
-    const d=DADOS;const p=d&&(d.P.find(q=>q.n===nome&&!q.fora)||(d.fa||[]).find(q=>q.n===nome));if(!p){mostrarAviso("Escolhe o jogador da lista.");return}
+  if(t==="venda"||t==="interesse"){const ped=(document.getElementById("mkPed")||{}).value?.trim()||"";
+    const p=MK.jog!=null?jogDoId(MK.jog):null;if(!p){mostrarAviso("Escolhe o jogador na lista.");return}
     if(t==="venda"&&p.t!==meuTime()){mostrarAviso("Só dá pra vender quem é teu.");return}
     const texto=txt||(t==="venda"?`${p.n} está à venda.`:`De olho no ${p.n}.`);
     const ok=await comPin(async(tm,pin)=>{await sbRpc("marcar",{p_team:tm,p_pin:pin,p_player:p.id,p_nome:p.n,p_tipo:t,p_pedido:ped||null,p_ativo:true});
       await sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:t,p_texto:texto,p_player_id:p.id,p_player_nome:p.n,p_extra:ped?{pedido:ped}:{},p_parent:null,p_ref:null})});
     if(ok){mostrarAviso(t==="venda"?"Anunciado. Boa sorte achando trouxa.":"Interesse registrado.");mkLimpar();mkCarregar(true)}return}
+  if(t==="avaliar"){const p=MK.jog!=null?jogDoId(MK.jog):null;if(!p){mostrarAviso("Escolhe quem vai ser avaliado.");return}const l=linhaHoje(p);
+    const ok=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:"resenha",p_texto:txt||`${MK.avEmo} pro ${p.n}.`,p_player_id:p.id,p_player_nome:p.n,p_extra:{av:MK.avEmo,linha:l?l.txt:null,rot:l?l.rot:null,sp:l?l.sp:null},p_parent:null,p_ref:null}));
+    if(ok){mkLimpar();mkCarregar(true)}return}
   if(!txt){mostrarAviso("Escreve alguma coisa, poeta.");return}
   let extra={};if(t==="enquete"){const ops=[...document.querySelectorAll(".mk-op")].map(i=>i.value.trim()).filter(Boolean);if(ops.length<2){mostrarAviso("Enquete precisa de pelo menos 2 opções.");return}extra.ops=ops}
   if(MK.ref)extra.lance=MK.ref.raw;
   const tipo=MK.parent?"resenha":t;
-  const ok=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:tipo,p_texto:txt,p_player_id:null,p_player_nome:null,p_extra:extra,p_parent:MK.parent,p_ref:MK.ref?MK.ref.k:null}));
+  const ok=await comPin((tm,pin)=>sbRpc("postar",{p_team:tm,p_pin:pin,p_tipo:tipo,p_texto:txt,p_player_id:(!MK.parent&&MK.jog!=null)?MK.jog:null,p_player_nome:(!MK.parent&&MK.jog!=null&&jogDoId(MK.jog))?jogDoId(MK.jog).n:null,p_extra:extra,p_parent:MK.parent,p_ref:MK.ref?MK.ref.k:null}));
   if(ok){mkLimpar();mkCarregar(true)}}
 function mkLimpar(){MK.ref=null;MK.parent=null;const c=document.getElementById("mkCampos");if(c)c.innerHTML=mkCampos();mkContador()}
 function mkContador(){const a=document.getElementById("mkTxt"),c=document.getElementById("mkCont");if(a&&c)a.oninput=()=>c.textContent=a.value.length}
@@ -4501,6 +4573,12 @@ document.addEventListener("click",async e=>{
   const g=s=>e.target.closest(s);let b;
   if((b=g("[data-mktipo]"))){MK.tipo=b.dataset.mktipo;MK.parent=null;document.querySelectorAll(".mk-tab").forEach(x=>x.classList.toggle("on",x===b));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
   if(g("[data-mkcad]")){popCadastro();return}
+  if((b=g("[data-mkpick]"))){e.stopPropagation();mkPkEscolher(b.closest(".mk-pk"),+b.dataset.mkpick);return}
+  if((b=g("[data-mkpkx]"))){const pk=b.closest(".mk-pk");MK.jog=null;pk.querySelector(".mk-pk-sel").hidden=true;const i=pk.querySelector(".mk-pk-in");i.hidden=false;i.value="";i.focus();mkPkFiltrar(i);const ln=document.getElementById("mkLinha");if(ln)ln.hidden=true;return}
+  if((b=g("[data-mkemo]"))){MK.avEmo=b.dataset.mkemo;document.querySelectorAll("[data-mkemo]").forEach(x=>x.classList.toggle("on",x===b));return}
+  if((b=g("[data-mkshmt]"))){e.stopPropagation();mkCompartilhar(cardMt(+b.dataset.mkshmt,null));return}
+  if((b=g("[data-mkshcat]"))){e.stopPropagation();e.preventDefault();const [i,k]=b.dataset.mkshcat.split(":");mkCompartilhar(cardMt(+i,k));return}
+  if((b=g("[data-mkshj]"))){e.stopPropagation();mkCompartilhar(cardJog(+b.dataset.mkshj));return}
   if(g("[data-mkpub]")){const bt=g("[data-mkpub]");bt.disabled=true;try{await mkPublicar()}finally{bt.disabled=false}return}
   if(g("[data-mkrefx]")){MK.ref=null;document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
   if(g("[data-mkpaix]")){MK.parent=null;document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
@@ -4533,7 +4611,8 @@ function mkFicha(id){MK_FICHA=id;const pop=document.getElementById("popFicha");i
    <div class="mk-fb-sel">${SELOS.map(([s,e])=>{const q=C[s]||[];return `<button type="button" class="mk-sb ${meuSel===s?"on":""}" data-mksel="${esc(s)}" data-mkid="${id}" title="${q.map(t=>esc(T(t)[0])).join(", ")}">${e} ${esc(s)}${q.length?` <b>${q.length}</b>`:""}</button>`}).join("")}</div>
    ${meu?(dono===meu?`<button type="button" class="mk-bt ${v?"":"amarelo"}" data-mkmarca="venda" data-mkid="${id}" data-on="${v?1:0}">${v?"Tirar da vitrine":"🏷️ Colocar à venda"}</button>`
      :`<button type="button" class="mk-bt ${ii.some(x=>x.team===meu)?"":"amarelo"}" data-mkmarca="interesse" data-mkid="${id}" data-on="${ii.some(x=>x.team===meu)?1:0}">${ii.some(x=>x.team===meu)?"Tirar interesse":"👀 Tenho interesse"}</button>`)
-     :`<small class="mk-obs">Escolhe teu time (botão no topo) pra carimbar.</small>`}`;
+     :`<small class="mk-obs">Escolhe teu time (botão no topo) pra carimbar.</small>`}
+   ${meu?`<button type="button" class="mk-bt" data-mkshj="${id}">📤 Mandar pro Mercado</button>`:""}`;
   const ref=pop.querySelector(".pj-rks")||topo.nextSibling;topo.parentNode.insertBefore(box,ref&&ref.parentNode===topo.parentNode?ref:topo.nextSibling)}
 function mkFichaAtual(){if(MK_FICHA!=null&&document.getElementById("popFicha"))mkFicha(MK_FICHA)}
 abrirJogador=(orig=>function(id){const r=orig.apply(this,arguments);try{if(document.getElementById("popFicha")){mkFicha(id);if(!MK.ok||Date.now()-MK.t>60000)mkCarregar()}}catch(e){console.error(e)}return r})(abrirJogador);
@@ -4543,5 +4622,8 @@ setTimeout(()=>mkCarregar(),4000);
 function mkBadge(){const b=document.querySelector('.atalho[data-ir="mercado"]');if(!b||!MK.ok)return;let v=0;try{v=+localStorage.getItem("wbs.mkVisto")||0}catch(e){}
   const meu=meuTime();const n=rota()==="mercado"?0:MK.posts.filter(p=>!p.apagado&&p.team!==meu&&new Date(p.criado).getTime()>v).length;let s=b.querySelector(".mk-badge");
   if(!n){s&&s.remove();return}if(!s){s=document.createElement("i");s.className="mk-badge";b.appendChild(s)}s.textContent=n>9?"9+":n}
+document.addEventListener("input",e=>{if(e.target.classList&&e.target.classList.contains("mk-pk-in"))mkPkFiltrar(e.target)});
+document.addEventListener("focusin",e=>{if(e.target.classList&&e.target.classList.contains("mk-pk-in"))mkPkFiltrar(e.target)});
+document.addEventListener("click",e=>{if(!e.target.closest(".mk-pk"))document.querySelectorAll(".mk-pk-lista").forEach(x=>x.hidden=true)});
 </script>
 </body></html>
