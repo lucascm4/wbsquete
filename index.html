@@ -1856,6 +1856,12 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-sb{background:#120c0c;border:1px solid var(--linha);border-radius:999px;padding:5px 10px;color:var(--texto);font:600 12px var(--ui);cursor:pointer}
 .mk-sb.on{background:var(--amarelo);color:#000;border-color:#000}
 .mk-reac{display:flex!important;flex-wrap:wrap;grid-template-columns:none}.mk-reac>.mk-r{flex:0 0 auto!important;width:auto!important;min-width:0;display:inline-flex;align-items:center;gap:4px}
+.mk-est{color:var(--amarelo);letter-spacing:1px;font-size:12px;white-space:nowrap;font-style:normal}.mk-est i{font-style:normal}.mk-est .vaz{color:#4a3a3a}
+.mk-est .meia{background:linear-gradient(90deg,var(--amarelo) 50%,#4a3a3a 50%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mk-est.grande{font-size:24px;letter-spacing:2px}
+.mk-estn{font-size:11px;color:var(--apagado);font-weight:400;margin-left:3px}
+.mk-fb-est{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.mk-fb-est span{font-size:13px;color:var(--apagado)}.mk-fb-est b{color:var(--texto);font-size:16px}
+.mk-v em.mk-nota{display:flex;flex-direction:column;align-items:flex-end;font-family:var(--ui);font-size:12px}.mk-v em.mk-nota b{font-family:var(--display);font-size:18px;color:var(--amarelo)}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -1922,11 +1928,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794277112"></script>
-<script src="radar.js?v=1794277112"></script>
-<script src="midia.js?v=1794277112"></script>
+<script src="hist.js?v=1794277330"></script>
+<script src="radar.js?v=1794277330"></script>
+<script src="midia.js?v=1794277330"></script>
 <script>
-const VERSAO_PAINEL="20261109231831";
+const VERSAO_PAINEL="20261109232210";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4369,6 +4375,7 @@ setTimeout(chipEu,0);document.addEventListener("change",e=>{if(e.target&&e.targe
 /* ================= MERCADO (Supabase) ================= */
 const SB={u:"https://ekigrttiteyxsxkeibih.supabase.co",k:"sb_publishable_dOIgruPeei5v5I6dpr7phw_72jrOjSk"};
 const SELOS=[["FEZES","💩"],["RUI DIMAI","🥴"],["DROPA","🗑️"],["VAI CAIR","📉"],["MVP","🏆"],["PIKA","👑"]];
+const NOTA_SELO={"FEZES":1,"RUI DIMAI":2,"DROPA":2,"VAI CAIR":3,"PIKA":4,"MVP":5};
 const EMO_MK=["🔥","🤡","🗑️","💎"];
 const MK={posts:[],reac:[],votos:[],car:[],mer:[],ok:false,err:null,t:0,carregando:null,tipo:"resenha",ref:null,parent:null,tick:null};
 async function sbGet(path){const r=await fetch(SB.u+"/rest/v1/"+path,{headers:{apikey:SB.k},cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
@@ -4407,6 +4414,9 @@ function quandoMk(iso){const s=(Date.now()-new Date(iso).getTime())/1000;if(s<60
 function jogDoId(id){const d=DADOS;if(!d||id==null)return null;return d.P.find(q=>q.id===id&&!q.fora)||(d.fa||[]).find(q=>q.id===id)||d.P.find(q=>q.id===id)||null}
 function donoAtual(id){const p=DADOS&&DADOS.P.find(q=>q.id===id&&!q.fora);return p?p.t:0}
 function carimbosDe(id){const c={};MK.car.filter(x=>x.player_id===id).forEach(x=>{(c[x.selo]=c[x.selo]||[]).push(x.team)});return c}
+function notaGalera(id){const L=MK.car.filter(x=>x.player_id===id&&NOTA_SELO[x.selo]);if(!L.length)return null;return {m:L.reduce((s,x)=>s+NOTA_SELO[x.selo],0)/L.length,n:L.length}}
+function estrelas(m,cls){const r=Math.round(m*2)/2;let h="";for(let i=1;i<=5;i++)h+=r>=i?"★":r>=i-.5?'<i class="meia">★</i>':'<i class="vaz">★</i>';return `<span class="mk-est ${cls||""}" title="${m.toFixed(1)} de 5">${h}</span>`}
+function estDe(id,cls){const g=notaGalera(id);return g?`${estrelas(g.m,cls)}<small class="mk-estn">${g.m.toFixed(1)} · ${g.n}</small>`:""}
 function vendaDe(id){return MK.mer.filter(x=>x.player_id===id&&x.tipo==="venda"&&x.team===donoAtual(id))[0]||null}
 function interessadosDe(id){return MK.mer.filter(x=>x.player_id===id&&x.tipo==="interesse"&&x.team!==donoAtual(id))}
 const TIPO_MK={resenha:["💬","RESENHA"],enquete:["📊","ENQUETE"],venda:["🏷️","À VENDA"],interesse:["👀","QUERO"],proposta:["🤝","PROPOSTA"]};
@@ -4423,7 +4433,7 @@ function vMercado(){
   <div class="card" id="mkVitrine"><div class="bloco-tit">VITRINE</div><div class="mk-load">carregando…</div></div>
   <div class="card" id="mkLances"><div class="bloco-tit">LANCES DO LOYDÃO <small>responde aí</small></div>${mkLances()}</div>
   <div class="card" id="mkFeed"><div class="bloco-tit">FEED</div><div class="mk-load">carregando…</div></div>
-  <div class="card" id="mkSelos"><div class="bloco-tit">MAIS CARIMBADOS</div><div class="mk-load">carregando…</div></div>`}
+  <div class="card" id="mkSelos"><div class="bloco-tit">NOTA DA GALERA</div><div class="mk-load">carregando…</div></div>`}
 function mkCampos(){const t=MK.tipo,meu=meuTime();
   const refBox=MK.ref?`<div class="mk-ref">↩︎ respondendo ao lance: <i>${MK.ref.txt}</i> <button type="button" class="mk-mini" data-mkrefx>✕</button></div>`:"";
   const pai=MK.parent?MK.posts.find(x=>x.id===MK.parent):null;
@@ -4444,7 +4454,7 @@ function mkLances(){let it=[];try{it=noticias().filter(x=>!x.pub).slice(0,6)}cat
 function mkPost(p,filhos){const t=T(p.team);const meu=meuTime();const tp=TIPO_MK[p.tipo]||TIPO_MK.resenha;
   const R={};MK.reac.filter(r=>r.post_id===p.id).forEach(r=>{(R[r.emoji]=R[r.emoji]||[]).push(r.team)});
   const jog=p.player_id!=null?jogDoId(p.player_id):null;
-  const chip=p.player_id!=null?`<div class="mk-chip clic" data-pj="${p.player_id}">${face(p.player_id,p.player_nome||"","")}<div><b>${esc(p.player_nome||(jog&&jog.n)||"")}</b><small>${jog&&jog.t?esc(T(jog.t)[0]):"livre"}${p.extra&&p.extra.pedido?` · ${p.tipo==="venda"?"quer":"oferece"}: ${esc(p.extra.pedido)}`:""}</small></div></div>`:"";
+  const chip=p.player_id!=null?`<div class="mk-chip clic" data-pj="${p.player_id}">${face(p.player_id,p.player_nome||"","")}<div><b>${esc(p.player_nome||(jog&&jog.n)||"")} ${estDe(p.player_id)}</b><small>${jog&&jog.t?esc(T(jog.t)[0]):"livre"}${p.extra&&p.extra.pedido?` · ${p.tipo==="venda"?"quer":"oferece"}: ${esc(p.extra.pedido)}`:""}</small></div></div>`:"";
   let enq="";if(p.tipo==="enquete"&&p.extra&&Array.isArray(p.extra.ops)){const V=MK.votos.filter(v=>v.post_id===p.id);const tot=V.length;const meuV=V.find(v=>v.team===meu);
     enq=`<div class="mk-enq">${p.extra.ops.map((o,i)=>{const q=V.filter(v=>v.opcao===i);const pc=tot?Math.round(q.length/tot*100):0;return `<button type="button" class="mk-opv ${meuV&&meuV.opcao===i?"on":""}" data-mkvoto="${p.id}:${i}"><i style="width:${pc}%"></i><span>${esc(o)}</span><em>${pc}%${q.length?` · ${q.map(v=>esc(T(v.team)[0])).join(", ")}`:""}</em></button>`}).join("")}<small>${tot} voto${tot===1?"":"s"}</small></div>`}
   const lance=p.extra&&p.extra.lance?`<div class="mk-quote">LOYDÃO: ${esc(p.extra.lance)}</div>`:"";
@@ -4461,12 +4471,13 @@ function mkPintar(){if(rota()!=="mercado")return;
   fe.innerHTML=`<div class="bloco-tit">FEED <small>${top.length} post${top.length===1?"":"s"}</small></div>`+(top.length?top.slice(0,60).map(p=>mkPost(p,fil(p.id))).join(""):`<div class="mk-load">Ninguém postou ainda. O primeiro leva a fama de carente.</div>`);
   const vend=MK.mer.filter(x=>x.tipo==="venda"&&x.team===donoAtual(x.player_id));const proc={};MK.mer.filter(x=>x.tipo==="interesse"&&x.team!==donoAtual(x.player_id)).forEach(x=>{(proc[x.player_id]=proc[x.player_id]||{n:x.player_nome,t:[]}).t.push(x.team)});
   const pr=Object.entries(proc).sort((a,b)=>b[1].t.length-a[1].t.length).slice(0,10);
-  const linhaV=x=>{const ii=interessadosDe(x.player_id);return `<div class="mk-v clic" data-pj="${x.player_id}">${face(x.player_id,x.player_nome||"","")}<div><b>${esc(x.player_nome||"")}</b><small>${esc(T(x.team)[0])}${x.pedido?` · quer: ${esc(x.pedido)}`:""}</small></div><em>${ii.length?`👀 ${ii.length}`:""}</em></div>`};
+  const linhaV=x=>{const ii=interessadosDe(x.player_id);return `<div class="mk-v clic" data-pj="${x.player_id}">${face(x.player_id,x.player_nome||"","")}<div><b>${esc(x.player_nome||"")} ${estDe(x.player_id)}</b><small>${esc(T(x.team)[0])}${x.pedido?` · quer: ${esc(x.pedido)}`:""}</small></div><em>${ii.length?`👀 ${ii.length}`:""}</em></div>`};
   vi.innerHTML=`<div class="bloco-tit">VITRINE</div><div class="mk-vit"><div><h4>🏷️ À VENDA</h4>${vend.length?vend.map(linhaV).join(""):`<p class="mk-load">Ninguém vendendo. Ou todo mundo acha que tem time.</p>`}</div>
-    <div><h4>👀 MAIS PROCURADOS</h4>${pr.length?pr.map(([id,o])=>`<div class="mk-v clic" data-pj="${id}">${face(+id,o.n||"","")}<div><b>${esc(o.n||"")}</b><small>${o.t.map(t=>esc(T(t)[0])).join(", ")}</small></div><em>${o.t.length}</em></div>`).join(""):`<p class="mk-load">Ninguém de olho em ninguém.</p>`}</div></div>`;
-  const ag={};MK.car.forEach(c=>{const k=c.player_id;(ag[k]=ag[k]||{});ag[k][c.selo]=(ag[k][c.selo]||0)+1});
-  const blocos=SELOS.map(([s,e])=>{const L=Object.entries(ag).filter(([,o])=>o[s]).sort((a,b)=>b[1][s]-a[1][s]).slice(0,3);if(!L.length)return "";return `<div class="mk-sel"><h4>${e} ${s}</h4>${L.map(([id,o])=>{const j=jogDoId(+id);return `<div class="mk-v clic" data-pj="${id}">${face(+id,j?j.n:"","")}<div><b>${esc(j?j.n:"#"+id)}</b><small>${j&&j.t?esc(T(j.t)[0]):"livre"}</small></div><em>${o[s]}</em></div>`}).join("")}</div>`}).join("");
-  se.innerHTML=`<div class="bloco-tit">MAIS CARIMBADOS <small>abre a ficha do jogador pra carimbar</small></div>`+(blocos?`<div class="mk-sels">${blocos}</div>`:`<p class="mk-load">Nenhum carimbo ainda. Abre a ficha de um jogador e carimba.</p>`);
+    <div><h4>👀 MAIS PROCURADOS</h4>${pr.length?pr.map(([id,o])=>`<div class="mk-v clic" data-pj="${id}">${face(+id,o.n||"","")}<div><b>${esc(o.n||"")} ${estDe(+id)}</b><small>${o.t.map(t=>esc(T(t)[0])).join(", ")}</small></div><em>${o.t.length}</em></div>`).join(""):`<p class="mk-load">Ninguém de olho em ninguém.</p>`}</div></div>`;
+  const ids=[...new Set(MK.car.map(c=>c.player_id))].map(id=>({id,g:notaGalera(id),j:jogDoId(id)})).filter(x=>x.g);
+  const lin=x=>`<div class="mk-v clic" data-pj="${x.id}">${face(x.id,x.j?x.j.n:"","")}<div><b>${esc(x.j?x.j.n:"#"+x.id)}</b><small>${x.j&&x.j.t?esc(T(x.j.t)[0]):"livre"} · ${x.g.n} carimbo${x.g.n===1?"":"s"}${(()=>{const c=carimbosDe(x.id);const top=Object.entries(c).sort((a,b)=>b[1].length-a[1].length)[0];return top?` · ${SELOS.find(s=>s[0]===top[0])[1]} ${esc(top[0])}`:""})()}</small></div><em class="mk-nota">${estrelas(x.g.m)}<b>${x.g.m.toFixed(1)}</b></em></div>`;
+  const ord=(a,b)=>b.g.m-a.g.m||b.g.n-a.g.n;const melhores=ids.filter(x=>x.g.m>=3).sort(ord).slice(0,5);const piores=ids.filter(x=>x.g.m<3).sort((a,b)=>a.g.m-b.g.m||b.g.n-a.g.n).slice(0,5);
+  se.innerHTML=`<div class="bloco-tit">NOTA DA GALERA <small>💩=1 · 🥴 e 🗑️=2 · 📉=3 · 👑=4 · 🏆=5</small></div>`+(ids.length?`<div class="mk-vit"><div><h4>⭐ MAIS BEM AVALIADOS</h4>${melhores.length?melhores.map(lin).join(""):`<p class="mk-load">Ninguém passou de 3 estrelas.</p>`}</div><div><h4>💩 PIORES AVALIADOS</h4>${piores.length?piores.map(lin).join(""):`<p class="mk-load">Ninguém abaixo de 3 estrelas. Liga boazinha demais.</p>`}</div></div>`:`<p class="mk-load">Ninguém avaliado ainda. Abre a ficha de um jogador e carimba: cada carimbo vira estrela.</p>`);
   if(la)la.innerHTML=`<div class="bloco-tit">LANCES DO LOYDÃO <small>responde aí</small></div>`+mkLances()}
 /* ---------- ações ---------- */
 async function mkPublicar(){const t=MK.tipo;const txt=(document.getElementById("mkTxt")||{}).value?.trim()||"";
@@ -4515,7 +4526,8 @@ function mkFicha(id){MK_FICHA=id;const pop=document.getElementById("popFicha");i
   const v=vendaDe(id);if(v){topo.classList.add("mk-avenda");const f=document.createElement("div");f.className="mk-faixa";f.textContent="À VENDA";topo.appendChild(f)}else topo.classList.remove("mk-avenda");
   const meu=meuTime();const dono=donoAtual(id);const C=carimbosDe(id);const ii=interessadosDe(id);const meuSel=(MK.car.find(c=>c.player_id===id&&c.team===meu)||{}).selo;
   const box=document.createElement("div");box.className="mk-fbox";
-  box.innerHTML=`<div class="mk-fb-t">MERCADO</div>
+  const gN=notaGalera(id);box.innerHTML=`<div class="mk-fb-t">MERCADO</div>
+   <div class="mk-fb-est">${gN?`${estrelas(gN.m,"grande")}<span><b>${gN.m.toFixed(1)}</b> de 5 · nota da galera (${gN.n} carimbo${gN.n===1?"":"s"})</span>`:`<span class="mk-obs">Sem nota da galera ainda. Carimba aí: 💩 vale 1 estrela, 🏆 MVP vale 5.</span>`}</div>
    ${v?`<div class="mk-fb-v">🏷️ À venda pelo <b>${esc(T(v.team)[0])}</b>${v.pedido?` · quer: ${esc(v.pedido)}`:""}</div>`:""}
    ${ii.length?`<div class="mk-fb-i">👀 De olho: ${ii.map(x=>`<span>${logo(T(x.team)[0],"width:18px;height:18px")} ${esc(T(x.team)[0])}</span>`).join("")}</div>`:""}
    <div class="mk-fb-sel">${SELOS.map(([s,e])=>{const q=C[s]||[];return `<button type="button" class="mk-sb ${meuSel===s?"on":""}" data-mksel="${esc(s)}" data-mkid="${id}" title="${q.map(t=>esc(T(t)[0])).join(", ")}">${e} ${esc(s)}${q.length?` <b>${q.length}</b>`:""}</button>`}).join("")}</div>
