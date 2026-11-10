@@ -1935,6 +1935,8 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-opj{background:#000;border:2px solid var(--linha);border-radius:10px;padding:8px 10px;font-size:18px;cursor:pointer;flex:none}
 .mk-opn{display:flex;align-items:center;gap:8px}.mk-opn img,.mk-opn .ini{width:28px;height:28px;border-radius:50%;object-fit:cover}
 #btnEu{position:relative}
+.mk-fb-bts{gap:6px}.mk-fb-bts .mk-bt{flex:0 0 auto!important;padding:6px 10px;font-size:12px;border-radius:999px;box-shadow:none}
+.mk-fb-bts .mk-bt.amarelo{box-shadow:2px 2px 0 #000}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -2001,11 +2003,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794279021"></script>
-<script src="radar.js?v=1794279021"></script>
-<script src="midia.js?v=1794279021"></script>
+<script src="hist.js?v=1794279205"></script>
+<script src="radar.js?v=1794279205"></script>
+<script src="midia.js?v=1794279205"></script>
 <script>
-const VERSAO_PAINEL="20261109235021";
+const VERSAO_PAINEL="20261109235325";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3307,7 +3309,7 @@ function abrirJogador(id,perF){
   const todos=tp.map(([e,n,c])=>`<span class="pj-selo ${c}" title="temporada"><i class="pj-em">${e}</i>${n}</span>`).concat(mine.map(x=>`<span class="pj-selo ${x.cls||""}" title="semana: ${esc(x.d)}">${seloPr(x.k)}${esc(x.n)} <small>sem.</small></span>`));
   return todos.length?`<span class="pj-selos">${todos.join("")}</span>`:""}catch(e){return ""}})()}${APELIDO[p.n]?`<em class="pj-ap">“${esc(APELIDO[p.n][0])}”</em>`:""}<small><img src="img/l/${T(t)[1]}.webp" alt=""> ${esc(T(t)[0])} · ${esc(NBA[p.pro]||"")} · ${esc(POS[p.pos]||"")}${p.inj&&p.inj!=="ACTIVE"?` · <u>${esc(p.inj)}</u>`:""}</small></div></div>
    <div class="pj-rks">${rks.map(([k,v])=>`<div><small>${esc(k)}</small><b>#${v}${k==="Temporada"&&v<=3?' <i class="bode" title="top 3 da temporada">🐐</i>':""}</b></div>`).join("")}</div>
-   <div class="lei"><b class="lei-t">${lei[0]}</b>${lei[2]?`<small class="lei-a">${esc(lei[2])}</small>`:""}<p>${lei[1]}</p>${lei[3]?`<p class="lei-inj">${esc(lei[3])}</p>`:""}</div>
+   ${lei[3]?`<p class="lei-inj">${esc(lei[3])}</p>`:""}
    <div class="pj-tabs" role="tablist">${[["num","📊 Números"],["car","🏀 Carreira"],["jog","📅 Jogos"]].map(([k,n])=>`<button type="button" role="tab" data-ptab="${k}" aria-selected="${(UI.fichaAba||"num")===k}">${n}</button>`).join("")}</div>
    <div class="pj-pane" data-pane="num" ${(UI.fichaAba||"num")==="num"?"":"hidden"}><div class="pj-sec">PERÍODO</div>${filtroPer}${st?`<div class="pj-sub">${esc(rotPer(sp,1))}${(sp==="sem"||ehRange(sp))&&r.g?` · ${r.g?jp(r.g,p,sp):""} jogos (total)`:(ehMedia(sp)||r.ly)?` · média por jogo · ${jp(r.g,p,r.ly?"ly":sp)} jogos`:""}${r.rk?(r.ly?` · nível de <b>#${r.rk}</b> na régua de hoje`:` · <b>#${r.rk}</b> de ${r.n} no período`):""}</div><div class="pj-grade">${cel.map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}</div>`:`<p class="pj-txt">${r.carregando?(sp==="ly"?"Buscando a temporada passada…":"Buscando os boxes…"):sp==="ly"?"Não jogou na temporada passada.":"Não jogou nesse período."}</p>`}</div>
    <div class="pj-pane" data-pane="car" ${(UI.fichaAba||"num")==="car"?"":"hidden"}><div class="pj-sec">TEMPORADAS <button type="button" class="qq mini" data-expl aria-label="explicação">?</button></div><div class="expl" hidden>Toque no ano para abrir. As bolinhas são os times da liga por onde ele passou, na ordem: → largado e pego por outro, ⇄ troca. Antes de 25/26 os números são só dos jogos como titular na liga.</div>${carreira?carreira:`<p class="pj-txt">${typeof LY!=="undefined"&&LY[id]===undefined?"Buscando as temporadas anteriores…":"Nenhuma temporada anterior registrada na ESPN."}</p>`}</div>
