@@ -1850,11 +1850,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794264069"></script>
-<script src="radar.js?v=1794264069"></script>
-<script src="midia.js?v=1794264069"></script>
+<script src="hist.js?v=1794272202"></script>
+<script src="radar.js?v=1794272202"></script>
+<script src="midia.js?v=1794272202"></script>
 <script>
-const VERSAO_PAINEL="20261109194109";
+const VERSAO_PAINEL="20261109215642";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2439,7 +2439,7 @@ function rkSel(sp){const modo=UI.rkModo||"periodo";return `<label class="rk-sel"
 function listaJuntos(a,b,sp){
   const d=DADOS;const rows=[];const futuro=sp!=="sem"&&sp>d.cur;const ft=UI.filtroTime||0;
   [a,b].filter(t=>!ft||t===ft).forEach(t=>(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t)).forEach(p=>{
-    if(sp==="sem"){const bb=bancoDe(p);if(p.g||bb.g)rows.push({p,t,s:p.W,g:p.g,slot:p.g?0:12,bp:p.bp,bg:bb.g,val:p.g?valorJogo(p.W):-1e6})}
+    if(sp==="sem"){const bb=bancoDe(p);const vh=p.dl&&p.dl[d.cur];if(p.g||bb.g)rows.push({p,t,s:p.W,g:p.g,slot:p.g?0:12,bp:p.bp,bg:bb.g,val:p.g?valorJogo(p.W):-1e6});else if(vh)rows.push({p,t,s:vh.slice(0,11),g:1,slot:vh[11],val:valorJogo(vh)});else if(p.hoje&&p.slot<12)rows.push({p,t,s:null,slot:p.slot,pend:1,val:-1e5})}
     else if(futuro){if(!p.fora&&p.slot!==13&&(p.gd||[]).includes(sp)){const av=p.av?p.av.slice(0,11):null;rows.push({p,t,s:av,slot:p.slot,proj:1,val:av?valorJogo(av):-1e5})}}
     else{const v=p.dl&&p.dl[sp];if(v)rows.push({p,t,s:v.slice(0,11),slot:v[11],min:v[12]||0,val:valorJogo(v)});else if(sp===d.cur&&p.hoje&&p.slot<12)rows.push({p,t,s:null,slot:p.slot,pend:1,val:-1e5})}
   }));
