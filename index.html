@@ -2001,11 +2001,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794278712"></script>
-<script src="radar.js?v=1794278712"></script>
-<script src="midia.js?v=1794278712"></script>
+<script src="hist.js?v=1794279021"></script>
+<script src="radar.js?v=1794279021"></script>
+<script src="midia.js?v=1794279021"></script>
 <script>
-const VERSAO_PAINEL="20261109234512";
+const VERSAO_PAINEL="20261109235021";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4144,6 +4144,9 @@ function mostrarNotif(o){document.getElementById("mkNotif")?.remove();const n=do
   const fecha=()=>{n.classList.remove("on");setTimeout(()=>n.remove(),300)};
   n.addEventListener("click",e=>{e.stopPropagation();e.preventDefault();fecha();if(document.getElementById("popFicha"))fecharFicha();ir("mercado")},true);
   setTimeout(fecha,7000)}
+/* tocar de novo na busca (já aberta) fecha a lista */
+document.addEventListener("pointerdown",e=>{const i=e.target.closest&&e.target.closest(".mk-pk-in");if(!i)return;const l=i.closest(".mk-pk").querySelector(".mk-pk-lista");i._fechar=document.activeElement===i&&l&&!l.hidden},true);
+document.addEventListener("click",e=>{const i=e.target.closest&&e.target.closest(".mk-pk-in");if(!i)return;const l=i.closest(".mk-pk").querySelector(".mk-pk-lista");if(i._fechar){l.hidden=true;i._fechar=false;i.blur()}else if(l.hidden)mkPkFiltrar(i)});
 
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
