@@ -2103,11 +2103,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794325824"></script>
-<script src="radar.js?v=1794325824"></script>
-<script src="midia.js?v=1794325824"></script>
+<script src="hist.js?v=1794326198"></script>
+<script src="radar.js?v=1794326198"></script>
+<script src="midia.js?v=1794326198"></script>
 <script>
-const VERSAO_PAINEL="20261110125024";
+const VERSAO_PAINEL="20261110125638";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4125,7 +4125,7 @@ function mkPost(p,filhos){const loy=p.team===0;const t=loy?["Loydão","","redaç
   const lance=p.extra&&p.extra.lance?`<div class="mk-quote">LOYDÃO: ${esc(p.extra.lance)}</div>`:"";
   const usados=EMO_MK.concat(Object.keys(R).filter(e=>!EMO_MK.includes(e))).filter(e=>(R[e]||[]).length);
   const reac=(usados.length||(filhos&&filhos.length))?`<div class="mk-reac">${usados.map(e=>{const q=R[e];return `<button type="button" class="mk-r ${q.includes(meu)?"on":""}" data-mkreac="${p.id}:${e}" title="${q.map(x=>esc(T(x)[0])).join(", ")}">${e} <b>${q.length}</b></button>`}).join("")}${filhos&&filhos.length?`<span class="mk-nresp">↩︎ ${filhos.length}</span>`:""}</div>`:"";
-  return `<article class="mk-post ${p.parent?"filho":""}" data-mkpost="${p.id}" style="--cor:${t[4]}"><div class="mk-cab">${loy?`<img src="img/app/apple-180.png" alt="" style="width:34px;height:34px;border-radius:50%">`:logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.tx?(X.tx.w?"🧾 WAIVER":X.tx.res?"🔁 MOVIMENTAÇÕES":"🔁 TRANSAÇÃO"):X.des?"🥊 DESAFIO":X.card?(X.card.k==="top"?"⭐ DESTAQUES":"📤 COMPARTILHOU"):tp[0]+" "+tp[1]}</span></div>
+  return `<article class="mk-post ${p.parent?"filho":""}" data-mkpost="${p.id}" style="--cor:${t[4]}"><div class="mk-cab">${loy?`<img src="img/app/apple-180.png" alt="" style="width:34px;height:34px;border-radius:50%">`:logo(t[0],"width:34px;height:34px")}<div><b>${esc(t[0])}</b><small>${esc(t[2])} · ${quandoMk(p.criado)}${p.extra&&p.extra.ed?" · editado":""}</small></div><span class="mk-tipo t-${X.av?"av":p.tipo}">${X.av?"⭐ AVALIAÇÃO":X.tx?(X.tx.w?"🧾 WAIVER":X.tx.res?"🔁 MOVIMENTAÇÕES":"🔁 TRANSAÇÃO"):X.des?"🥊 DESAFIO":X.card?(X.card.k==="top"?"⭐ DESTAQUES":"📤 COMPARTILHOU"):tp[0]+" "+tp[1]}</span></div>
     ${lance}${X.tx?"":`<div class="mk-txt ${p.apagado?"apagado":""}">${esc(p.texto)}</div>`}${foto}${chip}${lin}${av}${card}${txc}${desc}${enq}${p.apagado?"":reac}
     ${filhos&&filhos.length?`<div class="mk-filhos">${filhos.map(f=>mkPost(f)).join("")}</div>`:""}</article>`}
 function mkPintar(){if(!document.getElementById("mkFeed"))return;
@@ -4292,14 +4292,22 @@ function mkFolha(id){if(typeof id==="string"){mkReal(id).then(r=>{if(r)mkFolha(r
   const f=document.createElement("div");f.id="mkFolha";f.className="mk-folha-fundo";
   f.innerHTML=`<div class="mk-folha" role="dialog" aria-label="Reações"><div class="mk-folha-cab"><button type="button" data-fx>Fechar</button><b>Reações</b><span></span></div>
     <div class="mk-folha-emo">${EMO_MK.map(e=>`<button type="button" class="${meus.has(e)?"on":""}" data-fr="${e}" aria-label="reagir ${e}">${e}</button>`).join("")}</div>
-    <div class="mk-folha-acoes">${p.parent?"":`<button type="button" data-fresp>↩︎ Responder</button>`}${p.team===meu?`<button type="button" class="apaga" data-fdel>Apagar post</button>`:""}</div></div>`;
+    <div class="mk-folha-acoes">${p.parent?"":`<button type="button" data-fresp>↩︎ Responder</button>`}${p.team===meu?`<button type="button" data-fed>✏️ Editar</button><button type="button" class="apaga" data-fdel>Apagar post</button>`:""}</div></div>`;
   document.body.appendChild(f);requestAnimationFrame(()=>f.classList.add("on"));
   const fecha=()=>{f.classList.remove("on");setTimeout(()=>f.remove(),220)};
   f.addEventListener("click",async e=>{e.stopPropagation();if(e.target===f||e.target.closest("[data-fx]")){fecha();return}
     const r=e.target.closest("[data-fr]");if(r){fecha();if(await comPin((tm,pin)=>sbRpc("reagir",{p_team:tm,p_pin:pin,p_post:id,p_emoji:r.dataset.fr})))mkCarregar(true);return}
     if(e.target.closest("[data-fresp]")){fecha();MK.parent=id;MK.ref=null;MK.tipo="resenha";mkIrCompositor();document.querySelectorAll(".mk-tab").forEach(t=>t.classList.toggle("on",t.dataset.mktipo==="resenha"));document.getElementById("mkCampos").innerHTML=mkCampos();mkContador();return}
+    if(e.target.closest("[data-fed]")){fecha();mkEditar(p);return}
     const d=e.target.closest("[data-fdel]");if(d){if(d.dataset.conf!=="1"){d.dataset.conf="1";d.textContent="Toca de novo pra apagar";return}fecha();
       if(await comPin(async(tm,pin)=>{await sbRpc("apagar_post",{p_team:tm,p_pin:pin,p_id:id});if((p.tipo==="venda"||p.tipo==="interesse")&&p.player_id!=null)await sbRpc("marcar",{p_team:tm,p_pin:pin,p_player:p.player_id,p_nome:p.player_nome,p_tipo:p.tipo,p_pedido:null,p_ativo:false})}))mkCarregar(true)}})}
+function mkEditar(p){document.getElementById("mkEd")?.remove();const f=document.createElement("div");f.id="mkEd";f.className="mk-folha-fundo";
+  f.innerHTML=`<div class="mk-folha" role="dialog" aria-label="Editar post"><div class="mk-folha-cab"><button type="button" data-ex>Cancelar</button><b>Editar post</b><button type="button" data-eok style="font-weight:700;color:var(--amarelo)">Salvar</button></div><div style="padding:12px"><textarea id="mkEdTx" maxlength="500" rows="5" style="width:100%;box-sizing:border-box;font:15px var(--ui);background:var(--fundo2,#111);color:var(--texto);border:1px solid var(--linha);border-radius:10px;padding:10px"></textarea></div></div>`;
+  document.body.appendChild(f);const tx=f.querySelector("#mkEdTx");tx.value=p.texto||"";requestAnimationFrame(()=>{f.classList.add("on");tx.focus()});
+  const fecha=()=>{f.classList.remove("on");setTimeout(()=>f.remove(),220)};
+  f.addEventListener("click",async e=>{e.stopPropagation();if(e.target===f||e.target.closest("[data-ex]")){fecha();return}
+    if(e.target.closest("[data-eok]")){const v=tx.value.trim();if(!v){mostrarAviso("O post não pode ficar vazio. Pra sumir com ele, use Apagar.");return}if(v===p.texto){fecha();return}fecha();
+      if(await comPin((tm,pin)=>sbRpc("editar_post",{p_team:tm,p_pin:pin,p_id:p.id,p_texto:v})))mkCarregar(true)}})}
 (()=>{let tm=null,x0=0,y0=0,alvo=null,abriu=false;
   const cancela=()=>{clearTimeout(tm);tm=null};
   document.addEventListener("pointerdown",e=>{const a=e.target.closest&&e.target.closest("[data-mkpost]");if(!a||e.target.closest("button,a,input,textarea,[data-pj],.mk-card"))return;
