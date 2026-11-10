@@ -1969,6 +1969,8 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-reac{flex-wrap:nowrap!important;gap:4px!important;overflow-x:auto}
 .mk-reac>.mk-r{padding:3px 8px!important;font-size:12px!important}
 .mk-reac>.mk-r.apaga{margin-left:auto}
+.jogo .lado .nm .seq{font:800 9px system-ui!important;padding:1px 4px!important;margin-left:5px;vertical-align:4px!important;border-radius:4px;white-space:nowrap}
+.jogo .lado .mg{font-size:10px!important;opacity:.85}
 
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
@@ -2035,11 +2037,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794280570"></script>
-<script src="radar.js?v=1794280570"></script>
-<script src="midia.js?v=1794280570"></script>
+<script src="hist.js?v=1794280708"></script>
+<script src="radar.js?v=1794280708"></script>
+<script src="midia.js?v=1794280708"></script>
 <script>
-const VERSAO_PAINEL="20261110001610";
+const VERSAO_PAINEL="20261110001828";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2537,9 +2539,9 @@ function vConfrontos(){
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
     h+=`<button class="card jogo ${meu&&m.includes(meu)?"meu-jogo":""}" type="button" data-jogo="${i}">
       <div class="jogo-topo">
-        <div class="lado">${rostoTime(A[0])}<div class="info"><div class="nm">${esc(A[0])}</div><div class="mg">${esc(A[2])}${seqTag(a)}${(()=>{const z=burroDe(a);return z?` <span class="burro" data-burro="${esc(A[2])} deixou ${esc(z.quem.join(", "))} no banco com vaga sobrando. Com ele(s), o ${esc(z.de)} viraria ${esc(z.para)}.">🫏</span>`:""})()} · ${ra.join("-")}</div></div></div>
+        <div class="lado">${rostoTime(A[0])}<div class="info"><div class="nm">${esc(A[0])}${seqTag(a)}</div><div class="mg">${(()=>{const z=burroDe(a);return z?` <span class="burro" data-burro="${esc(A[2])} deixou ${esc(z.quem.join(", "))} no banco com vaga sobrando. Com ele(s), o ${esc(z.de)} viraria ${esc(z.para)}.">🫏</span>`:""})()} ${ra.join("-")}</div></div></div>
         <div class="placar num"><span class="${sc.w>sc.l?"v":""}">${sc.w}</span>-<span class="${sc.l>sc.w?"v":""}">${sc.l}</span>${sc.t?`-${sc.t}`:""}<small>agora</small></div>
-        <div class="lado dir">${rostoTime(B[0])}<div class="info"><div class="nm">${esc(B[0])}</div><div class="mg">${esc(B[2])}${seqTag(b)}${(()=>{const z=burroDe(b);return z?` <span class="burro" data-burro="${esc(B[2])} deixou ${esc(z.quem.join(", "))} no banco com vaga sobrando. Com ele(s), o ${esc(z.de)} viraria ${esc(z.para)}.">🫏</span>`:""})()} · ${rb.join("-")}</div></div></div>
+        <div class="lado dir">${rostoTime(B[0])}<div class="info"><div class="nm">${esc(B[0])}${seqTag(b)}</div><div class="mg">${(()=>{const z=burroDe(b);return z?` <span class="burro" data-burro="${esc(B[2])} deixou ${esc(z.quem.join(", "))} no banco com vaga sobrando. Com ele(s), o ${esc(z.de)} viraria ${esc(z.para)}.">🫏</span>`:""})()} ${rb.join("-")}</div></div></div>
       </div>
       ${miniTabela(a,b,sc)}
       ${chipsPremios(a,b)}
@@ -4774,5 +4776,12 @@ carregarRevista();
 document.addEventListener("visibilitychange",()=>{if(!document.hidden){inappFeito=false;carregarRevista()}});
 
 setTimeout(chipEu,0);document.addEventListener("change",e=>{if(e.target&&e.target.id==="meuTime")setTimeout(chipEu,0)});
+
+/* apelido de exibição dos times (o nome interno continua, por causa do histórico) */
+const NOME_EXIBE=[[/\bDiabo\b/g,"Luiz ☀️"]];
+function trocaNomes(raiz){try{const w=document.createTreeWalker(raiz,NodeFilter.SHOW_TEXT,{acceptNode:n=>{const p=n.parentNode;if(!p||/^(SCRIPT|STYLE|TEXTAREA|INPUT|OPTION)$/.test(p.nodeName)||p.isContentEditable)return NodeFilter.FILTER_REJECT;return /Diabo/.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP}});const L=[];while(w.nextNode())L.push(w.currentNode);L.forEach(n=>{let v=n.nodeValue;NOME_EXIBE.forEach(([r,t])=>v=v.replace(r,t));if(v!==n.nodeValue)n.nodeValue=v})
+  raiz.querySelectorAll&&raiz.querySelectorAll("option").forEach(o=>{if(/\bDiabo\b/.test(o.textContent))o.textContent=o.textContent.replace(/\bDiabo\b/g,"Luiz ☀️")})}catch(e){}}
+new MutationObserver(ms=>{for(const m of ms){m.addedNodes.forEach(n=>{if(n.nodeType===1)trocaNomes(n);else if(n.nodeType===3&&/Diabo/.test(n.nodeValue)&&n.parentNode)trocaNomes(n.parentNode)});if(m.type==="characterData"&&/\bDiabo\b/.test(m.target.nodeValue||"")&&m.target.parentNode)trocaNomes(m.target.parentNode)}}).observe(document.body,{childList:true,subtree:true,characterData:true});
+trocaNomes(document.body);
 </script>
 </body></html>
