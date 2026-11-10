@@ -2021,7 +2021,9 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-dest{display:flex;align-items:stretch;background:#000;border:2px solid var(--amarelo);height:38px;margin:6px 0;overflow:hidden}
 .mk-dest-tag{flex:none;background:var(--amarelo);color:#000;border:0;font-family:var(--display);font-size:12px;letter-spacing:.06em;padding:0 8px;cursor:pointer;max-width:92px;line-height:1.05;text-align:left}
 .mk-dest-sh{flex:none;background:#000;border:0;border-left:1px solid var(--linha);padding:0 9px;font-size:15px;cursor:pointer}
-.mk-dest .tk-mov:active{animation-play-state:paused}
+.mk-dest .tk-wrap{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.mk-dest .tk-wrap::-webkit-scrollbar{display:none}
+.mk-dest .tk-mov{position:relative;animation:none;width:max-content}
 .mk-dj{display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:0 8px;flex:none;white-space:nowrap}
 .mk-dj>*{flex:none;white-space:nowrap;max-width:none;overflow:visible}
 .mk-dest .tk-sep{flex:none;padding:0 8px}
@@ -2101,11 +2103,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794325176"></script>
-<script src="radar.js?v=1794325176"></script>
-<script src="midia.js?v=1794325176"></script>
+<script src="hist.js?v=1794325824"></script>
+<script src="radar.js?v=1794325824"></script>
+<script src="midia.js?v=1794325824"></script>
 <script>
-const VERSAO_PAINEL="20261110123936";
+const VERSAO_PAINEL="20261110125024";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4383,7 +4385,16 @@ function mkDestHome(){const d=DADOS;if(!d||document.querySelector(".mk-dest"))re
   const html=best.map(r=>it(r)).concat(worst.map(r=>it(r,1))).join('<span class="tk-sep">◆</span>')+'<span class="tk-sep">◆</span>';
   const el=document.createElement("div");el.className="mk-dest";
   el.innerHTML=`<button type="button" class="mk-dest-tag" data-sel="${sp}">${sem?"SELEÇÃO DA SEMANA":"DESTAQUES DA NOITE"}</button><div class="tk-wrap"><div class="tk-mov">${html}${html}</div></div><button type="button" class="mk-dest-sh" data-mkshtop aria-label="mandar os destaques pro Mercado">📤</button>`;
-  at.after(el);const mov=el.querySelector(".tk-mov");mov.style.animationDuration=Math.max(25,Math.round(mov.scrollWidth/2/22))+"s"}
+  at.after(el);mkRolar(el.querySelector(".tk-wrap"))}
+function mkRolar(w){if(!w)return;let pos=0,mexendo=false,volta=0,ult=0;const meio=()=>w.scrollWidth/2;
+  const solta=()=>{volta=Date.now()+2500;mexendo=false};
+  w.addEventListener("touchstart",()=>{mexendo=true},{passive:true});w.addEventListener("touchend",solta,{passive:true});w.addEventListener("touchcancel",solta,{passive:true});
+  w.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse")mexendo=true});w.addEventListener("pointerup",solta);w.addEventListener("mouseleave",()=>{if(mexendo)solta()});
+  w.addEventListener("wheel",()=>{volta=Date.now()+2500},{passive:true});
+  w.addEventListener("scroll",()=>{const m=meio();if(m<=0)return;if(w.scrollLeft>=m){w.scrollLeft-=m}else if(w.scrollLeft<=0&&(mexendo||Date.now()<volta)){w.scrollLeft+=m}if(mexendo||Date.now()<volta)pos=w.scrollLeft},{passive:true});
+  const passo=t=>{if(!w.isConnected)return;const dt=ult?Math.min(100,t-ult):0;ult=t;
+    if(!mexendo&&Date.now()>=volta&&!document.hidden){pos+=dt*0.022;const m=meio();if(m>0&&pos>=m)pos-=m;w.scrollLeft=pos}else pos=w.scrollLeft;
+    requestAnimationFrame(passo)};requestAnimationFrame(passo)}
 function mkLinhaDest(v){const n=x=>Math.round(x*10)/10;const L=[n(v[0])+" pts",n(v[1])+" reb",n(v[2])+" ast",n(v[3])+" stl",n(v[4])+" blk",n(v[5])+" 3pm"];if(v[8])L.push(n(v[7])+"/"+n(v[8])+" FG");L.push(n(v[6])+" TO");return L.join(" · ")}
 /* ---------- foto no post ---------- */
 function mkFotos(){const ids=MK.posts.filter(p=>!p.apagado&&p.extra&&p.extra.foto&&MK.fotos[p.id]===undefined).slice(0,30).map(p=>p.id);if(!ids.length)return;
