@@ -2079,6 +2079,11 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-tr-ver{background:#1a0d0d;border:2px solid var(--amarelo);border-radius:12px;padding:10px 12px;margin-top:8px}.mk-tr-loy{font-family:var(--display);color:var(--amarelo);font-size:15px;letter-spacing:.05em}.mk-tr-ver p{margin:6px 0 0;font-size:14px;line-height:1.4}
 .mk-tr-bts{display:flex;gap:8px;align-items:center;margin-top:10px}
 
+.mk-tr-jan{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:8px}
+.mk-tr-jan button{all:unset;box-sizing:border-box;text-align:center;cursor:pointer;padding:7px 2px;border:1px solid var(--linha);border-radius:8px;font:700 12px var(--ui);color:var(--texto);background:#0d0b0b}
+.mk-tr-jan button.on{background:var(--amarelo);color:#000;border-color:var(--amarelo)}
+.mk-tr-f .mk-tr-tend{color:var(--ouro);margin-top:2px}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -2144,11 +2149,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794417652"></script>
-<script src="radar.js?v=1794417652"></script>
-<script src="midia.js?v=1794417652"></script>
+<script src="hist.js?v=1794417914"></script>
+<script src="radar.js?v=1794417914"></script>
+<script src="midia.js?v=1794417914"></script>
 <script>
-const VERSAO_PAINEL="20261111142052";
+const VERSAO_PAINEL="20261111142513";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4225,6 +4230,7 @@ document.addEventListener("click",async e=>{
   if((b=g("[data-mkfotox]"))){MK.foto=null;const pv=document.getElementById("mkFotoPrev");if(pv){pv.hidden=true;pv.innerHTML=""}return}
   if((b=g("[data-mkfotoz]"))){e.stopPropagation();const src=MK.fotos[+b.dataset.mkfotoz];if(src)mkModal(`<img src="${src}" alt="" style="max-width:100%;max-height:75vh;display:block;margin:auto">`);return}
   if((b=g("[data-mktrp]"))){const [l,id]=b.dataset.mktrp.split(":");const S=MK.tr["p"+l];const k=+id;S.has(k)?S.delete(k):S.add(k);mkTrPinta();return}
+  if((b=g("[data-mktrjan]"))){MK.tr.jan=b.dataset.mktrjan;const j=document.getElementById("mkTrJan");if(j)j.innerHTML=mkTrJanBts();mkTrPinta();return}
   if(g("[data-mktrx]")){MK.tr.pa.clear();MK.tr.pb.clear();mkTrPinta();return}
   if(g("[data-mktrsh]")){const t=mkTrTexto();if(!t)return;MK.aba="chat";document.querySelectorAll("[data-mkaba]").forEach(x=>{const on=x.dataset.mkaba==="chat";x.classList.toggle("on",on);x.setAttribute("aria-selected",on)});document.querySelectorAll("[data-mkpane]").forEach(p=>p.hidden=p.dataset.mkpane!=="chat");if(!MK.aberto)mkAbrir(true);setTimeout(()=>{const x=document.getElementById("mkTxt");if(x){x.value=t.slice(0,500);x.dispatchEvent(new Event("input",{bubbles:true}));x.focus()}},250);return}
   if((b=g("[data-mkaba]"))){MK.aba=b.dataset.mkaba;document.querySelectorAll("[data-mkaba]").forEach(x=>{x.classList.toggle("on",x===b);x.setAttribute("aria-selected",x===b)});document.querySelectorAll("[data-mkpane]").forEach(p=>p.hidden=p.dataset.mkpane!==MK.aba);return}
@@ -4482,27 +4488,37 @@ document.addEventListener("change",async e=>{if(e.target&&e.target.id==="mkFotoI
 function mkSemTx(){try{return localStorage.getItem("wbs.mkSemTx")==="1"}catch(e){return false}}
 
 /* ---------- simulador de trocas ---------- */
-MK.tr=MK.tr||{a:null,b:null,pa:new Set(),pb:new Set()};
+MK.tr=MK.tr||{a:null,b:null,pa:new Set(),pb:new Set(),jan:"temp"};MK.trN={};
+const TR_JAN=[["temp","Temporada","av",2],["l30","30 dias","l30",2],["l7","7 dias","l7",1],["pj","Projeção","pj",0]];
+function mkTrArr(p,k){if(!p)return null;if(!p[k]&&typeof EXTRA!=="undefined"&&EXTRA[p.id]&&EXTRA[p.id][k])p[k]=EXTRA[p.id][k];return p[k]||null}
+function mkTrJ(){return TR_JAN.find(x=>x[0]===MK.tr.jan)||TR_JAN[0]}
+function mkTrNotas(){const j=mkTrJ();if(MK.trN[j[0]]!==undefined)return MK.trN[j[0]];const d=DADOS;let f=null;try{f=notas(d.P.concat(d.fa||[]),p=>mkTrArr(p,j[2]),j[3])}catch(e){}return MK.trN[j[0]]=f||null}
+function mkTrV(p){const j=mkTrJ();const a=mkTrArr(p,j[2]);const f=mkTrNotas();const r=a&&f?f(a):null;return {a,n:r?r.n:null,c:r?r.c:null}}
+function mkTrJogos(p){const d=DADOS;return (p.gd||[]).filter(s=>s>=d.cur&&s<=d.s1).length}
 document.addEventListener("change",e=>{const sel=e.target.closest&&e.target.closest("[data-mktrt]");if(!sel)return;const l=sel.dataset.mktrt;MK.tr[l]=+sel.value;MK.tr["p"+l].clear();mkTrPinta()});
 function mkTrTimes(){const d=DADOS;if(!d)return [];return d.teams.map(t=>t.id)}
 function mkTrIni(){const d=DADOS;if(!d)return;const ids=mkTrTimes();if(MK.tr.a==null)MK.tr.a=meuTime()||ids[0];if(MK.tr.b==null||MK.tr.b===MK.tr.a){const m=(d.mt||[]).find(x=>x.includes(MK.tr.a));MK.tr.b=ids.find(i=>i!==MK.tr.a&&!(m&&m.includes(i)))||ids.find(i=>i!==MK.tr.a)}}
-function mkTrElenco(t){const d=DADOS;return d.P.filter(p=>p.t===t&&!p.fora).sort((x,y)=>(y.nota??-99)-(x.nota??-99))}
+function mkTrElenco(t){const d=DADOS;return d.P.filter(p=>p.t===t&&!p.fora).map(p=>[p,mkTrV(p).n]).sort((x,y)=>(y[1]??-99)-(x[1]??-99)).map(x=>{x[0]._trn=x[1];return x[0]})}
 function mkTrLado(l){const d=DADOS;const t=MK.tr[l],S=MK.tr["p"+l];const outro=MK.tr[l==="a"?"b":"a"];
   const opts=mkTrTimes().map(i=>`<option value="${i}" ${i===t?"selected":""} ${i===outro?"disabled":""}>${esc(T(i)[0])}</option>`).join("");
   const nome=p=>esc(p.n.split(" ").slice(1).join(" ")||p.n);
   return `<div class="mk-tr-lado"><label class="mk-tr-sel">${logo(T(t)[0],"width:28px;height:28px")}<select data-mktrt="${l}" aria-label="time ${l==="a"?"1":"2"}">${opts}</select></label>
-  <div class="mk-tr-lista">${mkTrElenco(t).map(p=>`<button type="button" class="mk-tr-j ${S.has(p.id)?"on":""}" data-mktrp="${l}:${p.id}">${face(p.id,p.n,"")}<span>${nome(p)}</span>${p.nota!=null?`<small>${p.nota>0?"+":""}${p.nota.toFixed(1)}</small>`:""}</button>`).join("")}</div></div>`}
+  <div class="mk-tr-lista">${mkTrElenco(t).map(p=>`<button type="button" class="mk-tr-j ${S.has(p.id)?"on":""}" data-mktrp="${l}:${p.id}">${face(p.id,p.n,"")}<span>${nome(p)}</span>${p._trn!=null?`<small>${p._trn>0?"+":""}${p._trn.toFixed(1)}</small>`:`<small>–</small>`}</button>`).join("")}</div></div>`}
 function mkTroca(){if(!DADOS)return `<div class="mk-load">carregando…</div>`;mkTrIni();
-  return `<div class="mk-tr-cab"><b>SIMULADOR DE TROCAS</b><small>Escolhe os dois times e toca nos jogadores que vão de um lado pro outro. A nota é o valor na temporada (9 categorias).</small></div>
+  return `<div class="mk-tr-cab"><b>SIMULADOR DE TROCAS</b><small>Escolhe os dois times e toca nos jogadores que vão de um lado pro outro. A nota é o valor nas 9 categorias no período escolhido.</small></div>
+  <div class="mk-tr-jan" id="mkTrJan">${mkTrJanBts()}</div>
   <div class="mk-tr-cols" id="mkTrCols">${mkTrLado("a")}<div class="mk-tr-x">⇄</div>${mkTrLado("b")}</div><div id="mkTrRes">${mkTrRes()}</div>`}
 function mkTrPinta(){const c=document.getElementById("mkTrCols");if(!c)return;c.innerHTML=mkTrLado("a")+'<div class="mk-tr-x">⇄</div>'+mkTrLado("b");document.getElementById("mkTrRes").innerHTML=mkTrRes()}
 function mkTrConta(){const d=DADOS;const J=id=>d.P.find(p=>p.id===id);const A=[...MK.tr.pa].map(J).filter(Boolean),B=[...MK.tr.pb].map(J).filter(Boolean);
-  const soma=(L,f)=>L.reduce((s,p)=>s+(f(p)||0),0);const va=soma(B,p=>p.nota)-soma(A,p=>p.nota);
-  const cat={};MCATS.forEach(c=>cat[c]=soma(B,p=>p.zc&&p.zc[c])-soma(A,p=>p.zc&&p.zc[c]));
-  const lin=i=>soma(B,p=>p.avx&&p.avx[i])-soma(A,p=>p.avx&&p.avx[i]);
-  return {A,B,va,cat,lin}}
+  const V=new Map([...A,...B].map(p=>[p.id,mkTrV(p)]));const soma=(L,f)=>L.reduce((s,p)=>s+(f(V.get(p.id),p)||0),0);
+  const va=soma(B,v=>v.n)-soma(A,v=>v.n);
+  const cat={};MCATS.forEach(c=>cat[c]=soma(B,v=>v.c&&v.c[c])-soma(A,v=>v.c&&v.c[c]));
+  const lin=i=>soma(B,v=>v.a&&v.a[i])-soma(A,v=>v.a&&v.a[i]);
+  const jg=soma(B,(v,p)=>mkTrJogos(p))-soma(A,(v,p)=>mkTrJogos(p));
+  const sem=[...A,...B].filter(p=>!V.get(p.id).a).map(p=>p.n);
+  return {A,B,V,va,cat,lin,jg,sem}}
 function mkTrVeredito(r){const ta=mkTrNome(MK.tr.a),tb=mkTrNome(MK.tr.b);const d=Math.abs(r.va);const W=r.va>0?ta:tb,Lo=r.va>0?tb:ta;
-  const top=[...r.A,...r.B].filter(p=>p.nota!=null&&p.nota>=7);
+  const top=[...r.A,...r.B].filter(p=>(r.V.get(p.id).n??-9)>=7);
   let v;if(d<1.5)v=`🤝 <b>TROCA JUSTA.</b> Na WBSQUETE isso é tão raro que a redação desconfia: alguém tá escondendo lesão.`;
   else if(d<4)v=`😏 <b>VANTAGEM ${esc(W).toUpperCase()}.</b> Não é assalto, é furto qualificado. ${esc(Lo)} sai com a carteira mais leve, mas sai andando.`;
   else if(d<8)v=`🚨 <b>ASSALTO À MÃO ARMADA.</b> ${esc(Lo)}, pisca duas vezes se tá sendo coagido.`;
@@ -4518,18 +4534,24 @@ function mkTrRes(){if(!DADOS)return "";const r=mkTrConta();if(!r.A.length||!r.B.
   const rows=MCATS.map(c=>`<tr><th>${c}</th>${cel(r.cat[c])}${cel(-r.cat[c])}</tr>`).join("");
   const L=["PTS","REB","AST","STL","BLK","3PM"].map((k,i)=>{const x=r.lin(i);return `${x>0?"+":""}${x.toFixed(1)} ${k}`}).join(" · ");
   const ver=mkTrVeredito(r);
-  const ficha=(lst)=>lst.map(p=>`<div class="mk-tr-f">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small>${p.avx?`${p.avx[0].toFixed(1)} pts · ${p.avx[1].toFixed(1)} reb · ${p.avx[2].toFixed(1)} ast · ${p.avx[3].toFixed(1)} stl · ${p.avx[4].toFixed(1)} blk · ${p.avx[5].toFixed(1)} 3pm`:"sem números"}</small></div><em>${p.nota!=null?(p.nota>0?"+":"")+p.nota.toFixed(1):"–"}</em></div>`).join("");
+  const ficha=(lst)=>lst.map(p=>{const v=r.V.get(p.id);const a=v.a;const fg=a&&a[8]?(a[7]/a[8]*100).toFixed(0)+"% FG":"";const jg=mkTrJogos(p);
+    return `<div class="mk-tr-f">${face(p.id,p.n,"")}<div><b>${esc(p.n)}</b><small>${a?`${a[0].toFixed(1)} pts · ${a[1].toFixed(1)} reb · ${a[2].toFixed(1)} ast · ${a[3].toFixed(1)} stl · ${a[4].toFixed(1)} blk · ${a[5].toFixed(1)} 3pm · ${fg}`:"sem números neste período"}</small><small class="mk-tr-tend">${mkTrTend(p)}${jg?` · ${jg} jogo${jg>1?"s":""} até domingo`:""}</small></div><em>${v.n!=null?(v.n>0?"+":"")+v.n.toFixed(1):"–"}</em></div>`}).join("");
   return `<div class="mk-tr-fichas"><div><h4>${esc(ta)} manda</h4>${ficha(r.A)}</div><div><h4>${esc(tb)} manda</h4>${ficha(r.B)}</div></div>
   <div class="mk-tr-placar"><div><span>${esc(ta)}</span><b class="${r.va>0?"up":r.va<0?"dn":""}">${r.va>0?"+":""}${r.va.toFixed(1)}</b></div><div><span>${esc(tb)}</span><b class="${r.va<0?"up":r.va>0?"dn":""}">${r.va<0?"+":""}${(-r.va).toFixed(1)}</b></div></div>
   <table class="mk-tr-t"><thead><tr><th></th><th>${esc(ta)}</th><th>${esc(tb)}</th></tr></thead><tbody>${rows}</tbody></table>
-  <p class="mk-tr-lin">Somando as médias por jogo, ${esc(ta)} fica com: ${L}</p>
+  <p class="mk-tr-lin">Período: <b>${mkTrJ()[1]}</b>. Somando as médias por jogo, ${esc(ta)} fica com: ${L}${r.jg?`<br>📅 Nesta semana, ${esc(ta)} ${r.jg>0?"ganha":"perde"} ${Math.abs(r.jg)} jogo${Math.abs(r.jg)>1?"s":""} com a troca.`:""}${r.sem.length?`<br>⚠️ Sem números neste período: ${esc(r.sem.join(", "))}.`:""}</p>
   <div class="mk-tr-ver"><div class="mk-tr-loy">🎙️ VEREDITO DO LOYDÃO</div><p>${ver.v}${ver.extra}</p></div>
   <div class="mk-tr-bts"><button type="button" class="mk-bt amarelo" data-mktrsh>📤 Mandar pro chat</button><button type="button" class="mk-mini" data-mktrx>Limpar</button></div>`}
 function mkTrTexto(){const r=mkTrConta();if(!r.A.length||!r.B.length)return "";const ta=mkTrNome(MK.tr.a),tb=mkTrNome(MK.tr.b);const ver=mkTrVeredito(r);const nm=l=>l.map(p=>p.n).join(" + ");
   const tx=(ver.v+ver.extra).replace(/<br>/g," ").replace(/<[^>]+>/g,"");
-  return `🔁 SIMULEI UMA TROCA\n${ta} manda: ${nm(r.A)}\n${tb} manda: ${nm(r.B)}\n\n${tx}`}
+  return `🔁 SIMULEI UMA TROCA (${mkTrJ()[1].toLowerCase()})\n${ta} manda: ${nm(r.A)}\n${tb} manda: ${nm(r.B)}\n\n${tx}`}
 
 function mkTrNome(id){const n=T(id)[0];return n==="Diabo"?"Luiz ☀️":n}
+
+function mkTrJanBts(){return TR_JAN.map(([k,n])=>`<button type="button" class="${MK.tr.jan===k?"on":""}" data-mktrjan="${k}">${n}</button>`).join("")}
+
+function mkTrTend(p){const d=DADOS;const f=k=>{const j=TR_JAN.find(x=>x[0]===k);const a=mkTrArr(p,j[2]);let n=null;try{const nt=MK.trN[k]!==undefined?MK.trN[k]:(MK.trN[k]=notas(d.P.concat(d.fa||[]),q=>mkTrArr(q,j[2]),j[3])||null);n=a&&nt?nt(a).n:null}catch(e){}return n};
+  const t=f("temp"),s=f("l7");if(t==null||s==null)return "";const df=s-t;return df>1.5?"🔥 em alta nos últimos 7 dias":df<-1.5?"🧊 em baixa nos últimos 7 dias":"estável"}
 
 /* ---------- coleta ao vivo direto da ESPN (liga pública, sem login) ---------- */
 const AO={L:"https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/2027",get LG(){return this.L+"/segments/0/leagues/1009936782"},K:["0","6","3","2","1","17","11","13","14","15","16"],rodando:false,ultimo:0};
