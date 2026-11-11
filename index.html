@@ -2044,6 +2044,20 @@ svg.cad{width:18px;height:18px;display:block}
 .mk-quem-l>div{flex:1;min-width:0}.mk-quem-l b{display:block;font-size:15px;color:var(--texto)}.mk-quem-l small{color:var(--texto2,#aaa);font-size:12px}
 .mk-quem-l>span{font-size:22px}
 
+/* faixa AO VIVO */
+.mk-live{border-color:#ff3b3b}
+.mk-live .mk-dest-tag{background:#d4121c;color:#fff;display:flex;align-items:center;gap:5px}
+.mk-live small em{font-style:normal;color:#ff6b6b;font-weight:700}
+.mk-ponto{width:8px;height:8px;border-radius:50%;background:#fff;flex:none;animation:mkpisca 1.2s infinite}
+@keyframes mkpisca{50%{opacity:.25}}
+/* web: card de confronto com nome em cima do logo (não encavala no placar) */
+.jogo .jogo-topo{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+.jogo .lado,.jogo .lado.dir{flex-direction:column!important;align-items:center;text-align:center;gap:4px;min-width:0}
+.jogo .lado .info{min-width:0;max-width:100%}
+.jogo .lado .nm{overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.mk-dj b{font:700 13px var(--ui)}.mk-dj small{font:400 11px var(--ui)}
+.cab-secao .mk-live{order:4;flex:1 1 100%}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -2109,11 +2123,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794327511"></script>
-<script src="radar.js?v=1794327511"></script>
-<script src="midia.js?v=1794327511"></script>
+<script src="hist.js?v=1794366511"></script>
+<script src="radar.js?v=1794366511"></script>
+<script src="midia.js?v=1794366511"></script>
 <script>
-const VERSAO_PAINEL="20261110131831";
+const VERSAO_PAINEL="20261111000831";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4407,6 +4421,22 @@ function mkDestHome(){const d=DADOS;if(!d||document.querySelector(".mk-dest"))re
   const el=document.createElement("div");el.className="mk-dest";
   el.innerHTML=`<button type="button" class="mk-dest-tag" data-sel="${sp}">${sem?"SELEÇÃO DA SEMANA":"DESTAQUES DA NOITE"}</button><div class="tk-wrap"><div class="tk-mov">${html}${html}</div></div><button type="button" class="mk-dest-sh" data-mkshtop aria-label="mandar os destaques pro Mercado">📤</button>`;
   at.after(el);mkRolar(el.querySelector(".tk-wrap"))}
+function mkLiveHome(){const d=DADOS;if(!d||!d.P)return;const at=document.querySelector("#app .atalhos");if(!at)return;const sp=d.cur,G=d.nba||{};
+  const rows=[];d.P.filter(p=>!p.fora&&p.t).forEach(p=>{const v=p.dl&&p.dl[sp];if(!v||!(v[12]>0))return;const g=G[p.pro];rows.push({p,v,g,val:valorJogo(v)})});
+  const velho=document.querySelector(".mk-live");
+  if(rows.length<4){velho&&velho.remove();return}
+  const vivo=rows.some(r=>r.g&&r.g.live);
+  const best=rows.slice().sort((a,b)=>b.val-a.val).slice(0,5);
+  const worst=rows.filter(r=>!best.includes(r)&&((r.v[12]||0)>=15||(r.g&&r.g.fim))).sort((a,b)=>a.val-b.val).slice(0,3);
+  if(!best.length)return;
+  const it=(r,ruim)=>{const st=r.g&&r.g.live?r.g.st:r.g&&r.g.fim?"final":"";return `<span class="mk-dj clic" data-pj="${r.p.id}"><i class="mk-dk">${ruim?"🧊":"🔥"}</i>${face(r.p.id,r.p.n,"")}<b>${esc(r.p.n.split(" ").slice(1).join(" ")||r.p.n)}</b><small>${esc(T(r.p.t)[0])} · ${esc(mkLinhaDest(r.v))}${st?` · <em>${esc(st)}</em>`:""}</small></span>`};
+  const html=best.map(r=>it(r)).concat(worst.map(r=>it(r,1))).join('<span class="tk-sep">◆</span>')+'<span class="tk-sep">◆</span>';
+  const chave=vivo+"|"+html;if(velho&&velho.dataset.k===chave)return;
+  const el=document.createElement("div");el.className="mk-dest mk-live"+(vivo?" vivo":"");el.dataset.k=chave;
+  el.innerHTML=`<button type="button" class="mk-dest-tag" data-sel="${sp}">${vivo?'<i class="mk-ponto"></i>AO VIVO':"HOJE NA<br>RODADA"}</button><div class="tk-wrap"><div class="tk-mov">${html}${html}</div></div>`;
+  const pos=velho?velho.querySelector(".tk-wrap").scrollLeft:0;
+  if(velho)velho.replaceWith(el);else (document.querySelector("#app .mk-dest")||at).after(el);
+  const w=el.querySelector(".tk-wrap");w.scrollLeft=pos;mkRolar(w)}
 function mkRolar(w){if(!w)return;let pos=0,mexendo=false,volta=0,ult=0;const meio=()=>w.scrollWidth/2;
   const solta=()=>{volta=Date.now()+2500;mexendo=false};
   w.addEventListener("touchstart",()=>{mexendo=true},{passive:true});w.addEventListener("touchend",solta,{passive:true});w.addEventListener("touchcancel",solta,{passive:true});
@@ -4594,7 +4624,7 @@ function render(){
   try{montarPubli(r)}catch(e){console.error(e)}
   try{document.querySelectorAll("#app .cab-secao .linha-fina").forEach(lf=>{if(lf.dataset.c)return;lf.dataset.c="1";lf.hidden=true;const h1=lf.parentNode.querySelector(".manchete");if(!h1)return;const q=document.createElement("button");q.type="button";q.className="lf-q";q.textContent="?";q.setAttribute("aria-label","o que é isso");q.onclick=e=>{e.stopPropagation();lf.hidden=!lf.hidden};h1.appendChild(q)})}catch(e){}
   try{document.querySelectorAll("#app .rd .tmini").forEach(t=>t.classList.add("rec"))}catch(e){}
-  try{if(r==="mercado"){document.getElementById("mkSheet")?.remove();mkContador();mkPintar()}montarChat(r);mkBadge();if(r==="confrontos"||!r)mkDestHome()}catch(e){console.error(e)}
+  try{if(r==="mercado"){document.getElementById("mkSheet")?.remove();mkContador();mkPintar()}montarChat(r);mkBadge();if(r==="confrontos"||!r){mkDestHome();mkLiveHome()}}catch(e){console.error(e)}
   if(UI._fichaMuseu&&window.MUSEU&&document.getElementById("popFicha")){const i=UI._fichaMuseu;UI._fichaMuseu=null;const pop=document.querySelector("#popFicha .pop-full");const sc=pop?pop.scrollTop:0;abrirJogador(i,UI.fichaPer);const n2=document.querySelector("#popFicha .pop-full");if(n2)n2.scrollTop=sc}
   if(UI._fichaEspera&&document.getElementById("popFicha")&&ehRange(UI.fichaPer)&&rangePronto(UI.fichaPer)){const i=UI._fichaEspera;UI._fichaEspera=null;abrirJogador(i,UI.fichaPer)}
 }
