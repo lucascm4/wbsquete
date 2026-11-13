@@ -1,0 +1,148 @@
+// WBSQUETE · placar do confronto na tela do celular (app Scriptable)
+// Funciona na tela bloqueada (retangular e redondo) e na tela de início (pequeno e médio).
+// Parâmetro do widget: o id do time (1 a 12). Sem parâmetro = Iguana (10).
+// 1 Tubas · 2 Baianas · 3 Panam Bay · 4 Seridó · 5 Icers · 6 Necks · 7 Judazz
+// 8 Verdes · 9 Osasco · 10 Iguana · 11 Luiz ☀️ · 12 Pompeia
+
+const LIGA = "1009936782", TEMP = 2027
+const URL_LIGA = `https://lm-api-reads.fantasy.espn.com/apis/v3/games/fba/seasons/${TEMP}/segments/0/leagues/${LIGA}`
+const PAINEL = "https://lucascm4.github.io/wbsquete/"
+const SIG = {1:"TUB",2:"BAI",3:"PAN",4:"SER",5:"ICE",6:"NEC",7:"JUD",8:"VER",9:"OSA",10:"IGU",11:"LUZ",12:"POM"}
+const NOME = {1:"Tubas",2:"Baianas",3:"Panam Bay",4:"Seridó",5:"Icers",6:"Necks",7:"Judazz",8:"Verdes",9:"Osasco",10:"Iguana",11:"Luiz ☀️",12:"Pompeia"}
+const LOGO = {1:"tubas",2:"baianas",3:"panambay",4:"serido",5:"icers",6:"necks",7:"judazz",8:"verdes",9:"osasco",10:"iguana",11:"diabo",12:"pompeia"}
+// ordem da liga: FG% FT% 3PM REB AST STL BLK TO PTS
+const CATS = ["FG%","FT%","3PM","REB","AST","STL","BLK","TO","PTS"]
+
+const MEU = parseInt((args.widgetParameter || "10").trim()) || 10
+
+// ---------- datas: o dia de jogo da ESPN segue o horário de Nova York ----------
+function spHoje() {
+  const ny = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" }) // AAAA-MM-DD
+  const [a, m, d] = ny.split("-").map(Number)
+  const dias = Math.round((Date.UTC(a, m - 1, d) - Date.UTC(2026, 9, 20)) / 864e5) // 20/10/2026 = dia 1
+  return Math.max(1, dias + 1)
+}
+function semanaDe(sp) { return sp < 7 ? { k: 1, s0: 1, s1: 6 } : { k: 2 + Math.floor((sp - 7) / 7), s0: 7 + Math.floor((sp - 7) / 7) * 7, s1: 13 + Math.floor((sp - 7) / 7) * 7 } }
+
+async function json(url) { const r = new Request(url); r.timeoutInterval = 20; return await r.loadJSON() }
+
+// soma o que os titulares (vaga < 12) fizeram num dia
+function somaDia(time, sp, tot) {
+  for (const e of time.roster.entries) {
+    if (e.lineupSlotId >= 12) continue
+    const st = (e.playerPoolEntry.player.stats || []).find(s => s.scoringPeriodId === sp && s.statSourceId === 0 && s.statSplitTypeId === 5)
+    if (!st || !st.stats || !st.stats["42"]) continue
+    const s = st.stats
+    ;[0, 6, 3, 2, 1, 17, 11, 13, 14, 15, 16].forEach((id, i) => tot[i] += (s[id] || 0))
+  }
+}
+
+function placar(A, B) {
+  // A e B: [PTS,REB,AST,STL,BLK,3PM,TO,FGM,FGA,FTM,FTA]
+  const v = x => [x[8] ? x[7] / x[8] : 0, x[10] ? x[9] / x[10] : 0, x[5], x[1], x[2], x[3], x[4], -x[6], x[0]]
+  const a = v(A), b = v(B)
+  let w = 0, l = 0, t = 0
+  const res = a.map((x, i) => { const y = b[i]; if (Math.abs(x - y) < 1e-9) { t++; return 0 } if (x > y) { w++; return 1 } l++; return -1 })
+  return { w, l, t, res }
+}
+
+async function dados() {
+  const cur = spHoje(), sem = semanaDe(cur)
+  const sb = await json(`${URL_LIGA}?view=mMatchupScore&scoringPeriodId=${cur}`)
+  const jogo = sb.schedule.find(m => m.matchupPeriodId === sem.k && m.home && m.away && (m.home.teamId === MEU || m.away.teamId === MEU))
+  if (!jogo) throw new Error("confronto não encontrado")
+  const op = jogo.home.teamId === MEU ? jogo.away.teamId : jogo.home.teamId
+  const me = Array(11).fill(0), ele = Array(11).fill(0)
+  const fim = Math.min(cur, sem.s1)
+  const dias = []
+  for (let sp = sem.s0; sp <= fim; sp++) dias.push(json(`${URL_LIGA}?view=mRoster&scoringPeriodId=${sp}`).then(r => [sp, r]))
+  for (const [sp, r] of await Promise.all(dias)) {
+    const tm = r.teams.find(t => t.id === MEU), to = r.teams.find(t => t.id === op)
+    if (tm) somaDia(tm, sp, me)
+    if (to) somaDia(to, sp, ele)
+  }
+  const p = placar(me, ele)
+  return { op, p, me, ele, dia: fim - sem.s0 + 1, ndias: sem.s1 - sem.s0 + 1, k: sem.k }
+}
+
+async function logo(t) {
+  try { const r = new Request(`${PAINEL}img/l/${LOGO[t]}.webp`); r.timeoutInterval = 10; return await r.loadImage() } catch (e) { return null }
+}
+
+const AMARELO = new Color("#ffd400"), VERM = new Color("#d4121c"), VERDE = new Color("#3ddc84"), CINZA = new Color("#9a8f8f")
+const txtPlacar = p => `${p.w}-${p.l}${p.t ? "-" + p.t : ""}`
+
+async function montar() {
+  const fam = config.widgetFamily || "medium"
+  const w = new ListWidget()
+  w.url = PAINEL
+  w.refreshAfterDate = new Date(Date.now() + 10 * 60 * 1000) // pede pra atualizar a cada ~10 min (o iOS decide)
+  let d
+  try { d = await dados() } catch (e) {
+    const t = w.addText(fam.startsWith("accessory") ? "WBSQUETE: sem sinal" : "WBSQUETE\nNão consegui ler a ESPN agora.")
+    t.font = Font.semiboldSystemFont(12)
+    return w
+  }
+  const { op, p } = d
+
+  if (fam === "accessoryCircular") {
+    w.addAccessoryWidgetBackground = true
+    const s = w.addStack(); s.layoutVertically(); s.centerAlignContent()
+    const a = s.addText(SIG[MEU]); a.font = Font.boldSystemFont(10); a.centerAlignText()
+    const b = s.addText(txtPlacar(p)); b.font = Font.heavySystemFont(15); b.centerAlignText(); b.minimumScaleFactor = 0.6
+    return w
+  }
+  if (fam === "accessoryInline") {
+    w.addText(`${SIG[MEU]} ${txtPlacar(p)} ${SIG[op]}`)
+    return w
+  }
+  if (fam === "accessoryRectangular") {
+    const l1 = w.addText(`${SIG[MEU]} ${txtPlacar(p)} ${SIG[op]}`); l1.font = Font.heavySystemFont(17); l1.minimumScaleFactor = 0.7
+    const ganha = CATS.filter((c, i) => p.res[i] === 1), perde = CATS.filter((c, i) => p.res[i] === -1)
+    const l2 = w.addText("✓ " + (ganha.join(" ") || "nada")); l2.font = Font.semiboldSystemFont(10); l2.lineLimit = 1; l2.minimumScaleFactor = 0.6
+    const l3 = w.addText(`dia ${d.dia} de ${d.ndias} · semana ${d.k}`); l3.font = Font.systemFont(9); l3.textOpacity = 0.7
+    return w
+  }
+
+  // ----- tela de início -----
+  w.backgroundColor = new Color("#0b0707")
+  w.setPadding(10, 12, 10, 12)
+  const topo = w.addStack(); topo.centerAlignContent()
+  const tt = topo.addText("WBSQUETE"); tt.font = Font.heavySystemFont(11); tt.textColor = AMARELO
+  topo.addSpacer()
+  const sub = topo.addText(`SEMANA ${d.k} · DIA ${d.dia}/${d.ndias}`); sub.font = Font.semiboldSystemFont(9); sub.textColor = CINZA
+  w.addSpacer(6)
+
+  const linha = w.addStack(); linha.centerAlignContent()
+  const lado = async (t, alinha) => {
+    const s = linha.addStack(); s.layoutVertically(); s.centerAlignContent()
+    const img = await logo(t)
+    if (img) { const im = s.addImage(img); im.imageSize = new Size(fam === "small" ? 30 : 36, fam === "small" ? 30 : 36); im.cornerRadius = 18 }
+    const n = s.addText(SIG[t]); n.font = Font.boldSystemFont(11); n.textColor = Color.white()
+  }
+  await lado(MEU)
+  linha.addSpacer()
+  const pl = linha.addText(txtPlacar(p)); pl.font = Font.heavySystemFont(fam === "small" ? 26 : 32)
+  pl.textColor = p.w > p.l ? VERDE : p.w < p.l ? VERM : AMARELO
+  linha.addSpacer()
+  await lado(op)
+
+  if (fam !== "small") {
+    w.addSpacer(8)
+    const cats = w.addStack(); cats.spacing = 3
+    CATS.forEach((c, i) => {
+      const b = cats.addStack(); b.setPadding(2, 3, 2, 3); b.cornerRadius = 4
+      b.backgroundColor = p.res[i] === 1 ? new Color("#1f5f3a") : p.res[i] === -1 ? new Color("#5f1f1f") : new Color("#3a3326")
+      const x = b.addText(c); x.font = Font.boldSystemFont(8); x.textColor = Color.white()
+    })
+  }
+  w.addSpacer()
+  const at = w.addText("atualizado " + new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }))
+  at.font = Font.systemFont(8); at.textColor = CINZA
+  return w
+}
+
+const widget = await montar()
+if (config.runsInWidget) Script.setWidget(widget)
+else await widget.presentMedium()
+Script.complete()
