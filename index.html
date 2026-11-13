@@ -2171,11 +2171,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794450336"></script>
-<script src="radar.js?v=1794450336"></script>
-<script src="midia.js?v=1794450336"></script>
+<script src="hist.js?v=1794540416"></script>
+<script src="radar.js?v=1794540416"></script>
+<script src="midia.js?v=1794540416"></script>
 <script>
-const VERSAO_PAINEL="20261111232536";
+const VERSAO_PAINEL="20261113002656";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2765,7 +2765,7 @@ function listaJuntos(a,b,sp){
   const d=DADOS;const rows=[];const futuro=sp!=="sem"&&sp>d.cur;const ft=[a,b].includes(UI.filtroTime)?UI.filtroTime:0;
   [a,b].filter(t=>!ft||t===ft).forEach(t=>(EST.rost[t]||[]).concat(d.P.filter(p=>p.fora&&p.t===t)).forEach(p=>{
     if(sp==="sem"){const bb=bancoDe(p);const vh=p.dl&&p.dl[d.cur];if(p.g||bb.g)rows.push({p,t,s:p.W,g:p.g,slot:p.g?0:12,bp:p.bp,bg:bb.g,val:p.g?valorJogo(p.W):-1e6});else if(vh)rows.push({p,t,s:vh.slice(0,11),g:1,slot:vh[11],val:valorJogo(vh)});else if(p.hoje&&p.slot<12)rows.push({p,t,s:null,slot:p.slot,pend:1,val:-1e5})}
-    else if(futuro){if(!p.fora&&p.slot!==13&&(p.gd||[]).includes(sp)){const av=p.av?p.av.slice(0,11):null;rows.push({p,t,s:av,slot:p.slot,proj:1,val:av?valorJogo(av):-1e5})}}
+    else if(futuro){if(!p.fora&&p.slot!==13&&(p.gd||[]).includes(sp)){const av=p.av?p.av.slice(0,11):null;rows.push({p,t,s:av,slot:p.slot<12?p.slot:11,proj:1,val:av?valorJogo(av):-1e5})}}
     else{const v=p.dl&&p.dl[sp];if(v)rows.push({p,t,s:v.slice(0,11),slot:v[11],min:v[12]||0,val:valorJogo(v)});else if(sp===d.cur&&p.hoje&&p.slot<12)rows.push({p,t,s:null,slot:p.slot,pend:1,val:-1e5})}
   }));
   const tit=ordenaLj(rows.filter(r=>r.slot<12).sort((x,y)=>y.val-x.val)),banco=rows.filter(r=>r.slot>=12).sort((x,y)=>(y.s?y.s[0]:0)-(x.s?x.s[0]:0));
@@ -3045,7 +3045,7 @@ const jp=(g,p,per)=>{const m=possiveis(p,per);return m&&m>=g?`${g}/${m}`:`${g}`}
 /* placar só do dia e quantos jogadores cada time teve (ou terá) em quadra */
 function jogadoresDia(t,sp){const d=DADOS;
   if(sp==="sem")return d.P.filter(p=>p.t===t).reduce((x,p)=>x+(p.g||0),0);
-  if(sp>d.cur)return (EST.rost[t]||[]).filter(p=>p.slot<12&&p.slot!==13&&!(noticia(p,sp)&&noticia(p,sp).st==="OUT")&&p.inj!=="OUT"&&(p.gd||[]).includes(sp)).length;
+  if(sp>d.cur)return (EST.rost[t]||[]).filter(p=>p.slot!==13&&!(noticia(p,sp)&&noticia(p,sp).st==="OUT")&&p.inj!=="OUT"&&(p.gd||[]).includes(sp)).length;
   let n=0,pend=0;d.P.filter(p=>p.t===t).forEach(p=>{const v=p.dl&&p.dl[sp];if(v&&v[11]<12)n++;else if(!v&&sp===d.cur&&p.hoje&&p.slot<12&&!p.fora)pend++});return pend?{n,pend}:n}
 const txtJog=x=>typeof x==="object"?`${x.n+x.pend}`:`${x}`;
 function placarDia(a,b,sp){const d=DADOS;if(sp==="sem"||sp>d.cur)return null;const A=d.D[a]&&d.D[a][sp],B=d.D[b]&&d.D[b][sp];if(!A||!B||(!A[8]&&!B[8]&&!A[0]&&!B[0]))return null;return placar(A,B)}
@@ -3090,11 +3090,11 @@ const POS_Q={0:[50,83],1:[16,60],2:[84,60],3:[25,26],4:[75,26]}; // PG SG SF PF 
 function fichaJog(r,k,RK,cls){
   if(!r)return `<div class="fj vazio ${cls||""}"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span><b>—</b></div>`;
   window._SEL=window._SEL||[];window._SEL[k]={r,slot:SLOT[SLOTS_SEL[k]],rk:RK[r.p.id],n:RK._n};
-  const p=r.p,st=r.s;const ext=[[st[3],"rb"],[st[4],"tc"],[st[5],"3pt"]].filter(x=>x[0]>=2).sort((a,b)=>b[0]-a[0]).slice(0,1);
+  const p=r.p,st=r.s;const ext=[[st[5],"3PM"],[st[3],"STL"],[st[4],"BLK"]].filter(x=>x[0]>=2).sort((a,b)=>b[0]-a[0]).slice(0,1);
   const sob=p.n.split(" ");const nm=sob.length>1?sob.slice(1).join(" "):p.n;
-  return `<div class="fj ${cls||""} ${r.slot>=12?"nobanco":""}" style="--cor:${T(r.t)[4]}" data-fj="${k}" role="button" tabindex="0" aria-label="ver stats de ${esc(p.n)}">${face(p.id,p.n,"")}<span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>
+  return `<div class="fj ${cls||""}" style="--cor:${T(r.t)[4]}" data-fj="${k}" role="button" tabindex="0" aria-label="ver stats de ${esc(p.n)}">${face(p.id,p.n,"")}<span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>
    <b>${esc(nm)}</b><small><img src="img/l/${T(r.t)[1]}.webp" alt="${esc(T(r.t)[0])}">${RK[p.id]?"#"+RK[p.id]:""}</small>
-   <em><span>${st[0]}<i>p</i></span><span>${st[1]}<i>r</i></span><span>${st[2]}<i>a</i></span>${ext.map(x=>`<span>${x[0]}<i>${x[1]}</i></span>`).join("")}</em>${r.slot>=12?'<u>banco</u>':""}</div>`}
+   <em>${ext.map(x=>`<span>${x[0]}<i>${x[1]}</i></span>`).join("")}<span>${st[1]}<i>REB</i></span><span>${st[2]}<i>AST</i></span><span>${st[0]}<i>PTS</i></span></em></div>`}
 /* ESCALAÇÃO MOLEQUE (no estilo do Alê do Pânico): cada titular vira uma comparação com trocadilho */
 const MOLEQUE={
  bom:{
@@ -3501,8 +3501,8 @@ function vSelecao(rows,sp,tabela){
   const d=DADOS;const ord=rows.slice().sort((x,y)=>y.val-x.val);const dono=escalaMelhor(ord);
   const tot=zero();dono.forEach(r=>{if(r)r.s.forEach((x,i)=>tot[i]+=x)});tot.forEach((x,i)=>tot[i]=Math.round(x*10)/10);
   const linha=(r,k)=>{if(!r)return `<tr><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span><div><b>—</b></div></div></td><td colspan="9" class="esp">ninguém</td></tr>`;const p=r.p,st=r.s;
-    return `<tr data-pj="${p.id}" class="clic" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>${face(p.id,p.n,"")}<div><b>${rkTag(rkVer(sp,"periodo"),p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,r.slot>=12?'<span class="tag banco">NO BANCO</span>':"")}</small></div></div></td>${stTds(st)}</tr>`};
-  const nb=dono.filter(r=>r&&r.slot>=12).length;
+    return `<tr data-pj="${p.id}" class="clic" style="--cor:${T(r.t)[4]}"><td class="jg"><div class="jg-in"><span class="slot-sel">${SLOT[SLOTS_SEL[k]]}</span>${face(p.id,p.n,"")}<div><b>${rkTag(rkVer(sp,"periodo"),p.id)}${esc(p.n)}</b><small>${subJog(r.t,st,"")}</small></div></div></td>${stTds(st)}</tr>`};
+  const nb=0;
   let h=`<div class="cab-secao cab-c"><span class="sobre">SELEÇÃO · ${esc(rotPer(sp,1))}</span><h1 class="manchete">SELEÇÃO ${rotPer(sp)}</h1><p class="linha-fina">Toque na carinha para ver as stats. A melhor escalação possível ${sp==="sem"?"na semana":ehRange(sp)?"somando tudo "+rotPer(sp).toLowerCase():ehMedia(sp)?"pela média por jogo "+rotPer(sp).toLowerCase()+" (mínimo de "+minMedia(sp)+" jogos)":"com os jogos do dia"}, juntando os 12 elencos: PG, SG, SF, PF, C, G, F e 2 UTIL, nas posições da ESPN.${nb?` <b>${nb} ${nb>1?"estavam":"estava"} no banco.</b>`:""}</p></div>
   <div class="dias sel-c" role="group" aria-label="Período">${botoesPer(sp,"data-nd")}`;
   h+=`</div><div class="pilulas sel-c"><button class="pil big" type="button" data-nm="selecao" aria-pressed="true">Seleção</button><button class="pil big" type="button" data-nm="piores">Piores</button><select id="noiteTime" class="sel"><option value="0">todos os times</option>${d.teams.map(t=>`<option value="${t.id}" ${t.id===(UI.noiteTime||0)?"selected":""}>${esc(T(t.id)[0])}</option>`).join("")}</select></div>
