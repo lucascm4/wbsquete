@@ -1,1 +1,1 @@
-window.REVISTA={"n":16,"titulo":"Acordaram a besta","data":"12/11","capa":"img/revista/016.jpg","link":"https://claude.ai/artifact/QCZacCMkUnZtJGHtf9FBWT#ed16"};
+window.REVISTA={"n":17,"titulo":"Sexta-feira 13","data":"13/11","capa":"img/revista/017.jpg","link":"https://claude.ai/artifact/QCZacCMkUnZtJGHtf9FBWT#ed17"};
