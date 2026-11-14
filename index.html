@@ -2169,6 +2169,9 @@ svg.cad{width:18px;height:18px;display:block}
 .tabcat th.tc-pl .num,.tabcat th.tc-pl .num em{font:400 30px/1 var(--display)!important;letter-spacing:.02em;text-transform:none}
 .tabcat th.tc-pl .num{color:#fff;white-space:nowrap}
 
+.hd-home{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:9px;background:var(--amarelo);color:#000;font-size:19px;line-height:1;text-decoration:none;border:2px solid #000}
+.jn2 .jn-volta{background:#000;color:var(--amarelo);font-size:22px;padding-bottom:3px}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -2213,6 +2216,7 @@ svg.cad{width:18px;height:18px;display:block}
 <header class="topo">
   <div class="topo-in">
     <img class="belt" src="img/cinturao.webp" alt="Cinturão da WBSQUETE">
+    <a class="hd-home" href="#confrontos" aria-label="Início">⌂</a>
     <div class="meio">
       <div class="mast">PAINEL DO LOYDÃO</div>
       <div class="mast-sub" id="status">carregando…</div>
@@ -2234,11 +2238,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794692510"></script>
-<script src="radar.js?v=1794692510"></script>
-<script src="midia.js?v=1794692510"></script>
+<script src="hist.js?v=1794692696"></script>
+<script src="radar.js?v=1794692696"></script>
+<script src="midia.js?v=1794692696"></script>
 <script>
-const VERSAO_PAINEL="20261114184150";
+const VERSAO_PAINEL="20261114184456";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3026,7 +3030,7 @@ function vJogo(i){
   setTimeout(()=>{const st=document.getElementById("jnStrip"),a=st&&st.querySelector(".on");if(a)st.scrollLeft=a.offsetLeft-st.clientWidth/2+a.clientWidth/2},0);
   const abas=[["placar","📊","Placar"],["jogadores","👥","Jogadores"],["odds","🎲","Odds"]];if(UI.subJogo==="premios")UI.subJogo="placar";
   const sig=X=>X===T(11)?"LUZ":(X[3]||X[0]);
-  let h=`<div class="jogo-nav jn2"><button class="jn-home" type="button" data-ir="confrontos" aria-label="Início">⌂</button><div class="jn-strip" id="jnStrip">${d.mt.map((mm,k)=>{const X=T(mm[0]),Y=T(mm[1]);const p=placar(EST.tot[mm[0]],EST.tot[mm[1]]);return `<button type="button" class="jn-p ${k===i?"on":""}" data-jogo="${k}" aria-label="${esc(X[0])} x ${esc(Y[0])}"><img src="img/l/${X[1]}.webp" alt=""><span class="num"><em class="${p.w>p.l?"v":""}">${p.w}</em>-<em class="${p.l>p.w?"v":""}">${p.l}</em></span><img src="img/l/${Y[1]}.webp" alt=""></button>`}).join("")}</div></div>
+  let h=`<div class="jogo-nav jn2"><button class="jn-home jn-volta" type="button" data-volta aria-label="voltar">‹</button><div class="jn-strip" id="jnStrip">${d.mt.map((mm,k)=>{const X=T(mm[0]),Y=T(mm[1]);const p=placar(EST.tot[mm[0]],EST.tot[mm[1]]);return `<button type="button" class="jn-p ${k===i?"on":""}" data-jogo="${k}" aria-label="${esc(X[0])} x ${esc(Y[0])}"><img src="img/l/${X[1]}.webp" alt=""><span class="num"><em class="${p.w>p.l?"v":""}">${p.w}</em>-<em class="${p.l>p.w?"v":""}">${p.l}</em></span><img src="img/l/${Y[1]}.webp" alt=""></button>`}).join("")}</div></div>
   <div class="sub-wrap">  <div class="subabas sb2" role="tablist">${abas.map(([k,ic,nm])=>`<button type="button" role="tab" data-sub="${k}" aria-selected="${sub===k}"><i>${ic}</i>${nm}</button>`).join("")}</div></div>`;
   if(sub==="placar"){
     const hh=window.MUSEU?h2hEntre(A[0],B[0]):null;const mm=hh?hh.l.filter(x=>!x.atual&&seloFase(x)&&!/CONSOLA/.test(seloFase(x))).length:0;
@@ -4854,6 +4858,7 @@ document.addEventListener("click",e=>{
   {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();const mj=/^#jogo-(\d+)/.exec(location.hash);if(mj&&DADOS&&DADOS.mt[+mj[1]]&&DADOS.mt[+mj[1]].includes(tid)){UI.subJogo="jogadores";UI.filtroTime=tid;{const D0=DADOS;const hj=Math.min(Math.max(D0.cur,D0.s0),D0.s1);const k=+mj[1];if((UI.dia[k]??"sem")==="sem")UI.dia[k]=hj}render();scrollTo(0,0);return}location.hash="time-"+tid;return}}
   {const pn=e.target.closest("[data-pjn]");if(pn&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){UI.fichaPer=null;abrirJogadorNome(pn.dataset.pjn);return}}
   {const pj=e.target.closest("[data-pj]");if(pj&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){const ao=location.hash==="#aovivo";UI.fichaPer=ao?DADOS.cur:null;if(ao)UI.fichaAba="num";abrirJogador(+pj.dataset.pj,ao?DADOS.cur:undefined);return}}
+  {const vb=e.target.closest("[data-volta]");if(vb){e.preventDefault();e.stopPropagation();if(history.length>1)history.back();else location.hash="confrontos";return}}
   {const ab=e.target.closest("[data-abre]");if(ab){e.preventDefault();e.stopPropagation();UI.abre=UI.abre||{};const k=ab.dataset.abre;if(k==="all"){const on=ab.getAttribute("aria-pressed")!=="true";(DADOS.mt||[]).forEach((_,x)=>UI.abre[x]=on)}else UI.abre[k]=!UI.abre[k];render();return}}
   const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-mda],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj],[data-dd],[data-leg]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
