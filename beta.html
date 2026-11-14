@@ -2178,6 +2178,8 @@ svg.cad{width:18px;height:18px;display:block}
 .dr-tit .num{font-size:32px;line-height:1}.dr-tit i{font-style:normal;opacity:.6}.dr-tit i.v{opacity:1;color:var(--amarelo)}
 .dr-sub{font:700 11px system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#bbb;margin-top:2px}.dr-sub b{color:#fff}
 
+table.lj tr.pend td:not(.jg){opacity:.55;font-style:italic}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -2244,11 +2246,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794693483"></script>
-<script src="radar.js?v=1794693483"></script>
-<script src="midia.js?v=1794693483"></script>
+<script src="hist.js?v=1794694637"></script>
+<script src="radar.js?v=1794694637"></script>
+<script src="midia.js?v=1794694637"></script>
 <script>
-const VERSAO_PAINEL="20261114185803";
+const VERSAO_PAINEL="20261114191717";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2845,8 +2847,8 @@ function listaJuntos(a,b,sp){
   const RK=futuro?{}:rankLiga(sp);const RKV=futuro?{}:rkVer(sp,"periodo");
   if(RK.v){rows.forEach(r=>{if(RK.v[r.p.id]!=null)r.val=RK.v[r.p.id]});tit.sort((x,y)=>y.val-x.val);if(UI.ljSort&&UI.ljSort.c!=null){const o=ordenaLj(tit);tit.length=0;tit.push(...o)}}
   const linha=r=>{const p=r.p;const st=r.s;const cor=T(r.t)[4];const g=!futuro&&sp!=="sem"?(d.nba&&d.nba[p.pro]):null;
-    return `<tr data-pj="${p.id}" class="clic ${r.pend?"pend":""}${r.proj?" proj":""}" style="--cor:${cor}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RKV,p.id)}${esc(p.n)}</b><small>${ft&&sp!=="sem"&&r.slot<12?`<span class="tag vg">${SLOT[r.slot]||""}</span>`:""}${subJog(r.t,futuro?null:st,`${r.g!=null&&sp==="sem"?`<span>${jp(r.g,p,"sem")} j</span>`:""}${r.slot>=12&&r.slot!==13?'<span class="tag banco">BANCO</span>':r.slot===13?'<span class="tag ir">IR</span>':""} ${tagInj(p)}${r.pend?'<span class="tag hoje">JOGA</span>':""}${r.proj?'<span class="tag ir">MÉDIA</span>':""}`)}</small>${g?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
-    ${st?`${stTds(st,n1)}`:`<td colspan="9" class="esp">${r.pend?"ainda não jogou":"sem média"}</td>`}</tr>`};
+    return `<tr data-pj="${p.id}" class="clic ${r.pend?"pend":""}${r.proj?" proj":""}" style="--cor:${cor}"><td class="jg"><div class="jg-in">${face(p.id,p.n,"")}<div><b>${rkTag(RKV,p.id)}${esc(p.n)}</b><small>${ft&&sp!=="sem"&&r.slot<12?`<span class="tag vg">${SLOT[r.slot]||""}</span>`:""}${subJog(r.t,futuro?null:st,`${r.g!=null&&sp==="sem"?`<span>${jp(r.g,p,"sem")} j</span>`:""}${r.slot>=12&&r.slot!==13?'<span class="tag banco">BANCO</span>':r.slot===13?'<span class="tag ir">IR</span>':""} ${tagInj(p)}${r.pend?'<span class="tag hoje">JOGA</span>'+(p.av?'<span class="tag ir">MÉDIA</span>':""):""}${r.proj?'<span class="tag ir">MÉDIA</span>':""}`)}</small>${g?`<small>${jogoNBA(p,sp)}</small>`:""}</div></div></td>
+    ${st?`${stTds(st,n1)}`:r.pend&&p.av?stTds(p.av.slice(0,11),x=>(Math.round(x*10)/10).toFixed(1).replace(".0","")):`<td colspan="9" class="esp">${r.pend?"ainda não jogou":"sem média"}</td>`}</tr>`};
   const cab=cabLj();
   const lgF=t=>`<button class="ftl" type="button" data-ft="${t}" aria-pressed="${ft===t}" aria-label="só ${esc(T(t)[0])}"><img src="img/l/${T(t)[1]}.webp" alt=""><span>${esc(T(t)[3]||T(t)[0])}</span></button>`;
   const filtros=`<div class="ft3" role="group" aria-label="Time">${lgF(a)}<button class="ftl all" type="button" data-ft="0" aria-pressed="${!ft}">ALL</button>${lgF(b)}</div>`;
