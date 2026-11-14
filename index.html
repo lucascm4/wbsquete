@@ -2160,6 +2160,13 @@ svg.cad{width:18px;height:18px;display:block}
 .jg2-bar{margin:0 0 6px}.jg2-bar span{font-size:15px}
 .jg2-bar .pil{padding:4px 9px;font-size:11px}
 
+.tc-pl .num{font-family:var(--display);font-size:30px;line-height:1;color:#fff;letter-spacing:.02em}
+.tc-pl em{font-style:normal;opacity:.6}.tc-pl em.v{opacity:1;color:var(--amarelo)}
+.tc-pl .tc-leg{display:block}
+.subabas.sb2{justify-content:flex-start;gap:5px!important}
+.subabas.sb2 button{flex:0 0 auto!important;padding:4px 10px!important;border-radius:999px!important;font-size:12px!important;box-shadow:none!important;border-width:2px}
+.sub-wrap{margin:0 0 4px}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -2225,11 +2232,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794692157"></script>
-<script src="radar.js?v=1794692157"></script>
-<script src="midia.js?v=1794692157"></script>
+<script src="hist.js?v=1794692447"></script>
+<script src="radar.js?v=1794692447"></script>
+<script src="midia.js?v=1794692447"></script>
 <script>
-const VERSAO_PAINEL="20261114183557";
+const VERSAO_PAINEL="20261114184047";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2860,7 +2867,7 @@ function boxTime(tid,sp){
 /* placar aberto das 9 categorias, com previsão de fechamento */
 function tabelaCategorias(a,b,ta,tb,pa,pb,sim){
   const sc=placar(ta,tb);const A=T(a),B=T(b);const mi=(typeof EST!=="undefined"&&EST.tot&&ta===EST.tot[a]&&DADOS)?DADOS.mt.findIndex(m=>m[0]===a&&m[1]===b):-1;
-  let h=`<table class="tabcat tc3"><colgroup><col class="c1"><col class="c3"><col class="c1"></colgroup><thead><tr><th class="lg"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></th><th>categoria <small class="tc-leg">${tip("prev","")}</small></th><th class="lg"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></th></tr></thead><tbody>`;
+  let h=`<table class="tabcat tc3"><colgroup><col class="c1"><col class="c3"><col class="c1"></colgroup><thead><tr><th class="lg"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></th><th class="tc-pl"><span class="num"><em class="${sc.w>sc.l?"v":""}">${sc.w}</em>-<em class="${sc.l>sc.w?"v":""}">${sc.l}</em>${sc.t?"-"+sc.t:""}</span><small class="tc-leg">${tip("prev","")}</small></th><th class="lg"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></th></tr></thead><tbody>`;
   CATS.forEach((c,j)=>{const r=sc.r[j];const px=c.f(pa),py=c.f(pb);const pr=c.inv?(px<py?1:px>py?-1:0):(px>py?1:px<py?-1:0);
     const pv=(v,k)=>`<small class="pv2 ${k>0?"ganha":k<0?"perde":""}"><i class="bola ${k>0?"vd":k<0?"vm":"cz"}"></i>${v}</small>`;
     h+=`<tr><td class="${r>0?"g":r<0?"p":""}"><span class="v">${fmt(c,c.f(ta))}</span>${pv(fmt(c,px),pr)}</td><td><span class="cn">${c.k}</span>${mi>=0?`<button type="button" class="mk-shc" data-mkshcat="${mi}:${c.k}" aria-label="mandar ${c.k} pro Mercado">📤</button>`:""}</td><td class="${r<0?"g":r>0?"p":""}"><span class="v">${fmt(c,c.f(tb))}</span>${pv(fmt(c,py),-pr)}</td></tr>`});
@@ -3013,12 +3020,11 @@ function vJogo(i){
   precisaMuseu();
   const [a,b]=m,A=T(a),B=T(b);const ta=EST.tot[a],tb=EST.tot[b],pa=EST.proj[a],pb=EST.proj[b];
   const sc=placar(ta,tb),s=simula(a,b);const dsel=UI.dia[i]??(d.last===d.cur?d.cur:"sem");const dia=d.cur-d.s0+1;
-  const sub=UI.subJogo||"placar";const n=d.mt.length;const prev=(i+n-1)%n,next=(i+1)%n;
+  if(UI.subJogo==="premios")UI.subJogo="placar";const sub=UI.subJogo||"placar";const n=d.mt.length;const prev=(i+n-1)%n,next=(i+1)%n;
   setTimeout(()=>{const st=document.getElementById("jnStrip"),a=st&&st.querySelector(".on");if(a)st.scrollLeft=a.offsetLeft-st.clientWidth/2+a.clientWidth/2},0);
-  const abas=[["placar","📊","Placar"],["jogadores","👥","Jogadores"],["odds","🎲","Odds"],["premios","🏆","Prêmios"]];
+  const abas=[["placar","📊","Placar"],["jogadores","👥","Jogadores"],["odds","🎲","Odds"]];if(UI.subJogo==="premios")UI.subJogo="placar";
   const sig=X=>X===T(11)?"LUZ":(X[3]||X[0]);
   let h=`<div class="jogo-nav jn2"><button class="jn-home" type="button" data-ir="confrontos" aria-label="Início">⌂</button><div class="jn-strip" id="jnStrip">${d.mt.map((mm,k)=>{const X=T(mm[0]),Y=T(mm[1]);const p=placar(EST.tot[mm[0]],EST.tot[mm[1]]);return `<button type="button" class="jn-p ${k===i?"on":""}" data-jogo="${k}" aria-label="${esc(X[0])} x ${esc(Y[0])}"><img src="img/l/${X[1]}.webp" alt=""><span class="num"><em class="${p.w>p.l?"v":""}">${p.w}</em>-<em class="${p.l>p.w?"v":""}">${p.l}</em></span><img src="img/l/${Y[1]}.webp" alt=""></button>`}).join("")}</div></div>
-  <div class="jn-tit"><b class="${sc.w>sc.l?"v":""}">${esc(sig(A))}</b><span class="num">${sc.w}-${sc.l}${sc.t?"-"+sc.t:""}</span><b class="${sc.l>sc.w?"v":""}">${esc(sig(B))}</b></div>
   <div class="sub-wrap">  <div class="subabas sb2" role="tablist">${abas.map(([k,ic,nm])=>`<button type="button" role="tab" data-sub="${k}" aria-selected="${sub===k}"><i>${ic}</i>${nm}</button>`).join("")}</div></div>`;
   if(sub==="placar"){
     const hh=window.MUSEU?h2hEntre(A[0],B[0]):null;const mm=hh?hh.l.filter(x=>!x.atual&&seloFase(x)&&!/CONSOLA/.test(seloFase(x))).length:0;
