@@ -2106,6 +2106,30 @@ svg.cad{width:18px;height:18px;display:block}
 .lj tr.tot td.jg{background:#000;box-shadow:none}
 .lj .tag.vg{background:var(--amarelo);color:#000;font-weight:800}
 
+/* home compacta (beta): grade 2 colunas, placar grande, odds embaixo, stats sob demanda */
+.jg2-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0 8px}
+.jg2-bar span{font-family:var(--display);font-size:20px;color:var(--amarelo);letter-spacing:.5px}
+.grade.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.jg2{display:block;padding:10px 8px 6px;cursor:pointer;text-align:center;min-width:0}
+.jg2.ab{grid-column:1/-1}
+.jg2-top{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:4px}
+.jg2-t{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.jg2-t img{width:46px;height:46px;border-radius:50%;object-fit:cover}
+.jg2-t b{font-family:var(--display);font-weight:400;font-size:17px;line-height:1;letter-spacing:.5px;opacity:.8}
+.jg2-t b.v{opacity:1;color:var(--amarelo)}
+.jg2-t small{font-size:10px;opacity:.6;line-height:1}
+.jg2-p{font-family:var(--display);font-size:34px;line-height:1;white-space:nowrap}
+.jg2-p span{opacity:.55}.jg2-p span.v{opacity:1;color:#4ade80}.jg2-p i{font-style:normal;font-size:18px;opacity:.6}
+.jg2 .bf{margin-top:8px;gap:4px;padding:4px;justify-content:center}
+.jg2:not(.ab) .bf{grid-template-columns:repeat(3,minmax(0,1fr))}
+.jg2:not(.ab) .bf .bf-m{display:none}
+.jg2:not(.ab) .bf .bq{flex:1;min-width:0;padding:3px 2px}
+.jg2:not(.ab) .bf .bq b{font-size:14px}
+.jg2:not(.ab) .bf .bq small{font-size:9px}
+.jg2 .mt{margin-top:8px}
+.jg2-ab{display:block;width:100%;margin-top:4px;padding:6px 0 2px;background:none;border:0;color:inherit;opacity:.6;font:700 11px/1 inherit;letter-spacing:.5px;text-transform:uppercase;cursor:pointer}
+@media (min-width:761px){.grade.g2{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -2171,11 +2195,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794691370"></script>
-<script src="radar.js?v=1794691370"></script>
-<script src="midia.js?v=1794691370"></script>
+<script src="hist.js?v=1794691602"></script>
+<script src="radar.js?v=1794691602"></script>
+<script src="midia.js?v=1794691602"></script>
 <script>
-const VERSAO_PAINEL="20261114182250";
+const VERSAO_PAINEL="20261114182642";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2668,19 +2692,18 @@ function vConfrontos(){
   const dia=d.cur-d.s0+1;
   let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
   <div class="atalhos"><button type="button" class="atalho" data-sel="sem">${ICS.sel} <span>Seleção</span></button><button type="button" class="atalho" data-ir="times">${ICS.rk} <span>Ranking</span></button><button type="button" class="atalho" data-ir="perfis">${ICS.perfis} <span>Perfis</span></button><button type="button" class="atalho mk-at" data-ir="mercado">${ICS.mk} <span>Mercado</span></button><button type="button" class="atalho" data-ir="radar">${ICS.radar} <span>Radar</span></button><button type="button" class="atalho" data-ir="museu">${ICS.museu} <span>Museu</span></button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="baixar" data-instalar>📲 Baixar o app</button>`:""}</div></div><div class="grade">`;
+  UI.abre=UI.abre||{};const todas=ordem.every(o=>UI.abre[o.i]);
+  h=h.replace(/<div class="grade">$/,`<div class="jg2-bar"><span>CONFRONTOS</span><button type="button" class="pil" data-abre="all" aria-pressed="${todas}">${todas?"fechar stats":"abrir stats de todos"}</button></div><div class="grade g2">`);
   ordem.forEach(({m,i,sc,s})=>{
-    const [a,b]=m,A=T(a),B=T(b);
+    const [a,b]=m,A=T(a),B=T(b);const ab=!!UI.abre[i];
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
-    h+=`<button class="card jogo ${meu&&m.includes(meu)?"meu-jogo":""}" type="button" data-jogo="${i}">
-      <div class="jogo-topo">
-        <div class="lado">${rostoTime(A[0])}<div class="info"><div class="nm">${esc(A[0])}${seqTag(a)}</div><div class="mg">${(()=>{const z=burroDe(a);return z?` <span class="burro" data-burro="${esc(A[2])} deixou ${esc(z.quem.join(", "))} no banco com vaga sobrando. Com ele(s), o ${esc(z.de)} viraria ${esc(z.para)}.">🫏</span>`:""})()} ${ra.join("-")}</div></div></div>
-        <div class="placar num"><span class="${sc.w>sc.l?"v":""}">${sc.w}</span>-<span class="${sc.l>sc.w?"v":""}">${sc.l}</span>${sc.t?`-${sc.t}`:""}<small>agora</small></div>
-        <div class="lado dir">${rostoTime(B[0])}<div class="info"><div class="nm">${esc(B[0])}${seqTag(b)}</div><div class="mg">${(()=>{const z=burroDe(b);return z?` <span class="burro" data-burro="${esc(B[2])} deixou ${esc(z.quem.join(", "))} no banco com vaga sobrando. Com ele(s), o ${esc(z.de)} viraria ${esc(z.para)}.">🫏</span>`:""})()} ${rb.join("-")}</div></div></div>
-      </div>
-      ${miniTabela(a,b,sc)}
-      ${chipsPremios(a,b)}
+    const lado=(X,r,g)=>`<div class="jg2-t"><img src="img/l/${X[1]}.webp" alt=""><b class="${g?"v":""}">${esc(X[3]||X[0])}</b><small>${r.join("-")}</small></div>`;
+    h+=`<div class="card jogo jg2 ${ab?"ab":""} ${meu&&m.includes(meu)?"meu-jogo":""}" role="button" tabindex="0" data-jogo="${i}" aria-label="${esc(A[0])} ${sc.w}-${sc.l} ${esc(B[0])}">
+      <div class="jg2-top">${lado(A,ra,sc.w>sc.l)}<div class="jg2-p num"><span class="${sc.w>sc.l?"v":""}">${sc.w}</span>-<span class="${sc.l>sc.w?"v":""}">${sc.l}</span>${sc.t?`<i>-${sc.t}</i>`:""}</div>${lado(B,rb,sc.l>sc.w)}</div>
       ${betFaixa(a,b,s)}
-    </button>`;
+      ${ab?miniTabela(a,b,sc)+chipsPremios(a,b):""}
+      <button type="button" class="jg2-ab" data-abre="${i}" aria-expanded="${ab}">${ab?"fechar stats ▴":"stats ▾"}</button>
+    </div>`;
   });
   return h+`</div>`;
 }
@@ -4786,10 +4809,11 @@ document.addEventListener("click",e=>{
   {const dc=e.target.closest("[data-duc]");if(dc){UI.duCat=dc.dataset.duc;render();return}}
   {const mm=e.target.closest("[data-avm]");if(mm){UI.avModo=mm.dataset.avm;render();return}}
   {const q=e.target.closest("[data-avq]");if(q){UI.avQ=q.dataset.avq;render();return}const f=e.target.closest("[data-avf]");if(f){UI.avF=+f.dataset.avf;render();return}}
-  {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();location.hash="time-"+tid;return}}
-  {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();location.hash="time-"+tid;return}}
+  {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();const mj=/^#jogo-(\d+)/.exec(location.hash);if(mj&&DADOS&&DADOS.mt[+mj[1]]&&DADOS.mt[+mj[1]].includes(tid)){UI.subJogo="jogadores";UI.filtroTime=tid;render();scrollTo(0,0);return}location.hash="time-"+tid;return}}
+  {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();const mj=/^#jogo-(\d+)/.exec(location.hash);if(mj&&DADOS&&DADOS.mt[+mj[1]]&&DADOS.mt[+mj[1]].includes(tid)){UI.subJogo="jogadores";UI.filtroTime=tid;render();scrollTo(0,0);return}location.hash="time-"+tid;return}}
   {const pn=e.target.closest("[data-pjn]");if(pn&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){UI.fichaPer=null;abrirJogadorNome(pn.dataset.pjn);return}}
   {const pj=e.target.closest("[data-pj]");if(pj&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){const ao=location.hash==="#aovivo";UI.fichaPer=ao?DADOS.cur:null;if(ao)UI.fichaAba="num";abrirJogador(+pj.dataset.pj,ao?DADOS.cur:undefined);return}}
+  {const ab=e.target.closest("[data-abre]");if(ab){e.preventDefault();e.stopPropagation();UI.abre=UI.abre||{};const k=ab.dataset.abre;if(k==="all"){const on=ab.getAttribute("aria-pressed")!=="true";(DADOS.mt||[]).forEach((_,x)=>UI.abre[x]=on)}else UI.abre[k]=!UI.abre[k];render();return}}
   const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-mda],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj],[data-dd],[data-leg]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
