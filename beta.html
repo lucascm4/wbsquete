@@ -2131,6 +2131,35 @@ svg.cad{width:18px;height:18px;display:block}
 .jg2-ab{display:block;width:100%;margin-top:4px;padding:6px 0 2px;background:none;border:0;color:inherit;opacity:.6;font:700 11px/1 inherit;letter-spacing:.5px;text-transform:uppercase;cursor:pointer}
 @media (min-width:761px){.grade.g2{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
+/* beta: topo enxuto */
+.jogo-nav.jn2{gap:6px;padding:5px 4px;margin-bottom:4px}
+.jn2 .jn-home{flex:0 0 32px;height:30px;font-size:16px}
+.jn-strip{flex:1 1 auto;min-width:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth}
+.jn-strip::-webkit-scrollbar{display:none}
+.jn-p{all:unset;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;gap:5px;height:30px;padding:0 8px;border-radius:999px;background:#1a1414;border:2px solid transparent;font-family:var(--display);color:#fff;box-sizing:border-box}
+.jn-p.on{border-color:var(--amarelo);background:#000}
+.jn-p img{width:20px;height:20px;border-radius:50%;object-fit:cover}
+.jn-p span{font-size:15px;letter-spacing:.02em;opacity:.8}.jn-p.on span{opacity:1}
+.jn-p em{font-style:normal}.jn-p em.v{color:var(--amarelo)}
+.jn-tit{display:flex;align-items:baseline;justify-content:center;gap:10px;font-family:var(--display);color:#fff;margin:2px 0 6px;text-shadow:2px 2px 0 #000}
+.jn-tit b{font-weight:400;font-size:18px;opacity:.85}.jn-tit b.v{color:var(--amarelo);opacity:1}.jn-tit span{font-size:26px;line-height:1}
+.sub-wrap{margin:0 0 6px}
+.subabas.sb2 button{flex-direction:row!important;justify-content:center;gap:4px;padding:5px 2px!important;border-radius:8px;font-size:12px}
+.subabas.sb2 button i{font-size:13px!important}
+.dnav{margin:6px 0;gap:4px}
+.dnav .dn-b{width:34px;font-size:20px;border-radius:8px}
+.dnav .dn-mid{flex-direction:row;gap:8px;padding:5px 6px;border-radius:8px}
+.dnav .dn-mid b{font-size:15px}.dnav .dn-mid small{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dnav .dn-ac{border-radius:8px;font-size:9px;padding:0 6px}
+.cab-min{margin-bottom:6px}
+.cab-min .atalhos{display:flex!important;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:5px!important;margin:0!important}
+.cab-min .atalhos::-webkit-scrollbar{display:none}
+.cab-min .atalho{flex:0 0 auto;flex-direction:row!important;gap:4px;padding:5px 9px!important;font-size:12px!important;box-shadow:none;border-radius:999px}
+.cab-min .atalho svg{width:14px!important;height:14px!important}
+.cab-min .baixar{flex:0 0 auto;grid-column:auto!important;padding:5px 9px;font-size:12px;border-radius:999px;box-shadow:none;white-space:nowrap}
+.jg2-bar{margin:0 0 6px}.jg2-bar span{font-size:15px}
+.jg2-bar .pil{padding:4px 9px;font-size:11px}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -2196,11 +2225,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794691676"></script>
-<script src="radar.js?v=1794691676"></script>
-<script src="midia.js?v=1794691676"></script>
+<script src="hist.js?v=1794692056"></script>
+<script src="radar.js?v=1794692056"></script>
+<script src="midia.js?v=1794692056"></script>
 <script>
-const VERSAO_PAINEL="20261114182756";
+const VERSAO_PAINEL="20261114183416";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2691,10 +2720,10 @@ function vConfrontos(){
   if(meu)ordem=ordem.slice().sort((x,y)=>(y.m.includes(meu)?1:0)-(x.m.includes(meu)?1:0));
   const mais=ordem.slice().sort((x,y)=>Math.abs(x.s.pa-x.s.pb)-Math.abs(y.s.pa-y.s.pb))[0];
   const dia=d.cur-d.s0+1;
-  let h=`<div class="cab-secao"><span class="sobre">SEMANA ${d.wk} · DIA ${Math.min(dia,7)} DE 7 · ${esc(spRot(d.cur).toUpperCase())}</span>
+  let h=`<div class="cab-secao cab-min">
   <div class="atalhos"><button type="button" class="atalho" data-sel="sem">${ICS.sel} <span>Seleção</span></button><button type="button" class="atalho" data-ir="times">${ICS.rk} <span>Ranking</span></button><button type="button" class="atalho" data-ir="perfis">${ICS.perfis} <span>Perfis</span></button><button type="button" class="atalho mk-at" data-ir="mercado">${ICS.mk} <span>Mercado</span></button><button type="button" class="atalho" data-ir="radar">${ICS.radar} <span>Radar</span></button><button type="button" class="atalho" data-ir="museu">${ICS.museu} <span>Museu</span></button>${typeof jaInstalado==="function"&&!jaInstalado()?`<button type="button" class="baixar" data-instalar>📲 Baixar o app</button>`:""}</div></div><div class="grade">`;
   UI.abre=UI.abre||{};const todas=ordem.every(o=>UI.abre[o.i]);
-  h=h.replace(/<div class="grade">$/,`<div class="jg2-bar"><span>CONFRONTOS</span><button type="button" class="pil" data-abre="all" aria-pressed="${todas}">${todas?"fechar stats":"abrir stats de todos"}</button></div><div class="grade g2">`);
+  h=h.replace(/<div class="grade">$/,`<div class="jg2-bar"><span>CONFRONTOS · SEM ${d.wk} · DIA ${Math.min(dia,7)}/7</span><button type="button" class="pil" data-abre="all" aria-pressed="${todas}">${todas?"fechar stats":"abrir stats de todos"}</button></div><div class="grade g2">`);
   ordem.forEach(({m,i,sc,s})=>{
     const [a,b]=m,A=T(a),B=T(b);const ab=!!UI.abre[i];
     const ra=d.teams.find(t=>t.id===a).rec,rb=d.teams.find(t=>t.id===b).rec;
@@ -2985,8 +3014,11 @@ function vJogo(i){
   const [a,b]=m,A=T(a),B=T(b);const ta=EST.tot[a],tb=EST.tot[b],pa=EST.proj[a],pb=EST.proj[b];
   const sc=placar(ta,tb),s=simula(a,b);const dsel=UI.dia[i]??(d.last===d.cur?d.cur:"sem");const dia=d.cur-d.s0+1;
   const sub=UI.subJogo||"placar";const n=d.mt.length;const prev=(i+n-1)%n,next=(i+1)%n;
+  setTimeout(()=>{const st=document.getElementById("jnStrip"),a=st&&st.querySelector(".on");if(a)st.scrollLeft=a.offsetLeft-st.clientWidth/2+a.clientWidth/2},0);
   const abas=[["placar","📊","Placar"],["jogadores","👥","Jogadores"],["odds","🎲","Odds"],["premios","🏆","Prêmios"]];
-  let h=`<div class="jogo-nav"><button class="jn-home" type="button" data-ir="confrontos" aria-label="Início">⌂</button><button type="button" class="jn-b" data-jogo="${prev}" aria-label="confronto anterior">‹</button><div class="jn-mini"><a href="#time-${a}"><img src="img/l/${A[1]}.webp" alt="${esc(A[0])}"></a><b>${esc(A[3]||A[0])}</b><span class="num"><em class="${sc.w>sc.l?"v":""}">${sc.w}</em>-<em class="${sc.l>sc.w?"v":""}">${sc.l}</em>${sc.t?"-"+sc.t:""}</span><b>${esc(B[3]||B[0])}</b><a href="#time-${b}"><img src="img/l/${B[1]}.webp" alt="${esc(B[0])}"></a><small>${i+1}/${n}</small></div><button type="button" class="jn-b" data-jogo="${next}" aria-label="próximo confronto">›</button></div>
+  const sig=X=>X===T(11)?"LUZ":(X[3]||X[0]);
+  let h=`<div class="jogo-nav jn2"><button class="jn-home" type="button" data-ir="confrontos" aria-label="Início">⌂</button><div class="jn-strip" id="jnStrip">${d.mt.map((mm,k)=>{const X=T(mm[0]),Y=T(mm[1]);const p=placar(EST.tot[mm[0]],EST.tot[mm[1]]);return `<button type="button" class="jn-p ${k===i?"on":""}" data-jogo="${k}" aria-label="${esc(X[0])} x ${esc(Y[0])}"><img src="img/l/${X[1]}.webp" alt=""><span class="num"><em class="${p.w>p.l?"v":""}">${p.w}</em>-<em class="${p.l>p.w?"v":""}">${p.l}</em></span><img src="img/l/${Y[1]}.webp" alt=""></button>`}).join("")}</div></div>
+  <div class="jn-tit"><b class="${sc.w>sc.l?"v":""}">${esc(sig(A))}</b><span class="num">${sc.w}-${sc.l}${sc.t?"-"+sc.t:""}</span><b class="${sc.l>sc.w?"v":""}">${esc(sig(B))}</b></div>
   <div class="sub-wrap">  <div class="subabas sb2" role="tablist">${abas.map(([k,ic,nm])=>`<button type="button" role="tab" data-sub="${k}" aria-selected="${sub===k}"><i>${ic}</i>${nm}</button>`).join("")}</div></div>`;
   if(sub==="placar"){
     const hh=window.MUSEU?h2hEntre(A[0],B[0]):null;const mm=hh?hh.l.filter(x=>!x.atual&&seloFase(x)&&!/CONSOLA/.test(seloFase(x))).length:0;
@@ -4810,8 +4842,8 @@ document.addEventListener("click",e=>{
   {const dc=e.target.closest("[data-duc]");if(dc){UI.duCat=dc.dataset.duc;render();return}}
   {const mm=e.target.closest("[data-avm]");if(mm){UI.avModo=mm.dataset.avm;render();return}}
   {const q=e.target.closest("[data-avq]");if(q){UI.avQ=q.dataset.avq;render();return}const f=e.target.closest("[data-avf]");if(f){UI.avF=+f.dataset.avf;render();return}}
-  {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();const mj=/^#jogo-(\d+)/.exec(location.hash);if(mj&&DADOS&&DADOS.mt[+mj[1]]&&DADOS.mt[+mj[1]].includes(tid)){UI.subJogo="jogadores";UI.filtroTime=tid;render();scrollTo(0,0);return}location.hash="time-"+tid;return}}
-  {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();const mj=/^#jogo-(\d+)/.exec(location.hash);if(mj&&DADOS&&DADOS.mt[+mj[1]]&&DADOS.mt[+mj[1]].includes(tid)){UI.subJogo="jogadores";UI.filtroTime=tid;render();scrollTo(0,0);return}location.hash="time-"+tid;return}}
+  {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();const mj=/^#jogo-(\d+)/.exec(location.hash);if(mj&&DADOS&&DADOS.mt[+mj[1]]&&DADOS.mt[+mj[1]].includes(tid)){UI.subJogo="jogadores";UI.filtroTime=tid;{const D0=DADOS;const hj=Math.min(Math.max(D0.cur,D0.s0),D0.s1);const k=+mj[1];if((UI.dia[k]??"sem")==="sem")UI.dia[k]=hj}render();scrollTo(0,0);return}location.hash="time-"+tid;return}}
+  {const tid=timeDoClique(e.target);if(tid){e.preventDefault();e.stopPropagation();if(document.getElementById("popFicha"))fecharFicha();const mj=/^#jogo-(\d+)/.exec(location.hash);if(mj&&DADOS&&DADOS.mt[+mj[1]]&&DADOS.mt[+mj[1]].includes(tid)){UI.subJogo="jogadores";UI.filtroTime=tid;{const D0=DADOS;const hj=Math.min(Math.max(D0.cur,D0.s0),D0.s1);const k=+mj[1];if((UI.dia[k]??"sem")==="sem")UI.dia[k]=hj}render();scrollTo(0,0);return}location.hash="time-"+tid;return}}
   {const pn=e.target.closest("[data-pjn]");if(pn&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){UI.fichaPer=null;abrirJogadorNome(pn.dataset.pjn);return}}
   {const pj=e.target.closest("[data-pj]");if(pj&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){const ao=location.hash==="#aovivo";UI.fichaPer=ao?DADOS.cur:null;if(ao)UI.fichaAba="num";abrirJogador(+pj.dataset.pj,ao?DADOS.cur:undefined);return}}
   {const ab=e.target.closest("[data-abre]");if(ab){e.preventDefault();e.stopPropagation();UI.abre=UI.abre||{};const k=ab.dataset.abre;if(k==="all"){const on=ab.getAttribute("aria-pressed")!=="true";(DADOS.mt||[]).forEach((_,x)=>UI.abre[x]=on)}else UI.abre[k]=!UI.abre[k];render();return}}
@@ -4835,7 +4867,7 @@ document.addEventListener("click",e=>{
   else if(ds.rko){UI.rkOrd=ds.rko;UI.rkCat=null;render()}
   else if(ds.rkc){UI.rkCat=UI.rkCat===ds.rkc?null:ds.rkc;render()}
   else if(ds.rd){UI.radar=ds.rd;render()}
-  else if(ds.ft!==undefined){UI.filtroTime=+ds.ft;render()}
+  else if(ds.ft!==undefined){UI.filtroTime=+ds.ft;const mj=/^#jogo-(\d+)/.exec(location.hash);if(mj&&UI.filtroTime){const D0=DADOS;const hj=Math.min(Math.max(D0.cur,D0.s0),D0.s1);const k=+mj[1];if((UI.dia[k]??"sem")==="sem")UI.dia[k]=hj}render()}
   else if(ds.nd){UI.noiteDia=(ds.nd==="sem"||isNaN(+ds.nd))?ds.nd:+ds.nd;render()}
   else if(ds.nm){UI.noiteModo=ds.nm;render()}
   else if(ds.sub){UI.subJogo=ds.sub;window.scrollTo(0,0);render()}
