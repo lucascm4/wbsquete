@@ -2172,6 +2172,12 @@ svg.cad{width:18px;height:18px;display:block}
 .hd-home{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:9px;background:var(--amarelo);color:#000;font-size:19px;line-height:1;text-decoration:none;border:2px solid #000}
 .jn2 .jn-volta{background:#000;color:var(--amarelo);font-size:22px;padding-bottom:3px}
 
+.dia-res.dr2{display:block;text-align:center;padding:6px 8px;background:#000;border-radius:10px;margin:8px}
+.dr-tit{display:flex;align-items:baseline;justify-content:center;gap:10px;font-family:var(--display);color:#fff}
+.dr-tit b{font-weight:400;font-size:17px;opacity:.75}.dr-tit b.v{opacity:1;color:var(--amarelo)}
+.dr-tit .num{font-size:32px;line-height:1}.dr-tit i{font-style:normal;opacity:.6}.dr-tit i.v{opacity:1;color:var(--amarelo)}
+.dr-sub{font:700 11px system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#bbb;margin-top:2px}.dr-sub b{color:#fff}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -2238,11 +2244,11 @@ svg.cad{width:18px;height:18px;display:block}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794692696"></script>
-<script src="radar.js?v=1794692696"></script>
-<script src="midia.js?v=1794692696"></script>
+<script src="hist.js?v=1794693483"></script>
+<script src="radar.js?v=1794693483"></script>
+<script src="midia.js?v=1794693483"></script>
 <script>
-const VERSAO_PAINEL="20261114184456";
+const VERSAO_PAINEL="20261114185803";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2845,7 +2851,8 @@ function listaJuntos(a,b,sp){
   const lgF=t=>`<button class="ftl" type="button" data-ft="${t}" aria-pressed="${ft===t}" aria-label="só ${esc(T(t)[0])}"><img src="img/l/${T(t)[1]}.webp" alt=""><span>${esc(T(t)[3]||T(t)[0])}</span></button>`;
   const filtros=`<div class="ft3" role="group" aria-label="Time">${lgF(a)}<button class="ftl all" type="button" data-ft="0" aria-pressed="${!ft}">ALL</button>${lgF(b)}</div>`;
   const ja=jogadoresDia(a,sp),jb=jogadoresDia(b,sp);const pdx=placarDia(a,b,sp);
-  const resumo=`<div class="dia-res">${pdx?`<span class="dr-pl"><small>${sp===d.cur?"HOJE":"NO DIA"}</small><b><i class="${pdx.w>pdx.l?"v":""}">${pdx.w}</i>-<i class="${pdx.l>pdx.w?"v":""}">${pdx.l}</i>${pdx.t?"-"+pdx.t:""}</b><small>só o dia, sem acumulado</small></span>`:""}<span class="dr-jg"><small>${sp==="sem"?"JOGOS":futuro?"EM QUADRA (PREV.)":"EM QUADRA"}</small><b>${txtJog(ja)} x ${txtJog(jb)}</b><small>${esc(T(a)[3]||T(a)[0])} x ${esc(T(b)[3]||T(b)[0])}${typeof ja==="object"||typeof jb==="object"?" · contando quem ainda vai jogar":""}</small></span></div>`;
+  const scT=placar(EST.tot[a],EST.tot[b]);const sgl=t=>t===11?"LUZ":(T(t)[3]||T(t)[0]);
+  const resumo=`<div class="dia-res dr2"><div class="dr-tit"><b class="${scT.w>scT.l?"v":""}">${esc(sgl(a))}</b><span class="num"><i class="${scT.w>scT.l?"v":""}">${scT.w}</i>-<i class="${scT.l>scT.w?"v":""}">${scT.l}</i>${scT.t?"-"+scT.t:""}</span><b class="${scT.l>scT.w?"v":""}">${esc(sgl(b))}</b></div><div class="dr-sub">${sp==="sem"?"jogos":futuro?"em quadra (prev.)":"em quadra"} <b>${txtJog(ja)} x ${txtJog(jb)}</b>${pdx?` · ${sp===d.cur?"hoje":"no dia"} <b>${pdx.w}-${pdx.l}${pdx.t?"-"+pdx.t:""}</b>`:""}</div></div>`;
   const porVaga=ft&&sp!=="sem"&&!(UI.ljSort&&UI.ljSort.c!=null);
   if(porVaga){const O=[0,1,2,3,4,5,6,11];tit.sort((x,y)=>O.indexOf(x.slot)-O.indexOf(y.slot))}
   const totL=(()=>{const L=tit.filter(r=>r.s);if(!ft||!L.length)return "";const t=zero();L.forEach(r=>r.s.forEach((x,i)=>t[i]+=x));return `<tr class="tot"><td class="jg"><div class="jg-in"><div><b>TOTAL</b><small>${L.length} em quadra</small></div></div></td>${stTds(t,n1)}</tr>`})();
