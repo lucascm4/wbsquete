@@ -2180,6 +2180,8 @@ svg.cad{width:18px;height:18px;display:block}
 
 table.lj tr.pend td:not(.jg){opacity:.55;font-style:italic}
 
+.dia-res.dr2 .mt{margin-top:6px}
+
 .pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding-top:4px}
 .pasta{display:flex;flex-direction:column;gap:6px;background:var(--card);color:var(--texto);text-decoration:none;padding:16px 14px 12px;border:3px solid #000;box-shadow:5px 5px 0 #000;min-height:150px;transition:transform .12s;position:relative}
 .pasta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000;border-color:var(--amarelo)}
@@ -2246,11 +2248,11 @@ table.lj tr.pend td:not(.jg){opacity:.55;font-style:italic}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794694637"></script>
-<script src="radar.js?v=1794694637"></script>
-<script src="midia.js?v=1794694637"></script>
+<script src="hist.js?v=1794694752"></script>
+<script src="radar.js?v=1794694752"></script>
+<script src="midia.js?v=1794694752"></script>
 <script>
-const VERSAO_PAINEL="20261114191717";
+const VERSAO_PAINEL="20261114191912";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2854,7 +2856,7 @@ function listaJuntos(a,b,sp){
   const filtros=`<div class="ft3" role="group" aria-label="Time">${lgF(a)}<button class="ftl all" type="button" data-ft="0" aria-pressed="${!ft}">ALL</button>${lgF(b)}</div>`;
   const ja=jogadoresDia(a,sp),jb=jogadoresDia(b,sp);const pdx=placarDia(a,b,sp);
   const scT=placar(EST.tot[a],EST.tot[b]);const sgl=t=>t===11?"LUZ":(T(t)[3]||T(t)[0]);
-  const resumo=`<div class="dia-res dr2"><div class="dr-tit"><b class="${scT.w>scT.l?"v":""}">${esc(sgl(a))}</b><span class="num"><i class="${scT.w>scT.l?"v":""}">${scT.w}</i>-<i class="${scT.l>scT.w?"v":""}">${scT.l}</i>${scT.t?"-"+scT.t:""}</span><b class="${scT.l>scT.w?"v":""}">${esc(sgl(b))}</b></div><div class="dr-sub">${sp==="sem"?"jogos":futuro?"em quadra (prev.)":"em quadra"} <b>${txtJog(ja)} x ${txtJog(jb)}</b>${pdx?` · ${sp===d.cur?"hoje":"no dia"} <b>${pdx.w}-${pdx.l}${pdx.t?"-"+pdx.t:""}</b>`:""}</div></div>`;
+  const resumo=`<div class="dia-res dr2"><div class="dr-tit"><b class="${scT.w>scT.l?"v":""}">${esc(sgl(a))}</b><span class="num"><i class="${scT.w>scT.l?"v":""}">${scT.w}</i>-<i class="${scT.l>scT.w?"v":""}">${scT.l}</i>${scT.t?"-"+scT.t:""}</span><b class="${scT.l>scT.w?"v":""}">${esc(sgl(b))}</b></div>${miniTabela(a,b,scT)}</div>`;
   const porVaga=ft&&sp!=="sem"&&!(UI.ljSort&&UI.ljSort.c!=null);
   if(porVaga){const O=[0,1,2,3,4,5,6,11];tit.sort((x,y)=>O.indexOf(x.slot)-O.indexOf(y.slot))}
   const totL=(()=>{const L=tit.filter(r=>r.s);if(!ft||!L.length)return "";const t=zero();L.forEach(r=>r.s.forEach((x,i)=>t[i]+=x));return `<tr class="tot"><td class="jg"><div class="jg-in"><div><b>TOTAL</b><small>${L.length} em quadra</small></div></div></td>${stTds(t,n1)}</tr>`})();
