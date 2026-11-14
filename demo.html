@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WBSQUETE · Demo mobile</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0,#3a0a0c,#0a0707 70%);color:#f3e6c4;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;padding:18px 12px 30px}
+h1{font-family:Anton,Impact,sans-serif;font-weight:400;color:#ffd400;margin:0 0 4px;font-size:30px;letter-spacing:.5px}
+p.s{margin:0 0 12px;font-size:13px;opacity:.75}
+.bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+.bar button,.bar a{font:700 13px system-ui;padding:8px 14px;border-radius:999px;border:2px solid #e8c066;background:#140d0d;color:#e8c066;cursor:pointer;text-decoration:none}
+.bar button[aria-pressed=true]{background:#ffd400;color:#000;border-color:#ffd400}
+.fone{position:relative;width:410px;height:870px;border-radius:58px;background:#111;padding:14px;box-shadow:0 0 0 2px #333,0 30px 80px rgba(0,0,0,.7),inset 0 0 0 2px #444}
+.fone:before{content:"";position:absolute;top:22px;left:50%;transform:translateX(-50%);width:120px;height:32px;background:#000;border-radius:20px;z-index:2}
+iframe{width:382px;height:842px;border:0;border-radius:44px;background:#0a0707;display:block}
+.dica{margin-top:12px;font-size:12px;opacity:.6;text-align:center;max-width:420px}
+@media (max-width:520px){.fone{width:100%;height:auto;padding:0;background:none;box-shadow:none}.fone:before{display:none}iframe{width:100%;height:80vh;border-radius:12px}}
+</style></head><body>
+<h1>WBSQUETE · DEMO MOBILE</h1>
+<p class="s">Navegue como no celular. BETA = onde a gente testa as mudanças antes de ir pro ar.</p>
+<div class="bar">
+ <button id="bBeta" aria-pressed="true">BETA</button>
+ <button id="bProd" aria-pressed="false">PRODUÇÃO</button>
+ <button id="bRel">↻ Recarregar</button>
+ <a id="aNova" href="beta.html" target="_blank" rel="noopener">Abrir em nova aba</a>
+</div>
+<div class="fone"><iframe id="f" src="beta.html" title="App WBSQUETE"></iframe></div>
+<div class="dica">Dica: no computador, role com a roda do mouse dentro do celular. Para comparar, alterne BETA e PRODUÇÃO.</div>
+<script>
+const f=document.getElementById('f'),a=document.getElementById('aNova');
+function vai(u,btn){f.src=u+'?d='+Date.now();a.href=u;document.querySelectorAll('.bar button[aria-pressed]').forEach(b=>b.setAttribute('aria-pressed',b===btn))}
+bBeta.onclick=()=>vai('beta.html',bBeta);bProd.onclick=()=>vai('index.html',bProd);bRel.onclick=()=>{f.contentWindow.location.reload()};
+</script>
+</body></html>
