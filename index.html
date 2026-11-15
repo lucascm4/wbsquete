@@ -2248,11 +2248,11 @@ table.lj tr.pend td:not(.jg){opacity:.55;font-style:italic}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794764823"></script>
-<script src="radar.js?v=1794764823"></script>
-<script src="midia.js?v=1794764823"></script>
+<script src="hist.js?v=1794765956"></script>
+<script src="radar.js?v=1794765956"></script>
+<script src="midia.js?v=1794765956"></script>
 <script>
-const VERSAO_PAINEL="20261115144703";
+const VERSAO_PAINEL="20261115150556";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2265,6 +2265,9 @@ const DIAS=["dom","seg","ter","qua","qui","sex","sáb"];
 const D0=new Date(2026,9,20);
 const MARGEM=1.07;
 const STREAM_USO=0.45,MARGEM_EMPATE=1.10; // doc 47
+// doc 48: empilhamento (simulação + força do ano + temporada passada + placar parcial), ajustado deixando uma temporada de fora
+const STACK=[1.202,-0.771,0.436,0.329,1.443,0.52];
+const AP_ANT={1:0.516,2:0.522,3:0.483,4:0.507,5:0.433,6:0.495,7:0.534,8:0.53,9:0.44,10:0.495,11:0.49,12:0.5}; // todos-contra-todos por categoria em 25/26 (12 trocou de dono: neutro)
 const SEMANAS=18,PLAYOFFS=6;
 /* vetor de 11: pts reb ast stl blk 3pm to fgm fga ftm fta */
 const CATS=[
@@ -2390,7 +2393,7 @@ const GLOSS={
  vira:"VIRA: quem lidera a categoria agora deve perder até domingo, pela previsão.",
  pegado:"PEGADO: categoria em que cada lado tem entre 30% e 70% de chance. Decide no detalhe.",
  rk:"Rk 9cat: ranking próprio no formato da nossa liga (9 categorias, z-score, FG% e FT% pesados pelo volume, TO contra), no mesmo método do Basketball Monster. Rk 7d é o mesmo ranking só com os últimos 7 dias.",
- odd:"Odd: quanto você levaria por 1 real apostado. A casa parte da chance do modelo do Loydão e faz o que uma bet de verdade faz: conta com o streaming que ainda vai acontecer (vaga vazia vira jogador de reposição), calibra a chance pelo histórico de 23/24 a 25/26, cobra margem (5% antes da semana, 7% durante, 8% com jogo rolando) pesando mais na zebra e arredonda nos degraus de casa de aposta. A % ao lado é a chance pura do modelo. Quando não falta jogo, o mercado é liquidado (✓/✗).",
+ odd:"Odd: quanto você levaria por 1 real apostado. A casa parte da chance do modelo do Loydão e faz o que uma bet de verdade faz: conta com o streaming que ainda vai acontecer (vaga vazia vira jogador de reposição), pesa a força do time no ano, a temporada passada e o placar parcial (tudo testado nas temporadas de 23/24 a 25/26), cobra margem (5% antes da semana, 7% durante, 8% com jogo rolando) pesando mais na zebra e arredonda nos degraus de casa de aposta. A % ao lado é a chance pura do modelo. Quando não falta jogo, o mercado é liquidado (✓/✗).",
  chances:"Chances: 4.000 simulações do resto da semana. Em cada uma, cada jogador rende perto da média dele, com variação normal.",
  playoffs:"Playoffs: chance de terminar entre os 6 primeiros. 1.200 simulações do resto da temporada, com o modelo testado nas 4 temporadas anteriores da liga (acerta a classificação de playoffs com erro Brier 0,19 na semana 3 e 0,12 na semana 8).",
  titulo:"Título: chance de ganhar o mata-mata nas simulações (seeds 1 e 2 folgam na primeira semana).",
@@ -2458,6 +2461,9 @@ function prepara(d){
   // (o modelo puro ignorava o streaming e ficava confiante demais no começo da semana).
   {const L=d.P.filter(p=>p.slot!==13&&p.avx).map(p=>p.avx).sort((x,y)=>valorJogo(y)-valorJogo(x));
    e.repo=L.length>120?L.slice(100,140).reduce((s,v)=>s.map((x,i)=>x+v[i]/40),Array(11).fill(0)):null;e.remS={};
+   e.maxG={};d.P.concat(d.fa||[]).forEach(p=>{const g=p.l30?p.l30[11]:p.av?p.av[11]:0;if(g>(e.maxG[p.pro]||0))e.maxG[p.pro]=g});
+   // chance de não jogar por jogador: jogos perdidos nos últimos 30 dias (quem vive no departamento médico pesa menos na simulação)
+   e.dnp=p=>{const pos=e.maxG[p.pro]||0,g=p.l30?p.l30[11]:p.av?p.av[11]:0;return pos?Math.min(0.6,Math.max(0.02,(Math.max(0,pos-g)+0.5)/(pos+10))):0.05};
    e.diaNBA=new Set();d.P.concat(d.fa||[]).forEach(p=>(p.gd||[]).forEach(sp=>e.diaNBA.add(sp)))} // só há streaming em dia com rodada da NBA
   d.teams.forEach(t=>{
     let a=zero();for(let sp=d.s0;sp<=ate;sp++){const v=d.D[t.id]&&d.D[t.id][sp];if(v)a=soma(a,v)}
@@ -2471,7 +2477,7 @@ function prepara(d){
           if(p.slot>=12)return false;          // hoje conta quem está escalado (banco não soma)
         }return true});
       if(!hoje&&e.repo&&e.diaNBA.has(sp)&&c.length<10){const S=e.remS[t.id]=e.remS[t.id]||[];for(let i=c.length;i<10;i++){const av=e.repo.slice();av.dnp=1-STREAM_USO;S.push(av)}}
-      c.sort((x,y)=>(y.nota||0)-(x.nota||0));c.slice(0,10).forEach(p=>{const g=hoje&&G[p.pro];const fr=g&&g.live?g.frac:0;const av=p.avx.map(x=>x*(1-fr));const nw=noticia(p,sp);av.dnp=g&&g.live?Math.min(0.9,0.2+fr):(nw?NOT_DNP[nw.st]??0.05:p.inj==="DAY_TO_DAY"?0.35:0.05);rem.push(av)});
+      c.sort((x,y)=>(y.nota||0)-(x.nota||0));c.slice(0,10).forEach(p=>{const g=hoje&&G[p.pro];const fr=g&&g.live?g.frac:0;const av=p.avx.map(x=>x*(1-fr));const nw=noticia(p,sp);av.dnp=g&&g.live?Math.min(0.9,0.2+fr):(nw?NOT_DNP[nw.st]??e.dnp(p):p.inj==="DAY_TO_DAY"?Math.max(0.35,e.dnp(p)):e.dnp(p));rem.push(av)});
       // jogo em andamento: quem já tem linha parcial hoje ainda produz o resto do jogo
       if(sp===d.cur&&d.nba)(e.rost[t.id]||[]).forEach(p=>{const g=d.nba[p.pro];if(p.slot<12&&p.avx&&p.dl&&p.dl[sp]&&g&&g.live&&g.frac<1){
         // quanto falta: metade pelo relógio do jogo, metade pelos minutos que ele ainda costuma jogar (quem já jogou muito descansa mais)
@@ -2483,6 +2489,10 @@ function prepara(d){
     const top=(e.rost[t.id]||[]).filter(p=>p.avx&&p.slot!==13&&p.inj!=="OUT").sort((x,y)=>(y.nota||0)-(x.nota||0)).slice(0,10);
     let f=zero();top.forEach(p=>f=soma(p.avx,f));e.forca[t.id]=f.map(x=>x*3.4);
   });
+  // força do ano: fração de categorias que o time ganharia de cada um dos outros 11, nas semanas fechadas (encolhida pra 50% com peso de 2 semanas)
+  {const sem={};(d.hist||[]).forEach(h=>{if(!h[5]||!h[6])return;const S=sem[h[0]]=sem[h[0]]||{};S[h[1]]=h[5];S[h[2]]=h[6]});const acc={};
+   Object.values(sem).forEach(S=>{const ids=Object.keys(S);ids.forEach(t=>{let w=0,n=0;ids.forEach(u=>{if(u===t)return;for(let j=0;j<9;j++){const x=S[t][j],y=S[u][j];const g=j===8?(x<y):(x>y);w+=x===y?0.5:g?1:0;n++}});if(n){const A=acc[t]=acc[t]||[0,0];A[0]+=w/n;A[1]++}})});
+   e.ap={};d.teams.forEach(t=>{const A=acc[t.id]||[0,0];e.ap[t.id]=(A[0]+1)/(A[1]+2)})}
   e.proj={};d.teams.forEach(t=>{let p=e.tot[t.id];e.rem[t.id].forEach(av=>p=soma(p,av.map(x=>x*(1-(av.dnp||0)))));e.proj[t.id]=p});
   e.est={};CATS.forEach((c,j)=>{const ord=d.teams.map(t=>t.id).sort((x,y)=>{const a=c.f(e.tot[x]),b=c.f(e.tot[y]);return c.inv?a-b:b-a});
     ord.forEach((id,i)=>{(e.est[id]=e.est[id]||[])[j]=i<2?5:i<4?4:i<7?3:i<10?2:1})});
@@ -2523,7 +2533,12 @@ function simula(a,b){
   // (ele acerta: 4,4% previsto, 4,3% real) e só a divisão vitória/derrota é achatada conforme os jogos que faltam.
   const nr=ra.length+rb.length,Tc=Math.max(0.6,Math.min(1,1-0.004*(nr-25))),Tk=Math.max(0.55,Math.min(1,1-0.006*(nr-40)));
   const cal=(pa,pe,pb,T)=>{const x=Math.pow(Math.max(pa,1e-4),T),y=Math.pow(Math.max(pb,1e-4),T);return [(1-pe)*x/(x+y),pe,(1-pe)*y/(x+y)]};
-  const [cpa,cpe,cpb]=cal(V/N,E/N,L/N,Tc);
+  // 1 X 2 (doc 48): em vez de só achatar, combina a simulação com a força do ano, a temporada passada e o placar parcial.
+  // Empate fica como a simulação deu. fr = quanto da semana ainda falta (0 a 1).
+  let cpa=V/N,cpe=E/N,cpb=L/N;
+  if(nr>0&&V+L>0){const lg=q=>Math.log(Math.max(q,1e-4)/Math.max(1-q,1e-4));const Lq=lg(V/(V+L)),fr=Math.min(1,nr/90);const p0=placar(ta,tb);
+    const da=((EST.ap||{})[a]??0.5)-((EST.ap||{})[b]??0.5),dp=(AP_ANT[a]??0.5)-(AP_ANT[b]??0.5),lead=(p0.w-p0.l)/9;
+    const z=STACK[0]*Lq+STACK[1]*Lq*fr+STACK[2]*da*fr*10+STACK[3]*dp*fr*10+STACK[4]*lead*(1-fr)+STACK[5]*lead*fr;const pw=1/(1+Math.exp(-z));cpa=(1-cpe)*pw;cpb=(1-cpe)*(1-pw)}
   // categorias: mesma ideia, temperatura própria (no começo da semana 94% virava 83%)
   const catC=cat.map((x,j)=>{const pe=catE[j]/N,pa=x/N;return (pa<=0||pa+pe>=1)?pa:cal(pa,pe,Math.max(0,1-pa-pe),Tk)[0]});
   return EST.sim[k]={pa:cpa,pe:cpe,pb:cpb,cru:[V/N,E/N,L/N],Tc,res,cat:catC,catE:catE.map(x=>x/N)};
