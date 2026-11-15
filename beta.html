@@ -2248,11 +2248,11 @@ table.lj tr.pend td:not(.jg){opacity:.55;font-style:italic}
 <nav class="nav" id="nav" aria-label="Seções"></nav>
 
 <script src="fotos.js"></script>
-<script src="hist.js?v=1794765853"></script>
-<script src="radar.js?v=1794765853"></script>
-<script src="midia.js?v=1794765853"></script>
+<script src="hist.js?v=1794766217"></script>
+<script src="radar.js?v=1794766217"></script>
+<script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261115150413";
+const VERSAO_PAINEL="20261115151017";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2539,6 +2539,8 @@ function simula(a,b){
   if(nr>0&&V+L>0){const lg=q=>Math.log(Math.max(q,1e-4)/Math.max(1-q,1e-4));const Lq=lg(V/(V+L)),fr=Math.min(1,nr/90);const p0=placar(ta,tb);
     const da=((EST.ap||{})[a]??0.5)-((EST.ap||{})[b]??0.5),dp=(AP_ANT[a]??0.5)-(AP_ANT[b]??0.5),lead=(p0.w-p0.l)/9;
     const z=STACK[0]*Lq+STACK[1]*Lq*fr+STACK[2]*da*fr*10+STACK[3]*dp*fr*10+STACK[4]*lead*(1-fr)+STACK[5]*lead*fr;const pw=1/(1+Math.exp(-z));cpa=(1-cpe)*pw;cpb=(1-cpe)*(1-pw)}
+  // placar exato coerente com o 1 X 2 final: cada placar é reescalado pelo lado a que pertence (doc 49)
+  {const f=[V?cpa/(V/N):0,E?cpe/(E/N):0,L?cpb/(L/N):0];Object.keys(res).forEach(k2=>{const [w,l]=k2.split("-").map(Number);res[k2]*=w>l?f[0]:w<l?f[2]:f[1]})}
   // categorias: mesma ideia, temperatura própria (no começo da semana 94% virava 83%)
   const catC=cat.map((x,j)=>{const pe=catE[j]/N,pa=x/N;return (pa<=0||pa+pe>=1)?pa:cal(pa,pe,Math.max(0,1-pa-pe),Tk)[0]});
   return EST.sim[k]={pa:cpa,pe:cpe,pb:cpb,cru:[V/N,E/N,L/N],Tc,res,cat:catC,catE:catE.map(x=>x/N)};
