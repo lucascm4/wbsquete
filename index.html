@@ -2281,6 +2281,35 @@ table.lj tr.pend td:not(.jg){opacity:.55;font-style:italic}
 .ods-barra b{font-family:var(--display);font-weight:400;font-size:19px}
 @media (max-width:420px){.ods-b{min-width:54px;padding:4px 5px}.ods-b b{font-size:17px}.ods-tm b{font-size:14.5px}.ods-row{padding:6px 8px;gap:6px}.ods-barra{font-size:12px;padding:9px 10px}}
 .ods-lg{flex:none;display:flex}.ods-lg img,.ods-lg .ini{width:30px;height:30px;border-radius:50%;object-fit:cover;background:#000}
+/* Lulas 🦑 */
+.lula-chip{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px;background:#000;color:var(--texto);border:2px solid var(--amarelo);box-shadow:3px 3px 0 #000;padding:7px 12px;font:700 14px var(--ui);cursor:pointer;width:fit-content;max-width:100%}
+.lula-chip b{font-family:var(--display);font-weight:400;font-size:22px;color:var(--amarelo);line-height:1}
+.lula-chip small{flex-basis:100%;color:var(--apagado);font-size:11px;font-weight:600}
+.lula-av{margin-top:8px;padding:8px 10px;border:2px solid #000;font-weight:700;font-size:13px;background:#000;color:var(--texto)}
+.lula-av.ok{border-color:var(--verde);color:#b6f5c9}
+.lula-av.ko{border-color:var(--perigo);color:#ffc2c2}
+.ods-card .lula-av{margin:8px 10px}
+.lula-res{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:10px}
+.lula-res div{display:flex;flex-direction:column;align-items:center;background:#000;border:1px solid var(--linha);border-radius:6px;padding:6px 2px;min-width:0}
+.lula-res small{font-size:10px;color:var(--apagado);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.lula-res b{font-family:var(--display);font-weight:400;font-size:19px;color:var(--amarelo)}
+.lula-res b.pos{color:var(--verde)}.lula-res b.neg{color:var(--perigo)}
+.lula-ap{margin:8px 10px;border:2px solid var(--linha);border-radius:8px;background:#0a0707;overflow:hidden}
+.lula-ap.green{border-color:var(--verde)}.lula-ap.red{border-color:var(--perigo);opacity:.85}
+.lula-cab{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:#000}
+.lula-cab small{color:var(--apagado);font-size:11px}
+.lula-st{font-family:var(--display);font-size:14px;letter-spacing:.04em;color:var(--amarelo)}
+.lula-ap.green .lula-st{color:var(--verde)}.lula-ap.red .lula-st{color:var(--perigo)}
+.lula-it{display:flex;align-items:center;gap:6px;padding:5px 8px;border-top:1px solid var(--linha);flex-wrap:wrap}
+.lula-it .ods-q{font-size:12.5px}
+.lula-it b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--amarelo)}
+.lula-hon{display:flex;gap:4px;flex-basis:100%;justify-content:flex-end}
+.lula-hon button{background:#000;color:var(--texto);border:1px solid var(--ouro);border-radius:5px;font:700 11px var(--ui);padding:4px 8px;cursor:pointer}
+.lula-pe{display:flex;justify-content:space-between;gap:6px;padding:6px 8px;border-top:1px solid var(--linha);font-size:11.5px;color:var(--apagado)}
+.lula-pe b{color:var(--texto);font-size:13px}
+.lula-rap{display:flex;gap:6px;flex-wrap:wrap;padding:8px 10px 0}
+.lula-go{background:var(--verde);color:#000;border:3px solid #000;box-shadow:3px 3px 0 #000;font-family:var(--display);font-size:18px;padding:7px 16px;cursor:pointer;letter-spacing:.02em}
+@media (max-width:420px){.lula-res{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head><body>
 </style>
@@ -2314,7 +2343,7 @@ table.lj tr.pend td:not(.jg){opacity:.55;font-style:italic}
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261119092818";
+const VERSAO_PAINEL="20261119093600";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4174,7 +4203,7 @@ function vAoVivoTodos(abas){
 
 
 /* ---------- ODDS: a casa inteira da BETLOYDE. Tudo sai da chance do modelo (simula e simTemporada), menos o Mercado da Redação ---------- */
-const ODS_ABAS=[["temporada","Temporada"],["semana","Semana"],["redacao","Redação"],["bilhete","Meu bilhete"]];
+const ODS_ABAS=[["temporada","Temporada"],["semana","Semana"],["redacao","Redação"],["bilhete","Bilhete"],["apostas","Minhas apostas"]];
 const ODS_RIVAIS=[[8,7],[10,11],[1,3],[4,5],[9,12],[2,6]];
 // Mercado da Redação: odds de chute, sem modelo. Ficam marcadas como ODDS DA REDAÇÃO.
 const ODS_RED=[
@@ -4196,11 +4225,11 @@ function odsBil(){if(UI._bil)return UI._bil;try{UI._bil=JSON.parse(localStorage.
 function odsBilSet(b){UI._bil=b;try{localStorage.setItem("wbs.bilhete",JSON.stringify(b))}catch(e){}}
 function odsFmt(v){return (Math.round(v*100)/100).toFixed(2)}
 // botão de odd que vai pro bilhete. mk = mercado (uma seleção por mercado)
-function odsBtn(key,mk,rot,desc,o,p,red){
+function odsBtn(key,mk,rot,desc,o,p,red,spec){
   if(o==="🔒")return `<span class="ods-b off"><small>${esc(rot)}</small><b>${oddS("",0,"🔒")}</b></span>`;
   if(o==null||o==="—"||o==="✓"||o==="✗")return `<span class="ods-b off"><small>${esc(rot)}</small><b>${o==="✓"?"✓":o==="✗"?"✗":"—"}</b></span>`;
   const on=odsBil().some(x=>x.k===key);
-  return `<button type="button" class="ods-b${on?" on":""}" data-odsb="${esc(key)}" data-mk="${esc(mk)}" data-desc="${esc(desc)}" data-o="${o}"><small>${esc(rot)}</small><b>${red?o:oddS("ods:"+key,0,o)}</b>${p!=null?`<em>${pct(p)}</em>`:""}</button>`}
+  return `<button type="button" class="ods-b${on?" on":""}" data-odsb="${esc(key)}" data-mk="${esc(mk)}" data-desc="${esc(desc)}" data-o="${o}"${spec?` data-spec="${esc(JSON.stringify(spec))}"`:""}><small>${esc(rot)}</small><b>${red?o:oddS("ods:"+key,0,o)}</b>${p!=null?`<em>${pct(p)}</em>`:""}</button>`}
 // mercado de vencedor único (campeão, melhor campanha, ensaio): margem de 15%, como as casas fazem nos outrights
 function odsOut(P){const ids=Object.keys(P).map(Number);const v=ids.map(id=>Math.max(P[id],0));const o=precifica(v,1.15);const r={};ids.forEach((id,i)=>{r[id]=v[i]<0.0008?"—":o[i]});return r}
 // sim/não: margem normal da casa; decidido = 🔒
@@ -4210,13 +4239,13 @@ function odsSim(p){if(p<0.004)return "—";const o=precifica([p,1-p]);if(!o.susp
 function odsTimeCel(id,extra){const A=T(id);return `<span class="ods-tm">${logo(A[0])}<span><b>${esc(A[0])}</b><small>${esc(A[2])}${extra?" · "+extra:""}</small></span></span>`}
 function vOdds(){
   const d=DADOS;if(!d)return vazio();
-  const aba=UI.odsAba||"temporada";
+  odsLiquidar();const aba=UI.odsAba||"temporada";
   const pills=`<div class="pilulas ods-pil" role="group" aria-label="Mercados">${ODS_ABAS.map(([k,n])=>`<button class="pil" type="button" data-odsa="${k}" aria-pressed="${aba===k}">${n}${k==="bilhete"&&odsBil().length?` (${odsBil().length})`:""}</button>`).join("")}</div>`;
   let corpo="";
-  try{corpo=aba==="semana"?odsSemana():aba==="redacao"?odsRedacao():aba==="bilhete"?odsBilhete():odsTemporada()}catch(e){console.error(e);corpo=`<div class="card vazio">A casa caiu montando esse mercado (${esc(e.message)}).</div>`}
+  try{corpo=aba==="apostas"?odsApostas():aba==="semana"?odsSemana():aba==="redacao"?odsRedacao():aba==="bilhete"?odsBilhete():odsTemporada()}catch(e){console.error(e);corpo=`<div class="card vazio">A casa caiu montando esse mercado (${esc(e.message)}).</div>`}
   return `<div class="cab-secao"><span class="sobre">BETLOYDE · A CASA QUE TORCE CONTRA VOCÊ</span><h1 class="manchete">TODAS AS ODDS</h1>
-  <p class="linha-fina">Odd = 1 ÷ (chance do Modelo do Loydão × margem da casa). Campeão, playoffs, ensaio e semana saem da simulação da temporada e dos confrontos; só o Mercado da Redação é chute. Toque numa odd para montar o seu bilhete. É de mentirinha: não tem dinheiro, só vergonha.</p></div>
-  ${pills}${corpo}${odsBarra()}`}
+  <p class="linha-fina">Odd = 1 ÷ (chance do Modelo do Loydão × margem da casa). Campeão, playoffs, ensaio e semana saem da simulação da temporada e dos confrontos; só o Mercado da Redação é chute. Toque numa odd, monte o bilhete e aposte suas Lulas 🦑. É de brincadeira: não tem dinheiro, só vergonha.</p></div>
+  ${lulaChip()}${lulaAvisos()}${pills}${corpo}${odsBarra()}`}
 function odsTemporada(){
   const d=DADOS;const S=simTemporada();const ids=d.teams.map(t=>t.id);
   const ord=k=>ids.slice().sort((x,y)=>S[y][k]-S[x][k]);
@@ -4228,11 +4257,11 @@ function odsTemporada(){
   const W=S._W||{};
   const vit=`<div class="card ods-card"><div class="bloco-tit">📊 VITÓRIAS NA TEMPORADA <small>mais/menos · fase regular, ${SEMANAS} semanas</small></div><div class="ods-lista">${ids.slice().sort((x,y)=>S[y].w-S[x].w).map(id=>{const a=(W[id]||[]).slice().sort((x,y)=>x-y);if(!a.length)return "";
       const med=a[Math.floor(a.length/2)];const ln=Math.max(0.5,Math.round(med)-0.5+(a.filter(v=>v>Math.round(med)-0.5).length/a.length>0.6?1:0));const pm=a.filter(v=>v>ln).length/a.length;const o=odsSN(pm);
-      return `<div class="ods-row">${odsTimeCel(id,"hoje "+rec(id))}<span class="ods-ln">${String(ln).replace(".",",")}</span><span class="ods-par">${odsBtn("vit:"+id+":m","vit:"+id,"Mais",`${T(id)[0]} mais de ${String(ln).replace(".",",")} vitórias`,o[0],pm)}${odsBtn("vit:"+id+":n","vit:"+id,"Menos",`${T(id)[0]} menos de ${String(ln).replace(".",",")} vitórias`,o[1],1-pm)}</span></div>`}).join("")}</div></div>`;
+      return `<div class="ods-row">${odsTimeCel(id,"hoje "+rec(id))}<span class="ods-ln">${String(ln).replace(".",",")}</span><span class="ods-par">${odsBtn("vit:"+id+":m:"+ln,"vit:"+id,"Mais",`${T(id)[0]} mais de ${String(ln).replace(".",",")} vitórias`,o[0],pm)}${odsBtn("vit:"+id+":n:"+ln,"vit:"+id,"Menos",`${T(id)[0]} menos de ${String(ln).replace(".",",")} vitórias`,o[1],1-pm)}</span></div>`}).join("")}</div></div>`;
   // quem termina na frente (fase regular), a partir das classificações simuladas
   const OR=S._ord||[];const frente=(a,b)=>{if(!OR.length)return 0.5;let n=0;OR.forEach(o=>{if(o.indexOf(a)<o.indexOf(b))n++});return n/OR.length};
   const duelo=(a,b)=>{const p=frente(a,b);const o=precifica([p,1-p]);const k="fr:"+Math.min(a,b)+"-"+Math.max(a,b);
-    return `<div class="ods-duelo"><div class="ods-dn">${logo(T(a)[0])}<b>${esc(T(a)[0])}</b><span>x</span><b>${esc(T(b)[0])}</b>${logo(T(b)[0])}</div><span class="ods-par">${o.susp?odsBtn(k+":a",k,T(a)[3],"",p>0.5?"🔒":"—")+odsBtn(k+":b",k,T(b)[3],"",p<0.5?"🔒":"—"):odsBtn(k+":a",k,T(a)[3],`${T(a)[0]} termina na frente do ${T(b)[0]}`,o[0],p)+odsBtn(k+":b",k,T(b)[3],`${T(b)[0]} termina na frente do ${T(a)[0]}`,o[1],1-p)}</span></div>`};
+    return `<div class="ods-duelo"><div class="ods-dn">${logo(T(a)[0])}<b>${esc(T(a)[0])}</b><span>x</span><b>${esc(T(b)[0])}</b>${logo(T(b)[0])}</div><span class="ods-par">${o.susp?odsBtn(k+":a",k,T(a)[3],"",p>0.5?"🔒":"—")+odsBtn(k+":b",k,T(b)[3],"",p<0.5?"🔒":"—"):odsBtn(k+":"+a,k,T(a)[3],`${T(a)[0]} termina na frente do ${T(b)[0]}`,o[0],p)+odsBtn(k+":"+b,k,T(b)[3],`${T(b)[0]} termina na frente do ${T(a)[0]}`,o[1],1-p)}</span></div>`};
   const A=UI.odsA||10,B=UI.odsB||11;
   const sel=(id,v)=>`<select id="${id}" class="sel" aria-label="Time">${ids.map(t=>`<option value="${t}" ${t===v?"selected":""}>${esc(T(t)[0])}</option>`).join("")}</select>`;
   const duelos=`<div class="card ods-card"><div class="bloco-tit">⚔️ QUEM TERMINA NA FRENTE <small>fase regular</small></div>
@@ -4264,17 +4293,17 @@ function odsSemana(){
   const vivos=L.filter(x=>Math.max(x.s.pa,x.s.pb)<0.995);
   const fav=vivos.map(x=>x.s.pa>=x.s.pb?{t:x.a,p:x.s.pa,o:x}:{t:x.b,p:x.s.pb,o:x});const zeb=vivos.map(x=>x.s.pa<x.s.pb?{t:x.a,p:x.s.pa,o:x}:{t:x.b,p:x.s.pb,o:x});const zebV=zeb.filter(z=>z.p>=0.03).sort((x,y)=>y.p-x.p).slice(0,3);
   const mult=(tit,sub,L2,key)=>{if(L2.length<2)return "";const p=L2.reduce((x,y)=>x*y.p,1);const o=[odsSim(p)];
-    return `<div class="ods-mult"><div><b>${tit}</b><small>${sub}</small><small class="ods-sel">${L2.map(x=>esc(T(x.t)[0])).join(" + ")}</small></div>${odsBtn(key,key,"Múltipla",`${tit}: ${L2.map(x=>T(x.t)[0]).join(" + ")}`,o[0],p)}</div>`};
+    return `<div class="ods-mult"><div><b>${tit}</b><small>${sub}</small><small class="ods-sel">${L2.map(x=>esc(T(x.t)[0])).join(" + ")}</small></div>${odsBtn(key,key,"Múltipla",`${tit}: ${L2.map(x=>T(x.t)[0]).join(" + ")}`,o[0],p,0,{sel:L2.map(x=>[x.t,x.t===x.o.a?x.o.b:x.o.a])})}</div>`};
   // mercados da rodada
   const p90=L.map(x=>(x.s.res["9-0-0"]||0)+(x.s.res["0-9-0"]||0));const algum90=1-p90.reduce((x,y)=>x*(1-y),1);
   const pEmp=L.map(x=>x.s.pe);const algumE=1-pEmp.reduce((x,y)=>x*(1-y),1);
   const pz=zeb.map(z=>z.p);let dist=[1];pz.forEach(q=>{const nd=Array(dist.length+1).fill(0);dist.forEach((v,j)=>{nd[j]+=v*(1-q);nd[j+1]+=v*q});dist=nd});
-  const pz0=dist[0]||0,pz1=dist[1]||0,pz2=1-pz0-pz1;const oz=precifica([pz0,pz1,Math.max(pz2,1e-4)]);
+  const zsp={z:zeb.map(z=>[z.t,z.t===z.o.a?z.o.b:z.o.a]),n:d.mt.length};const pz0=dist[0]||0,pz1=dist[1]||0,pz2=1-pz0-pz1;const oz=precifica([pz0,pz1,Math.max(pz2,1e-4)]);
   const o90=[odsSim(algum90),algum90<0.02?"🔒":odsSN(algum90)[1]],oE=odsSN(algumE);const kr="rod"+d.wk;
   const rodada=`<div class="card ods-card"><div class="bloco-tit">🎰 MERCADOS DA RODADA <small>semana ${d.wk}, os 6 confrontos</small></div>
    <div class="ods-row"><span class="ods-q">Sai algum 9-0 na semana?</span><span class="ods-par">${odsBtn(kr+":90s",kr+":90","Sim","Sai um 9-0 na semana",o90[0],algum90)}${odsBtn(kr+":90n",kr+":90","Não","Não sai 9-0 na semana",o90[1],1-algum90)}</span></div>
    <div class="ods-row"><span class="ods-q">Algum confronto termina empatado?</span><span class="ods-par">${odsBtn(kr+":es",kr+":e","Sim","Tem empate na semana",oE[0],algumE)}${odsBtn(kr+":en",kr+":e","Não","Nenhum empate na semana",oE[1],1-algumE)}</span></div>
-   <div class="ods-row"><span class="ods-q">Quantas zebras vencem?</span><span class="ods-par">${odsBtn(kr+":z0",kr+":z","Nenhuma","Nenhuma zebra vence",oz[0],pz0)}${odsBtn(kr+":z1",kr+":z","Uma","Uma zebra vence",oz[1],pz1)}${odsBtn(kr+":z2",kr+":z","Duas+","Duas ou mais zebras vencem",oz[2],pz2)}</span></div>
+   <div class="ods-row"><span class="ods-q">Quantas zebras vencem?</span><span class="ods-par">${odsBtn(kr+":z0",kr+":z","Nenhuma","Nenhuma zebra vence",oz[0],pz0,0,zsp)}${odsBtn(kr+":z1",kr+":z","Uma","Uma zebra vence",oz[1],pz1,0,zsp)}${odsBtn(kr+":z2",kr+":z","Duas+","Duas ou mais zebras vencem",oz[2],pz2,0,zsp)}</span></div>
    <div class="ods-sec">MÚLTIPLAS PRONTAS</div>
    ${mult("Todos os favoritos","quem o modelo acha que ganha",fav,kr+":mfav")}
    ${mult("Noite das zebras","as 3 zebras mais vivas viram",zebV,kr+":mzeb")}</div>`;
@@ -4283,29 +4312,82 @@ function odsRedacao(){
   return `<div class="card ods-card"><div class="bloco-tit">🗞️ ODDS DA REDAÇÃO <small>não saem do modelo · saem da cabeça do Loydão</small></div>
   <div class="ods-lista">${ODS_RED.map(([id,txt,o],j)=>`<div class="ods-row"><span class="ods-lg">${id?logo(T(id)[0]):`<span class="ods-liga">🏀</span>`}</span><span class="ods-q">${esc(txt)}</span>${odsBtn("red:"+j,"red:"+j,"Sim",txt,o,null,1)}</div>`).join("")}</div>
   <p class="mk-nota">Odd de chute, sem modelo. Se acontecer, a redação vai lembrar. Se não acontecer, a redação vai fingir que não ofereceu.</p></div>`}
+
+/* ---------- LULAS 🦑: a moeda da BETLOYDE (de brincadeira, guardada neste aparelho) ---------- */
+const LULA_INI=1000,LULA_BONUS=100,LULA_AUX=300;
+function lulas(){if(UI._lu)return UI._lu;let w=null;try{w=JSON.parse(localStorage.getItem("wbs.lulas")||"null")}catch(e){}
+  w=w||{saldo:LULA_INI,ap:[],aux:0,dia:"",novo:[]};w.ap=w.ap||[];w.novo=w.novo||[];
+  const hoje=new Date().toISOString().slice(0,10);if(w.dia!==hoje){if(w.dia)w.bonus=LULA_BONUS,w.saldo+=LULA_BONUS;w.dia=hoje}
+  UI._lu=w;lulaSalva();return w}
+function lulaSalva(){try{localStorage.setItem("wbs.lulas",JSON.stringify(UI._lu))}catch(e){}}
+const fmtL=v=>Math.round(v).toLocaleString("pt-BR");
+// resultado de um confronto fechado (DADOS.hist: [semana, time1, time2, [cat1, cat2, empates], vencedor])
+function odsRes(wk,a,b){const h=(DADOS.hist||[]).find(h=>h[0]===wk&&((h[1]===a&&h[2]===b)||(h[1]===b&&h[2]===a)));if(!h)return null;const [x,y,t]=h[3];return h[1]===a?{w:x,l:y,t}:{w:y,l:x,t}}
+// 'g' = green, 'p' = red, null = ainda não dá pra saber
+function odsAvalia(it){const k=it.k,sp=it.s||{};let m;
+  if((m=/^j(\d+)-(\d+)-(\d+):(\w+)$/.exec(k))){const r=odsRes(+m[1],+m[2],+m[3]);if(!r)return null;const w=r.w,l=r.l;
+    const ok={"1":w>l,x:w===l,"2":l>w,dc1:w>=l,dc2:l>=w,at1:w>=7,at2:l>=7}[m[4]];return ok==null?null:ok?"g":"p"}
+  if((m=/^rod(\d+):(\w+)$/.exec(k))){const wk=+m[1],r=m[2];
+    if(r==="mfav"||r==="mzeb"){const R=(sp.sel||[]).map(([a,b])=>odsRes(wk,a,b));if(R.some(x=>x&&x.w<=x.l))return "p";if(R.some(x=>!x))return null;return "g"}
+    const H=(DADOS.hist||[]).filter(h=>h[0]===wk);if(H.length<(sp.n||6))return null;
+    if(r==="90s"||r==="90n"){const t=H.some(h=>Math.max(h[3][0],h[3][1])===9);return (r==="90s")===t?"g":"p"}
+    if(r==="es"||r==="en"){const t=H.some(h=>h[3][0]===h[3][1]);return (r==="es")===t?"g":"p"}
+    if(/^z\d$/.test(r)){const c=(sp.z||[]).filter(([a,b])=>{const x=odsRes(wk,a,b);return x&&x.w>x.l}).length;return ({z0:c===0,z1:c===1,z2:c>=2}[r])?"g":"p"}}
+  if(/^red:/.test(k))return it.r||null; // honra: o próprio apostador confere
+  return null} // temporada: liquida no fim da fase regular / da final
+function odsLiquidar(){const w=lulas();let mudou=false;
+  w.ap.filter(a=>a.st==="aberta").forEach(a=>{const R=a.it.map(odsAvalia);if(R.includes("p")){a.st="red";a.fim=Date.now();w.novo.push(a.id);mudou=true}
+    else if(R.every(x=>x==="g")){a.st="green";a.fim=Date.now();a.ret=Math.round(a.v*a.o);w.saldo+=a.ret;w.novo.push(a.id);mudou=true}});
+  if(mudou)lulaSalva()}
+function lulaChip(){const w=lulas();const ab=w.ap.filter(a=>a.st==="aberta");return `<button type="button" class="lula-chip" data-odsa="apostas">🦑 <b>${fmtL(w.saldo)}</b> Lulas${ab.length?`<small>${ab.length} aberta${ab.length>1?"s":""} · ${fmtL(ab.reduce((x,a)=>x+a.v,0))} em jogo</small>`:""}</button>`}
+function lulaAvisos(){const w=lulas();let h="";
+  if(w.bonus){h+=`<div class="lula-av ok">🎁 Bônus do dia: +${LULA_BONUS} Lulas. O Loydão é generoso porque sabe que volta tudo pra casa.</div>`;delete w.bonus;lulaSalva()}
+  if(w.novo.length){w.novo.forEach(id=>{const a=w.ap.find(x=>x.id===id);if(!a)return;h+=a.st==="green"?`<div class="lula-av ok">✅ GREEN! ${esc(a.it.length>1?"Múltipla de "+a.it.length:a.it[0].d)} · +${fmtL(a.ret)} Lulas</div>`:`<div class="lula-av ko">❌ RED. ${esc(a.it.length>1?"Múltipla de "+a.it.length:a.it[0].d)} · ${fmtL(a.v)} Lulas pro bolso do Loydão</div>`});w.novo=[];lulaSalva()}
+  return h}
+function odsApostas(){const w=lulas();const ab=w.ap.filter(a=>a.st==="aberta"),fe=w.ap.filter(a=>a.st!=="aberta").slice(-30).reverse();
+  const tot=w.ap.reduce((x,a)=>x+a.v,0),ganho=w.ap.filter(a=>a.st==="green").reduce((x,a)=>x+a.ret,0),perd=w.ap.filter(a=>a.st!=="aberta").reduce((x,a)=>x+a.v,0);
+  const lucro=ganho-perd,g=w.ap.filter(a=>a.st==="green").length,r=w.ap.filter(a=>a.st==="red").length;
+  const card=a=>`<div class="lula-ap ${a.st}"><div class="lula-cab"><span class="lula-st">${a.st==="aberta"?"ABERTA":a.st==="green"?"✅ GREEN":"❌ RED"}</span><small>${new Date(a.ts).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}${a.it.length>1?` · múltipla de ${a.it.length}`:""}</small></div>
+    ${a.it.map((it,j)=>{const st=odsAvalia(it);return `<div class="lula-it"><span class="lula-ic">${st==="g"?"✅":st==="p"?"❌":"⏳"}</span><span class="ods-q">${esc(it.d)}</span><b>${it.o}</b>${a.st==="aberta"&&/^red:/.test(it.k)&&!it.r?`<span class="lula-hon"><button type="button" data-luhon="${a.id}:${j}:g">Aconteceu</button><button type="button" data-luhon="${a.id}:${j}:p">Não</button></span>`:""}</div>`}).join("")}
+    <div class="lula-pe"><span>Apostou <b>${fmtL(a.v)}</b></span><span>Odd <b>${odsFmt(a.o)}</b></span><span>${a.st==="green"?"Ganhou":a.st==="red"?"Perdeu":"Pode ganhar"} <b>${fmtL(a.st==="red"?a.v:a.v*a.o)}</b></span></div></div>`;
+  const quebrado=w.saldo<10&&!ab.length;
+  return `<div class="ods-grade">
+   <div class="card ods-card"><div class="bloco-tit">🦑 CARTEIRA <small>neste aparelho</small></div>
+    <div class="lula-res"><div><small>Saldo</small><b>${fmtL(w.saldo)}</b></div><div><small>Em jogo</small><b>${fmtL(ab.reduce((x,a)=>x+a.v,0))}</b></div><div><small>Lucro</small><b class="${lucro>=0?"pos":"neg"}">${lucro>=0?"+":""}${fmtL(lucro)}</b></div><div><small>Green × Red</small><b>${g} × ${r}</b></div></div>
+    ${quebrado?`<div class="lula-av ko">Quebrou. ${w.aux?`Já pediu auxílio ${w.aux} vez${w.aux>1?"es":""}. `:""}O Loydão empresta ${LULA_AUX} Lulas, mas vai contar pra todo mundo.</div><div class="ods-acoes"><button type="button" class="pil" data-luaux>Pedir auxílio ao Loydão (+${LULA_AUX})</button></div>`:""}
+    <p class="mk-nota">Começa com ${fmtL(LULA_INI)} Lulas e ganha +${LULA_BONUS} por dia que abrir o app. Aposta da semana liquida sozinha quando o confronto fecha na ESPN. Temporada liquida no fim. Odds da Redação: você mesmo confere (na honra, Gusta). As Lulas ficam guardadas neste aparelho: não é dinheiro, não vale nada, mas a vergonha do red é sua.</p></div>
+   <div class="card ods-card"><div class="bloco-tit">⏳ ABERTAS <small>${ab.length}</small></div>${ab.length?ab.map(card).join(""):`<div class="vazio">Nenhuma aposta aberta. A casa está com saudade.</div>`}</div>
+   ${fe.length?`<div class="card ods-card"><div class="bloco-tit">📜 LIQUIDADAS <small>últimas ${fe.length}</small></div>${fe.map(card).join("")}</div>`:""}</div>`}
+
 function odsBilhete(){
-  const b=odsBil();if(!b.length)return `<div class="card ods-card"><div class="vazio">Bilhete vazio. Toque em qualquer odd das outras abas para colocar aqui.</div></div>`;
-  const tot=b.reduce((x,y)=>x*(+y.o||1),1);const v=+(UI.odsValor||10);
-  return `<div class="card ods-card"><div class="bloco-tit">🧾 MEU BILHETE <small>${b.length} seleç${b.length>1?"ões":"ão"}</small></div>
+  const b=odsBil();const w=lulas();if(!b.length)return `<div class="card ods-card"><div class="vazio">Bilhete vazio. Toque em qualquer odd das outras abas para colocar aqui.</div></div>`;
+  const tot=b.reduce((x,y)=>x*(+y.o||1),1);const v=Math.min(w.saldo,Math.max(1,+(UI.odsValor||Math.min(100,w.saldo))));
+  return `<div class="card ods-card"><div class="bloco-tit">🧾 BILHETE <small>${b.length} seleç${b.length>1?"ões":"ão"}</small></div>
    <div class="ods-lista">${b.map((x,j)=>`<div class="ods-row"><span class="ods-q">${esc(x.d)}</span><b class="ods-ob">${x.o}</b><button type="button" class="ods-x" data-odsrm="${j}" aria-label="tirar">✕</button></div>`).join("")}</div>
-   <div class="ods-tot"><span>Odd total <b>${odsFmt(tot)}</b></span><label>Valor (de mentira) R$ <input id="odsValor" type="number" min="1" step="1" value="${v}" inputmode="numeric"></label><span>Retorno <b>R$ ${odsFmt(tot*v).replace(".",",")}</b></span></div>
-   <div class="ods-acoes"><button type="button" class="pil" data-odsclr>Limpar bilhete</button><button type="button" class="pil" data-odscp>Copiar pro grupo</button></div>
-   <p class="mk-nota">${b.length>1?"Múltipla: as odds se multiplicam e basta um errar para o bilhete inteiro virar papel de bala. ":""}A odd fica travada no valor da hora em que você tocou. Não é dinheiro de verdade. A vergonha é.</p></div>`}
+   <div class="ods-tot"><span>Odd total <b>${odsFmt(tot)}</b></span><label>Valor 🦑 <input id="odsValor" type="number" min="1" max="${w.saldo}" step="10" value="${v}" inputmode="numeric"></label><span>Retorno <b>🦑 ${fmtL(tot*v)}</b></span></div>
+   <div class="lula-rap">${[50,100,250,500].filter(x=>x<=w.saldo).map(x=>`<button type="button" class="pil" data-luv="${x}">${x}</button>`).join("")}${w.saldo>0?`<button type="button" class="pil" data-luv="${w.saldo}">ALL IN</button>`:""}</div>
+   <div class="ods-acoes">${w.saldo>=1?`<button type="button" class="lula-go" data-luapostar>Apostar 🦑 <span id="luVal">${fmtL(v)}</span></button>`:`<span class="lula-av ko">Sem Lulas. Vá em Minhas apostas e peça auxílio.</span>`}<button type="button" class="pil" data-odsclr>Limpar</button><button type="button" class="pil" data-odscp>Copiar pro grupo</button></div>
+   <p class="mk-nota">Saldo: 🦑 ${fmtL(w.saldo)}. ${b.length>1?"Múltipla: as odds se multiplicam e basta um errar para o bilhete inteiro virar papel de bala. ":""}A odd fica travada no valor da hora em que você tocou.</p></div>`}
 function odsBarra(){const b=odsBil();if(!b.length||UI.odsAba==="bilhete")return "";const tot=b.reduce((x,y)=>x*(+y.o||1),1);
-  return `<button type="button" class="ods-barra" data-odsa="bilhete"><span>🧾 ${b.length} no bilhete</span><b>odd ${odsFmt(tot)}</b><span>R$ 10 → R$ ${odsFmt(tot*10).replace(".",",")}</span></button>`}
-document.addEventListener("click",e=>{const t=e.target.closest("[data-odsb],[data-odsa],[data-odsrm],[data-odsclr],[data-odscp]");if(!t)return;
+  return `<button type="button" class="ods-barra" data-odsa="bilhete"><span>🧾 ${b.length} no bilhete</span><b>odd ${odsFmt(tot)}</b><span>🦑 ${fmtL(lulas().saldo)} na carteira</span></button>`}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-odsb],[data-odsa],[data-odsrm],[data-odsclr],[data-odscp],[data-luapostar],[data-luv],[data-luaux],[data-luhon]");if(!t)return;
+  if(t.dataset.luv){UI.odsValor=+t.dataset.luv;render();return}
+  if(t.dataset.luapostar!=null){const w=lulas(),b=odsBil();if(!b.length)return;const v=Math.floor(Math.min(w.saldo,Math.max(1,+(UI.odsValor||Math.min(100,w.saldo)))));if(v<1||v>w.saldo)return;const o=b.reduce((x,y)=>x*(+y.o||1),1);
+    w.saldo-=v;w.ap.push({id:Date.now().toString(36),ts:Date.now(),v,o:Math.round(o*100)/100,it:b.map(x=>({k:x.k,d:x.d,o:x.o,s:x.s})),st:"aberta"});lulaSalva();odsBilSet([]);UI.odsValor=null;UI.odsAba="apostas";render();window.scrollTo(0,0);return}
+  if(t.dataset.luaux!=null){const w=lulas();if(w.saldo<10){w.saldo+=LULA_AUX;w.aux=(w.aux||0)+1;lulaSalva()}render();return}
+  if(t.dataset.luhon){const [id,j,r]=t.dataset.luhon.split(":");const w=lulas();const a=w.ap.find(x=>x.id===id);if(a&&a.it[+j]){a.it[+j].r=r;lulaSalva();odsLiquidar()}render();return}
   if(t.dataset.odsa){UI.odsAba=t.dataset.odsa;render();return}
   if(t.dataset.odsb){const b=odsBil().slice();const k=t.dataset.odsb,mk=t.dataset.mk;const i=b.findIndex(x=>x.k===k);
-    if(i>=0)b.splice(i,1);else{const j=b.findIndex(x=>x.m===mk);if(j>=0)b.splice(j,1);b.push({k,m:mk,d:t.dataset.desc,o:t.dataset.o})}
+    if(i>=0)b.splice(i,1);else{const j=b.findIndex(x=>x.m===mk);if(j>=0)b.splice(j,1);let sp=null;try{sp=t.dataset.spec?JSON.parse(t.dataset.spec):null}catch(err){}b.push({k,m:mk,d:t.dataset.desc,o:t.dataset.o,s:sp})}
     odsBilSet(b);const y=window.scrollY;render();window.scrollTo(0,y);return}
   if(t.dataset.odsrm!=null){const b=odsBil().slice();b.splice(+t.dataset.odsrm,1);odsBilSet(b);render();return}
   if(t.dataset.odsclr!=null){odsBilSet([]);render();return}
-  if(t.dataset.odscp!=null){const b=odsBil();const tot=b.reduce((x,y)=>x*(+y.o||1),1);const v=+(UI.odsValor||10);
-    const txt=`🧾 *BILHETE NA BETLOYDE*\n${b.map(x=>`▸ ${x.d} @ ${x.o}`).join("\n")}\nOdd total: ${odsFmt(tot)} · R$ ${v} → R$ ${odsFmt(tot*v).replace(".",",")}\n(de mentirinha, a vergonha é de verdade)`;
+  if(t.dataset.odscp!=null){const b=odsBil();const tot=b.reduce((x,y)=>x*(+y.o||1),1);const v=+(UI.odsValor||100);
+    const txt=`🧾 *BILHETE NA BETLOYDE*\n${b.map(x=>`▸ ${x.d} @ ${x.o}`).join("\n")}\nOdd total: ${odsFmt(tot)} · 🦑 ${fmtL(v)} → 🦑 ${fmtL(tot*v)} Lulas\n(de brincadeira, a vergonha é de verdade)`;
     const ok=()=>{t.textContent="Copiado ✓";setTimeout(()=>{t.textContent="Copiar pro grupo"},1800)};
     try{navigator.clipboard.writeText(txt).then(ok,()=>prompt("Copie o bilhete:",txt))}catch(err){prompt("Copie o bilhete:",txt)}return}});
 document.addEventListener("change",e=>{if(e.target.id==="odsA"){UI.odsA=+e.target.value;render()}if(e.target.id==="odsB"){UI.odsB=+e.target.value;render()}});
-document.addEventListener("input",e=>{if(e.target.id==="odsValor"){UI.odsValor=Math.max(1,+e.target.value||10);const b=odsBil();const tot=b.reduce((x,y)=>x*(+y.o||1),1);const el=e.target.closest(".ods-tot");if(el){const s=el.querySelectorAll("span b");if(s[1])s[1].textContent="R$ "+odsFmt(tot*UI.odsValor).replace(".",",")}}});
+document.addEventListener("input",e=>{if(e.target.id==="odsValor"){const w=lulas();UI.odsValor=Math.min(w.saldo,Math.max(1,+e.target.value||1));const b=odsBil();const tot=b.reduce((x,y)=>x*(+y.o||1),1);const el=e.target.closest(".ods-tot");if(el){const s=el.querySelectorAll("span b");if(s[1])s[1].textContent="🦑 "+fmtL(tot*UI.odsValor)}const lv=document.getElementById("luVal");if(lv)lv.textContent=fmtL(UI.odsValor)}});
 
 /* ---------- PUBLI BETLOYDE: anúncios de mentirinha com odds de verdade (saem da chance do modelo) ---------- */
 const oddDe=p=>{if(!(p>0.004))return null;const v=degrau(Math.max(1.01,1/(p*1.075)));return v};
