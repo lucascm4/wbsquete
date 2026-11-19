@@ -2313,7 +2313,7 @@ table.lj tr.pend td:not(.jg){opacity:.55;font-style:italic}
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261119092400";
+const VERSAO_PAINEL="20261119092619";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4204,6 +4204,8 @@ function odsBtn(key,mk,rot,desc,o,p,red){
 function odsOut(P){const ids=Object.keys(P).map(Number);const v=ids.map(id=>Math.max(P[id],0));const o=precifica(v,1.15);const r={};ids.forEach((id,i)=>{r[id]=v[i]<0.0008?"—":o[i]});return r}
 // sim/não: margem normal da casa; decidido = 🔒
 function odsSN(p){if(p>=0.9995)return ["✓","✗"];if(p<=0.0005)return ["✗","✓"];const o=precifica([p,1-p]);if(o.susp)return p>0.5?["🔒","🔒"]:["🔒","🔒"];return o}
+// mercado de um lado só (atropelo, dupla chance, múltipla): zebra longa tem odd; favorito de 98%+ fica 🔒; menos de 0,4% não tem mercado
+function odsSim(p){if(p<0.004)return "—";const o=precifica([p,1-p]);if(!o.susp)return o[0];return p>0.5?"🔒":degrau(Math.max(1.01,1/(p*1.075))).toFixed(2)}
 function odsTimeCel(id,extra){const A=T(id);return `<span class="ods-tm">${logo(A[0])}<span><b>${esc(A[0])}</b><small>${esc(A[2])}${extra?" · "+extra:""}</small></span></span>`}
 function vOdds(){
   const d=DADOS;if(!d)return vazio();
@@ -4249,8 +4251,8 @@ function odsSemana(){
   const d=DADOS;const L=d.mt.map(([a,b],i)=>({a,b,i,s:simula(a,b),sc:placar(EST.tot[a],EST.tot[b])}));
   const cards=L.map(({a,b,i,s,sc})=>{const A=T(a),B=T(b);const o=casa(a,b,s);const k="j"+d.wk+"-"+a+"-"+b;
     const R=Object.entries(s.res).map(([kk,p])=>{const [w,l]=kk.split("-").map(Number);return {w,l,p}});const soma=f=>R.filter(f).reduce((x,r)=>x+r.p,0);
-    const dc1=s.pa+s.pe,dc2=s.pb+s.pe;const ld=odsSN(dc1),l2=odsSN(dc2);
-    const at1=soma(r=>r.w>=7),at2=soma(r=>r.l>=7);const oa=odsSN(at1),ob=odsSN(at2);
+    const dc1=s.pa+s.pe,dc2=s.pb+s.pe;const ld=[odsSim(dc1)],l2=[odsSim(dc2)];
+    const at1=soma(r=>r.w>=7),at2=soma(r=>r.l>=7);const oa=[odsSim(at1)],ob=[odsSim(at2)];
     const vivo=sc.w+sc.l+sc.t?`${sc.w}-${sc.l}${sc.t?"-"+sc.t:""}`:"0-0";
     return `<div class="card ods-card ods-jogo"><div class="ods-jc"><span class="ods-tj">${logo(A[0])}<b>${esc(A[0])}</b></span><span class="ods-pl">${vivo}<small>agora</small></span><span class="ods-tj dir"><b>${esc(B[0])}</b>${logo(B[0])}</span></div>
      <div class="ods-sec">RESULTADO FINAL</div><div class="ods-tri">${odsBtn(k+":1",k,A[3],`${A[0]} vence ${B[0]}`,o[0],s.pa)}${odsBtn(k+":x",k,"Empate",`${A[0]} x ${B[0]}: empate`,o[1],s.pe)}${odsBtn(k+":2",k,B[3],`${B[0]} vence ${A[0]}`,o[2],s.pb)}</div>
@@ -4259,22 +4261,22 @@ function odsSemana(){
      <button type="button" class="ods-mais" data-jogo="${i}">placar exato, categorias e handicap →</button></div>`}).join("");
   // múltiplas prontas (confrontos independentes)
   const vivos=L.filter(x=>Math.max(x.s.pa,x.s.pb)<0.995);
-  const fav=vivos.map(x=>x.s.pa>=x.s.pb?{t:x.a,p:x.s.pa,o:x}:{t:x.b,p:x.s.pb,o:x});const zeb=vivos.map(x=>x.s.pa<x.s.pb?{t:x.a,p:x.s.pa,o:x}:{t:x.b,p:x.s.pb,o:x});
-  const mult=(tit,sub,L2,key)=>{if(L2.length<2)return "";const p=L2.reduce((x,y)=>x*y.p,1);const o=odsSN(p);
+  const fav=vivos.map(x=>x.s.pa>=x.s.pb?{t:x.a,p:x.s.pa,o:x}:{t:x.b,p:x.s.pb,o:x});const zeb=vivos.map(x=>x.s.pa<x.s.pb?{t:x.a,p:x.s.pa,o:x}:{t:x.b,p:x.s.pb,o:x});const zebV=zeb.filter(z=>z.p>=0.03);
+  const mult=(tit,sub,L2,key)=>{if(L2.length<2)return "";const p=L2.reduce((x,y)=>x*y.p,1);const o=[odsSim(p)];
     return `<div class="ods-mult"><div><b>${tit}</b><small>${sub}</small><small class="ods-sel">${L2.map(x=>esc(T(x.t)[0])).join(" + ")}</small></div>${odsBtn(key,key,"Múltipla",`${tit}: ${L2.map(x=>T(x.t)[0]).join(" + ")}`,o[0],p)}</div>`};
   // mercados da rodada
   const p90=L.map(x=>(x.s.res["9-0-0"]||0)+(x.s.res["0-9-0"]||0));const algum90=1-p90.reduce((x,y)=>x*(1-y),1);
   const pEmp=L.map(x=>x.s.pe);const algumE=1-pEmp.reduce((x,y)=>x*(1-y),1);
   const pz=zeb.map(z=>z.p);let dist=[1];pz.forEach(q=>{const nd=Array(dist.length+1).fill(0);dist.forEach((v,j)=>{nd[j]+=v*(1-q);nd[j+1]+=v*q});dist=nd});
   const pz0=dist[0]||0,pz1=dist[1]||0,pz2=1-pz0-pz1;const oz=precifica([pz0,pz1,Math.max(pz2,1e-4)]);
-  const o90=odsSN(algum90),oE=odsSN(algumE);const kr="rod"+d.wk;
+  const o90=[odsSim(algum90),algum90<0.02?"🔒":odsSN(algum90)[1]],oE=odsSN(algumE);const kr="rod"+d.wk;
   const rodada=`<div class="card ods-card"><div class="bloco-tit">🎰 MERCADOS DA RODADA <small>semana ${d.wk}, os 6 confrontos</small></div>
    <div class="ods-row"><span class="ods-q">Sai algum 9-0 na semana?</span><span class="ods-par">${odsBtn(kr+":90s",kr+":90","Sim","Sai um 9-0 na semana",o90[0],algum90)}${odsBtn(kr+":90n",kr+":90","Não","Não sai 9-0 na semana",o90[1],1-algum90)}</span></div>
    <div class="ods-row"><span class="ods-q">Algum confronto termina empatado?</span><span class="ods-par">${odsBtn(kr+":es",kr+":e","Sim","Tem empate na semana",oE[0],algumE)}${odsBtn(kr+":en",kr+":e","Não","Nenhum empate na semana",oE[1],1-algumE)}</span></div>
    <div class="ods-row"><span class="ods-q">Quantas zebras vencem?</span><span class="ods-par">${odsBtn(kr+":z0",kr+":z","Nenhuma","Nenhuma zebra vence",oz[0],pz0)}${odsBtn(kr+":z1",kr+":z","Uma","Uma zebra vence",oz[1],pz1)}${odsBtn(kr+":z2",kr+":z","Duas+","Duas ou mais zebras vencem",oz[2],pz2)}</span></div>
    <div class="ods-sec">MÚLTIPLAS PRONTAS</div>
    ${mult("Todos os favoritos","quem o modelo acha que ganha",fav,kr+":mfav")}
-   ${mult("Noite das zebras","todo mundo que está atrás vira",zeb,kr+":mzeb")}</div>`;
+   ${mult("Noite das zebras","todas as zebras com chance real (3%+) viram",zebV,kr+":mzeb")}</div>`;
   return `<div class="ods-grade">${rodada}${cards}</div>`}
 function odsRedacao(){
   return `<div class="card ods-card"><div class="bloco-tit">🗞️ ODDS DA REDAÇÃO <small>não saem do modelo · saem da cabeça do Loydão</small></div>
