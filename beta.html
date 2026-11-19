@@ -2280,6 +2280,7 @@ table.lj tr.pend td:not(.jg){opacity:.55;font-style:italic}
 .ods-barra{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:20;display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;margin-top:14px;padding:11px 14px;background:var(--amarelo);color:#000;border:3px solid #000;box-shadow:4px 4px 0 #000;font:700 13px var(--ui);cursor:pointer}
 .ods-barra b{font-family:var(--display);font-weight:400;font-size:19px}
 @media (max-width:420px){.ods-b{min-width:54px;padding:4px 5px}.ods-b b{font-size:17px}.ods-tm b{font-size:14.5px}.ods-row{padding:6px 8px;gap:6px}.ods-barra{font-size:12px;padding:9px 10px}}
+.ods-lg{flex:none;display:flex}.ods-lg img,.ods-lg .ini{width:30px;height:30px;border-radius:50%;object-fit:cover;background:#000}
 </style>
 </head><body>
 </style>
@@ -2313,7 +2314,7 @@ table.lj tr.pend td:not(.jg){opacity:.55;font-style:italic}
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261119092619";
+const VERSAO_PAINEL="20261119092818";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4261,7 +4262,7 @@ function odsSemana(){
      <button type="button" class="ods-mais" data-jogo="${i}">placar exato, categorias e handicap →</button></div>`}).join("");
   // múltiplas prontas (confrontos independentes)
   const vivos=L.filter(x=>Math.max(x.s.pa,x.s.pb)<0.995);
-  const fav=vivos.map(x=>x.s.pa>=x.s.pb?{t:x.a,p:x.s.pa,o:x}:{t:x.b,p:x.s.pb,o:x});const zeb=vivos.map(x=>x.s.pa<x.s.pb?{t:x.a,p:x.s.pa,o:x}:{t:x.b,p:x.s.pb,o:x});const zebV=zeb.filter(z=>z.p>=0.03);
+  const fav=vivos.map(x=>x.s.pa>=x.s.pb?{t:x.a,p:x.s.pa,o:x}:{t:x.b,p:x.s.pb,o:x});const zeb=vivos.map(x=>x.s.pa<x.s.pb?{t:x.a,p:x.s.pa,o:x}:{t:x.b,p:x.s.pb,o:x});const zebV=zeb.filter(z=>z.p>=0.03).sort((x,y)=>y.p-x.p).slice(0,3);
   const mult=(tit,sub,L2,key)=>{if(L2.length<2)return "";const p=L2.reduce((x,y)=>x*y.p,1);const o=[odsSim(p)];
     return `<div class="ods-mult"><div><b>${tit}</b><small>${sub}</small><small class="ods-sel">${L2.map(x=>esc(T(x.t)[0])).join(" + ")}</small></div>${odsBtn(key,key,"Múltipla",`${tit}: ${L2.map(x=>T(x.t)[0]).join(" + ")}`,o[0],p)}</div>`};
   // mercados da rodada
@@ -4276,11 +4277,11 @@ function odsSemana(){
    <div class="ods-row"><span class="ods-q">Quantas zebras vencem?</span><span class="ods-par">${odsBtn(kr+":z0",kr+":z","Nenhuma","Nenhuma zebra vence",oz[0],pz0)}${odsBtn(kr+":z1",kr+":z","Uma","Uma zebra vence",oz[1],pz1)}${odsBtn(kr+":z2",kr+":z","Duas+","Duas ou mais zebras vencem",oz[2],pz2)}</span></div>
    <div class="ods-sec">MÚLTIPLAS PRONTAS</div>
    ${mult("Todos os favoritos","quem o modelo acha que ganha",fav,kr+":mfav")}
-   ${mult("Noite das zebras","todas as zebras com chance real (3%+) viram",zebV,kr+":mzeb")}</div>`;
+   ${mult("Noite das zebras","as 3 zebras mais vivas viram",zebV,kr+":mzeb")}</div>`;
   return `<div class="ods-grade">${rodada}${cards}</div>`}
 function odsRedacao(){
   return `<div class="card ods-card"><div class="bloco-tit">🗞️ ODDS DA REDAÇÃO <small>não saem do modelo · saem da cabeça do Loydão</small></div>
-  <div class="ods-lista">${ODS_RED.map(([id,txt,o],j)=>`<div class="ods-row">${id?odsTimeCel(id):`<span class="ods-tm"><span class="ods-liga">🏀</span><span><b>A liga</b><small>todo mundo</small></span></span>`}<span class="ods-q">${esc(txt)}</span>${odsBtn("red:"+j,"red:"+j,"Sim",txt,o,null,1)}</div>`).join("")}</div>
+  <div class="ods-lista">${ODS_RED.map(([id,txt,o],j)=>`<div class="ods-row"><span class="ods-lg">${id?logo(T(id)[0]):`<span class="ods-liga">🏀</span>`}</span><span class="ods-q">${esc(txt)}</span>${odsBtn("red:"+j,"red:"+j,"Sim",txt,o,null,1)}</div>`).join("")}</div>
   <p class="mk-nota">Odd de chute, sem modelo. Se acontecer, a redação vai lembrar. Se não acontecer, a redação vai fingir que não ofereceu.</p></div>`}
 function odsBilhete(){
   const b=odsBil();if(!b.length)return `<div class="card ods-card"><div class="vazio">Bilhete vazio. Toque em qualquer odd das outras abas para colocar aqui.</div></div>`;
