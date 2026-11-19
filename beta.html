@@ -2369,7 +2369,7 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261119095441";
+const VERSAO_PAINEL="20261119095609";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4449,7 +4449,7 @@ function odsPropHTML(p,sp){const S=odsSimJ(p),V=S.V,N=S.N;const fr=f=>V.filter(f
     return `<div class="ods-pl-l"><span class="ods-pl-t">${tit}</span><span class="ods-ln">${l}</span><span class="ods-par">${o.susp?'<span class="ods-x0">🔒</span>':odsBtn(k+":o:"+ln,k,"Mais",`${nm} mais de ${l} ${ab} hoje`,o[0],po)+odsBtn(k+":u:"+ln,k,"Menos",`${nm} menos de ${l} ${ab} hoje`,o[1],1-po)}</span><button type="button" class="ods-fxb" data-odsfx="${p.id}-${j}" aria-expanded="${!!abre}">faixa ${abre?"▴":"▾"}</button></div>
      ${abre?`<div class="ods-fx">${fa.map((r,i)=>pf[i]<0.004?"":odsBtn(`${kf}:${r[0]}_${r[1]}`,kf,fx(r),`${nm}: ${fx(r)} ${ab} hoje (faixa exata)`,of[i],pf[i])).join("")}</div>`:""}`}).join("");
   const n10=o=>[0,1,2,3,4].filter(i=>o[i]>=10).length;const pdd=fr(o=>n10(o)>=2),ptd=fr(o=>n10(o)>=3);const kd=`pd${sp}-${p.id}`;
-  const sn=(q,pp,tit)=>{if(pp<0.004)return "";const o=precifica([pp,1-pp]);return `<div class="ods-pl-l"><span class="ods-pl-t">${tit}</span><span class="ods-par">${o.susp?'<span class="ods-x0">🔒</span>':odsBtn(`${kd}:${q}:s`,kd+q,"Sim",`${nm} faz ${tit.toLowerCase()} hoje`,o[0],pp)+odsBtn(`${kd}:${q}:n`,kd+q,"Não",`${nm} NÃO faz ${tit.toLowerCase()} hoje`,o[1],1-pp)}</span></div>`};
+  const sn=(q,pp,tit)=>{if(pp<0.004)return "";const o=precifica([pp,1-pp]);return `<div class="ods-pl-l"><span class="ods-pl-t">${tit}</span><span class="ods-par">${odsBtn(`${kd}:${q}:s`,kd+q,"Sim",`${nm} faz ${tit.toLowerCase()} hoje`,o.susp?odsSim(pp):o[0],pp)+odsBtn(`${kd}:${q}:n`,kd+q,"Não",`${nm} NÃO faz ${tit.toLowerCase()} hoje`,o.susp?(pp<0.5?"🔒":odsSim(1-pp)):o[1],1-pp)}</span></div>`};
   return linhas+sn("dd",pdd,"Duplo-duplo")+sn("td",ptd,"Triplo-duplo")}
 function odsHoje(){const d=DADOS;const G=d.nba||{};const sp=d.cur;
   const comecou=pro=>{const g=G[pro];return !!(g&&(g.live||g.fim))};
