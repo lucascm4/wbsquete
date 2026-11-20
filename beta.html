@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="WBSQUETE">
 <title>Painel WBSQUETE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Narrow:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Archivo+Narrow:wght@500;600;700&display=swap">
 <style>
 /* Layout: o painel é a Revista do Loydão virada app — faixa preta com cinturão no topo, chão vermelho pontilhado, cards pretos de borda grossa, amarelo só para quem está ganhando. Navegação embaixo, como o app da ESPN. */
 :root{
@@ -2425,6 +2425,32 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 .pac-filtro .pac-tb:hover{transform:scale(1.08)}
 .pac-filtro .pac-tb[aria-pressed="true"]{border-color:var(--sel);box-shadow:0 0 0 3px var(--sel);transform:scale(1.08)}
 @media(max-width:520px){.pac-filtro{gap:8px}.pac-filtro .pac-tb{width:42px;height:42px}}
+.pac-mapa{position:relative;border-radius:18px;padding:16px 18px 26px 44px;display:flex;flex-direction:column;gap:6px;overflow:hidden;border:3px solid #0d0b0b;box-shadow:6px 6px 0 #0d0b0b}
+.pac-mapa .pac-topo{color:#0d0b0b;background:#fff8ec;border-radius:10px;padding:8px 12px;margin:0 0 6px -26px;align-items:center;font-size:13.5px}
+.pac-mapa .pac-topo b{font-family:"Archivo Black","Arial Black",var(--ui);font-size:17px;margin-right:6px}
+.pac-eixo{position:absolute;left:10px;top:74px;bottom:20px;width:22px;display:flex;flex-direction:column;align-items:center;gap:6px;font:900 11px var(--ui);letter-spacing:2px;color:#0d0b0b}
+.pac-eixo span{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap}.pac-eixo span:first-child{color:#fff}
+.pac-eixo i{flex:1;width:3px;background:#0d0b0b;border-radius:2px;position:relative}
+.pac-eixo i::before{content:"";position:absolute;top:-2px;left:-5px;border:6.5px solid transparent;border-bottom:10px solid #0d0b0b;border-top:0}
+.pac-b{max-width:60%;padding:8px 4px}.pac-b.dir{align-self:flex-end;text-align:right;margin-top:-34px}.pac-b.esq{align-self:flex-start}
+.pac-b:first-of-type{margin-top:0}
+.pac-b h3{margin:0;font-family:"Archivo Black","Arial Black",var(--ui);font-weight:900;font-size:clamp(22px,3.1vw,34px);line-height:1;letter-spacing:-.5px;color:#0d0b0b;text-wrap:balance}
+.pac-b p{margin:5px 0 10px;font:500 16px/1.25 var(--ui);color:#0d0b0b}
+.pac-b.v h3,.pac-b.v p{color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.35)}
+.pac-caras{display:flex;flex-wrap:wrap;gap:10px 12px}.pac-b.dir .pac-caras{justify-content:flex-end}
+.pac-c{background:none;border:0;padding:0;cursor:pointer;width:62px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.pac-cf{position:relative;width:56px;height:56px;display:block}
+.pac-cf .ft{width:56px!important;height:56px!important;border-radius:50%;object-fit:cover;background:#fff8ec;border:3px solid #fff8ec;box-shadow:0 0 0 3px var(--cor),0 3px 6px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#0d0b0b;font:700 14px var(--ui);position:relative;overflow:hidden}
+.pac-cf .ft.ini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#fff8ec}
+.pac-cf i{position:absolute;right:-7px;bottom:-4px;min-width:22px;padding:2px 4px;border-radius:9px;background:#0d0b0b;color:#fff;font:700 11.5px/1.15 var(--ui);font-style:normal;text-align:center}
+.pac-ct{position:absolute;left:-6px;top:-5px;width:22px;height:22px;border-radius:50%;background:#fff8ec;border:2px solid #0d0b0b;object-fit:cover}
+.pac-c em{font:700 11.5px/1.1 var(--ui);font-style:normal;color:#0d0b0b;max-width:66px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pac-b.v .pac-c em{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.pac-c:hover .ft,.pac-c:focus-visible .ft{box-shadow:0 0 0 3px var(--cor),0 0 0 6px #fff}.pac-c:focus-visible{outline:none}
+.pac-corte{align-self:stretch;margin:14px 0 14px -26px;border-top:4px dashed #0d0b0b;text-align:center;height:0;position:relative}
+.pac-corte span{position:relative;top:-13px;background:#0d0b0b;color:#fff8ec;font:700 12.5px var(--ui);letter-spacing:.5px;padding:4px 10px;border-radius:12px}
+.pac-selo{color:#0d0b0b}
+@media(max-width:640px){.pac-mapa{padding:12px 12px 20px 36px}.pac-b{max-width:100%}.pac-b.dir{margin-top:0}.pac-b h3{font-size:23px}.pac-b p{font-size:14.5px}.pac-c{width:54px}.pac-cf,.pac-cf .ft{width:48px!important;height:48px!important}.pac-eixo{left:6px}}
 </style>
 </head><body>
 </style>
@@ -2455,11 +2481,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261120015507"></script>
+<script src="bbm.js?v=20261120015756"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261120015507";
+const VERSAO_PAINEL="20261120015756";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4593,34 +4619,33 @@ const BBMR={};((window.BBM&&BBM.ids)||[]).forEach((id,i)=>{if(id)BBMR[id]=i+1});
 const bbmRk=p=>(p&&BBMR[p.id])||null;
 const PAC_PAINEIS=[{k:"t",n:"Draft inteiro",a:1,b:156},{k:"a",n:"Rodadas 1 a 3",a:1,b:36},{k:"b",n:"Rodadas 4 a 6",a:37,b:72},{k:"c",n:"Rodadas 7 a 9",a:73,b:108},{k:"d",n:"Rodadas 10 a 13",a:109,b:156},{k:"w",n:"Waiver",a:0,b:0}];
 const PAC_COR={v:"#12b455",a:"#f2c230",r:"#ef4a55"};
-// nomes das faixas: os do gráfico Patience Curve (STATDUNK); as frases são da redação
+// faixas: nome = a característica do grupo; quem está na faixa aparece junto dela no mapa
 const PAC_TAG={
-  WC:{n:"The Waiver Claim You'll Mention All Year",s:"O print já rodou o grupo três vezes.",z:"v"},
-  OV:{n:"Overperformers",s:"Passou na sua frente no draft. Você deixou.",z:"v"},
-  AM:{n:"The 3:07 A.M. Add",s:"Pego de madrugada. No almoço já tinha ido embora.",z:"a"},
-  BB:{n:"Back-to-Back Mirage",s:"Dois jogos seguidos e uma ilusão.",z:"r"},
-  LW:{n:"League Winner",s:"Fim de draft. Hoje carrega o time nas costas.",z:"v"},
-  ES:{n:"Elite Streams",s:"Era só pra terça. Ficou.",z:"v"},
-  OH:{n:"Overpriced Hype",s:"Na pré-temporada era o novo Jordan.",z:"a"},
-  MS:{n:"March Stash",s:"Guardado pra março. Estamos em novembro.",z:"r"},
-  QH:{n:"The Quiet Heist",s:"Roubaram na sua cara e ninguém gritou.",z:"v"},
-  CV:{n:"Consistent Vet",s:"Sobrevive a todo rebuild. De novo.",z:"v"},
-  PM:{n:"The Per-Minute Prophet",s:"“Se ele jogasse 30 minutos…”",z:"a"},
-  CS:{n:"The Cardio Starter",s:"Corre a noite inteira e volta sem nada.",z:"a"},
-  AA:{n:"The Autopick Apology",s:"O robô escolheu melhor que o manager.",z:"a"},
-  IR:{n:"The IR Waiting Room",s:"Hospital Vila Nova Star, ala VIP.",z:"r"},
-  NB:{n:"Next Year's Breakout",s:"Breakout season? Ano que vem, quem sabe.",z:"r"},
-  QC:{n:"The Quiet Carry",s:"Ninguém fala dele. Ele ganha a semana.",z:"v"},
-  LC:{n:"The League Chat Tip",s:"Alguém avisou no grupo. Ninguém ouviu.",z:"v"},
-  RT:{n:"The Reunion Tour",s:"Draftado pela saudade. E não é que rendeu?",z:"v"},
-  DD:{n:"Direct Deposit",s:"Duplo-duplo cai na conta toda noite.",z:"v"},
-  TR:{n:"The Tuesday Regular",s:"Tá sempre escalado e ninguém sabe por quê.",z:"a"},
-  OW:{n:"One More Week",s:"Foi o que você disse segunda passada.",z:"a"},
-  BL:{n:"Buy-Low Support Group",s:"Comprou na baixa. Baixou mais.",z:"r"},
-  NC:{n:"The Name-Brand Center",s:"Draftado pelo nome na camisa.",z:"r"},
-  UN:{n:"Untouchable",s:"Não troca, não empresta, não deixa olhar.",z:"v"},
-  OG:{n:"One More Game",s:"Só mais um jogo. Juro.",z:"a"},
-  DT:{n:"Dropping Tonight / Trying to Trade",s:"Available to trade. Aceita-se qualquer coisa.",z:"r"}};
+  GS:{n:"Ganha semana",s:"Quando ele joga bem, o confronto acaba na quinta.",z:"v"},
+  DL:{n:"Dono da liga",s:"Top 5 do mundo. Quem tem, tem; quem não tem, reza.",z:"v"},
+  EE:{n:"Estrela que entrega",s:"Custou caro e vale cada pick.",z:"v"},
+  CS:{n:"Carrega em silêncio",s:"Ninguém fala dele no grupo. Ele ganha do grupo.",z:"v"},
+  DD:{n:"Duplo-duplo na conta",s:"Cai todo dia, igual salário.",z:"v"},
+  FD:{n:"Faz o dele",s:"Entregou o que custou. Nem um rebote a mais.",z:"v"},
+  AS:{n:"Assalto no draft",s:"Roubaram na frente de todo mundo e ninguém gritou.",z:"v"},
+  RP:{n:"Rende mais que o preço",s:"Era pick de meio de draft. Joga de titular absoluto.",z:"v"},
+  VT:{n:"Veterano que não morre",s:"Sobrevive a todo rebuild. De novo.",z:"v"},
+  GL:{n:"Ganha liga",s:"Fim de draft carregando time nas costas.",z:"v"},
+  OK:{n:"O ok que virou fundamental",s:"Era tapa-buraco. Hoje ninguém tira do quinteto.",z:"v"},
+  PP:{n:"Pagou a pick",s:"Fim de draft com cara de fim de draft. Justo.",z:"a"},
+  ES:{n:"Especialista",s:"Faz uma coisa só. Mas faz.",z:"a"},
+  SD:{n:"Stream de domingo",s:"Mas quem é que eu vou chamar?",z:"a"},
+  MJ:{n:"Só mais um jogo",s:"Foi o que você disse segunda passada.",z:"a"},
+  JM:{n:"Joga muito, entrega pouco",s:"Corre 32 minutos por noite e volta sem nada.",z:"a"},
+  ST:{n:"Se tivesse minuto…",s:"Por 36 minutos é All-Star. Pena que joga 19.",z:"a"},
+  DV:{n:"Devendo",s:"Pick de estrela, jogo de coadjuvante.",z:"a"},
+  CB:{n:"Comprei na baixa, baixou mais",s:"Grupo de apoio às quintas.",z:"r"},
+  DN:{n:"Draftado pelo nome",s:"O nome ainda vende. O jogo, não.",z:"r"},
+  BA:{n:"Breakout? Ano que vem",s:"O discurso do draft veio um ano adiantado.",z:"r"},
+  PJ:{n:"Pick jogada fora",s:"Dava no mesmo ter pulado a vez.",z:"r"},
+  EQ:{n:"No elenco por esquecimento",s:"Ocupa vaga. Só isso.",z:"r"},
+  WA:{n:"Washed",s:"Primeira rodada. Rende de waiver.",z:"r"},
+  DM:{n:"Hospital Vila Nova Star",s:"Paciente de luxo. O time é ótimo, no papel.",z:"r"}};
 Object.values(PAC_TAG).forEach(t=>t.c=PAC_COR[t.z]);
 function pacDados(d){
   const DR={};((HIST.drafts&&HIST.drafts["2026/27"])||[]).forEach(r=>DR[r[3]]=[r[0],r[2]]);const TRO=new Set((BBM&&BBM.trocas)||[]);
@@ -4629,11 +4654,12 @@ function pacDados(d){
   return d.P.filter(p=>!p.fora&&p.t).map(p=>{const pk=pkDe(p),rk=bbmRk(p)||300,fora=p.inj==="OUT"||p.slot===13;
     const a=p.av||zero(),mn=(p.mn&&p.mn.av)||0;
     const dl=pk?pk-rk:130-rk,tol=pk?Math.max(6,pk*0.25):0;const lado=pk?(dl>tol?1:dl>=-tol?0:-1):(rk<=130?1:-1);let g;
-    if(!pk)g=rk<=75?"WC":rk<=130?"OV":rk<=200?"AM":"BB";
-    else if(pk>=109)g=rk<=60?"LW":rk<=130?"ES":(fora||rk>220)?"MS":"OH";
-    else if(pk>=73)g=(fora&&lado<0)?"IR":rk<=45?"QH":rk<=72?"OV":lado>=0?"CV":rk>200?"NB":mn>=30?"CS":(mn&&mn<24)?"PM":"AA";
-    else if(pk>=37)g=rk<=20?"QC":rk<=36?"LC":lado>=0?(a[1]>=8?"DD":dl>0?"RT":"TR"):rk<=pk*2?"OW":rk<=180?"BL":"NC";
-    else g=(fora&&lado<0)?"IR":lado>=0?"UN":rk<=pk*2+8?"OG":rk<=120?"OW":"DT";
+    const esp=a[4]>=1.2||a[3]>=1.4||a[5]>=2.5||a[1]>=8||a[2]>=5.5;
+    if(!pk)g=rk<=75?"GS":rk<=130?"OK":(fora&&rk>200)?"DM":rk<=200?(esp?"ES":"SD"):"EQ";
+    else if(pk>=109)g=rk<=60?"GL":rk<=110?"OK":fora?"DM":rk<=170?"PP":"PJ";
+    else if(pk>=73)g=rk<=45?"AS":rk<=72?"RP":lado>=0?"VT":fora?"DM":rk>200?"BA":mn>=30?"JM":(mn&&mn<24)?"ST":"MJ";
+    else if(pk>=37)g=rk<=20?"GS":rk<=36?"CS":lado>=0?(a[1]>=8?"DD":"FD"):fora?"DM":rk<=pk*2?"MJ":rk<=180?"CB":"DN";
+    else g=rk<=5?"DL":rk<=15?"GS":lado>=0?"EE":fora?"DM":rk<=pk*2+8?"DV":rk<=120?"CB":"WA";
     return {p,pk,rk,dl,g,fora,lado}});
 }
 function pacFoto(p){return TEMFOTO.has(p.id)||FOTO[p.n]?face(p.id,p.n,"ft"):`<span class="ft ini">${esc(ini(p.n))}<img src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/${p.id}.png&w=96&h=70" alt="" loading="lazy" onerror="this.remove()"></span>`}
@@ -4654,33 +4680,24 @@ function vPaciencia(d,pills,cab){
     const L=d.teams.map(t=>t.id).map(id=>{const m=todos.filter(x=>x.p.t===id);const dr=m.filter(x=>x.pk).sort((a,b)=>a.pk-b.pk),wv=m.filter(x=>!x.pk).sort((a,b)=>a.rk-b.rk);
       return {id,dr,wv,saldo:dr.reduce((s,x)=>s+Math.max(-100,Math.min(100,x.dl)),0),ouro:wv.filter(x=>x.rk<=130).length}}).sort((a,b)=>b.saldo-a.saldo);
     const chip=x=>`<button type="button" class="pac-mini" data-pj="${x.p.id}" style="--cor:${PAC_TAG[x.g].c}" title="${esc(x.p.n)} · ${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk} · ${PAC_TAG[x.g].n}">${pacFoto(x.p)}<i>${x.rk>=300?"–":x.rk}</i></button>`;
-    return h+`<p class="pac-como">Cada time em uma linha: primeiro quem ele draftou e ainda tem (na ordem das picks), depois o que pescou na waiver. O anel é verde (Untouchable), amarelo (One more game) ou vermelho (Dropping tonight / Trying to trade); o número é o rank de hoje. O <b>saldo</b> soma as posições ganhas e perdidas no draft (cada jogador conta no máximo 100).</p>${leg(todos)}
+    return h+`<p class="pac-como">Cada time em uma linha: primeiro quem ele draftou e ainda tem (na ordem das picks), depois o que pescou na waiver. O anel é verde (intocável), amarelo (só mais um jogo) ou vermelho (dropa ou troca); o número é o rank de hoje. O <b>saldo</b> soma as posições ganhas e perdidas no draft (cada jogador conta no máximo 100).</p>${leg(todos)}
     <div class="card">${L.map((t,i)=>`<div class="pac-time"><div class="pac-time-cab"><b class="pac-pos">${i+1}</b><img src="img/l/${T(t.id)[1]}.webp" alt=""><b>${esc(T(t.id)[0])}</b><span class="pac-saldo ${t.saldo>=0?"up":"dn"}">${t.saldo>0?"+":""}${t.saldo}</span><small>${t.dr.filter(x=>x.lado>0).length} no lucro · ${t.dr.filter(x=>x.lado<0).length} no prejuízo · ${t.ouro} da waiver no top 130</small></div><div class="pac-fila">${t.dr.map(chip).join("")}${t.wv.length?`<span class="pac-div">waiver</span>${t.wv.map(chip).join("")}`:""}</div></div>`).join("")}</div>`;
   }
-  // mapa
+  // mapa: cada faixa é um bloco (nome + quem pertence a ela), da melhor pra pior
   const pn=PAC_PAINEIS.find(x=>x.k===k)||PAC_PAINEIS[0],W=pn.k==="w";
   const L=todos.filter(x=>W?!x.pk:(x.pk>=pn.a&&x.pk<=pn.b)).sort((a,b)=>a.rk-b.rk);
-  const lo=W?Math.max(1,Math.min(...L.map(x=>x.rk),60)):1,hi=300;
-  const Y=r=>4+Math.pow((Math.min(Math.max(r,lo),hi)-lo)/(hi-lo),W?0.75:0.5)*90;
-  const X=(x,i)=>W?6+((i*38+11)%100)/100*88:5+(1-(x.pk-pn.a)/(pn.b-pn.a))*90;
-  const pts=L.map((x,i)=>({x,px:X(x,i),py:Y(x.rk)})).sort((a,b)=>a.py-b.py);
-  for(let i=0;i<pts.length;i++)for(let j=0;j<i;j++){const a=pts[i],b=pts[j];if(Math.abs(a.px-b.px)<7&&Math.abs(a.py-b.py)<4.4){a.px+=a.px>=b.px?4.5:-4.5;if(a.px>96||a.px<4){a.px=Math.min(96,Math.max(4,a.px));a.py+=2.4}}}
-  const N=30,ln=[];for(let i=0;i<=N;i++){const fx=i/N;const r=W?130:pn.b-fx*(pn.b-pn.a);ln.push([5+fx*90,Y(r)])}
-  const lp=ln.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
-  const ticks=[1,5,10,25,50,100,150,200,300].filter(r=>r>=lo&&(r===1||r>lo));
-  const grade=ticks.map(r=>`<div class="pac-gy" style="top:${Y(r).toFixed(1)}%"><span>#${r}${r===300?"+":""}</span></div>`).join("");
-  const rods=W?"":(pn.k==="t"?["10 a 13","7 a 9","4 a 6","1 a 3"].map(r=>`<span>Rodadas ${r}</span>`).join(""):Array.from({length:(pn.b-pn.a+1)/12},(_,i)=>`<span>Rodada ${pn.b/12-i}</span>`).join(""));
-  const faces=pts.map(({x,px,py})=>`<button type="button" class="pac-f${fs.length&&!fs.includes(x.p.t)?" apag":""}${pn.k==="t"?" peq":""}" data-pj="${x.p.id}" style="left:${px.toFixed(1)}%;top:${py.toFixed(1)}%;--cor:${fs.length>1&&fs.includes(x.p.t)?CAB[fs.indexOf(x.p.t)]:PAC_TAG[x.g].c}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · ${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk} · ${PAC_TAG[x.g].n}">${pacFoto(x.p)}<i>${x.rk>=300?"–":x.rk}</i></button>`).join("");
-  const grp={};pts.forEach(q=>(grp[q.x.g]=grp[q.x.g]||[]).push(q));const postas=[];
-  const zon=(pn.k==="t"?[]:Object.entries(grp)).sort((a,b)=>b[1].length-a[1].length).slice(0,7).map(([g,m])=>{
-    const cx=m.reduce((s,q)=>s+q.px,0)/m.length,cy=m.reduce((s,q)=>s+q.py,0)/m.length,w=30,hh=9;
-    let best=null;const cand=[];[6,11,16,22].forEach(R=>{for(let k=0;k<10;k++){const an=k/10*Math.PI*2;cand.push([Math.cos(an)*R*1.1-w/2,Math.sin(an)*R-hh/2])}});
-      cand.forEach(([dx,dy],i)=>{
-      const x=Math.min(100-w-1,Math.max(7,cx+dx)),y=Math.min(100-hh-1,Math.max(1,cy+dy));
-      const sc=pts.filter(q=>q.px>x-4&&q.px<x+w+2&&q.py>y-3&&q.py<y+hh+2).length*10+postas.filter(o=>x<o.x+w&&x+w>o.x&&y<o.y+hh+1&&y+hh+1>o.y).length*60+i*0.4;
-      if(!best||sc<best.sc)best={x,y,sc}});
-    postas.push(best);const t=PAC_TAG[g];
-    return `<div class="pac-z ${best.y<36?"c":"e"}" style="left:${best.x.toFixed(1)}%;top:${best.y.toFixed(1)}%"><b>${t.n}</b><span>${t.s}</span></div>`}).join("");
+  const vis2=fs.length?L.filter(x=>fs.includes(x.p.t)):L;
+  const grp={};vis2.forEach(x=>(grp[x.g]=grp[x.g]||[]).push(x));
+  const ordZ={v:0,a:1,r:2};
+  const blocos=Object.entries(grp).map(([g,m])=>({g,m,t:PAC_TAG[g],med:m.reduce((q,x)=>q+x.rk,0)/m.length})).sort((x,y)=>ordZ[x.t.z]-ordZ[y.t.z]||x.med-y.med);
+  const nv=blocos.filter(b=>b.t.z==="v").length,na=blocos.filter(b=>b.t.z==="a").length,nt=Math.max(1,blocos.length);
+  const p1=Math.round(nv/nt*100),p2=Math.round((nv+na)/nt*100);
+  const fundo=`radial-gradient(60% 26% at 20% 6%,rgba(11,122,53,.9) 0,transparent 70%),radial-gradient(50% 22% at 82% ${Math.max(8,p1-12)}%,rgba(23,169,72,.8) 0,transparent 72%),linear-gradient(180deg,#0f8f3c 0,#35b846 ${Math.max(6,p1-10)}%,#c3e23c ${p1}%,#f6e23c ${Math.round((p1+p2)/2)}%,#fbac40 ${p2}%,#f6785a ${Math.min(96,p2+10)}%,#f0505a 100%)`;
+  const sobre=n=>{const w=String(n).replace(/ (Jr\.?|Sr\.?|II|III|IV)$/,"").split(" ");return w[w.length-1]};
+  const cara=x=>`<button type="button" class="pac-c" data-pj="${x.p.id}" style="--cor:${fs.length>1?CAB[fs.indexOf(x.p.t)]:PAC_TAG[x.g].c}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · ${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk}"><span class="pac-cf">${pacFoto(x.p)}<i>${x.rk>=300?"–":x.rk}</i><img class="pac-ct" src="img/l/${T(x.p.t)[1]}.webp" alt=""></span><em>${esc(sobre(x.p.n))}</em></button>`;
+  let cortou=false;
+  const corpo=blocos.map((b,i)=>{let div="";if(!cortou&&b.t.z!=="v"){cortou=true;div=`<div class="pac-corte"><span>daqui pra baixo: mais uma bomba e eu ouço proposta</span></div>`}
+    return `${div}<section class="pac-b ${b.t.z} ${i%2?"dir":"esq"}"><h3>${esc(b.t.n)}</h3><p>${esc(b.t.s)}</p><div class="pac-caras">${b.m.map(cara).join("")}</div></section>`}).join("");
   const sub=`<div class="pilulas pac-sub" role="group" aria-label="Rodadas">${PAC_PAINEIS.map(x=>`<button class="pil" type="button" data-pac="${x.k}" aria-pressed="${k===x.k}">${x.n}</button>`).join("")}</div>`;
   const filtro=`<div class="pac-filtro" role="group" aria-label="Destacar ou comparar times"><div class="pac-filtro-tit"><b>DESTACAR OU COMPARAR</b> toque num escudo pra ver só aquele time; toque em outro pra comparar os dois${fs.length?` · <button type="button" class="pac-limpa" data-pact="0">limpar</button>`:""}</div>${d.teams.map(t=>{const i=fs.indexOf(t.id);return `<button type="button" class="pac-tb" data-pact="${t.id}" aria-pressed="${i>=0}" style="${i>=0?`--sel:${fs.length>1?CAB[i]:"#ffd400"}`:""}"><img src="img/l/${T(t.id)[1]}.webp" alt="${esc(T(t.id)[0])}" title="${esc(T(t.id)[0])}"></button>`}).join("")}</div>`;
   // tira-teima: resumo de cada time escolhido (elenco inteiro, não só o painel)
@@ -4693,15 +4710,12 @@ function vPaciencia(d,pills,cab){
       return `<div class="pac-dl-l"><b class="${win===0?"g":""}">${vs[0]}</b><span>${rot}</span>${R.length>1?`<b class="${win===1?"g":""}">${vs[1]}</b>`:""}</div>`};
     const txt=(rot,f)=>`<div class="pac-dl-l t"><b>${f(R[0])}</b><span>${rot}</span>${R.length>1?`<b>${f(R[1])}</b>`:""}</div>`;
     duelo=`<div class="card pac-duelo${R.length>1?"":" um"}"><div class="pac-dl-cab">${R.map((r,i)=>`<div style="--sel:${R.length>1?CAB[i]:"#ffd400"}"><img src="img/l/${T(r.id)[1]}.webp" alt=""><b>${esc(T(r.id)[0])}</b></div>`).join(R.length>1?'<span class="pac-x">X</span>':"")}</div>
-    ${lin("Untouchable",r=>r.v,"maior")}${lin("One more game",r=>r.a,"maior")}${lin("Dropping tonight / Trying to trade",r=>r.r,"menor")}${lin("Saldo do draft (posições)",r=>r.saldo,"maior")}${lin("Rank médio dos 8 melhores",r=>r.med,"menor")}${lin("No departamento médico",r=>r.fora,"menor")}
+    ${lin("Intocáveis",r=>r.v,"maior")}${lin("Só mais um jogo",r=>r.a,"maior")}${lin("Dropa hoje ou tenta trocar",r=>r.r,"menor")}${lin("Saldo do draft (posições)",r=>r.saldo,"maior")}${lin("Rank médio dos 8 melhores",r=>r.med,"menor")}${lin("No departamento médico",r=>r.fora,"menor")}
     ${txt("Melhor negócio do draft",r=>nomeC(r.best))}${txt("Pior negócio do draft",r=>nomeC(r.pior))}${txt("Melhor achado da waiver",r=>nomeC(r.wv))}</div>`}
-  const lista=(fs.length?L.filter(x=>fs.includes(x.p.t)):L).slice().sort((a,b)=>W?a.rk-b.rk:b.dl-a.dl);
-  return h+sub+`<p class="pac-como">${W?"Quem veio da waiver ou de agente livre não custou pick. Quanto mais alto, melhor o rank de hoje. Acima da linha tracejada já é jogador de time titular (top 130).":"<b>Na horizontal:</b> a rodada do draft (as mais cedo ficam à direita, como no gráfico original). <b>De cima pra baixo:</b> o rank de hoje (o número no selo). A <b>linha tracejada é o preço</b>: quem está acima dela rende mais do que custou; quem está abaixo, menos."} Cada <b>faixa</b> escrita no mapa dá nome ao grupo de carinhas ao lado dela. Anel verde: Untouchable. Amarelo: One more game. Vermelho: Dropping tonight / Trying to trade. Toque na carinha pra abrir a ficha.</p>${filtro}${duelo}
-  <div class="card pac-card"><div class="pac-topo"><span><i class="tr"></i>One more dud and I'm taking offers</span><span><i class="q" style="background:#12b455"></i>Untouchable</span><span><i class="q" style="background:#f2c230"></i>One more game</span><span><i class="q" style="background:#ef4a55"></i>Dropping tonight / Trying to trade</span></div><div class="pac-wrap"><div class="pac-ytit">RANK DE HOJE</div>
-  <div class="pac"><svg class="pac-ln" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polygon class="lucro" points="0,0 100,0 100,${ln[N][1].toFixed(1)} ${ln.slice().reverse().map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")} 0,${ln[0][1].toFixed(1)}"/><polygon class="prej" points="0,100 100,100 100,${ln[N][1].toFixed(1)} ${ln.slice().reverse().map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")} 0,${ln[0][1].toFixed(1)}"/><polyline points="${lp}"/></svg>
-  ${grade}${zon}${faces}</div></div>
-  <div class="pac-eixo-x">${W?"<span>Waiver e agente livre (sem ordem: só a altura importa)</span>":rods}</div><div class="pac-xtit">${W?"":"⬅ ESCOLHIDO MAIS TARDE · RODADA DO DRAFT · ESCOLHIDO MAIS CEDO ➜"}</div></div>
-  ${leg(L)}
+  const lista=vis2.slice().sort((a,b)=>W?a.rk-b.rk:b.dl-a.dl);
+  return h+sub+`<p class="pac-como">Cada <b>faixa</b> é um tipo de jogador, e quem pertence a ela aparece logo abaixo do nome. As melhores ficam em cima, as piores embaixo. O número na carinha é o rank de hoje e o escudo é o dono. Toque na carinha pra abrir a ficha.</p>${filtro}${duelo}
+  <div class="pac-mapa" style="background:${fundo}"><div class="pac-topo"><b>${W?"WAIVER E AGENTE LIVRE":pn.k==="t"?"DRAFT INTEIRO":esc(pn.n).toUpperCase()}</b><span><i class="q" style="background:#12b455"></i>Intocável</span><span><i class="q" style="background:#f2c230"></i>Só mais um jogo</span><span><i class="q" style="background:#ef4a55"></i>Dropa hoje ou tenta trocar</span></div>
+  <div class="pac-eixo"><span>RENDE MUITO</span><i></i><span>RENDE NADA</span></div>${corpo||'<div class="vazio">Ninguém desse time neste painel.</div>'}</div>
   <div class="card"><div class="bloco-tit">${W?"DA WAIVER, DO MELHOR PRO PIOR":"DESTE PAINEL, DO MAIOR LUCRO AO MAIOR PREJUÍZO"}${fs.length?` <small>só ${fs.map(i=>esc(T(i)[0])).join(" e ")}</small>`:""}</div>${lista.map(pacLinha).join("")||'<div class="vazio">Ninguém desse time neste painel.</div>'}</div>`;
 }
 
