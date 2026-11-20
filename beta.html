@@ -2363,6 +2363,8 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 .pac-t{display:inline-flex;align-items:center;gap:4px;font:700 13px var(--ui)}.pac-t img{width:22px;height:22px}
 .pac-t b{min-width:18px;text-align:center;border-radius:4px;padding:1px 3px;color:#0d0b0b}.pac-t .v{background:#3fbf45}.pac-t .a{background:#f6c93c}.pac-t .r{background:#f0505a}
 @media(max-width:520px){.pac{height:560px}.pac-f,.pac-f .ft{width:32px!important;height:32px!important}.pac-z b{font-size:17px}.pac-z span{font-size:11.5px}}
+.pac-f .ft.ini{position:relative;overflow:hidden}.pac-f .ft.ini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#fff8ec}
+.pac-z{z-index:1}
 </style>
 </head><body>
 </style>
@@ -2393,11 +2395,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261120005520"></script>
+<script src="bbm.js?v=20261120005702"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261120005520";
+const VERSAO_PAINEL="20261120005702";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4537,7 +4539,10 @@ const PAC_PAINEIS=[
   {k:"a",n:"Rodadas 1 a 3",a:1,b:36,rot:["3","2","1"],z:[["DONO DO TIME","Sem ele não tem liga.",50,4,"c"],["FEZ O QUE CUSTOU","Estrela com cara de estrela.",4,26,"c"],["CARO DEMAIS","Preço de protagonista, entrega de figurante.",6,60,"e"],["DEPARTAMENTO MÉDICO","O melhor do elenco é o fisioterapeuta.",40,86,"e"]]}];
 function vPaciencia(d,pills,cab){
   const k=UI.pac||"w";const pn=PAC_PAINEIS.find(x=>x.k===k)||PAC_PAINEIS[0];
-  const todos=d.P.filter(p=>!p.fora&&p.t).map(p=>({p,pk:HIST.draft[p.n]||0,rk:bbmRk(p)||300}));
+  const DR={};((HIST.drafts&&HIST.drafts["2026/27"])||[]).forEach(r=>DR[r[3]]=[r[0],r[2]]);const TRO=new Set((BBM&&BBM.trocas)||[]);
+  // só conta como draft se ainda está com quem draftou (ou veio por troca); o resto é waiver
+  const pkDe=p=>{const r=DR[p.n];if(!r)return HIST.draft[p.n]&&TRO.has(p.id)?HIST.draft[p.n]:0;return (r[1]===T(p.t)[0]||TRO.has(p.id))?r[0]:0};
+  const todos=d.P.filter(p=>!p.fora&&p.t).map(p=>({p,pk:pkDe(p),rk:bbmRk(p)||300}));
   const L=todos.filter(x=>pn.k==="w"?!x.pk:(x.pk>=pn.a&&x.pk<=pn.b)).sort((a,b)=>a.rk-b.rk);
   const lo=Math.max(1,Math.min(...L.map(x=>x.rk),pn.k==="w"?60:pn.a)),hi=300;
   const Y=r=>{const v=Math.pow((Math.min(Math.max(r,lo),hi)-lo)/(hi-lo),0.62);return 5+v*88};
@@ -4549,7 +4554,7 @@ function vPaciencia(d,pills,cab){
   // linha: pagou o que custou (rank = pick); no waiver, nível de titular (#130)
   const N=24,ln=[];for(let i=0;i<=N;i++){const fx=i/N;let r;if(pn.k==="w")r=130;else r=pn.b-fx*(pn.b-pn.a);const w=Math.sin(fx*Math.PI*2.2)*1.6;ln.push(`${(5+fx*89).toFixed(1)},${(Y(Math.max(r,lo))+w).toFixed(1)}`)}
   const cor=py=>py<38?"v":py<68?"a":"r";
-  const faces=pts.map(({x,px,py})=>`<button type="button" class="pac-f ${cor(py)}" data-pj="${x.p.id}" style="left:${px.toFixed(1)}%;top:${py.toFixed(1)}%;--cor:${T(x.p.t)[4]}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · #${x.rk>=300?"sem rank":x.rk}${x.pk?" · pick "+x.pk:" · waiver"}">${face(x.p.id,x.p.n,"ft")}<i>${x.rk>=300?"–":x.rk}</i></button>`).join("");
+  const faces=pts.map(({x,px,py})=>`<button type="button" class="pac-f ${cor(py)}" data-pj="${x.p.id}" style="left:${px.toFixed(1)}%;top:${py.toFixed(1)}%;--cor:${T(x.p.t)[4]}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · #${x.rk>=300?"sem rank":x.rk}${x.pk?" · pick "+x.pk:" · waiver"}">${TEMFOTO.has(x.p.id)||FOTO[x.p.n]?face(x.p.id,x.p.n,"ft"):`<span class="ft ini">${esc(ini(x.p.n))}<img src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/${x.p.id}.png&w=96&h=70" alt="" loading="lazy" onerror="this.remove()"></span>`}<i>${x.rk>=300?"–":x.rk}</i></button>`).join("");
   const zon=pn.z.map(([t,s,l,tp,c])=>`<div class="pac-z ${c}" style="left:${l}%;top:${tp}%"><b>${t}</b><span>${s}</span></div>`).join("");
   const sub=`<div class="pilulas pac-sub" role="group" aria-label="Rodadas">${PAC_PAINEIS.map(x=>`<button class="pil" type="button" data-pac="${x.k}" aria-pressed="${k===x.k}">${x.n}</button>`).join("")}</div>`;
   // resumo por time no painel
