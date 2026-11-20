@@ -2419,6 +2419,12 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 .pac-dl-l b{font-family:var(--display);font-weight:400;font-size:24px;color:var(--texto)}.pac-dl-l b:last-child:not(:first-child){text-align:right}
 .pac-dl-l b.g{color:#3ddc7a}.pac-dl-l span{font:700 11.5px var(--ui);letter-spacing:.6px;text-transform:uppercase;color:var(--apagado);text-align:center}
 .pac-dl-l.t b{font:700 14px var(--ui)}.pac-dl-l.t b small{display:block;font:12px var(--ui);color:var(--apagado)}
+.pac-filtro{display:flex;flex-wrap:wrap;align-items:center;gap:10px}.pac-filtro-tit{flex-basis:100%}
+.pac-filtro .pac-tb{width:48px;height:48px;padding:0;border-radius:50%;border:3px solid var(--linha);background:#fff8ec;overflow:hidden;display:block;flex:0 0 auto;transition:transform .12s}
+.pac-filtro .pac-tb img{width:100%;height:100%;object-fit:cover;display:block}
+.pac-filtro .pac-tb:hover{transform:scale(1.08)}
+.pac-filtro .pac-tb[aria-pressed="true"]{border-color:var(--sel);box-shadow:0 0 0 3px var(--sel);transform:scale(1.08)}
+@media(max-width:520px){.pac-filtro{gap:8px}.pac-filtro .pac-tb{width:42px;height:42px}}
 </style>
 </head><body>
 </style>
@@ -2449,11 +2455,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261120015039"></script>
+<script src="bbm.js?v=20261120015507"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261120015039";
+const VERSAO_PAINEL="20261120015507";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4676,7 +4682,7 @@ function vPaciencia(d,pills,cab){
     postas.push(best);const t=PAC_TAG[g];
     return `<div class="pac-z ${best.y<36?"c":"e"}" style="left:${best.x.toFixed(1)}%;top:${best.y.toFixed(1)}%"><b>${t.n}</b><span>${t.s}</span></div>`}).join("");
   const sub=`<div class="pilulas pac-sub" role="group" aria-label="Rodadas">${PAC_PAINEIS.map(x=>`<button class="pil" type="button" data-pac="${x.k}" aria-pressed="${k===x.k}">${x.n}</button>`).join("")}</div>`;
-  const filtro=`<div class="pac-filtro" role="group" aria-label="Destacar ou comparar times"><div class="pac-filtro-tit"><b>DESTACAR OU COMPARAR</b> toque em um time pra ver só ele; toque em outro pra pôr os dois lado a lado${fs.length?` · <button type="button" class="pac-limpa" data-pact="0">limpar</button>`:""}</div>${d.teams.map(t=>{const i=fs.indexOf(t.id);return `<button type="button" class="pac-tb" data-pact="${t.id}" aria-pressed="${i>=0}" style="${i>=0?`--sel:${fs.length>1?CAB[i]:"#ffd400"}`:""}"><img src="img/l/${T(t.id)[1]}.webp" alt=""><span>${esc(T(t.id)[0])}</span></button>`}).join("")}</div>`;
+  const filtro=`<div class="pac-filtro" role="group" aria-label="Destacar ou comparar times"><div class="pac-filtro-tit"><b>DESTACAR OU COMPARAR</b> toque num escudo pra ver só aquele time; toque em outro pra comparar os dois${fs.length?` · <button type="button" class="pac-limpa" data-pact="0">limpar</button>`:""}</div>${d.teams.map(t=>{const i=fs.indexOf(t.id);return `<button type="button" class="pac-tb" data-pact="${t.id}" aria-pressed="${i>=0}" style="${i>=0?`--sel:${fs.length>1?CAB[i]:"#ffd400"}`:""}"><img src="img/l/${T(t.id)[1]}.webp" alt="${esc(T(t.id)[0])}" title="${esc(T(t.id)[0])}"></button>`}).join("")}</div>`;
   // tira-teima: resumo de cada time escolhido (elenco inteiro, não só o painel)
   const res=id=>{const m=todos.filter(x=>x.p.t===id),dr=m.filter(x=>x.pk),wv=m.filter(x=>!x.pk).sort((a,b)=>a.rk-b.rk),z=c=>m.filter(x=>PAC_TAG[x.g].z===c).length;
     const top=m.map(x=>x.rk).sort((a,b)=>a-b).slice(0,8);const bo=dr.slice().sort((a,b)=>b.dl-a.dl);
@@ -5682,7 +5688,7 @@ function montarAtalhos(r){
 
 /* logo ou nome de time da liga = abre o perfil do time */
 function timeDoClique(el){if(el&&el.closest&&el.closest("#btnEu,#menuEu,#popCad,#popRev,#popMk,.mk-fbox button,.mk-reac,.mk-comp"))return 0;
-  if(!el||el.closest("button[data-ft],[data-sub],[data-jogo],.pilulas,select,input,.nav,.jogo-nav .jn-b,.atalhos"))return 0;
+  if(!el||el.closest("[data-pact],.pac-dl-cab,button[data-ft],[data-sub],[data-jogo],.pilulas,select,input,.nav,.jogo-nav .jn-b,.atalhos"))return 0;
   const img=el.closest("img");if(img){const m=/img\/l\/([a-z0-9_-]+)\.webp/i.exec(img.getAttribute("src")||"");if(m){const id=Object.keys(TIMES).find(k=>TIMES[k][1]===m[1]);if(id&&!(location.hash==="#time-"+id))return +id}}
   const r=el.closest(".rosto");if(r){const i=r.querySelector("img");if(i&&i!==img)return timeDoClique(i)}
   let x=el;for(let k=0;k<2&&x;k++,x=x.parentElement){if(x.children.length>1||x.matches("tr,td,table,.card,a[href],button"))break;const t=(x.textContent||"").trim();if(IDN[t]&&location.hash!=="#time-"+IDN[t])return IDN[t]}
@@ -5692,7 +5698,7 @@ function timeDoClique(el){if(el&&el.closest&&el.closest("#btnEu,#menuEu,#popCad,
 
 /* logo ou nome de time da liga = abre o perfil do time */
 function timeDoClique(el){if(el&&el.closest&&el.closest("#btnEu,#menuEu,#popCad,#popRev,#popMk,.mk-fbox button,.mk-reac,.mk-comp"))return 0;
-  if(!el||el.closest("button[data-ft],[data-sub],[data-jogo],.pilulas,select,input,.nav,.jogo-nav .jn-b,.atalhos"))return 0;
+  if(!el||el.closest("[data-pact],.pac-dl-cab,button[data-ft],[data-sub],[data-jogo],.pilulas,select,input,.nav,.jogo-nav .jn-b,.atalhos"))return 0;
   const img=el.closest("img");if(img){const m=/img\/l\/([a-z0-9_-]+)\.webp/i.exec(img.getAttribute("src")||"");if(m){const id=Object.keys(TIMES).find(k=>TIMES[k][1]===m[1]);if(id&&!(location.hash==="#time-"+id))return +id}}
   const r=el.closest(".rosto");if(r){const i=r.querySelector("img");if(i&&i!==img)return timeDoClique(i)}
   let x=el;for(let k=0;k<2&&x;k++,x=x.parentElement){if(x.children.length>1||x.matches("tr,td,table,.card,a[href],button"))break;const t=(x.textContent||"").trim();if(IDN[t]&&location.hash!=="#time-"+IDN[t])return IDN[t]}
