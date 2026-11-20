@@ -2337,34 +2337,47 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 .ods-fx .ods-b{min-width:0}
 @media (max-width:420px){.ods-pl-l .ods-par{flex:1 1 auto}.ods-pl-l .ods-par .ods-b{flex:1 1 0}}
 .pac-sub{margin:8px 0}
-.pac-card{padding:10px 10px 12px;position:relative}
-.pac{position:relative;width:100%;height:620px;border-radius:14px;overflow:hidden;background:
- radial-gradient(60% 34% at 22% 8%,#0b7a35 0,transparent 70%),radial-gradient(55% 30% at 78% 14%,#17a948 0,transparent 72%),
- radial-gradient(70% 26% at 40% 52%,#f4e23a 0,transparent 75%),radial-gradient(60% 26% at 80% 62%,#f9b233 0,transparent 75%),
- radial-gradient(80% 30% at 30% 100%,#ef4a55 0,transparent 75%),
- linear-gradient(180deg,#12933f 0,#3fbf45 22%,#b9e23c 40%,#f6e83c 52%,#fbb040 68%,#f77a52 82%,#f0505a 100%)}
+.pac-como{font:15px/1.4 var(--ui);color:var(--texto);margin:6px 2px 10px;max-width:70ch}
+.pac-card{padding:10px 10px 12px}
+.pac-wrap{display:flex;gap:4px}
+.pac-ytit{writing-mode:vertical-rl;transform:rotate(180deg);font:700 11px var(--ui);letter-spacing:2px;color:var(--apagado);text-align:center}
+.pac{position:relative;flex:1;min-width:0;height:640px;border-radius:12px;overflow:hidden;background:#191212;border:1px solid var(--linha)}
 .pac-ln{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.pac-ln polyline{fill:none;stroke:#0d0b0b;stroke-width:2.5;stroke-dasharray:9 7;vector-effect:non-scaling-stroke;stroke-linecap:round}
-.pac-z{position:absolute;max-width:46%;pointer-events:none;line-height:1.05}
-.pac-z b{display:block;font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:.3px;text-wrap:balance}
-.pac-z span{display:block;font-family:var(--ui);font-size:12.5px;margin-top:3px}
-.pac-z.c{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.45)}.pac-z.e{color:#0d0b0b}
-.pac-f{position:absolute;transform:translate(-50%,-50%);width:38px;height:38px;padding:0;border:0;background:none;cursor:pointer;z-index:2}
-.pac-f .ft{width:38px!important;height:38px!important;border-radius:50%;object-fit:cover;background:#fff8ec;border:2.5px solid var(--cor,#0d0b0b);box-shadow:0 1px 4px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#0d0b0b;font:700 11px var(--ui)}
-.pac-f i{position:absolute;right:-6px;bottom:-5px;min-width:18px;padding:1px 3px;border-radius:8px;background:#0d0b0b;color:#fff;font:700 10px/1.2 var(--ui);font-style:normal;text-align:center}
-.pac-f:hover,.pac-f:focus-visible{z-index:5;outline:none}.pac-f:focus-visible .ft{box-shadow:0 0 0 3px #fff}
-.pac-eixo-x{display:flex;justify-content:space-around;border-top:3px solid var(--texto);margin-top:8px;padding-top:4px;font-family:var(--display);font-size:20px}
-.pac-eixo-y{display:flex;justify-content:space-between;font:700 10px var(--ui);letter-spacing:1px;color:var(--apagado);margin-bottom:6px}
-.pac-leg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font:13px var(--ui);color:var(--texto)}
-.pac-leg span{display:inline-flex;align-items:center;gap:6px}
-.pac-leg .q{width:14px;height:14px;border-radius:4px;display:inline-block}.pac-leg .q.v{background:#17a948}.pac-leg .q.a{background:#f6c93c}.pac-leg .q.r{background:#f0505a}
-.pac-leg .tr{width:26px;border-top:3px dashed var(--texto);display:inline-block}
-.pac-res{display:flex;flex-wrap:wrap;gap:8px 14px}
-.pac-t{display:inline-flex;align-items:center;gap:4px;font:700 13px var(--ui)}.pac-t img{width:22px;height:22px}
-.pac-t b{min-width:18px;text-align:center;border-radius:4px;padding:1px 3px;color:#0d0b0b}.pac-t .v{background:#3fbf45}.pac-t .a{background:#f6c93c}.pac-t .r{background:#f0505a}
-@media(max-width:520px){.pac{height:560px}.pac-f,.pac-f .ft{width:32px!important;height:32px!important}.pac-z b{font-size:17px}.pac-z span{font-size:11.5px}}
-.pac-f .ft.ini{position:relative;overflow:hidden}.pac-f .ft.ini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#fff8ec}
-.pac-z{z-index:1}
+.pac-ln .lucro{fill:rgba(18,180,85,.20)}.pac-ln .prej{fill:rgba(239,74,85,.17)}
+.pac-ln polyline{fill:none;stroke:#fff8ec;stroke-width:2.5;stroke-dasharray:9 7;vector-effect:non-scaling-stroke;stroke-linecap:round}
+.pac-gy{position:absolute;left:0;right:0;border-top:1px solid rgba(255,248,236,.10);pointer-events:none}
+.pac-gy span{position:absolute;left:4px;top:-8px;font:700 11px var(--ui);color:rgba(255,248,236,.55);background:#191212;padding:0 3px;border-radius:3px}
+.pac-marca{position:absolute;font-family:var(--display);font-size:44px;letter-spacing:2px;pointer-events:none;line-height:1}
+.pac-marca.l{right:4%;top:3%;color:rgba(18,180,85,.30)}.pac-marca.p{left:9%;bottom:3%;color:rgba(239,74,85,.30)}
+.pac-f,.pac-mini{position:relative;width:38px;height:38px;padding:0;border:0;background:none;cursor:pointer;flex:0 0 auto;display:inline-block}
+.pac-f{position:absolute;transform:translate(-50%,-50%);z-index:2;transition:opacity .15s}
+.pac-f.apag{opacity:.16;z-index:1}
+.pac-f .ft,.pac-mini .ft{width:38px!important;height:38px!important;border-radius:50%;object-fit:cover;background:#fff8ec;border:3px solid var(--cor,#fff);box-shadow:0 1px 4px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;color:#0d0b0b;font:700 11px var(--ui);position:relative;overflow:hidden}
+.pac-f .ft.ini img,.pac-mini .ft.ini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#fff8ec}
+.pac-f i,.pac-mini i{position:absolute;right:-6px;bottom:-5px;min-width:18px;padding:1px 3px;border-radius:8px;background:#0d0b0b;color:#fff;font:700 10px/1.2 var(--ui);font-style:normal;text-align:center;border:1px solid var(--cor,#fff)}
+.pac-f:hover,.pac-f:focus-visible{z-index:5;outline:none;opacity:1}.pac-f:focus-visible .ft,.pac-mini:focus-visible .ft{box-shadow:0 0 0 3px #fff}
+.pac-eixo-x{display:flex;justify-content:space-around;margin:6px 0 0 20px;font-family:var(--display);font-size:17px;color:var(--texto)}
+.pac-eixo-x span{flex:1;text-align:center;border-top:3px solid var(--texto);margin:0 3px;padding-top:3px}
+.pac-xtit{text-align:center;font:700 11px var(--ui);letter-spacing:2px;color:var(--apagado);margin-top:4px}
+.pac-leg{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px 14px;margin:10px 2px;font:13.5px/1.3 var(--ui);color:var(--apagado)}
+.pac-leg span{display:flex;align-items:baseline;gap:6px}.pac-leg b{color:var(--texto);white-space:nowrap}
+.pac-leg i{width:12px;height:12px;border-radius:50%;flex:0 0 auto;display:inline-block;transform:translateY(1px)}
+.pac-filtro{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 2px 10px;font:700 12px var(--ui);color:var(--apagado)}
+.pac-filtro button{width:34px;height:34px;padding:2px;border-radius:8px;border:2px solid transparent;background:var(--card);cursor:pointer}
+.pac-filtro button[aria-pressed="true"]{border-color:var(--amarelo)}.pac-filtro img{width:100%;height:100%;object-fit:contain}
+.pac-li{display:flex;align-items:center;gap:10px;padding:8px 2px;border-top:1px solid var(--linha)}
+.pac-li:first-of-type{border-top:0}
+.pac-li-n{flex:1;min-width:0}.pac-li-n b{display:block;font:700 15px var(--ui);color:var(--texto)}
+.pac-li-n small{font:13px var(--ui);color:var(--apagado)}.pac-li-n small img{width:14px;height:14px;vertical-align:-2px}
+.pac-selo{font:700 10.5px var(--ui);letter-spacing:.5px;color:#0d0b0b;padding:3px 6px;border-radius:5px;white-space:nowrap}
+.pac-dl{font-family:var(--display);font-size:20px;min-width:46px;text-align:right}.pac-dl.up,.pac-saldo.up{color:#3ddc7a}.pac-dl.dn,.pac-saldo.dn{color:#ff6b74}
+.pac-time{padding:12px 2px;border-top:1px solid var(--linha)}.pac-time:first-child{border-top:0}
+.pac-time-cab{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px;font:700 16px var(--ui);color:var(--texto)}
+.pac-time-cab img{width:26px;height:26px}.pac-pos{font-family:var(--display);font-size:20px;color:var(--amarelo);min-width:20px}
+.pac-saldo{font-family:var(--display);font-size:22px}.pac-time-cab small{font:13px var(--ui);color:var(--apagado);flex-basis:100%}
+.pac-fila{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:center}
+.pac-div{font:700 10px var(--ui);letter-spacing:1.5px;color:var(--apagado);border-left:2px solid var(--linha);padding-left:10px;margin-left:2px;text-transform:uppercase}
+@media(max-width:520px){.pac{height:580px}.pac-f,.pac-f .ft{width:32px!important;height:32px!important}.pac-marca{font-size:30px}.pac-selo{font-size:9.5px}.pac-li{gap:7px}}
 </style>
 </head><body>
 </style>
@@ -2395,11 +2408,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261120005702"></script>
+<script src="bbm.js?v=20261120012455"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261120005702";
+const VERSAO_PAINEL="20261120012455";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4531,41 +4544,73 @@ function odsRanking(){odsRkCarrega();const t=meuTime(),pin=t&&pinGuardado(t);
 /* ---------- BBM: ranking do Basketball Monster (punt TO) e curva da paciência ---------- */
 const BBMR={};((window.BBM&&BBM.ids)||[]).forEach((id,i)=>{if(id)BBMR[id]=i+1});
 const bbmRk=p=>(p&&BBMR[p.id])||null;
-const PAC_PAINEIS=[
-  {k:"w",n:"Waiver",a:0,b:0,rot:["Waiver e agente livre"],z:[["A PICK DE WAIVER DO ANO","O print já rodou o grupo três vezes.",4,3,"c"],["INQUILINO","Paga o aluguel e não incomoda.",52,30,"c"],["TURISTA","Veio pra um jogo e esqueceram de dropar.",4,60,"e"],["PESO MORTO","Tá no elenco por esquecimento.",46,90,"e"]]},
-  {k:"d",n:"Rodadas 10 a 13",a:109,b:156,rot:["13","12","11","10"],z:[["BILHETE PREMIADO","Escolhido no chute, rende de titular.",4,3,"c"],["ACHADO","Fim de draft que virou peça.",54,28,"c"],["FIGURANTE","Tá no elenco, não tá no jogo.",6,62,"e"],["PICK JOGADA FORA","Dava no mesmo ter pulado a vez.",40,90,"e"]]},
-  {k:"c",n:"Rodadas 7 a 9",a:73,b:108,rot:["9","8","7"],z:[["PECHINCHA","Custou pouco, carrega muito.",4,4,"c"],["FUNCIONÁRIO DO MÊS","Nunca falta, nunca brilha.",52,30,"c"],["DEVE E NÃO NEGA","Paga quando puder.",6,58,"e"],["ANO QUE VEM ELE EXPLODE","Falam isso todo ano.",40,86,"e"]]},
-  {k:"b",n:"Rodadas 4 a 6",a:37,b:72,rot:["6","5","4"],z:[["MOTOR DO TIME","Ninguém fala dele. Ele ganha a semana.",4,4,"c"],["PAGOU O COMBINADO","Era isso que estava no contrato.",52,28,"c"],["FIADO","Tá devendo desde outubro.",6,58,"e"],["NOME NA CAMISA","Draftado pelo currículo.",44,86,"e"]]},
-  {k:"a",n:"Rodadas 1 a 3",a:1,b:36,rot:["3","2","1"],z:[["DONO DO TIME","Sem ele não tem liga.",50,4,"c"],["FEZ O QUE CUSTOU","Estrela com cara de estrela.",4,26,"c"],["CARO DEMAIS","Preço de protagonista, entrega de figurante.",6,60,"e"],["DEPARTAMENTO MÉDICO","O melhor do elenco é o fisioterapeuta.",40,86,"e"]]}];
-function vPaciencia(d,pills,cab){
-  const k=UI.pac||"w";const pn=PAC_PAINEIS.find(x=>x.k===k)||PAC_PAINEIS[0];
+const PAC_PAINEIS=[{k:"a",n:"Rodadas 1 a 3",a:1,b:36},{k:"b",n:"Rodadas 4 a 6",a:37,b:72},{k:"c",n:"Rodadas 7 a 9",a:73,b:108},{k:"d",n:"Rodadas 10 a 13",a:109,b:156},{k:"w",n:"Waiver",a:0,b:0}];
+const PAC_TAG={
+  A:{n:"ASSALTO",s:"Levou de graça o que valia ouro.",c:"#12b455"},
+  B:{n:"TROCO A MAIS",s:"Rende mais do que custou.",c:"#8fd63f"},
+  C:{n:"PIX NA HORA",s:"Pagou, recebeu. Sem emoção.",c:"#e9d94a"},
+  D:{n:"FIADO",s:"Tá devendo. Jura que paga em dezembro.",c:"#f59a3c"},
+  E:{n:"GOLPE DO PIX",s:"O dinheiro foi, o jogador não veio.",c:"#ef4a55"},
+  I:{n:"NO INSS",s:"Afastado. O manager paga e não usa.",c:"#a3a8ae"},
+  W1:{n:"OURO NO LIXÃO",s:"Alguém jogou fora. Hoje é titular de liga.",c:"#12b455"},
+  W2:{n:"BICO QUE VIROU EMPREGO",s:"Veio cobrir folga e ficou.",c:"#8fd63f"},
+  W3:{n:"DIARISTA",s:"Serve pra um jogo e olhe lá.",c:"#f59a3c"},
+  W4:{n:"ENCOSTO",s:"Ocupa vaga. Só isso.",c:"#ef4a55"}};
+function pacDados(d){
   const DR={};((HIST.drafts&&HIST.drafts["2026/27"])||[]).forEach(r=>DR[r[3]]=[r[0],r[2]]);const TRO=new Set((BBM&&BBM.trocas)||[]);
   // só conta como draft se ainda está com quem draftou (ou veio por troca); o resto é waiver
   const pkDe=p=>{const r=DR[p.n];if(!r)return HIST.draft[p.n]&&TRO.has(p.id)?HIST.draft[p.n]:0;return (r[1]===T(p.t)[0]||TRO.has(p.id))?r[0]:0};
-  const todos=d.P.filter(p=>!p.fora&&p.t).map(p=>({p,pk:pkDe(p),rk:bbmRk(p)||300}));
-  const L=todos.filter(x=>pn.k==="w"?!x.pk:(x.pk>=pn.a&&x.pk<=pn.b)).sort((a,b)=>a.rk-b.rk);
-  const lo=Math.max(1,Math.min(...L.map(x=>x.rk),pn.k==="w"?60:pn.a)),hi=300;
-  const Y=r=>{const v=Math.pow((Math.min(Math.max(r,lo),hi)-lo)/(hi-lo),0.62);return 5+v*88};
-  const hsh=id=>{let h=0;String(id).split("").forEach(c=>h=(h*31+c.charCodeAt(0))%997);return h/997};
-  const X=(x,i)=>pn.k==="w"?6+((i*38+11)%100)/100*88:5+(1-(x.pk-pn.a)/(pn.b-pn.a))*89;
+  return d.P.filter(p=>!p.fora&&p.t).map(p=>{const pk=pkDe(p),rk=bbmRk(p)||300,fora=p.inj==="OUT"||p.slot===13;let g;
+    if(!pk){g=fora&&rk>=200?"I":rk<=75?"W1":rk<=130?"W2":rk<=200?"W3":"W4";return {p,pk,rk,dl:130-rk,g,fora}}
+    const dl=pk-rk,tol=Math.max(6,pk*0.25);
+    g=dl>=Math.max(25,tol*2)&&rk<=pk*0.6?"A":dl>tol?"B":dl>=-tol?"C":fora?"I":dl>=-Math.max(40,pk*1.5)?"D":"E";
+    return {p,pk,rk,dl,g,fora}});
+}
+function pacFoto(p){return TEMFOTO.has(p.id)||FOTO[p.n]?face(p.id,p.n,"ft"):`<span class="ft ini">${esc(ini(p.n))}<img src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/${p.id}.png&w=96&h=70" alt="" loading="lazy" onerror="this.remove()"></span>`}
+function pacLinha(x){const t=PAC_TAG[x.g];return `<div class="pac-li clic" data-pj="${x.p.id}"><span class="pac-mini" style="--cor:${t.c}">${pacFoto(x.p)}</span><div class="pac-li-n"><b>${esc(x.p.n)}</b><small><img src="img/l/${T(x.p.t)[1]}.webp" alt=""> ${esc(T(x.p.t)[0])} · ${x.pk?`pick ${x.pk}`:"waiver"} ➜ ${x.rk>=300?"fora do top 300":"#"+x.rk}</small></div><span class="pac-selo" style="background:${t.c}">${t.n}</span>${x.pk?`<b class="pac-dl ${x.dl>=0?"up":"dn"}">${x.dl>0?"+":""}${x.dl}</b>`:""}</div>`}
+function vPaciencia(d,pills,cab){
+  const vis=UI.pacv||"mapa",k=UI.pac||"a",ft=UI.pact||0;const todos=pacDados(d);
+  const visoes=`<div class="pilulas pac-sub" role="group" aria-label="Visões">${[["mapa","Mapa"],["times","Por time"],["podio","Pódio"]].map(([a,b])=>`<button class="pil" type="button" data-pacv="${a}" aria-pressed="${vis===a}">${b}</button>`).join("")}</div>`;
+  const leg=gs=>`<div class="pac-leg">${gs.map(g=>`<span><i style="background:${PAC_TAG[g].c}"></i><b>${PAC_TAG[g].n}</b> ${PAC_TAG[g].s}</span>`).join("")}</div>`;
+  let h=`${cab}<h1 class="manchete">CURVA DA PACIÊNCIA</h1><p class="linha-fina">Quanto cada jogador custou (a pick do draft) contra quanto ele vale hoje (o rank do Basketball Monster, punt TO${BBM&&BBM.quando?`, foto de ${esc(BBM.quando)}`:""}). Rank melhor que a pick é lucro; pior é prejuízo.</p></div>${pills}${visoes}`;
+  if(vis==="podio"){
+    const dr=todos.filter(x=>x.pk);const lucro=dr.slice().sort((a,b)=>b.dl-a.dl).slice(0,8),prej=dr.slice().sort((a,b)=>a.dl-b.dl).slice(0,8),wv=todos.filter(x=>!x.pk).sort((a,b)=>a.rk-b.rk).slice(0,8),inss=todos.filter(x=>x.g==="I").sort((a,b)=>a.pk-b.pk).slice(0,8);
+    return h+`<div class="radar-grid"><div class="card"><div class="bloco-tit">MAIORES LUCROS DO DRAFT <small>posições ganhas sobre a pick</small></div>${lucro.map(pacLinha).join("")}</div>
+    <div class="card"><div class="bloco-tit">MAIORES PREJUÍZOS DO DRAFT <small>posições perdidas</small></div>${prej.map(pacLinha).join("")}</div>
+    <div class="card"><div class="bloco-tit">MELHORES DA WAIVER <small>custaram zero</small></div>${wv.map(pacLinha).join("")}</div>
+    <div class="card"><div class="bloco-tit">FILA DO INSS <small>pick cara parada no departamento médico</small></div>${inss.map(pacLinha).join("")||'<div class="vazio">Ninguém afastado.</div>'}</div></div>`;
+  }
+  if(vis==="times"){
+    const L=d.teams.map(t=>t.id).map(id=>{const m=todos.filter(x=>x.p.t===id);const dr=m.filter(x=>x.pk).sort((a,b)=>a.pk-b.pk),wv=m.filter(x=>!x.pk).sort((a,b)=>a.rk-b.rk);
+      return {id,dr,wv,saldo:dr.reduce((s,x)=>s+Math.max(-100,Math.min(100,x.dl)),0),ouro:wv.filter(x=>x.rk<=130).length}}).sort((a,b)=>b.saldo-a.saldo);
+    const chip=x=>`<button type="button" class="pac-mini" data-pj="${x.p.id}" style="--cor:${PAC_TAG[x.g].c}" title="${esc(x.p.n)} · ${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk} · ${PAC_TAG[x.g].n}">${pacFoto(x.p)}<i>${x.rk>=300?"–":x.rk}</i></button>`;
+    return h+`<p class="pac-como">Cada time em uma linha: primeiro quem ele draftou e ainda tem (na ordem das picks), depois o que pescou na waiver. A cor do anel é o selo; o número é o rank de hoje. O <b>saldo</b> soma as posições ganhas e perdidas no draft (cada jogador conta no máximo 100).</p>${leg(["A","B","C","D","E","I"])}
+    <div class="card">${L.map((t,i)=>`<div class="pac-time"><div class="pac-time-cab"><b class="pac-pos">${i+1}</b><img src="img/l/${T(t.id)[1]}.webp" alt=""><b>${esc(T(t.id)[0])}</b><span class="pac-saldo ${t.saldo>=0?"up":"dn"}">${t.saldo>0?"+":""}${t.saldo}</span><small>${t.dr.filter(x=>x.g==="A"||x.g==="B").length} no lucro · ${t.dr.filter(x=>x.g==="D"||x.g==="E").length} no prejuízo · ${t.ouro} da waiver no top 130</small></div><div class="pac-fila">${t.dr.map(chip).join("")}${t.wv.length?`<span class="pac-div">waiver</span>${t.wv.map(chip).join("")}`:""}</div></div>`).join("")}</div>`;
+  }
+  // mapa
+  const pn=PAC_PAINEIS.find(x=>x.k===k)||PAC_PAINEIS[0],W=pn.k==="w";
+  const L=todos.filter(x=>W?!x.pk:(x.pk>=pn.a&&x.pk<=pn.b)).sort((a,b)=>a.rk-b.rk);
+  const lo=W?Math.max(1,Math.min(...L.map(x=>x.rk),60)):1,hi=300;
+  const Y=r=>4+Math.pow((Math.min(Math.max(r,lo),hi)-lo)/(hi-lo),W?0.75:0.5)*90;
+  const X=(x,i)=>W?6+((i*38+11)%100)/100*88:5+((x.pk-pn.a)/(pn.b-pn.a))*90;
   const pts=L.map((x,i)=>({x,px:X(x,i),py:Y(x.rk)})).sort((a,b)=>a.py-b.py);
-  // desencosta as carinhas
-  for(let i=0;i<pts.length;i++)for(let j=0;j<i;j++){const a=pts[i],b=pts[j];if(Math.abs(a.px-b.px)<8&&Math.abs(a.py-b.py)<4.8){a.px+=a.px>=b.px?5:-5;if(a.px>95||a.px<5){a.px=Math.min(95,Math.max(5,a.px));a.py+=2.5}}}
-  // linha: pagou o que custou (rank = pick); no waiver, nível de titular (#130)
-  const N=24,ln=[];for(let i=0;i<=N;i++){const fx=i/N;let r;if(pn.k==="w")r=130;else r=pn.b-fx*(pn.b-pn.a);const w=Math.sin(fx*Math.PI*2.2)*1.6;ln.push(`${(5+fx*89).toFixed(1)},${(Y(Math.max(r,lo))+w).toFixed(1)}`)}
-  const cor=py=>py<38?"v":py<68?"a":"r";
-  const faces=pts.map(({x,px,py})=>`<button type="button" class="pac-f ${cor(py)}" data-pj="${x.p.id}" style="left:${px.toFixed(1)}%;top:${py.toFixed(1)}%;--cor:${T(x.p.t)[4]}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · #${x.rk>=300?"sem rank":x.rk}${x.pk?" · pick "+x.pk:" · waiver"}">${TEMFOTO.has(x.p.id)||FOTO[x.p.n]?face(x.p.id,x.p.n,"ft"):`<span class="ft ini">${esc(ini(x.p.n))}<img src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/${x.p.id}.png&w=96&h=70" alt="" loading="lazy" onerror="this.remove()"></span>`}<i>${x.rk>=300?"–":x.rk}</i></button>`).join("");
-  const zon=pn.z.map(([t,s,l,tp,c])=>`<div class="pac-z ${c}" style="left:${l}%;top:${tp}%"><b>${t}</b><span>${s}</span></div>`).join("");
+  for(let i=0;i<pts.length;i++)for(let j=0;j<i;j++){const a=pts[i],b=pts[j];if(Math.abs(a.px-b.px)<7&&Math.abs(a.py-b.py)<4.4){a.px+=a.px>=b.px?4.5:-4.5;if(a.px>96||a.px<4){a.px=Math.min(96,Math.max(4,a.px));a.py+=2.4}}}
+  const N=30,ln=[];for(let i=0;i<=N;i++){const fx=i/N;const r=W?130:pn.a+fx*(pn.b-pn.a);ln.push([5+fx*90,Y(r)])}
+  const lp=ln.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
+  const ticks=[1,5,10,25,50,100,150,200,300].filter(r=>r>=lo&&(r===1||r>lo));
+  const grade=ticks.map(r=>`<div class="pac-gy" style="top:${Y(r).toFixed(1)}%"><span>#${r}${r===300?"+":""}</span></div>`).join("");
+  const rods=W?"":Array.from({length:(pn.b-pn.a+1)/12},(_,i)=>`<span>Rodada ${(pn.a-1)/12+i+1}</span>`).join("");
+  const faces=pts.map(({x,px,py})=>`<button type="button" class="pac-f${ft&&x.p.t!==ft?" apag":""}" data-pj="${x.p.id}" style="left:${px.toFixed(1)}%;top:${py.toFixed(1)}%;--cor:${PAC_TAG[x.g].c}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · ${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk} · ${PAC_TAG[x.g].n}">${pacFoto(x.p)}<i>${x.rk>=300?"–":x.rk}</i></button>`).join("");
   const sub=`<div class="pilulas pac-sub" role="group" aria-label="Rodadas">${PAC_PAINEIS.map(x=>`<button class="pil" type="button" data-pac="${x.k}" aria-pressed="${k===x.k}">${x.n}</button>`).join("")}</div>`;
-  // resumo por time no painel
-  const porT={};pts.forEach(({x,py})=>{const o=porT[x.p.t]=porT[x.p.t]||{v:0,a:0,r:0};o[cor(py)]++});
-  const res=Object.entries(porT).sort((a,b)=>(b[1].v-b[1].r)-(a[1].v-a[1].r)).map(([t,o])=>`<span class="pac-t"><img src="img/l/${T(+t)[1]}.webp" alt="${esc(T(+t)[0])}"><b class="v">${o.v}</b><b class="a">${o.a}</b><b class="r">${o.r}</b></span>`).join("");
-  return `${cab}<h1 class="manchete">CURVA DA PACIÊNCIA</h1><p class="linha-fina">Onde cada jogador da liga foi pego (rodada do draft ou waiver) contra o quanto ele rende. O número é o rank do Basketball Monster, punt TO, por jogo${BBM&&BBM.quando?`, foto de ${esc(BBM.quando)}`:""}. Toque na carinha pra abrir a ficha.</p></div>${pills}${sub}
-  <div class="card pac-card"><div class="pac-eixo-y"><span>RENDE MUITO</span><span>RENDE NADA</span></div>
-  <div class="pac">${zon}<svg class="pac-ln" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${ln.join(" ")}"/></svg>${faces}</div>
-  <div class="pac-eixo-x">${pn.rot.map(r=>`<span>${r}</span>`).join("")}</div>
-  <div class="pac-leg"><span><i class="tr"></i>${pn.k==="w"?"nível de titular (top 130)":"pagou o que custou (rank = pick)"}</span><span><i class="q v"></i>Intocável</span><span><i class="q a"></i>Mais um jogo</span><span><i class="q r"></i>Dropa hoje ou tenta trocar</span></div></div>
-  <div class="card"><div class="bloco-tit">PLACAR DO PAINEL <small>verde · amarelo · vermelho por time</small></div><div class="pac-res">${res}</div></div>`;
+  const filtro=`<div class="pac-filtro" role="group" aria-label="Destacar um time"><span>Destacar:</span>${d.teams.map(t=>`<button type="button" data-pact="${t.id}" aria-pressed="${ft===t.id}" title="${esc(T(t.id)[0])}"><img src="img/l/${T(t.id)[1]}.webp" alt="${esc(T(t.id)[0])}"></button>`).join("")}</div>`;
+  const lista=(ft?L.filter(x=>x.p.t===ft):L).slice().sort((a,b)=>W?a.rk-b.rk:b.dl-a.dl);
+  return h+sub+`<p class="pac-como">${W?"Quem veio da waiver ou de agente livre não custou pick. Quanto mais alto, melhor o rank de hoje. Acima da linha tracejada já é jogador de time titular (top 130).":"<b>Da esquerda pra direita:</b> a ordem em que foram draftados. <b>De cima pra baixo:</b> o rank de hoje (o número no selo). A <b>linha tracejada é o preço</b>: quem está acima dela rende mais do que custou; quem está abaixo, menos."} A cor do anel é o selo. Toque na carinha pra abrir a ficha.</p>${filtro}
+  <div class="card pac-card"><div class="pac-wrap"><div class="pac-ytit">RANK DE HOJE</div>
+  <div class="pac"><svg class="pac-ln" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polygon class="lucro" points="0,0 100,0 100,${ln[N][1].toFixed(1)} ${ln.slice().reverse().map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")} 0,${ln[0][1].toFixed(1)}"/><polygon class="prej" points="0,100 100,100 100,${ln[N][1].toFixed(1)} ${ln.slice().reverse().map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")} 0,${ln[0][1].toFixed(1)}"/><polyline points="${lp}"/></svg>
+  ${grade}<div class="pac-marca l">${W?"TITULAR DE GRAÇA":"LUCRO"}</div><div class="pac-marca p">${W?"SÓ OCUPA VAGA":"PREJUÍZO"}</div>${faces}</div></div>
+  <div class="pac-eixo-x">${W?"<span>Waiver e agente livre (sem ordem: só a altura importa)</span>":rods}</div><div class="pac-xtit">${W?"":"ORDEM DO DRAFT ➜"}</div></div>
+  ${leg(W?["W1","W2","W3","W4"]:["A","B","C","D","E","I"])}
+  <div class="card"><div class="bloco-tit">${W?"DA WAIVER, DO MELHOR PRO PIOR":"DESTE PAINEL, DO MAIOR LUCRO AO MAIOR PREJUÍZO"}${ft?` <small>só ${esc(T(ft)[0])}</small>`:""}</div>${lista.map(pacLinha).join("")||'<div class="vazio">Ninguém desse time neste painel.</div>'}</div>`;
 }
 
 /* ---------- PUBLI BETLOYDE: anúncios de mentirinha com odds de verdade (saem da chance do modelo) ---------- */
@@ -5360,7 +5405,7 @@ document.addEventListener("click",e=>{
   {const pj=e.target.closest("[data-pj]");if(pj&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){const ao=location.hash==="#aovivo";UI.fichaPer=ao?DADOS.cur:null;if(ao)UI.fichaAba="num";abrirJogador(+pj.dataset.pj,ao?DADOS.cur:undefined);return}}
   {const vb=e.target.closest("[data-volta]");if(vb){e.preventDefault();e.stopPropagation();if(history.length>1)history.back();else location.hash="confrontos";return}}
   {const ab=e.target.closest("[data-abre]");if(ab){e.preventDefault();e.stopPropagation();UI.abre=UI.abre||{};const k=ab.dataset.abre;if(k==="all"){const on=ab.getAttribute("aria-pressed")!=="true";(DADOS.mt||[]).forEach((_,x)=>UI.abre[x]=on)}else UI.abre[k]=!UI.abre[k];render();return}}
-  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-mda],[data-rd],[data-pac],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj],[data-dd],[data-leg]");if(!t)return;
+  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-mda],[data-rd],[data-pac],[data-pacv],[data-pact],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj],[data-dd],[data-leg]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
   if(ds.jogo!==undefined)ir("jogo-"+ds.jogo);
@@ -5380,6 +5425,8 @@ document.addEventListener("click",e=>{
   else if(ds.rko){UI.rkOrd=ds.rko;UI.rkCat=null;render()}
   else if(ds.rkc){UI.rkCat=UI.rkCat===ds.rkc?null:ds.rkc;render()}
   else if(ds.rd){UI.radar=ds.rd;render()}
+  else if(ds.pacv){UI.pacv=ds.pacv;render()}
+  else if(ds.pact){UI.pact=UI.pact===+ds.pact?0:+ds.pact;render()}
   else if(ds.pac){UI.pac=ds.pac;render()}
   else if(ds.ft!==undefined){UI.filtroTime=+ds.ft;const mj=/^#jogo-(\d+)/.exec(location.hash);if(mj&&UI.filtroTime){const D0=DADOS;const hj=Math.min(Math.max(D0.cur,D0.s0),D0.s1);const k=+mj[1];if((UI.dia[k]??"sem")==="sem")UI.dia[k]=hj}render()}
   else if(ds.nd){UI.noiteDia=(ds.nd==="sem"||isNaN(+ds.nd))?ds.nd:+ds.nd;render()}
