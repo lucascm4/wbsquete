@@ -2378,6 +2378,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 .pac-fila{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:center}
 .pac-div{font:700 10px var(--ui);letter-spacing:1.5px;color:var(--apagado);border-left:2px solid var(--linha);padding-left:10px;margin-left:2px;text-transform:uppercase}
 @media(max-width:520px){.pac{height:580px}.pac-f,.pac-f .ft{width:32px!important;height:32px!important}.pac-marca{font-size:30px}.pac-selo{font-size:9.5px}.pac-li{gap:7px}}
+.pac-z{position:absolute;width:30%;z-index:1;pointer-events:none;line-height:1.05}
+.pac-z b{display:block;font-family:var(--display);font-weight:400;font-size:19px;letter-spacing:.4px;color:var(--cor);text-wrap:balance;text-shadow:0 2px 0 #0d0b0b,0 0 8px #0d0b0b}
+.pac-z span{display:block;font:12.5px/1.2 var(--ui);color:#fff8ec;margin-top:3px;text-shadow:0 1px 3px #0d0b0b,0 0 6px #0d0b0b}
+.pac-marca{font-size:26px!important;opacity:.8}
+@media(max-width:520px){.pac-z{width:38%}.pac-z b{font-size:15px}.pac-z span{font-size:11px}}
 </style>
 </head><body>
 </style>
@@ -2408,11 +2413,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261120012455"></script>
+<script src="bbm.js?v=20261120012817"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261120012455";
+const VERSAO_PAINEL="20261120012817";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4546,35 +4551,45 @@ const BBMR={};((window.BBM&&BBM.ids)||[]).forEach((id,i)=>{if(id)BBMR[id]=i+1});
 const bbmRk=p=>(p&&BBMR[p.id])||null;
 const PAC_PAINEIS=[{k:"a",n:"Rodadas 1 a 3",a:1,b:36},{k:"b",n:"Rodadas 4 a 6",a:37,b:72},{k:"c",n:"Rodadas 7 a 9",a:73,b:108},{k:"d",n:"Rodadas 10 a 13",a:109,b:156},{k:"w",n:"Waiver",a:0,b:0}];
 const PAC_TAG={
-  A:{n:"ASSALTO",s:"Levou de graça o que valia ouro.",c:"#12b455"},
-  B:{n:"TROCO A MAIS",s:"Rende mais do que custou.",c:"#8fd63f"},
-  C:{n:"PIX NA HORA",s:"Pagou, recebeu. Sem emoção.",c:"#e9d94a"},
-  D:{n:"FIADO",s:"Tá devendo. Jura que paga em dezembro.",c:"#f59a3c"},
-  E:{n:"GOLPE DO PIX",s:"O dinheiro foi, o jogador não veio.",c:"#ef4a55"},
-  I:{n:"NO INSS",s:"Afastado. O manager paga e não usa.",c:"#a3a8ae"},
-  W1:{n:"OURO NO LIXÃO",s:"Alguém jogou fora. Hoje é titular de liga.",c:"#12b455"},
-  W2:{n:"BICO QUE VIROU EMPREGO",s:"Veio cobrir folga e ficou.",c:"#8fd63f"},
-  W3:{n:"DIARISTA",s:"Serve pra um jogo e olhe lá.",c:"#f59a3c"},
-  W4:{n:"ENCOSTO",s:"Ocupa vaga. Só isso.",c:"#ef4a55"}};
+  SEXY:{n:"LINHA SEXY",s:"Roubo e toco na mesma noite. Credo, que delícia.",c:"#ff5fa2",l:1},
+  GARCOM:{n:"GARÇOM",s:"Serve o time inteiro e ainda recolhe a gorjeta.",c:"#35c9c0",l:1},
+  GARRAFAO:{n:"DONO DO GARRAFÃO",s:"O rebote é dele. O resto que lute.",c:"#12b455",l:1},
+  PERA:{n:"CHOVE PERA",s:"Meteu cinco pêras, oficializou o pacto.",c:"#b7e23c",l:1},
+  TECNICO:{n:"O TÉCNICO DESCOBRIU",s:"Ganhou minuto e não devolve mais.",c:"#4aa8ff",l:1},
+  MONSTRO:{n:"É MONSTRO, TÁ?",s:"Vende caro!!!",c:"#58d68d",l:1},
+  PONTO:{n:"BATEU O PONTO",s:"Entregou o que estava no contrato. Nem um rebote a mais.",c:"#e9d94a",l:0},
+  ARO:{n:"INIMIGO DO ARO",s:"Cosplay de Jordan Poole: 1/13 e segue arremessando.",c:"#ff8a3c",l:-1},
+  BANDEJA:{n:"BANDEJA NO CHÃO",s:"Dá assistência pros dois times.",c:"#c98cff",l:-1},
+  WASHED:{n:"WASHED",s:"O nome ainda vende. O jogo, não.",c:"#ef4a55",l:-1},
+  SILVESTRE:{n:"TREINO PRA SÃO SILVESTRE",s:"Corre 32 minutos por noite e volta sem nada.",c:"#f6b23c",l:-1},
+  PLANILHA:{n:"CRAQUE DE PLANILHA",s:"Por 36 minutos é All-Star. Pena que joga 19.",c:"#d98c6a",l:-1},
+  MORREU:{n:"MORREU, NÉ",s:"Foi tudo ilusão.",c:"#ff6b74",l:-1},
+  STREAM:{n:"STREAM DE DOMINGO",s:"Mas quem é que eu vou chamar?",c:"#f59a3c",l:-1},
+  HOSP:{n:"HOSPITAL VILA NOVA STAR",s:"Paciente de luxo. O time é ótimo, no papel.",c:"#a3a8ae",l:-1}};
 function pacDados(d){
   const DR={};((HIST.drafts&&HIST.drafts["2026/27"])||[]).forEach(r=>DR[r[3]]=[r[0],r[2]]);const TRO=new Set((BBM&&BBM.trocas)||[]);
   // só conta como draft se ainda está com quem draftou (ou veio por troca); o resto é waiver
   const pkDe=p=>{const r=DR[p.n];if(!r)return HIST.draft[p.n]&&TRO.has(p.id)?HIST.draft[p.n]:0;return (r[1]===T(p.t)[0]||TRO.has(p.id))?r[0]:0};
-  return d.P.filter(p=>!p.fora&&p.t).map(p=>{const pk=pkDe(p),rk=bbmRk(p)||300,fora=p.inj==="OUT"||p.slot===13;let g;
-    if(!pk){g=fora&&rk>=200?"I":rk<=75?"W1":rk<=130?"W2":rk<=200?"W3":"W4";return {p,pk,rk,dl:130-rk,g,fora}}
-    const dl=pk-rk,tol=Math.max(6,pk*0.25);
-    g=dl>=Math.max(25,tol*2)&&rk<=pk*0.6?"A":dl>tol?"B":dl>=-tol?"C":fora?"I":dl>=-Math.max(40,pk*1.5)?"D":"E";
-    return {p,pk,rk,dl,g,fora}});
+  return d.P.filter(p=>!p.fora&&p.t).map(p=>{const pk=pkDe(p),rk=bbmRk(p)||300,fora=p.inj==="OUT"||p.slot===13;
+    const a=p.av||zero(),mn=(p.mn&&p.mn.av)||0,m7=(p.mn&&p.mn.l7)||0,fg=a[8]?a[7]/a[8]:0.5;
+    const dl=pk?pk-rk:130-rk,tol=pk?Math.max(6,pk*0.25):0;
+    // lado: 1 lucro, 0 no preço, -1 prejuízo
+    const lado=pk?(dl>tol?1:dl>=-tol?0:-1):(rk<=130?1:-1);let g;
+    if(fora&&lado<1)g="HOSP";
+    else if(lado>0)g=a[3]+a[4]>=2.5?"SEXY":a[2]>=7?"GARCOM":a[1]>=9?"GARRAFAO":a[5]>=2.8?"PERA":(m7&&mn&&m7-mn>=3)?"TECNICO":"MONSTRO";
+    else if(lado===0)g="PONTO";
+    else g=(fg<=0.41&&a[8]>=9)?"ARO":a[6]>=3.2?"BANDEJA":(pk&&pk<=36)?"WASHED":mn>=30?"SILVESTRE":(mn&&mn<24&&rk<300)?"PLANILHA":pk?"MORREU":"STREAM";
+    return {p,pk,rk,dl,g,fora,lado}});
 }
 function pacFoto(p){return TEMFOTO.has(p.id)||FOTO[p.n]?face(p.id,p.n,"ft"):`<span class="ft ini">${esc(ini(p.n))}<img src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/${p.id}.png&w=96&h=70" alt="" loading="lazy" onerror="this.remove()"></span>`}
 function pacLinha(x){const t=PAC_TAG[x.g];return `<div class="pac-li clic" data-pj="${x.p.id}"><span class="pac-mini" style="--cor:${t.c}">${pacFoto(x.p)}</span><div class="pac-li-n"><b>${esc(x.p.n)}</b><small><img src="img/l/${T(x.p.t)[1]}.webp" alt=""> ${esc(T(x.p.t)[0])} · ${x.pk?`pick ${x.pk}`:"waiver"} ➜ ${x.rk>=300?"fora do top 300":"#"+x.rk}</small></div><span class="pac-selo" style="background:${t.c}">${t.n}</span>${x.pk?`<b class="pac-dl ${x.dl>=0?"up":"dn"}">${x.dl>0?"+":""}${x.dl}</b>`:""}</div>`}
 function vPaciencia(d,pills,cab){
   const vis=UI.pacv||"mapa",k=UI.pac||"a",ft=UI.pact||0;const todos=pacDados(d);
   const visoes=`<div class="pilulas pac-sub" role="group" aria-label="Visões">${[["mapa","Mapa"],["times","Por time"],["podio","Pódio"]].map(([a,b])=>`<button class="pil" type="button" data-pacv="${a}" aria-pressed="${vis===a}">${b}</button>`).join("")}</div>`;
-  const leg=gs=>`<div class="pac-leg">${gs.map(g=>`<span><i style="background:${PAC_TAG[g].c}"></i><b>${PAC_TAG[g].n}</b> ${PAC_TAG[g].s}</span>`).join("")}</div>`;
+  const leg=xs=>`<div class="pac-leg">${Object.keys(PAC_TAG).filter(g=>xs.some(x=>x.g===g)).map(g=>`<span><i style="background:${PAC_TAG[g].c}"></i><b>${PAC_TAG[g].n}</b> ${PAC_TAG[g].s}</span>`).join("")}</div>`;
   let h=`${cab}<h1 class="manchete">CURVA DA PACIÊNCIA</h1><p class="linha-fina">Quanto cada jogador custou (a pick do draft) contra quanto ele vale hoje (o rank do Basketball Monster, punt TO${BBM&&BBM.quando?`, foto de ${esc(BBM.quando)}`:""}). Rank melhor que a pick é lucro; pior é prejuízo.</p></div>${pills}${visoes}`;
   if(vis==="podio"){
-    const dr=todos.filter(x=>x.pk);const lucro=dr.slice().sort((a,b)=>b.dl-a.dl).slice(0,8),prej=dr.slice().sort((a,b)=>a.dl-b.dl).slice(0,8),wv=todos.filter(x=>!x.pk).sort((a,b)=>a.rk-b.rk).slice(0,8),inss=todos.filter(x=>x.g==="I").sort((a,b)=>a.pk-b.pk).slice(0,8);
+    const dr=todos.filter(x=>x.pk);const lucro=dr.slice().sort((a,b)=>b.dl-a.dl).slice(0,8),prej=dr.slice().sort((a,b)=>a.dl-b.dl).slice(0,8),wv=todos.filter(x=>!x.pk).sort((a,b)=>a.rk-b.rk).slice(0,8),inss=todos.filter(x=>x.g==="HOSP").sort((a,b)=>a.pk-b.pk).slice(0,8);
     return h+`<div class="radar-grid"><div class="card"><div class="bloco-tit">MAIORES LUCROS DO DRAFT <small>posições ganhas sobre a pick</small></div>${lucro.map(pacLinha).join("")}</div>
     <div class="card"><div class="bloco-tit">MAIORES PREJUÍZOS DO DRAFT <small>posições perdidas</small></div>${prej.map(pacLinha).join("")}</div>
     <div class="card"><div class="bloco-tit">MELHORES DA WAIVER <small>custaram zero</small></div>${wv.map(pacLinha).join("")}</div>
@@ -4584,8 +4599,8 @@ function vPaciencia(d,pills,cab){
     const L=d.teams.map(t=>t.id).map(id=>{const m=todos.filter(x=>x.p.t===id);const dr=m.filter(x=>x.pk).sort((a,b)=>a.pk-b.pk),wv=m.filter(x=>!x.pk).sort((a,b)=>a.rk-b.rk);
       return {id,dr,wv,saldo:dr.reduce((s,x)=>s+Math.max(-100,Math.min(100,x.dl)),0),ouro:wv.filter(x=>x.rk<=130).length}}).sort((a,b)=>b.saldo-a.saldo);
     const chip=x=>`<button type="button" class="pac-mini" data-pj="${x.p.id}" style="--cor:${PAC_TAG[x.g].c}" title="${esc(x.p.n)} · ${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk} · ${PAC_TAG[x.g].n}">${pacFoto(x.p)}<i>${x.rk>=300?"–":x.rk}</i></button>`;
-    return h+`<p class="pac-como">Cada time em uma linha: primeiro quem ele draftou e ainda tem (na ordem das picks), depois o que pescou na waiver. A cor do anel é o selo; o número é o rank de hoje. O <b>saldo</b> soma as posições ganhas e perdidas no draft (cada jogador conta no máximo 100).</p>${leg(["A","B","C","D","E","I"])}
-    <div class="card">${L.map((t,i)=>`<div class="pac-time"><div class="pac-time-cab"><b class="pac-pos">${i+1}</b><img src="img/l/${T(t.id)[1]}.webp" alt=""><b>${esc(T(t.id)[0])}</b><span class="pac-saldo ${t.saldo>=0?"up":"dn"}">${t.saldo>0?"+":""}${t.saldo}</span><small>${t.dr.filter(x=>x.g==="A"||x.g==="B").length} no lucro · ${t.dr.filter(x=>x.g==="D"||x.g==="E").length} no prejuízo · ${t.ouro} da waiver no top 130</small></div><div class="pac-fila">${t.dr.map(chip).join("")}${t.wv.length?`<span class="pac-div">waiver</span>${t.wv.map(chip).join("")}`:""}</div></div>`).join("")}</div>`;
+    return h+`<p class="pac-como">Cada time em uma linha: primeiro quem ele draftou e ainda tem (na ordem das picks), depois o que pescou na waiver. A cor do anel é a faixa do jogador; o número é o rank de hoje. O <b>saldo</b> soma as posições ganhas e perdidas no draft (cada jogador conta no máximo 100).</p>${leg(todos)}
+    <div class="card">${L.map((t,i)=>`<div class="pac-time"><div class="pac-time-cab"><b class="pac-pos">${i+1}</b><img src="img/l/${T(t.id)[1]}.webp" alt=""><b>${esc(T(t.id)[0])}</b><span class="pac-saldo ${t.saldo>=0?"up":"dn"}">${t.saldo>0?"+":""}${t.saldo}</span><small>${t.dr.filter(x=>x.lado>0).length} no lucro · ${t.dr.filter(x=>x.lado<0).length} no prejuízo · ${t.ouro} da waiver no top 130</small></div><div class="pac-fila">${t.dr.map(chip).join("")}${t.wv.length?`<span class="pac-div">waiver</span>${t.wv.map(chip).join("")}`:""}</div></div>`).join("")}</div>`;
   }
   // mapa
   const pn=PAC_PAINEIS.find(x=>x.k===k)||PAC_PAINEIS[0],W=pn.k==="w";
@@ -4601,15 +4616,24 @@ function vPaciencia(d,pills,cab){
   const grade=ticks.map(r=>`<div class="pac-gy" style="top:${Y(r).toFixed(1)}%"><span>#${r}${r===300?"+":""}</span></div>`).join("");
   const rods=W?"":Array.from({length:(pn.b-pn.a+1)/12},(_,i)=>`<span>Rodada ${(pn.a-1)/12+i+1}</span>`).join("");
   const faces=pts.map(({x,px,py})=>`<button type="button" class="pac-f${ft&&x.p.t!==ft?" apag":""}" data-pj="${x.p.id}" style="left:${px.toFixed(1)}%;top:${py.toFixed(1)}%;--cor:${PAC_TAG[x.g].c}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · ${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk} · ${PAC_TAG[x.g].n}">${pacFoto(x.p)}<i>${x.rk>=300?"–":x.rk}</i></button>`).join("");
+  const grp={};pts.forEach(q=>(grp[q.x.g]=grp[q.x.g]||[]).push(q));const postas=[];
+  const zon=Object.entries(grp).sort((a,b)=>b[1].length-a[1].length).slice(0,7).map(([g,m])=>{
+    const cx=m.reduce((s,q)=>s+q.px,0)/m.length,cy=m.reduce((s,q)=>s+q.py,0)/m.length,w=30,hh=9;
+    let best=null;[[5,-hh-4],[-w-5,-2],[5,5],[-w/2,-hh-6],[-w/2,7],[-w-5,-hh-3],[8,-2],[-w-5,6]].forEach(([dx,dy],i)=>{
+      const x=Math.min(100-w-1,Math.max(7,cx+dx)),y=Math.min(100-hh-1,Math.max(1,cy+dy));
+      const sc=pts.filter(q=>q.px>x-4&&q.px<x+w+2&&q.py>y-3&&q.py<y+hh+2).length*3+postas.filter(o=>x<o.x+w&&x+w>o.x&&y<o.y+hh+1&&y+hh+1>o.y).length*40+i*0.1;
+      if(!best||sc<best.sc)best={x,y,sc}});
+    postas.push(best);const t=PAC_TAG[g];
+    return `<div class="pac-z" style="left:${best.x.toFixed(1)}%;top:${best.y.toFixed(1)}%;--cor:${t.c}"><b>${t.n}</b><span>${t.s}</span></div>`}).join("");
   const sub=`<div class="pilulas pac-sub" role="group" aria-label="Rodadas">${PAC_PAINEIS.map(x=>`<button class="pil" type="button" data-pac="${x.k}" aria-pressed="${k===x.k}">${x.n}</button>`).join("")}</div>`;
   const filtro=`<div class="pac-filtro" role="group" aria-label="Destacar um time"><span>Destacar:</span>${d.teams.map(t=>`<button type="button" data-pact="${t.id}" aria-pressed="${ft===t.id}" title="${esc(T(t.id)[0])}"><img src="img/l/${T(t.id)[1]}.webp" alt="${esc(T(t.id)[0])}"></button>`).join("")}</div>`;
   const lista=(ft?L.filter(x=>x.p.t===ft):L).slice().sort((a,b)=>W?a.rk-b.rk:b.dl-a.dl);
-  return h+sub+`<p class="pac-como">${W?"Quem veio da waiver ou de agente livre não custou pick. Quanto mais alto, melhor o rank de hoje. Acima da linha tracejada já é jogador de time titular (top 130).":"<b>Da esquerda pra direita:</b> a ordem em que foram draftados. <b>De cima pra baixo:</b> o rank de hoje (o número no selo). A <b>linha tracejada é o preço</b>: quem está acima dela rende mais do que custou; quem está abaixo, menos."} A cor do anel é o selo. Toque na carinha pra abrir a ficha.</p>${filtro}
+  return h+sub+`<p class="pac-como">${W?"Quem veio da waiver ou de agente livre não custou pick. Quanto mais alto, melhor o rank de hoje. Acima da linha tracejada já é jogador de time titular (top 130).":"<b>Da esquerda pra direita:</b> a ordem em que foram draftados. <b>De cima pra baixo:</b> o rank de hoje (o número no selo). A <b>linha tracejada é o preço</b>: quem está acima dela rende mais do que custou; quem está abaixo, menos."} Cada <b>faixa</b> escrita no mapa é um tipo de jogador, e a cor do anel diz a qual faixa a carinha pertence. Toque nela pra abrir a ficha.</p>${filtro}
   <div class="card pac-card"><div class="pac-wrap"><div class="pac-ytit">RANK DE HOJE</div>
   <div class="pac"><svg class="pac-ln" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polygon class="lucro" points="0,0 100,0 100,${ln[N][1].toFixed(1)} ${ln.slice().reverse().map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")} 0,${ln[0][1].toFixed(1)}"/><polygon class="prej" points="0,100 100,100 100,${ln[N][1].toFixed(1)} ${ln.slice().reverse().map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")} 0,${ln[0][1].toFixed(1)}"/><polyline points="${lp}"/></svg>
-  ${grade}<div class="pac-marca l">${W?"TITULAR DE GRAÇA":"LUCRO"}</div><div class="pac-marca p">${W?"SÓ OCUPA VAGA":"PREJUÍZO"}</div>${faces}</div></div>
+  ${grade}${zon}<div class="pac-marca l">${W?"TITULAR DE GRAÇA":"LUCRO"}</div><div class="pac-marca p">${W?"SÓ OCUPA VAGA":"PREJUÍZO"}</div>${faces}</div></div>
   <div class="pac-eixo-x">${W?"<span>Waiver e agente livre (sem ordem: só a altura importa)</span>":rods}</div><div class="pac-xtit">${W?"":"ORDEM DO DRAFT ➜"}</div></div>
-  ${leg(W?["W1","W2","W3","W4"]:["A","B","C","D","E","I"])}
+  ${leg(L)}
   <div class="card"><div class="bloco-tit">${W?"DA WAIVER, DO MELHOR PRO PIOR":"DESTE PAINEL, DO MAIOR LUCRO AO MAIOR PREJUÍZO"}${ft?` <small>só ${esc(T(ft)[0])}</small>`:""}</div>${lista.map(pacLinha).join("")||'<div class="vazio">Ninguém desse time neste painel.</div>'}</div>`;
 }
 
