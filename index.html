@@ -2538,11 +2538,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261120021620"></script>
+<script src="bbm.js?v=20261120104204"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261120021620";
+const VERSAO_PAINEL="20261120104204";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4679,7 +4679,7 @@ const PAC_COR={v:"#12b455",a:"#f2c230",r:"#ef4a55"};
 // faixas: nome = a característica do grupo; quem está na faixa aparece junto dela no mapa
 const PAC_TAG={
   INV:{n:"INVEJÁVEL",s:"Quem tem, tem. Quem não tem, manda proposta e reza.",e:"Top 12 do ranking de hoje.",z:"v"},
-  PICA:{n:"PICA DEMAIS",s:"Custou pouco, carrega muito. É monstro, tá?",e:"Rank de hoje muito acima da pick em que saiu (ou waiver no top 75).",z:"v"},
+  PICA:{n:"COMPRADO NA BACIA DAS ALMAS",s:"Saiu na hora do lanche do draft. Hoje carrega o time.",e:"Rank de hoje muito acima da pick em que saiu (ou waiver no top 75).",z:"v"},
   SELL:{n:"SELLL HIGHHHH!!!!",s:"Tá voando acima do próprio nível. Vende caro!!!",e:"Rende o que custou e, nos últimos 7 dias, jogou quase o dobro do nível da temporada.",z:"v"},
   REAL:{n:"ADMITO: É REAL",s:"Era tapa-buraco. Hoje ninguém tira do quinteto.",e:"Veio da waiver ou do fim do draft e hoje é top 130.",z:"v"},
   SOLID:{n:"SOLID",s:"Fez o dele. Nem um rebote a mais.",e:"Rank de hoje perto da pick em que saiu.",z:"v"},
@@ -4737,7 +4737,7 @@ function vPaciencia(d,pills,cab){
   const L=todos.filter(x=>W?!x.pk:(x.pk>=pn.a&&x.pk<=pn.b)).sort((a,b)=>a.rk-b.rk);
   const grp={};L.forEach(x=>(grp[x.g]=grp[x.g]||[]).push(x));
   const sobre=n=>{const w=String(n).replace(/ (Jr\.?|Sr\.?|II|III|IV)$/,"").split(" ");return w[w.length-1]};
-  const curto={INV:"invejável",PICA:"pica demais",SELL:"sell high",REAL:"é real",SOLID:"solid",BUY:"buy low",DESESP:"desespero",STREAM:"stream",CARO:"caro dimai",RUI:"rui dimai",HOSP:"hospital"};
+  const curto={INV:"invejável",PICA:"bacia das almas",SELL:"sell high",REAL:"é real",SOLID:"solid",BUY:"buy low",DESESP:"desespero",STREAM:"stream",CARO:"caro dimai",RUI:"rui dimai",HOSP:"hospital"};
   const cara=x=>{const i=fs.indexOf(x.p.t);return `<button type="button" class="pac-c${fs.length?(i>=0?" sel":" apag"):""}" data-pj="${x.p.id}" style="--cor:${i>=0?(fs.length>1?CAB[i]:"#ffd400"):PAC_TAG[x.g].c}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · ${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk}"><span class="pac-cf">${pacFoto(x.p)}<i>${x.rk>=300?"–":x.rk}</i><img class="pac-ct" src="img/l/${T(x.p.t)[1]}.webp" alt=""></span><em>${esc(sobre(x.p.n))}</em>${x.g2?`<u>quase ${curto[x.g2]}</u>`:""}</button>`};
   const SEC={v:["INTOCÁVEIS","Não troca, não dropa, não deixa nem olhar.","022"],a:["SÓ MAIS UM JOGO","Mais uma bomba e eu ouço proposta.","021"],r:["DROPA HOJE OU TENTA TROCAR","Available to trade. Aceita-se qualquer coisa.","020"]};
   const corpo=["v","a","r"].map(z=>{const bs=Object.keys(PAC_TAG).filter(g=>PAC_TAG[g].z===z&&grp[g]);if(!bs.length)return "";const n=bs.reduce((q,g)=>q+grp[g].length,0);
