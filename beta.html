@@ -2431,11 +2431,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261120014245"></script>
+<script src="bbm.js?v=20261120014421"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261120014245";
+const VERSAO_PAINEL="20261120014421";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4638,19 +4638,19 @@ function vPaciencia(d,pills,cab){
   const L=todos.filter(x=>W?!x.pk:(x.pk>=pn.a&&x.pk<=pn.b)).sort((a,b)=>a.rk-b.rk);
   const lo=W?Math.max(1,Math.min(...L.map(x=>x.rk),60)):1,hi=300;
   const Y=r=>4+Math.pow((Math.min(Math.max(r,lo),hi)-lo)/(hi-lo),W?0.75:0.5)*90;
-  const X=(x,i)=>W?6+((i*38+11)%100)/100*88:5+((x.pk-pn.a)/(pn.b-pn.a))*90;
+  const X=(x,i)=>W?6+((i*38+11)%100)/100*88:5+(1-(x.pk-pn.a)/(pn.b-pn.a))*90;
   const pts=L.map((x,i)=>({x,px:X(x,i),py:Y(x.rk)})).sort((a,b)=>a.py-b.py);
   for(let i=0;i<pts.length;i++)for(let j=0;j<i;j++){const a=pts[i],b=pts[j];if(Math.abs(a.px-b.px)<7&&Math.abs(a.py-b.py)<4.4){a.px+=a.px>=b.px?4.5:-4.5;if(a.px>96||a.px<4){a.px=Math.min(96,Math.max(4,a.px));a.py+=2.4}}}
-  const N=30,ln=[];for(let i=0;i<=N;i++){const fx=i/N;const r=W?130:pn.a+fx*(pn.b-pn.a);ln.push([5+fx*90,Y(r)])}
+  const N=30,ln=[];for(let i=0;i<=N;i++){const fx=i/N;const r=W?130:pn.b-fx*(pn.b-pn.a);ln.push([5+fx*90,Y(r)])}
   const lp=ln.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
   const ticks=[1,5,10,25,50,100,150,200,300].filter(r=>r>=lo&&(r===1||r>lo));
   const grade=ticks.map(r=>`<div class="pac-gy" style="top:${Y(r).toFixed(1)}%"><span>#${r}${r===300?"+":""}</span></div>`).join("");
-  const rods=W?"":Array.from({length:(pn.b-pn.a+1)/12},(_,i)=>`<span>Rodada ${(pn.a-1)/12+i+1}</span>`).join("");
+  const rods=W?"":Array.from({length:(pn.b-pn.a+1)/12},(_,i)=>`<span>Rodada ${pn.b/12-i}</span>`).join("");
   const faces=pts.map(({x,px,py})=>`<button type="button" class="pac-f${ft&&x.p.t!==ft?" apag":""}" data-pj="${x.p.id}" style="left:${px.toFixed(1)}%;top:${py.toFixed(1)}%;--cor:${PAC_TAG[x.g].c}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · ${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk} · ${PAC_TAG[x.g].n}">${pacFoto(x.p)}<i>${x.rk>=300?"–":x.rk}</i></button>`).join("");
   const grp={};pts.forEach(q=>(grp[q.x.g]=grp[q.x.g]||[]).push(q));const postas=[];
   const zon=Object.entries(grp).sort((a,b)=>b[1].length-a[1].length).slice(0,7).map(([g,m])=>{
     const cx=m.reduce((s,q)=>s+q.px,0)/m.length,cy=m.reduce((s,q)=>s+q.py,0)/m.length,w=30,hh=9;
-    let best=null;const cand=[];[6,12,20,30].forEach(R=>{for(let k=0;k<10;k++){const an=k/10*Math.PI*2;cand.push([Math.cos(an)*R*1.1-w/2,Math.sin(an)*R-hh/2])}});
+    let best=null;const cand=[];[6,11,16,22].forEach(R=>{for(let k=0;k<10;k++){const an=k/10*Math.PI*2;cand.push([Math.cos(an)*R*1.1-w/2,Math.sin(an)*R-hh/2])}});
       cand.forEach(([dx,dy],i)=>{
       const x=Math.min(100-w-1,Math.max(7,cx+dx)),y=Math.min(100-hh-1,Math.max(1,cy+dy));
       const sc=pts.filter(q=>q.px>x-4&&q.px<x+w+2&&q.py>y-3&&q.py<y+hh+2).length*10+postas.filter(o=>x<o.x+w&&x+w>o.x&&y<o.y+hh+1&&y+hh+1>o.y).length*60+i*0.4;
@@ -4660,11 +4660,11 @@ function vPaciencia(d,pills,cab){
   const sub=`<div class="pilulas pac-sub" role="group" aria-label="Rodadas">${PAC_PAINEIS.map(x=>`<button class="pil" type="button" data-pac="${x.k}" aria-pressed="${k===x.k}">${x.n}</button>`).join("")}</div>`;
   const filtro=`<div class="pac-filtro" role="group" aria-label="Destacar um time"><span>Destacar:</span>${d.teams.map(t=>`<button type="button" data-pact="${t.id}" aria-pressed="${ft===t.id}" title="${esc(T(t.id)[0])}"><img src="img/l/${T(t.id)[1]}.webp" alt="${esc(T(t.id)[0])}"></button>`).join("")}</div>`;
   const lista=(ft?L.filter(x=>x.p.t===ft):L).slice().sort((a,b)=>W?a.rk-b.rk:b.dl-a.dl);
-  return h+sub+`<p class="pac-como">${W?"Quem veio da waiver ou de agente livre não custou pick. Quanto mais alto, melhor o rank de hoje. Acima da linha tracejada já é jogador de time titular (top 130).":"<b>Da esquerda pra direita:</b> a ordem em que foram draftados. <b>De cima pra baixo:</b> o rank de hoje (o número no selo). A <b>linha tracejada é o preço</b>: quem está acima dela rende mais do que custou; quem está abaixo, menos."} Cada <b>faixa</b> escrita no mapa dá nome ao grupo de carinhas ao lado dela. Anel verde: Untouchable. Amarelo: One more game. Vermelho: Dropping tonight / Trying to trade. Toque na carinha pra abrir a ficha.</p>${filtro}
+  return h+sub+`<p class="pac-como">${W?"Quem veio da waiver ou de agente livre não custou pick. Quanto mais alto, melhor o rank de hoje. Acima da linha tracejada já é jogador de time titular (top 130).":"<b>Na horizontal:</b> a rodada do draft (as mais cedo ficam à direita, como no gráfico original). <b>De cima pra baixo:</b> o rank de hoje (o número no selo). A <b>linha tracejada é o preço</b>: quem está acima dela rende mais do que custou; quem está abaixo, menos."} Cada <b>faixa</b> escrita no mapa dá nome ao grupo de carinhas ao lado dela. Anel verde: Untouchable. Amarelo: One more game. Vermelho: Dropping tonight / Trying to trade. Toque na carinha pra abrir a ficha.</p>${filtro}
   <div class="card pac-card"><div class="pac-topo"><span><i class="tr"></i>One more dud and I'm taking offers</span><span><i class="q" style="background:#12b455"></i>Untouchable</span><span><i class="q" style="background:#f2c230"></i>One more game</span><span><i class="q" style="background:#ef4a55"></i>Dropping tonight / Trying to trade</span></div><div class="pac-wrap"><div class="pac-ytit">RANK DE HOJE</div>
   <div class="pac"><svg class="pac-ln" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polygon class="lucro" points="0,0 100,0 100,${ln[N][1].toFixed(1)} ${ln.slice().reverse().map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")} 0,${ln[0][1].toFixed(1)}"/><polygon class="prej" points="0,100 100,100 100,${ln[N][1].toFixed(1)} ${ln.slice().reverse().map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")} 0,${ln[0][1].toFixed(1)}"/><polyline points="${lp}"/></svg>
   ${grade}${zon}${faces}</div></div>
-  <div class="pac-eixo-x">${W?"<span>Waiver e agente livre (sem ordem: só a altura importa)</span>":rods}</div><div class="pac-xtit">${W?"":"ORDEM DO DRAFT ➜"}</div></div>
+  <div class="pac-eixo-x">${W?"<span>Waiver e agente livre (sem ordem: só a altura importa)</span>":rods}</div><div class="pac-xtit">${W?"":"⬅ ESCOLHIDO MAIS TARDE · RODADA DO DRAFT · ESCOLHIDO MAIS CEDO ➜"}</div></div>
   ${leg(L)}
   <div class="card"><div class="bloco-tit">${W?"DA WAIVER, DO MELHOR PRO PIOR":"DESTE PAINEL, DO MAIOR LUCRO AO MAIOR PREJUÍZO"}${ft?` <small>só ${esc(T(ft)[0])}</small>`:""}</div>${lista.map(pacLinha).join("")||'<div class="vazio">Ninguém desse time neste painel.</div>'}</div>`;
 }
