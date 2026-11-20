@@ -2393,11 +2393,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261120005330"></script>
+<script src="bbm.js?v=20261120005520"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261120005330";
+const VERSAO_PAINEL="20261120005520";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4530,23 +4530,24 @@ function odsRanking(){odsRkCarrega();const t=meuTime(),pin=t&&pinGuardado(t);
 const BBMR={};((window.BBM&&BBM.ids)||[]).forEach((id,i)=>{if(id)BBMR[id]=i+1});
 const bbmRk=p=>(p&&BBMR[p.id])||null;
 const PAC_PAINEIS=[
-  {k:"w",n:"Waiver e 10+",a:109,b:156,rot:["Waiver","10+"],z:[["A PICK DE WAIVER DO ANO","O print já rodou o grupo três vezes.",4,4,"c"],["BILHETE PREMIADO","Escolhido no chute, rende de titular.",56,4,"c"],["INQUILINO","Paga o aluguel e não incomoda.",30,47,"e"],["TURISTA","Veio pra um jogo e esqueceram de dropar.",4,70,"e"],["PESO MORTO","Tá no elenco por esquecimento.",50,88,"e"]]},
+  {k:"w",n:"Waiver",a:0,b:0,rot:["Waiver e agente livre"],z:[["A PICK DE WAIVER DO ANO","O print já rodou o grupo três vezes.",4,3,"c"],["INQUILINO","Paga o aluguel e não incomoda.",52,30,"c"],["TURISTA","Veio pra um jogo e esqueceram de dropar.",4,60,"e"],["PESO MORTO","Tá no elenco por esquecimento.",46,90,"e"]]},
+  {k:"d",n:"Rodadas 10 a 13",a:109,b:156,rot:["13","12","11","10"],z:[["BILHETE PREMIADO","Escolhido no chute, rende de titular.",4,3,"c"],["ACHADO","Fim de draft que virou peça.",54,28,"c"],["FIGURANTE","Tá no elenco, não tá no jogo.",6,62,"e"],["PICK JOGADA FORA","Dava no mesmo ter pulado a vez.",40,90,"e"]]},
   {k:"c",n:"Rodadas 7 a 9",a:73,b:108,rot:["9","8","7"],z:[["PECHINCHA","Custou pouco, carrega muito.",4,4,"c"],["FUNCIONÁRIO DO MÊS","Nunca falta, nunca brilha.",52,30,"c"],["DEVE E NÃO NEGA","Paga quando puder.",6,58,"e"],["ANO QUE VEM ELE EXPLODE","Falam isso todo ano.",40,86,"e"]]},
   {k:"b",n:"Rodadas 4 a 6",a:37,b:72,rot:["6","5","4"],z:[["MOTOR DO TIME","Ninguém fala dele. Ele ganha a semana.",4,4,"c"],["PAGOU O COMBINADO","Era isso que estava no contrato.",52,28,"c"],["FIADO","Tá devendo desde outubro.",6,58,"e"],["NOME NA CAMISA","Draftado pelo currículo.",44,86,"e"]]},
   {k:"a",n:"Rodadas 1 a 3",a:1,b:36,rot:["3","2","1"],z:[["DONO DO TIME","Sem ele não tem liga.",50,4,"c"],["FEZ O QUE CUSTOU","Estrela com cara de estrela.",4,26,"c"],["CARO DEMAIS","Preço de protagonista, entrega de figurante.",6,60,"e"],["DEPARTAMENTO MÉDICO","O melhor do elenco é o fisioterapeuta.",40,86,"e"]]}];
 function vPaciencia(d,pills,cab){
   const k=UI.pac||"w";const pn=PAC_PAINEIS.find(x=>x.k===k)||PAC_PAINEIS[0];
   const todos=d.P.filter(p=>!p.fora&&p.t).map(p=>({p,pk:HIST.draft[p.n]||0,rk:bbmRk(p)||300}));
-  const L=todos.filter(x=>pn.k==="w"?(!x.pk||x.pk>=pn.a):(x.pk>=pn.a&&x.pk<=pn.b));
-  const lo=Math.max(1,Math.min(...L.map(x=>x.rk),pn.k==="w"?40:pn.a)-0),hi=300;
-  const Y=r=>{const v=(Math.log(Math.min(Math.max(r,lo),hi))-Math.log(lo))/(Math.log(hi)-Math.log(lo));return 5+v*88};
+  const L=todos.filter(x=>pn.k==="w"?!x.pk:(x.pk>=pn.a&&x.pk<=pn.b)).sort((a,b)=>a.rk-b.rk);
+  const lo=Math.max(1,Math.min(...L.map(x=>x.rk),pn.k==="w"?60:pn.a)),hi=300;
+  const Y=r=>{const v=Math.pow((Math.min(Math.max(r,lo),hi)-lo)/(hi-lo),0.62);return 5+v*88};
   const hsh=id=>{let h=0;String(id).split("").forEach(c=>h=(h*31+c.charCodeAt(0))%997);return h/997};
-  const X=x=>{if(pn.k==="w"){if(!x.pk)return 5+hsh(x.p.id)*36;return 50+(1-(x.pk-pn.a)/(pn.b-pn.a))*44}return 5+(1-(x.pk-pn.a)/(pn.b-pn.a))*89};
-  const pts=L.map(x=>({x,px:X(x),py:Y(x.rk)})).sort((a,b)=>a.py-b.py);
+  const X=(x,i)=>pn.k==="w"?6+((i*38+11)%100)/100*88:5+(1-(x.pk-pn.a)/(pn.b-pn.a))*89;
+  const pts=L.map((x,i)=>({x,px:X(x,i),py:Y(x.rk)})).sort((a,b)=>a.py-b.py);
   // desencosta as carinhas
-  for(let i=0;i<pts.length;i++)for(let j=0;j<i;j++){const a=pts[i],b=pts[j];if(Math.abs(a.px-b.px)<7.5&&Math.abs(a.py-b.py)<4.6){a.px+=a.px>=b.px?4:-4;a.px=Math.min(95,Math.max(4,a.px))}}
+  for(let i=0;i<pts.length;i++)for(let j=0;j<i;j++){const a=pts[i],b=pts[j];if(Math.abs(a.px-b.px)<8&&Math.abs(a.py-b.py)<4.8){a.px+=a.px>=b.px?5:-5;if(a.px>95||a.px<5){a.px=Math.min(95,Math.max(5,a.px));a.py+=2.5}}}
   // linha: pagou o que custou (rank = pick); no waiver, nível de titular (#130)
-  const N=24,ln=[];for(let i=0;i<=N;i++){const fx=i/N;let r;if(pn.k==="w"){r=fx<0.47?130:pn.b-((fx-0.5)/0.44)*(pn.b-pn.a)}else r=pn.b-fx*(pn.b-pn.a);const w=Math.sin(fx*Math.PI*2.2)*1.6;ln.push(`${(5+fx*89).toFixed(1)},${(Y(Math.max(r,lo))+w).toFixed(1)}`)}
+  const N=24,ln=[];for(let i=0;i<=N;i++){const fx=i/N;let r;if(pn.k==="w")r=130;else r=pn.b-fx*(pn.b-pn.a);const w=Math.sin(fx*Math.PI*2.2)*1.6;ln.push(`${(5+fx*89).toFixed(1)},${(Y(Math.max(r,lo))+w).toFixed(1)}`)}
   const cor=py=>py<38?"v":py<68?"a":"r";
   const faces=pts.map(({x,px,py})=>`<button type="button" class="pac-f ${cor(py)}" data-pj="${x.p.id}" style="left:${px.toFixed(1)}%;top:${py.toFixed(1)}%;--cor:${T(x.p.t)[4]}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · #${x.rk>=300?"sem rank":x.rk}${x.pk?" · pick "+x.pk:" · waiver"}">${face(x.p.id,x.p.n,"ft")}<i>${x.rk>=300?"–":x.rk}</i></button>`).join("");
   const zon=pn.z.map(([t,s,l,tp,c])=>`<div class="pac-z ${c}" style="left:${l}%;top:${tp}%"><b>${t}</b><span>${s}</span></div>`).join("");
@@ -4558,7 +4559,7 @@ function vPaciencia(d,pills,cab){
   <div class="card pac-card"><div class="pac-eixo-y"><span>RENDE MUITO</span><span>RENDE NADA</span></div>
   <div class="pac">${zon}<svg class="pac-ln" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${ln.join(" ")}"/></svg>${faces}</div>
   <div class="pac-eixo-x">${pn.rot.map(r=>`<span>${r}</span>`).join("")}</div>
-  <div class="pac-leg"><span><i class="tr"></i>${pn.k==="w"?"waiver: nível de titular · draft: pagou o que custou":"pagou o que custou (rank = pick)"}</span><span><i class="q v"></i>Intocável</span><span><i class="q a"></i>Mais um jogo</span><span><i class="q r"></i>Dropa hoje ou tenta trocar</span></div></div>
+  <div class="pac-leg"><span><i class="tr"></i>${pn.k==="w"?"nível de titular (top 130)":"pagou o que custou (rank = pick)"}</span><span><i class="q v"></i>Intocável</span><span><i class="q a"></i>Mais um jogo</span><span><i class="q r"></i>Dropa hoje ou tenta trocar</span></div></div>
   <div class="card"><div class="bloco-tit">PLACAR DO PAINEL <small>verde · amarelo · vermelho por time</small></div><div class="pac-res">${res}</div></div>`;
 }
 
