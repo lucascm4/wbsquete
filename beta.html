@@ -2401,6 +2401,24 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 .pac-topo .tr{width:28px;border-top:3px dashed var(--texto);display:inline-block}
 .pac-selo{white-space:normal;text-align:right;max-width:150px;line-height:1.15}
 @media(max-width:520px){.pac-z{width:42%}.pac-z b{font-size:15px}.pac-z span{font-size:11.5px}.pac-selo{max-width:110px}}
+.pac-filtro{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;margin:0 0 12px;background:var(--card);border:1px solid var(--linha);border-radius:12px;padding:10px}
+.pac-filtro-tit{grid-column:1/-1;font:13px var(--ui);color:var(--apagado)}.pac-filtro-tit b{color:var(--amarelo);letter-spacing:1px;margin-right:6px}
+.pac-filtro .pac-tb{width:auto;height:auto;display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:9px;border:2px solid var(--linha);background:#0d0b0b;color:var(--texto);font:700 12.5px var(--ui);cursor:pointer;min-width:0}
+.pac-filtro .pac-tb img{width:22px;height:22px;flex:0 0 auto}.pac-filtro .pac-tb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pac-filtro .pac-tb[aria-pressed="true"]{border-color:var(--sel);box-shadow:0 0 0 2px var(--sel) inset;color:#fff}
+.pac-limpa{background:none;border:0;color:var(--amarelo);font:700 13px var(--ui);text-decoration:underline;cursor:pointer;padding:0}
+.pac-f.apag{opacity:.10;filter:grayscale(1)}
+.pac-f.peq,.pac-f.peq .ft{width:30px!important;height:30px!important}.pac-f.peq.apag i{display:none}
+.pac-duelo{padding:12px}
+.pac-dl-cab{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.pac-dl-cab div{display:flex;align-items:center;gap:8px;font:700 17px var(--ui);color:#fff;border-bottom:4px solid var(--sel);padding-bottom:6px;flex:1}
+.pac-dl-cab div:last-child:not(:first-child){flex-direction:row-reverse;text-align:right}
+.pac-dl-cab img{width:34px;height:34px}.pac-x{font-family:var(--display);font-size:24px;color:var(--apagado)}
+.pac-dl-l{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--linha)}
+.pac-duelo.um .pac-dl-l{grid-template-columns:auto 1fr}.pac-duelo.um .pac-dl-l span{text-align:left}
+.pac-dl-l b{font-family:var(--display);font-weight:400;font-size:24px;color:var(--texto)}.pac-dl-l b:last-child:not(:first-child){text-align:right}
+.pac-dl-l b.g{color:#3ddc7a}.pac-dl-l span{font:700 11.5px var(--ui);letter-spacing:.6px;text-transform:uppercase;color:var(--apagado);text-align:center}
+.pac-dl-l.t b{font:700 14px var(--ui)}.pac-dl-l.t b small{display:block;font:12px var(--ui);color:var(--apagado)}
 </style>
 </head><body>
 </style>
@@ -2431,11 +2449,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261120014421"></script>
+<script src="bbm.js?v=20261120014905"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261120014421";
+const VERSAO_PAINEL="20261120014905";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4567,7 +4585,7 @@ function odsRanking(){odsRkCarrega();const t=meuTime(),pin=t&&pinGuardado(t);
 /* ---------- BBM: ranking do Basketball Monster (punt TO) e curva da paciência ---------- */
 const BBMR={};((window.BBM&&BBM.ids)||[]).forEach((id,i)=>{if(id)BBMR[id]=i+1});
 const bbmRk=p=>(p&&BBMR[p.id])||null;
-const PAC_PAINEIS=[{k:"a",n:"Rodadas 1 a 3",a:1,b:36},{k:"b",n:"Rodadas 4 a 6",a:37,b:72},{k:"c",n:"Rodadas 7 a 9",a:73,b:108},{k:"d",n:"Rodadas 10 a 13",a:109,b:156},{k:"w",n:"Waiver",a:0,b:0}];
+const PAC_PAINEIS=[{k:"t",n:"Draft inteiro",a:1,b:156},{k:"a",n:"Rodadas 1 a 3",a:1,b:36},{k:"b",n:"Rodadas 4 a 6",a:37,b:72},{k:"c",n:"Rodadas 7 a 9",a:73,b:108},{k:"d",n:"Rodadas 10 a 13",a:109,b:156},{k:"w",n:"Waiver",a:0,b:0}];
 const PAC_COR={v:"#12b455",a:"#f2c230",r:"#ef4a55"};
 // nomes das faixas: os do gráfico Patience Curve (STATDUNK); as frases são da redação
 const PAC_TAG={
@@ -4615,7 +4633,7 @@ function pacDados(d){
 function pacFoto(p){return TEMFOTO.has(p.id)||FOTO[p.n]?face(p.id,p.n,"ft"):`<span class="ft ini">${esc(ini(p.n))}<img src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/${p.id}.png&w=96&h=70" alt="" loading="lazy" onerror="this.remove()"></span>`}
 function pacLinha(x){const t=PAC_TAG[x.g];return `<div class="pac-li clic" data-pj="${x.p.id}"><span class="pac-mini" style="--cor:${t.c}">${pacFoto(x.p)}</span><div class="pac-li-n"><b>${esc(x.p.n)}</b><small><img src="img/l/${T(x.p.t)[1]}.webp" alt=""> ${esc(T(x.p.t)[0])} · ${x.pk?`pick ${x.pk}`:"waiver"} ➜ ${x.rk>=300?"fora do top 300":"#"+x.rk}</small></div><span class="pac-selo" style="background:${t.c}">${t.n}</span>${x.pk?`<b class="pac-dl ${x.dl>=0?"up":"dn"}">${x.dl>0?"+":""}${x.dl}</b>`:""}</div>`}
 function vPaciencia(d,pills,cab){
-  const vis=UI.pacv||"mapa",k=UI.pac||"a",ft=UI.pact||0;const todos=pacDados(d);
+  const vis=UI.pacv||"mapa",fs=UI.pacts||[],k=UI.pac||(fs.length?"t":"a");const CAB=["#ffd400","#3aa0ff"];const todos=pacDados(d);
   const visoes=`<div class="pilulas pac-sub" role="group" aria-label="Visões">${[["mapa","Mapa"],["times","Por time"],["podio","Pódio"]].map(([a,b])=>`<button class="pil" type="button" data-pacv="${a}" aria-pressed="${vis===a}">${b}</button>`).join("")}</div>`;
   const leg=xs=>`<div class="pac-leg">${Object.keys(PAC_TAG).filter(g=>xs.some(x=>x.g===g)).map(g=>`<span><i style="background:${PAC_TAG[g].c}"></i><b>${PAC_TAG[g].n}</b> ${PAC_TAG[g].s}</span>`).join("")}</div>`;
   let h=`${cab}<h1 class="manchete">CURVA DA PACIÊNCIA</h1><p class="linha-fina">Quanto cada jogador custou (a pick do draft) contra quanto ele vale hoje (o rank do Basketball Monster, punt TO${BBM&&BBM.quando?`, foto de ${esc(BBM.quando)}`:""}). Rank melhor que a pick é lucro; pior é prejuízo.</p></div>${pills}${visoes}`;
@@ -4645,10 +4663,10 @@ function vPaciencia(d,pills,cab){
   const lp=ln.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
   const ticks=[1,5,10,25,50,100,150,200,300].filter(r=>r>=lo&&(r===1||r>lo));
   const grade=ticks.map(r=>`<div class="pac-gy" style="top:${Y(r).toFixed(1)}%"><span>#${r}${r===300?"+":""}</span></div>`).join("");
-  const rods=W?"":Array.from({length:(pn.b-pn.a+1)/12},(_,i)=>`<span>Rodada ${pn.b/12-i}</span>`).join("");
-  const faces=pts.map(({x,px,py})=>`<button type="button" class="pac-f${ft&&x.p.t!==ft?" apag":""}" data-pj="${x.p.id}" style="left:${px.toFixed(1)}%;top:${py.toFixed(1)}%;--cor:${PAC_TAG[x.g].c}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · ${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk} · ${PAC_TAG[x.g].n}">${pacFoto(x.p)}<i>${x.rk>=300?"–":x.rk}</i></button>`).join("");
+  const rods=W?"":(pn.k==="t"?["10 a 13","7 a 9","4 a 6","1 a 3"].map(r=>`<span>Rodadas ${r}</span>`).join(""):Array.from({length:(pn.b-pn.a+1)/12},(_,i)=>`<span>Rodada ${pn.b/12-i}</span>`).join(""));
+  const faces=pts.map(({x,px,py})=>`<button type="button" class="pac-f${fs.length&&!fs.includes(x.p.t)?" apag":""}${pn.k==="t"?" peq":""}" data-pj="${x.p.id}" style="left:${px.toFixed(1)}%;top:${py.toFixed(1)}%;--cor:${fs.length>1&&fs.includes(x.p.t)?CAB[fs.indexOf(x.p.t)]:PAC_TAG[x.g].c}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · ${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk} · ${PAC_TAG[x.g].n}">${pacFoto(x.p)}<i>${x.rk>=300?"–":x.rk}</i></button>`).join("");
   const grp={};pts.forEach(q=>(grp[q.x.g]=grp[q.x.g]||[]).push(q));const postas=[];
-  const zon=Object.entries(grp).sort((a,b)=>b[1].length-a[1].length).slice(0,7).map(([g,m])=>{
+  const zon=(pn.k==="t"?[]:Object.entries(grp)).sort((a,b)=>b[1].length-a[1].length).slice(0,7).map(([g,m])=>{
     const cx=m.reduce((s,q)=>s+q.px,0)/m.length,cy=m.reduce((s,q)=>s+q.py,0)/m.length,w=30,hh=9;
     let best=null;const cand=[];[6,11,16,22].forEach(R=>{for(let k=0;k<10;k++){const an=k/10*Math.PI*2;cand.push([Math.cos(an)*R*1.1-w/2,Math.sin(an)*R-hh/2])}});
       cand.forEach(([dx,dy],i)=>{
@@ -4658,15 +4676,27 @@ function vPaciencia(d,pills,cab){
     postas.push(best);const t=PAC_TAG[g];
     return `<div class="pac-z ${best.y<36?"c":"e"}" style="left:${best.x.toFixed(1)}%;top:${best.y.toFixed(1)}%"><b>${t.n}</b><span>${t.s}</span></div>`}).join("");
   const sub=`<div class="pilulas pac-sub" role="group" aria-label="Rodadas">${PAC_PAINEIS.map(x=>`<button class="pil" type="button" data-pac="${x.k}" aria-pressed="${k===x.k}">${x.n}</button>`).join("")}</div>`;
-  const filtro=`<div class="pac-filtro" role="group" aria-label="Destacar um time"><span>Destacar:</span>${d.teams.map(t=>`<button type="button" data-pact="${t.id}" aria-pressed="${ft===t.id}" title="${esc(T(t.id)[0])}"><img src="img/l/${T(t.id)[1]}.webp" alt="${esc(T(t.id)[0])}"></button>`).join("")}</div>`;
-  const lista=(ft?L.filter(x=>x.p.t===ft):L).slice().sort((a,b)=>W?a.rk-b.rk:b.dl-a.dl);
+  const filtro=`<div class="pac-filtro" role="group" aria-label="Destacar ou comparar times"><div class="pac-filtro-tit"><b>DESTACAR OU COMPARAR</b> toque em um time pra ver só ele; toque em outro pra pôr os dois lado a lado${fs.length?` · <button type="button" class="pac-limpa" data-pact="0">limpar</button>`:""}</div>${d.teams.map(t=>{const i=fs.indexOf(t.id);return `<button type="button" class="pac-tb" data-pact="${t.id}" aria-pressed="${i>=0}" style="${i>=0?`--sel:${fs.length>1?CAB[i]:"#ffd400"}`:""}"><img src="img/l/${T(t.id)[1]}.webp" alt=""><span>${esc(T(t.id)[0])}</span></button>`}).join("")}</div>`;
+  // tira-teima: resumo de cada time escolhido (elenco inteiro, não só o painel)
+  const res=id=>{const m=todos.filter(x=>x.p.t===id),dr=m.filter(x=>x.pk),wv=m.filter(x=>!x.pk).sort((a,b)=>a.rk-b.rk),z=c=>m.filter(x=>PAC_TAG[x.g].z===c).length;
+    const top=m.map(x=>x.rk).sort((a,b)=>a-b).slice(0,8);const bo=dr.slice().sort((a,b)=>b.dl-a.dl);
+    return {id,v:z("v"),a:z("a"),r:z("r"),saldo:dr.reduce((q,x)=>q+Math.max(-100,Math.min(100,x.dl)),0),med:top.length?Math.round(top.reduce((q,x)=>q+x,0)/top.length):0,best:bo[0],pior:bo[bo.length-1],wv:wv[0],fora:m.filter(x=>x.fora).length}};
+  const nomeC=x=>x?`${esc(x.p.n)} <small>${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk}</small>`:"–";
+  let duelo="";
+  if(fs.length){const R=fs.map(res);const lin=(rot,f,melhor)=>{const vs=R.map(f);const win=R.length>1&&vs[0]!==vs[1]?(melhor==="menor"?(vs[0]<vs[1]?0:1):(vs[0]>vs[1]?0:1)):-1;
+      return `<div class="pac-dl-l"><b class="${win===0?"g":""}">${vs[0]}</b><span>${rot}</span>${R.length>1?`<b class="${win===1?"g":""}">${vs[1]}</b>`:""}</div>`};
+    const txt=(rot,f)=>`<div class="pac-dl-l t"><b>${f(R[0])}</b><span>${rot}</span>${R.length>1?`<b>${f(R[1])}</b>`:""}</div>`;
+    duelo=`<div class="card pac-duelo${R.length>1?"":" um"}"><div class="pac-dl-cab">${R.map((r,i)=>`<div style="--sel:${R.length>1?CAB[i]:"#ffd400"}"><img src="img/l/${T(r.id)[1]}.webp" alt=""><b>${esc(T(r.id)[0])}</b></div>`).join(R.length>1?'<span class="pac-x">X</span>':"")}</div>
+    ${lin("Untouchable",r=>r.v,"maior")}${lin("One more game",r=>r.a,"maior")}${lin("Dropping tonight / Trying to trade",r=>r.r,"menor")}${lin("Saldo do draft (posições)",r=>r.saldo,"maior")}${lin("Rank médio dos 8 melhores",r=>r.med,"menor")}${lin("No departamento médico",r=>r.fora,"menor")}
+    ${txt("Melhor negócio do draft",r=>nomeC(r.best))}${txt("Pior negócio do draft",r=>nomeC(r.pior))}${txt("Melhor achado da waiver",r=>nomeC(r.wv))}</div>`}
+  const lista=(fs.length?L.filter(x=>fs.includes(x.p.t)):L).slice().sort((a,b)=>W?a.rk-b.rk:b.dl-a.dl);
   return h+sub+`<p class="pac-como">${W?"Quem veio da waiver ou de agente livre não custou pick. Quanto mais alto, melhor o rank de hoje. Acima da linha tracejada já é jogador de time titular (top 130).":"<b>Na horizontal:</b> a rodada do draft (as mais cedo ficam à direita, como no gráfico original). <b>De cima pra baixo:</b> o rank de hoje (o número no selo). A <b>linha tracejada é o preço</b>: quem está acima dela rende mais do que custou; quem está abaixo, menos."} Cada <b>faixa</b> escrita no mapa dá nome ao grupo de carinhas ao lado dela. Anel verde: Untouchable. Amarelo: One more game. Vermelho: Dropping tonight / Trying to trade. Toque na carinha pra abrir a ficha.</p>${filtro}
   <div class="card pac-card"><div class="pac-topo"><span><i class="tr"></i>One more dud and I'm taking offers</span><span><i class="q" style="background:#12b455"></i>Untouchable</span><span><i class="q" style="background:#f2c230"></i>One more game</span><span><i class="q" style="background:#ef4a55"></i>Dropping tonight / Trying to trade</span></div><div class="pac-wrap"><div class="pac-ytit">RANK DE HOJE</div>
   <div class="pac"><svg class="pac-ln" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polygon class="lucro" points="0,0 100,0 100,${ln[N][1].toFixed(1)} ${ln.slice().reverse().map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")} 0,${ln[0][1].toFixed(1)}"/><polygon class="prej" points="0,100 100,100 100,${ln[N][1].toFixed(1)} ${ln.slice().reverse().map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ")} 0,${ln[0][1].toFixed(1)}"/><polyline points="${lp}"/></svg>
   ${grade}${zon}${faces}</div></div>
   <div class="pac-eixo-x">${W?"<span>Waiver e agente livre (sem ordem: só a altura importa)</span>":rods}</div><div class="pac-xtit">${W?"":"⬅ ESCOLHIDO MAIS TARDE · RODADA DO DRAFT · ESCOLHIDO MAIS CEDO ➜"}</div></div>
-  ${leg(L)}
-  <div class="card"><div class="bloco-tit">${W?"DA WAIVER, DO MELHOR PRO PIOR":"DESTE PAINEL, DO MAIOR LUCRO AO MAIOR PREJUÍZO"}${ft?` <small>só ${esc(T(ft)[0])}</small>`:""}</div>${lista.map(pacLinha).join("")||'<div class="vazio">Ninguém desse time neste painel.</div>'}</div>`;
+  ${duelo}${leg(L)}
+  <div class="card"><div class="bloco-tit">${W?"DA WAIVER, DO MELHOR PRO PIOR":"DESTE PAINEL, DO MAIOR LUCRO AO MAIOR PREJUÍZO"}${fs.length?` <small>só ${fs.map(i=>esc(T(i)[0])).join(" e ")}</small>`:""}</div>${lista.map(pacLinha).join("")||'<div class="vazio">Ninguém desse time neste painel.</div>'}</div>`;
 }
 
 /* ---------- PUBLI BETLOYDE: anúncios de mentirinha com odds de verdade (saem da chance do modelo) ---------- */
@@ -5482,7 +5512,7 @@ document.addEventListener("click",e=>{
   else if(ds.rkc){UI.rkCat=UI.rkCat===ds.rkc?null:ds.rkc;render()}
   else if(ds.rd){UI.radar=ds.rd;render()}
   else if(ds.pacv){UI.pacv=ds.pacv;render()}
-  else if(ds.pact){UI.pact=UI.pact===+ds.pact?0:+ds.pact;render()}
+  else if(ds.pact!==undefined){const i=+ds.pact,A=UI.pacts||[];UI.pacts=!i?[]:A.includes(i)?A.filter(x=>x!==i):A.length>=2?[A[0],i]:A.concat(i);if(UI.pacts.length&&!UI.pac)UI.pac="t";render()}
   else if(ds.pac){UI.pac=ds.pac;render()}
   else if(ds.ft!==undefined){UI.filtroTime=+ds.ft;const mj=/^#jogo-(\d+)/.exec(location.hash);if(mj&&UI.filtroTime){const D0=DADOS;const hj=Math.min(Math.max(D0.cur,D0.s0),D0.s1);const k=+mj[1];if((UI.dia[k]??"sem")==="sem")UI.dia[k]=hj}render()}
   else if(ds.nd){UI.noiteDia=(ds.nd==="sem"||isNaN(+ds.nd))?ds.nd:+ds.nd;render()}
