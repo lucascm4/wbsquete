@@ -2336,6 +2336,35 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 .ods-fx{display:grid;grid-template-columns:repeat(auto-fill,minmax(66px,1fr));gap:5px;padding:6px 0 8px}
 .ods-fx .ods-b{min-width:0}
 @media (max-width:420px){.ods-pl-l .ods-par{flex:1 1 auto}.ods-pl-l .ods-par .ods-b{flex:1 1 0}}
+.pac-sub{margin:8px 0}
+.pac-card{padding:10px 10px 12px;position:relative}
+.pac{position:relative;width:100%;height:620px;border-radius:14px;overflow:hidden;background:
+ radial-gradient(60% 34% at 22% 8%,#0b7a35 0,transparent 70%),radial-gradient(55% 30% at 78% 14%,#17a948 0,transparent 72%),
+ radial-gradient(70% 26% at 40% 52%,#f4e23a 0,transparent 75%),radial-gradient(60% 26% at 80% 62%,#f9b233 0,transparent 75%),
+ radial-gradient(80% 30% at 30% 100%,#ef4a55 0,transparent 75%),
+ linear-gradient(180deg,#12933f 0,#3fbf45 22%,#b9e23c 40%,#f6e83c 52%,#fbb040 68%,#f77a52 82%,#f0505a 100%)}
+.pac-ln{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.pac-ln polyline{fill:none;stroke:#0d0b0b;stroke-width:2.5;stroke-dasharray:9 7;vector-effect:non-scaling-stroke;stroke-linecap:round}
+.pac-z{position:absolute;max-width:46%;pointer-events:none;line-height:1.05}
+.pac-z b{display:block;font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:.3px;text-wrap:balance}
+.pac-z span{display:block;font-family:var(--ui);font-size:12.5px;margin-top:3px}
+.pac-z.c{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.45)}.pac-z.e{color:#0d0b0b}
+.pac-f{position:absolute;transform:translate(-50%,-50%);width:38px;height:38px;padding:0;border:0;background:none;cursor:pointer;z-index:2}
+.pac-f .ft{width:38px!important;height:38px!important;border-radius:50%;object-fit:cover;background:#fff8ec;border:2.5px solid var(--cor,#0d0b0b);box-shadow:0 1px 4px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#0d0b0b;font:700 11px var(--ui)}
+.pac-f i{position:absolute;right:-6px;bottom:-5px;min-width:18px;padding:1px 3px;border-radius:8px;background:#0d0b0b;color:#fff;font:700 10px/1.2 var(--ui);font-style:normal;text-align:center}
+.pac-f:hover,.pac-f:focus-visible{z-index:5;outline:none}.pac-f:focus-visible .ft{box-shadow:0 0 0 3px #fff}
+.pac-eixo-x{display:flex;justify-content:space-around;border-top:3px solid var(--texto);margin-top:8px;padding-top:4px;font-family:var(--display);font-size:20px}
+.pac-eixo-y{display:flex;justify-content:space-between;font:700 10px var(--ui);letter-spacing:1px;color:var(--apagado);margin-bottom:6px}
+.pac-leg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font:13px var(--ui);color:var(--texto)}
+.pac-leg span{display:inline-flex;align-items:center;gap:6px}
+.pac-leg .q{width:14px;height:14px;border-radius:4px;display:inline-block}.pac-leg .q.v{background:#17a948}.pac-leg .q.a{background:#f6c93c}.pac-leg .q.r{background:#f0505a}
+.pac-leg .tr{width:26px;border-top:3px dashed var(--texto);display:inline-block}
+.pac-res{display:flex;flex-wrap:wrap;gap:8px 14px}
+.pac-t{display:inline-flex;align-items:center;gap:4px;font:700 13px var(--ui)}.pac-t img{width:22px;height:22px}
+.pac-t b{min-width:18px;text-align:center;border-radius:4px;padding:1px 3px;color:#0d0b0b}.pac-t .v{background:#3fbf45}.pac-t .a{background:#f6c93c}.pac-t .r{background:#f0505a}
+@media(max-width:520px){.pac{height:560px}.pac-f,.pac-f .ft{width:32px!important;height:32px!important}.pac-z b{font-size:17px}.pac-z span{font-size:11.5px}}
+.pac-f .ft.ini{position:relative;overflow:hidden}.pac-f .ft.ini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#fff8ec}
+.pac-z{z-index:1}
 </style>
 </head><body>
 </style>
@@ -2366,10 +2395,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
+<script src="bbm.js?v=20261120005702"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261119095609";
+const VERSAO_PAINEL="20261120005702";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -3959,11 +3989,12 @@ function vJogadores(){
 function vRadar(){
   const d=DADOS;if(!d)return vazio();const f=UI.radar;
   const nota=n=>RADAR.notas&&RADAR.notas[n];
-  const pil=[["quente","Lista quente"],["baixa","Lista baixa"],["pegar","Quem pegar"],["sobe","Sobe e afunda"],["lixo","Página do lixo"]];
+  const pil=[["quente","Lista quente"],["baixa","Lista baixa"],["pegar","Quem pegar"],["sobe","Sobe e afunda"],["lixo","Página do lixo"],["pac","Curva da paciência"]];
   const pills=`<div class="pilulas" role="group" aria-label="Listas">${pil.map(([k,n])=>`<button class="pil" type="button" data-rd="${k}" aria-pressed="${f===k}">${n}</button>`).join("")}</div>`;
   const elenco=d.P.filter(p=>!p.fora);
   const linhaRd=(p,dir,big,sub,extra,baixo)=>`<div class="rd clic" data-pj="${p.id}">${face(p.id,p.n)}<div><div class="n">${esc(p.n)} ${tagInj(p)}${p.t?`<a href="#time-${p.t}"><img class="tl" src="img/l/${T(p.t)[1]}.webp" alt="${esc(T(p.t)[0])}" title="${esc(T(p.t)[0])}"></a>`:`<span class="selo ${p.st==="WAIVERS"?"wv":"livre"}">${p.st==="WAIVERS"?"WAIVER":"LIVRE"}</span>`}</div><div class="s">${sub}</div>${extra||""}${nota(p.n)?`<div class="q">“${esc(nota(p.n))}”</div>`:""}</div><div class="d ${dir}">${big}</div>${baixo?`<div class="rd-baixo">${baixo}</div>`:""}</div>`;
   let h=`<div class="cab-secao"><span class="sobre">RADAR DO LOYDÃO${RADAR.quando?` · NOTAS DE ${esc(RADAR.quando)}`:""}</span>`;
+  if(f==="pac")return vPaciencia(d,pills,h);
   if(f==="quente"||f==="baixa"){
     const L=elenco.filter(p=>p.rk&&p.l7&&p.l7[11]>=3&&p.rk[0]<400).map(p=>({p,dl:p.rk[0]-p.rk[1]})).filter(x=>f==="quente"?x.dl>0:x.dl<0).sort((x,y)=>f==="quente"?y.dl-x.dl:x.dl-y.dl).slice(0,20);
     h+=`<h1 class="manchete">${f==="quente"?"LISTA QUENTE":"LISTA BAIXA"}</h1><p class="linha-fina">${f==="quente"?"Quem mais subiu nos últimos 7 dias.":"Quem mais caiu nos últimos 7 dias."} ${tip("rk","")}. As aspas são do Loydão.</p></div>${pills}
@@ -3971,9 +4002,9 @@ function vRadar(){
     return h;
   }
   if(f==="sobe"){
-    const L=elenco.filter(p=>HIST.draft[p.n]&&p.rk&&p.rk[0]>0).map(p=>({p,pk:HIST.draft[p.n],rk:p.rk[0],dl:HIST.draft[p.n]-p.rk[0]}));
+    const L=elenco.filter(p=>HIST.draft[p.n]&&(bbmRk(p)||(p.rk&&p.rk[0]>0))).map(p=>{const rk=bbmRk(p)||p.rk[0];return {p,pk:HIST.draft[p.n],rk,dl:HIST.draft[p.n]-rk}});
     const sobe=L.filter(x=>x.dl>0).sort((x,y)=>y.dl-x.dl).slice(0,8),afunda=L.filter(x=>x.dl<0&&x.pk<=80).sort((x,y)=>x.dl-y.dl).slice(0,8);
-    h+=`<h1 class="manchete">QUEM SOBE, QUEM AFUNDA</h1><p class="linha-fina">Pick do draft ➜ ranking da ESPN na temporada. Igual à página da revista, só que ao vivo.</p></div>${pills}
+    h+=`<h1 class="manchete">QUEM SOBE, QUEM AFUNDA</h1><p class="linha-fina">Pick do draft ➜ ranking do Basketball Monster (punt TO, por jogo). Igual à página da revista.</p></div>${pills}
     <div class="radar-grid"><div class="card"><div class="bloco-tit">SOBE</div>${sobe.map(({p,pk,rk})=>linhaRd(p,"up",`${rk}<small>RK · PICK ${pk}</small>`,linhaMedia(p.av||zero()),"",tabRd(p))).join("")}</div><div class="card"><div class="bloco-tit">AFUNDA</div>${afunda.map(({p,pk,rk})=>linhaRd(p,"dn",`${rk}<small>RK · PICK ${pk}</small>`,linhaMedia(p.av||zero()),"",tabRd(p))).join("")}</div></div>`;
     return h;
   }
@@ -3995,9 +4026,9 @@ function vRadar(){
     return h;
   }
   // lixo
-  const L=elenco.filter(p=>p.rk&&p.rk[0]>130&&p.slot!==13&&p.inj!=="OUT").map(p=>({p,sc:p.rk[0]+(p.l7&&p.l7[11]>=2?p.rk[1]:p.rk[0])})).sort((x,y)=>y.sc-x.sc).slice(0,15);
-  h+=`<h1 class="manchete">PÁGINA DO LIXO</h1><p class="linha-fina">Quem ocupa vaga nos elencos da liga com o pior ranking da ESPN (temporada e últimos 7 dias). Quem tem, que se explique.</p></div>${pills}
-  <div class="card">${L.map(({p})=>linhaRd(p,"dn",`${p.rk[0]}<small>RK 9CAT · PICK ${HIST.draft[p.n]||"FA"}</small>`,`${POS[p.pos]||""} · ${NBA[p.pro]||""} · ${SLOT[p.slot]||""} · ${p.av?linhaMedia(p.av):"sem jogos"}`,"",tabRd(p))).join("")}</div>`;
+  const L=elenco.filter(p=>p.rk&&(bbmRk(p)||p.rk[0])>130&&p.slot!==13&&p.inj!=="OUT").map(p=>{const b=bbmRk(p)||Math.max(p.rk[0],301);return {p,b,sc:b*2+(p.l7&&p.l7[11]>=2?p.rk[1]:p.rk[0])}}).sort((x,y)=>y.sc-x.sc).slice(0,15);
+  h+=`<h1 class="manchete">PÁGINA DO LIXO</h1><p class="linha-fina">Quem ocupa vaga nos elencos da liga com o pior ranking do Basketball Monster (punt TO), desempatado pelos últimos 7 dias. Quem tem, que se explique.</p></div>${pills}
+  <div class="card">${L.map(({p,b})=>linhaRd(p,"dn",`${b>300?"300+":b}<small>RK BBM · PICK ${HIST.draft[p.n]||"FA"}</small>`,`${POS[p.pos]||""} · ${NBA[p.pro]||""} · ${SLOT[p.slot]||""} · ${p.av?linhaMedia(p.av):"sem jogos"}`,"",tabRd(p))).join("")}</div>`;
   return h;
 }
 
@@ -4495,6 +4526,47 @@ function odsRanking(){odsRkCarrega();const t=meuTime(),pin=t&&pinGuardado(t);
    <div class="ods-lista">${L.map(linha).join("")}</div>
    ${maior?`<div class="lula-av ok">💰 Maior green da liga: ${esc(T(maior.id)[0])}, +${fmtL(maior.r.maior)} Lulas numa aposta só.</div>`:""}
    <p class="mk-nota">👑 = o mais rico da BETLOYDE. 🪦 = quem mais deixou Lulas na casa. Atualiza quando cada um abre o app. Lulas não valem nada, mas o print do ranking vale muito no grupo.</p></div>`}
+
+
+/* ---------- BBM: ranking do Basketball Monster (punt TO) e curva da paciência ---------- */
+const BBMR={};((window.BBM&&BBM.ids)||[]).forEach((id,i)=>{if(id)BBMR[id]=i+1});
+const bbmRk=p=>(p&&BBMR[p.id])||null;
+const PAC_PAINEIS=[
+  {k:"w",n:"Waiver",a:0,b:0,rot:["Waiver e agente livre"],z:[["A PICK DE WAIVER DO ANO","O print já rodou o grupo três vezes.",4,3,"c"],["INQUILINO","Paga o aluguel e não incomoda.",52,30,"c"],["TURISTA","Veio pra um jogo e esqueceram de dropar.",4,60,"e"],["PESO MORTO","Tá no elenco por esquecimento.",46,90,"e"]]},
+  {k:"d",n:"Rodadas 10 a 13",a:109,b:156,rot:["13","12","11","10"],z:[["BILHETE PREMIADO","Escolhido no chute, rende de titular.",4,3,"c"],["ACHADO","Fim de draft que virou peça.",54,28,"c"],["FIGURANTE","Tá no elenco, não tá no jogo.",6,62,"e"],["PICK JOGADA FORA","Dava no mesmo ter pulado a vez.",40,90,"e"]]},
+  {k:"c",n:"Rodadas 7 a 9",a:73,b:108,rot:["9","8","7"],z:[["PECHINCHA","Custou pouco, carrega muito.",4,4,"c"],["FUNCIONÁRIO DO MÊS","Nunca falta, nunca brilha.",52,30,"c"],["DEVE E NÃO NEGA","Paga quando puder.",6,58,"e"],["ANO QUE VEM ELE EXPLODE","Falam isso todo ano.",40,86,"e"]]},
+  {k:"b",n:"Rodadas 4 a 6",a:37,b:72,rot:["6","5","4"],z:[["MOTOR DO TIME","Ninguém fala dele. Ele ganha a semana.",4,4,"c"],["PAGOU O COMBINADO","Era isso que estava no contrato.",52,28,"c"],["FIADO","Tá devendo desde outubro.",6,58,"e"],["NOME NA CAMISA","Draftado pelo currículo.",44,86,"e"]]},
+  {k:"a",n:"Rodadas 1 a 3",a:1,b:36,rot:["3","2","1"],z:[["DONO DO TIME","Sem ele não tem liga.",50,4,"c"],["FEZ O QUE CUSTOU","Estrela com cara de estrela.",4,26,"c"],["CARO DEMAIS","Preço de protagonista, entrega de figurante.",6,60,"e"],["DEPARTAMENTO MÉDICO","O melhor do elenco é o fisioterapeuta.",40,86,"e"]]}];
+function vPaciencia(d,pills,cab){
+  const k=UI.pac||"w";const pn=PAC_PAINEIS.find(x=>x.k===k)||PAC_PAINEIS[0];
+  const DR={};((HIST.drafts&&HIST.drafts["2026/27"])||[]).forEach(r=>DR[r[3]]=[r[0],r[2]]);const TRO=new Set((BBM&&BBM.trocas)||[]);
+  // só conta como draft se ainda está com quem draftou (ou veio por troca); o resto é waiver
+  const pkDe=p=>{const r=DR[p.n];if(!r)return HIST.draft[p.n]&&TRO.has(p.id)?HIST.draft[p.n]:0;return (r[1]===T(p.t)[0]||TRO.has(p.id))?r[0]:0};
+  const todos=d.P.filter(p=>!p.fora&&p.t).map(p=>({p,pk:pkDe(p),rk:bbmRk(p)||300}));
+  const L=todos.filter(x=>pn.k==="w"?!x.pk:(x.pk>=pn.a&&x.pk<=pn.b)).sort((a,b)=>a.rk-b.rk);
+  const lo=Math.max(1,Math.min(...L.map(x=>x.rk),pn.k==="w"?60:pn.a)),hi=300;
+  const Y=r=>{const v=Math.pow((Math.min(Math.max(r,lo),hi)-lo)/(hi-lo),0.62);return 5+v*88};
+  const hsh=id=>{let h=0;String(id).split("").forEach(c=>h=(h*31+c.charCodeAt(0))%997);return h/997};
+  const X=(x,i)=>pn.k==="w"?6+((i*38+11)%100)/100*88:5+(1-(x.pk-pn.a)/(pn.b-pn.a))*89;
+  const pts=L.map((x,i)=>({x,px:X(x,i),py:Y(x.rk)})).sort((a,b)=>a.py-b.py);
+  // desencosta as carinhas
+  for(let i=0;i<pts.length;i++)for(let j=0;j<i;j++){const a=pts[i],b=pts[j];if(Math.abs(a.px-b.px)<8&&Math.abs(a.py-b.py)<4.8){a.px+=a.px>=b.px?5:-5;if(a.px>95||a.px<5){a.px=Math.min(95,Math.max(5,a.px));a.py+=2.5}}}
+  // linha: pagou o que custou (rank = pick); no waiver, nível de titular (#130)
+  const N=24,ln=[];for(let i=0;i<=N;i++){const fx=i/N;let r;if(pn.k==="w")r=130;else r=pn.b-fx*(pn.b-pn.a);const w=Math.sin(fx*Math.PI*2.2)*1.6;ln.push(`${(5+fx*89).toFixed(1)},${(Y(Math.max(r,lo))+w).toFixed(1)}`)}
+  const cor=py=>py<38?"v":py<68?"a":"r";
+  const faces=pts.map(({x,px,py})=>`<button type="button" class="pac-f ${cor(py)}" data-pj="${x.p.id}" style="left:${px.toFixed(1)}%;top:${py.toFixed(1)}%;--cor:${T(x.p.t)[4]}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · #${x.rk>=300?"sem rank":x.rk}${x.pk?" · pick "+x.pk:" · waiver"}">${TEMFOTO.has(x.p.id)||FOTO[x.p.n]?face(x.p.id,x.p.n,"ft"):`<span class="ft ini">${esc(ini(x.p.n))}<img src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/${x.p.id}.png&w=96&h=70" alt="" loading="lazy" onerror="this.remove()"></span>`}<i>${x.rk>=300?"–":x.rk}</i></button>`).join("");
+  const zon=pn.z.map(([t,s,l,tp,c])=>`<div class="pac-z ${c}" style="left:${l}%;top:${tp}%"><b>${t}</b><span>${s}</span></div>`).join("");
+  const sub=`<div class="pilulas pac-sub" role="group" aria-label="Rodadas">${PAC_PAINEIS.map(x=>`<button class="pil" type="button" data-pac="${x.k}" aria-pressed="${k===x.k}">${x.n}</button>`).join("")}</div>`;
+  // resumo por time no painel
+  const porT={};pts.forEach(({x,py})=>{const o=porT[x.p.t]=porT[x.p.t]||{v:0,a:0,r:0};o[cor(py)]++});
+  const res=Object.entries(porT).sort((a,b)=>(b[1].v-b[1].r)-(a[1].v-a[1].r)).map(([t,o])=>`<span class="pac-t"><img src="img/l/${T(+t)[1]}.webp" alt="${esc(T(+t)[0])}"><b class="v">${o.v}</b><b class="a">${o.a}</b><b class="r">${o.r}</b></span>`).join("");
+  return `${cab}<h1 class="manchete">CURVA DA PACIÊNCIA</h1><p class="linha-fina">Onde cada jogador da liga foi pego (rodada do draft ou waiver) contra o quanto ele rende. O número é o rank do Basketball Monster, punt TO, por jogo${BBM&&BBM.quando?`, foto de ${esc(BBM.quando)}`:""}. Toque na carinha pra abrir a ficha.</p></div>${pills}${sub}
+  <div class="card pac-card"><div class="pac-eixo-y"><span>RENDE MUITO</span><span>RENDE NADA</span></div>
+  <div class="pac">${zon}<svg class="pac-ln" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${ln.join(" ")}"/></svg>${faces}</div>
+  <div class="pac-eixo-x">${pn.rot.map(r=>`<span>${r}</span>`).join("")}</div>
+  <div class="pac-leg"><span><i class="tr"></i>${pn.k==="w"?"nível de titular (top 130)":"pagou o que custou (rank = pick)"}</span><span><i class="q v"></i>Intocável</span><span><i class="q a"></i>Mais um jogo</span><span><i class="q r"></i>Dropa hoje ou tenta trocar</span></div></div>
+  <div class="card"><div class="bloco-tit">PLACAR DO PAINEL <small>verde · amarelo · vermelho por time</small></div><div class="pac-res">${res}</div></div>`;
+}
 
 /* ---------- PUBLI BETLOYDE: anúncios de mentirinha com odds de verdade (saem da chance do modelo) ---------- */
 const oddDe=p=>{if(!(p>0.004))return null;const v=degrau(Math.max(1.01,1/(p*1.075)));return v};
@@ -5288,7 +5360,7 @@ document.addEventListener("click",e=>{
   {const pj=e.target.closest("[data-pj]");if(pj&&!e.target.closest("#popFicha")&&!e.target.closest("a,button,select,th")){const ao=location.hash==="#aovivo";UI.fichaPer=ao?DADOS.cur:null;if(ao)UI.fichaAba="num";abrirJogador(+pj.dataset.pj,ao?DADOS.cur:undefined);return}}
   {const vb=e.target.closest("[data-volta]");if(vb){e.preventDefault();e.stopPropagation();if(history.length>1)history.back();else location.hash="confrontos";return}}
   {const ab=e.target.closest("[data-abre]");if(ab){e.preventDefault();e.stopPropagation();UI.abre=UI.abre||{};const k=ab.dataset.abre;if(k==="all"){const on=ab.getAttribute("aria-pressed")!=="true";(DADOS.mt||[]).forEach((_,x)=>UI.abre[x]=on)}else UI.abre[k]=!UI.abre[k];render();return}}
-  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-mda],[data-rd],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj],[data-dd],[data-leg]");if(!t)return;
+  const t=e.target.closest("[data-jogo],[data-ir],[data-dia],[data-mf],[data-mj],[data-time],[data-jf],[data-jo],[data-jm],[data-atu],[data-tt],[data-to],[data-rko],[data-mda],[data-rd],[data-pac],[data-cft],[data-drt],[data-rkc],[data-ft],[data-nd],[data-nm],[data-sub],[data-prm],[data-col],[data-sel],[data-fj],[data-dd],[data-leg]");if(!t)return;
   if(e.target.closest("a")||e.target.closest("select,label"))return;
   const ds=t.dataset;
   if(ds.jogo!==undefined)ir("jogo-"+ds.jogo);
@@ -5308,6 +5380,7 @@ document.addEventListener("click",e=>{
   else if(ds.rko){UI.rkOrd=ds.rko;UI.rkCat=null;render()}
   else if(ds.rkc){UI.rkCat=UI.rkCat===ds.rkc?null:ds.rkc;render()}
   else if(ds.rd){UI.radar=ds.rd;render()}
+  else if(ds.pac){UI.pac=ds.pac;render()}
   else if(ds.ft!==undefined){UI.filtroTime=+ds.ft;const mj=/^#jogo-(\d+)/.exec(location.hash);if(mj&&UI.filtroTime){const D0=DADOS;const hj=Math.min(Math.max(D0.cur,D0.s0),D0.s1);const k=+mj[1];if((UI.dia[k]??"sem")==="sem")UI.dia[k]=hj}render()}
   else if(ds.nd){UI.noiteDia=(ds.nd==="sem"||isNaN(+ds.nd))?ds.nd:+ds.nd;render()}
   else if(ds.nm){UI.noiteModo=ds.nm;render()}
