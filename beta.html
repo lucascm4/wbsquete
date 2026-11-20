@@ -2485,6 +2485,28 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 @media(max-width:640px){.pac-zonas .pac-o{margin:-14px 0!important}.pac-zonas .pac-ponte{margin:-26px 0}}
 .pac-zonas .pac-o{flex:0 0 auto;max-width:100%}
 .pac-zonas .pac-o{width:min(calc(var(--d)*1.2),100%);padding:8% 7%}
+.pac-sec{padding:0 0 16px;background:#191212!important;border:3px solid #0d0b0b;border-radius:16px;overflow:hidden}
+.pac-sec>header{margin:0 0 14px;padding:18px 16px;background-size:cover;background-position:center 22%;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;border-bottom:5px solid var(--bz)}
+.pac-sec.v{--bz:#12b455}.pac-sec.a{--bz:#ffd400}.pac-sec.r{--bz:#ef4a55}
+.pac-sec>header b{font-family:var(--display);font-weight:400;font-size:clamp(30px,5vw,46px);letter-spacing:1px;color:var(--bz)!important;text-shadow:3px 3px 0 #0d0b0b!important;line-height:.95}
+.pac-sec>header span{font:600 16px var(--ui);color:#fff8ec!important;text-shadow:0 1px 3px #000!important}
+.pac-sec>header i{background:var(--bz);color:#0d0b0b}
+.pac-mural{columns:300px;column-gap:18px;padding:4px 16px 0}
+.pac-rec{break-inside:avoid;margin:0 0 20px;background:#fff8ec;background-image:radial-gradient(rgba(13,11,11,.07) 1.2px,transparent 1.5px);background-size:9px 9px;border:3px solid #0d0b0b;box-shadow:5px 5px 0 var(--bz);padding:16px 14px 14px;position:relative;color:#0d0b0b}
+.pac-rec.g0{transform:rotate(-.7deg)}.pac-rec.g1{transform:rotate(.6deg)}.pac-rec.g2{transform:rotate(-.3deg)}
+.pac-rec::before{content:"";position:absolute;top:-11px;left:50%;width:92px;height:22px;margin-left:-46px;background:rgba(255,212,0,.78);transform:rotate(-2deg);box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.pac-rec h3{margin:0 0 10px;font-family:var(--display);font-weight:400;font-size:clamp(26px,3.4vw,34px);line-height:1.12;letter-spacing:.5px;text-transform:uppercase}
+.pac-rec h3 span{background:var(--bz);padding:1px 8px;-webkit-box-decoration-break:clone;box-decoration-break:clone;color:#0d0b0b}
+.pac-fala{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
+.pac-fala img{width:34px;height:34px;border-radius:50%;border:2px solid #0d0b0b;flex:0 0 auto}
+.pac-fala p{margin:0;background:#0d0b0b;color:#fff8ec;font:600 14.5px/1.25 var(--ui);padding:7px 10px;border-radius:4px 12px 12px 12px}
+.pac-rec .pac-reg{color:#0d0b0b;opacity:1;font:500 12.5px/1.3 var(--ui);margin-bottom:12px;border-left:3px solid var(--bz);padding-left:7px}
+.pac-rec .pac-reg b{font-weight:700;letter-spacing:.5px}
+.pac-rec .pac-caras{justify-content:flex-start;gap:10px 6px}
+.pac-rec .pac-c em{color:#0d0b0b!important;text-shadow:none!important}
+.pac-c u{text-decoration:none;font:700 9px/1.1 var(--ui);background:#0d0b0b;color:#ffd400;padding:1px 4px;border-radius:3px;text-align:center;max-width:58px}
+.pac-c{width:58px}
+@media(max-width:640px){.pac-mural{padding:4px 12px 0}.pac-rec{transform:none!important}}
 </style>
 </head><body>
 </style>
@@ -2515,11 +2537,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261120021218"></script>
+<script src="bbm.js?v=20261120021446"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261120021218";
+const VERSAO_PAINEL="20261120021446";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4655,48 +4677,36 @@ const PAC_PAINEIS=[{k:"t",n:"Draft inteiro",a:1,b:156},{k:"a",n:"Rodadas 1 a 3",
 const PAC_COR={v:"#12b455",a:"#f2c230",r:"#ef4a55"};
 // faixas: nome = a característica do grupo; quem está na faixa aparece junto dela no mapa
 const PAC_TAG={
-  GS:{n:"Ganha semana",s:"Quando ele joga bem, o confronto acaba na quinta.",z:"v"},
-  DL:{n:"Dono da liga",s:"Top 5 do mundo. Quem tem, tem; quem não tem, reza.",z:"v"},
-  EE:{n:"Estrela que entrega",s:"Custou caro e vale cada pick.",z:"v"},
-  CS:{n:"Carrega em silêncio",s:"Ninguém fala dele no grupo. Ele ganha do grupo.",z:"v"},
-  DD:{n:"Dono do garrafão",s:"O rebote é dele. O resto que lute.",z:"v"},
-  FD:{n:"Faz o dele",s:"Entregou o que custou. Nem um rebote a mais.",z:"v"},
-  AS:{n:"Assalto no draft",s:"Roubaram na frente de todo mundo e ninguém gritou.",z:"v"},
-  RP:{n:"Rende mais que o preço",s:"Era pick de meio de draft. Joga de titular absoluto.",z:"v"},
-  VT:{n:"Relógio suíço",s:"Toda noite a mesma linha. Não atrasa, não adianta.",z:"v"},
-  GL:{n:"Ganha liga",s:"Fim de draft carregando time nas costas.",z:"v"},
-  OK:{n:"O ok que virou fundamental",s:"Era tapa-buraco. Hoje ninguém tira do quinteto.",z:"v"},
-  PP:{n:"Pagou a pick",s:"Fim de draft com cara de fim de draft. Justo.",z:"a"},
-  ES:{n:"Especialista",s:"Faz uma coisa só. Mas faz.",z:"a"},
-  SD:{n:"Stream de domingo",s:"Mas quem é que eu vou chamar?",z:"a"},
-  MJ:{n:"Só mais um jogo",s:"Foi o que você disse segunda passada.",z:"a"},
-  JM:{n:"Joga muito, entrega pouco",s:"Corre 32 minutos por noite e volta sem nada.",z:"a"},
-  ST:{n:"Se tivesse minuto…",s:"Por 36 minutos é All-Star. Pena que joga 19.",z:"a"},
-  DV:{n:"Devendo",s:"Pick de estrela, jogo de coadjuvante.",z:"a"},
-  CB:{n:"Comprei na baixa, baixou mais",s:"Grupo de apoio às quintas.",z:"r"},
-  DN:{n:"Pick queimada",s:"Meio de draft jogado no lixo.",z:"r"},
-  BA:{n:"Sumiu do mapa",s:"Foi draftado, juro. Tem até print.",z:"r"},
-  PJ:{n:"Pick jogada fora",s:"Dava no mesmo ter pulado a vez.",z:"r"},
-  EQ:{n:"No elenco por esquecimento",s:"Ocupa vaga. Só isso.",z:"r"},
-  WA:{n:"Bomba de primeira rodada",s:"Custou pick de estrela. Rende de waiver.",z:"r"},
-  DM:{n:"Hospital Vila Nova Star",s:"Paciente de luxo. O time é ótimo, no papel.",z:"r"}};
-const PAC_REGRA={"GS": "Está entre os melhores do ranking, bem acima do que custou.", "DL": "Top 5 do ranking de hoje.", "EE": "Pick das 3 primeiras rodadas rendendo o que custou ou mais.", "CS": "Pick de meio de draft que hoje é top 36.", "DD": "Rank de hoje perto da pick e 8 ou mais rebotes por jogo.", "FD": "Rank de hoje perto da pick em que saiu.", "AS": "Pick das rodadas 7 a 9 que hoje é top 45.", "RP": "Pick das rodadas 7 a 9 que hoje é top 72.", "VT": "Pick das rodadas 7 a 9 com rank de hoje perto da pick.", "GL": "Pick das rodadas 10 a 13 que hoje é top 60.", "OK": "Veio barato (fim de draft ou waiver) e hoje é top 130, nível de titular.", "PP": "Fim de draft com rank de fim de draft.", "ES": "Fora do top 130, mas forte em uma categoria.", "SD": "Fora do top 130 e sem nenhuma categoria forte.", "MJ": "Abaixo do que custou, mas ainda perto.", "JM": "Joga 30 ou mais minutos e rende abaixo da pick.", "ST": "Joga menos de 24 minutos e rende abaixo da pick.", "DV": "Pick das 3 primeiras rodadas um pouco abaixo do preço.", "CB": "Bem abaixo do que custou.", "DN": "Pick de meio de draft fora do top 180.", "BA": "Pick das rodadas 7 a 9 fora do top 200.", "PJ": "Fim de draft fora do top 170.", "EQ": "Waiver fora do top 200.", "WA": "Pick das 3 primeiras rodadas fora do top 120.", "DM": "Lesionado (OUT ou no IR) e sem render o que custou."};
-Object.entries(PAC_TAG).forEach(([k,t])=>{t.c=PAC_COR[t.z];t.e=PAC_REGRA[k]});
+  INV:{n:"INVEJÁVEL",s:"Quem tem, tem. Quem não tem, manda proposta e reza.",e:"Top 12 do ranking de hoje.",z:"v"},
+  PICA:{n:"PICA DEMAIS",s:"Custou pouco, carrega muito. É monstro, tá?",e:"Rank de hoje muito acima da pick em que saiu (ou waiver no top 75).",z:"v"},
+  SELL:{n:"SELLL HIGHHHH!!!!",s:"Tá voando acima do próprio nível. Vende caro!!!",e:"Rende o que custou e, nos últimos 7 dias, jogou quase o dobro do nível da temporada.",z:"v"},
+  REAL:{n:"ADMITO: É REAL",s:"Era tapa-buraco. Hoje ninguém tira do quinteto.",e:"Veio da waiver ou do fim do draft e hoje é top 130.",z:"v"},
+  SOLID:{n:"SOLID",s:"Fez o dele. Nem um rebote a mais.",e:"Rank de hoje perto da pick em que saiu.",z:"v"},
+  BUY:{n:"BUY LOWWW ALEEERT!!",s:"O dono tá puto. Manda proposta agora, antes que ele acorde.",e:"Pick das 6 primeiras rodadas, saudável, rendendo abaixo do preço, mas ainda perto.",z:"a"},
+  DESESP:{n:"QUE DESESPERO",s:"Só mais um jogo. Juro. Foi o que eu disse segunda passada.",e:"Pick da rodada 7 em diante rendendo abaixo do preço, mas ainda perto.",z:"a"},
+  STREAM:{n:"STREAM DE DOMINGO",s:"Mas quem é que eu vou chamar?",e:"Veio da waiver e está entre o top 131 e o top 200.",z:"a"},
+  CARO:{n:"CARO DIMAI",s:"Pick de estrela, jogo de figurante.",e:"Pick das 3 primeiras rodadas rendendo muito abaixo do preço.",z:"r"},
+  RUI:{n:"HAHAHA, RUI DIMAI",s:"Vai dropar essa belezinha?",e:"Muito abaixo do preço, ou waiver fora do top 200.",z:"r"},
+  HOSP:{n:"HOSPITAL VILA NOVA STAR",s:"Pacientes de luxo. O time é ótimo, no papel.",e:"Lesionado (OUT ou no IR) e sem render o que custou.",z:"r"}};
+Object.values(PAC_TAG).forEach(t=>t.c=PAC_COR[t.z]);
 function pacDados(d){
   const DR={};((HIST.drafts&&HIST.drafts["2026/27"])||[]).forEach(r=>DR[r[3]]=[r[0],r[2]]);const TRO=new Set((BBM&&BBM.trocas)||[]);
   // só conta como draft se ainda está com quem draftou (ou veio por troca); o resto é waiver
   const pkDe=p=>{const r=DR[p.n];if(!r)return HIST.draft[p.n]&&TRO.has(p.id)?HIST.draft[p.n]:0;return (r[1]===T(p.t)[0]||TRO.has(p.id))?r[0]:0};
   return d.P.filter(p=>!p.fora&&p.t).map(p=>{const pk=pkDe(p),rk=bbmRk(p)||300,fora=p.inj==="OUT"||p.slot===13;
-    const a=p.av||zero(),mn=(p.mn&&p.mn.av)||0;
-    const tol=pk?Math.max(6,pk*0.25):0,esp=a[4]>=1.2||a[3]>=1.4||a[5]>=2.5||a[1]>=8||a[2]>=5.5;
+    const tol=pk?Math.max(6,pk*0.25):0;
+    // em alta: rank dos últimos 7 dias quase o dobro de bom que o da temporada (ranks do painel)
+    const quente=!!(p.rk&&p.rk[0]&&p.rk[1]&&p.l7&&p.l7[11]>=2&&p.rk[0]>=40&&p.rk[1]<=p.rk[0]*0.55);
     const tag=rk=>{const dl=pk?pk-rk:130-rk,lado=pk?(dl>tol?1:dl>=-tol?0:-1):(rk<=130?1:-1);
-      if(!pk)return rk<=75?"GS":rk<=130?"OK":(fora&&rk>200)?"DM":rk<=200?(esp?"ES":"SD"):"EQ";
-      if(pk>=109)return rk<=60?"GL":rk<=110?"OK":fora?"DM":rk<=170?"PP":"PJ";
-      if(pk>=73)return rk<=45?"AS":rk<=72?"RP":lado>=0?"VT":fora?"DM":rk>200?"BA":mn>=30?"JM":(mn&&mn<24)?"ST":"MJ";
-      if(pk>=37)return rk<=20?"GS":rk<=36?"CS":lado>=0?(a[1]>=8?"DD":"FD"):fora?"DM":rk<=pk*2?"MJ":rk<=180?"CB":"DN";
-      return rk<=5?"DL":rk<=15?"GS":lado>=0?"EE":fora?"DM":rk<=pk*2+8?"DV":rk<=120?"CB":"WA"};
+      if(fora&&lado<0)return "HOSP";
+      if(lado>=0)return rk<=12?"INV":quente?"SELL":(pk?(dl>=Math.max(25,tol*2)&&rk<=pk*0.6):rk<=75)?"PICA":(!pk||pk>=109)?"REAL":"SOLID";
+      if(!pk)return rk<=200?"STREAM":"RUI";
+      const perto=rk<=pk*2.2+12;
+      if(pk<=72&&perto)return "BUY";
+      if(pk<=36)return "CARO";
+      return perto?"DESESP":"RUI"};
     const dl=pk?pk-rk:130-rk,lado=pk?(dl>tol?1:dl>=-tol?0:-1):(rk<=130?1:-1),g=tag(rk);
-    // quase na faixa vizinha: se o rank mexer uns 12%, muda de faixa
+    // quase na zona vizinha: se o rank mexer uns 12%, muda de zona
     const g2=rk>=300?null:[tag(Math.max(1,Math.round(rk*0.88))),tag(Math.round(rk*1.14))].find(x=>x!==g)||null;
     return {p,pk,rk,dl,g,g2,fora,lado}});
 }
@@ -4725,22 +4735,13 @@ function vPaciencia(d,pills,cab){
   const pn=PAC_PAINEIS.find(x=>x.k===k)||PAC_PAINEIS[0],W=pn.k==="w";
   const L=todos.filter(x=>W?!x.pk:(x.pk>=pn.a&&x.pk<=pn.b)).sort((a,b)=>a.rk-b.rk);
   const grp={};L.forEach(x=>(grp[x.g]=grp[x.g]||[]).push(x));
-  const ordZ={v:0,a:1,r:2};
-  const blocos=Object.entries(grp).map(([g,m])=>({g,m,t:PAC_TAG[g],med:m.reduce((q,x)=>q+x.rk,0)/m.length})).sort((x,y)=>ordZ[x.t.z]-ordZ[y.t.z]||x.med-y.med);
-  // pontes: quem está na fronteira entre duas zonas vizinhas fica na interseção delas
-  const pontes=blocos.map(()=>[]);const naPonte=new Set();
-  blocos.forEach((b,i)=>{const n=blocos[i+1];if(!n||n.t.z!==b.t.z)return;b.m.concat(n.m).forEach(x=>{if(naPonte.has(x.p.id))return;if((x.g===b.g&&x.g2===n.g)||(x.g===n.g&&x.g2===b.g)){if((x.g===b.g?b:n).m.filter(y=>!naPonte.has(y.p.id)).length>1){pontes[i].push(x);naPonte.add(x.p.id)}}})});
-  const nv=blocos.filter(b=>b.t.z==="v").length,na=blocos.filter(b=>b.t.z==="a").length,nt=Math.max(1,blocos.length);
-  const p1=Math.round(nv/nt*100),p2=Math.round((nv+na)/nt*100);
-  const fundo=`radial-gradient(60% 26% at 20% 6%,rgba(11,122,53,.9) 0,transparent 70%),radial-gradient(50% 22% at 82% ${Math.max(8,p1-12)}%,rgba(23,169,72,.8) 0,transparent 72%),linear-gradient(180deg,#0f8f3c 0,#35b846 ${Math.max(6,p1-10)}%,#c3e23c ${p1}%,#f6e23c ${Math.round((p1+p2)/2)}%,#fbac40 ${p2}%,#f6785a ${Math.min(96,p2+10)}%,#f0505a 100%)`;
   const sobre=n=>{const w=String(n).replace(/ (Jr\.?|Sr\.?|II|III|IV)$/,"").split(" ");return w[w.length-1]};
-  const cara=x=>{const i=fs.indexOf(x.p.t);return `<button type="button" class="pac-c${fs.length?(i>=0?" sel":" apag"):""}" data-pj="${x.p.id}" style="--cor:${i>=0?(fs.length>1?CAB[i]:"#ffd400"):PAC_TAG[x.g].c}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · ${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk}"><span class="pac-cf">${pacFoto(x.p)}<i>${x.rk>=300?"–":x.rk}</i><img class="pac-ct" src="img/l/${T(x.p.t)[1]}.webp" alt=""></span><em>${esc(sobre(x.p.n))}</em></button>`};
-  const SEC={v:["INTOCÁVEIS","Não troca, não dropa, não deixa nem olhar."],a:["SÓ MAIS UM JOGO","Mais uma bomba e eu ouço proposta."],r:["DROPA HOJE OU TENTA TROCAR","Available to trade. Aceita-se qualquer coisa."]};
-  const zona=(b,i)=>{const m=b.m.filter(x=>!naPonte.has(x.p.id)),D=Math.round(Math.sqrt((34000+4300*m.length)/0.42));
-    const pt=pontes[i].length?`<div class="pac-ponte"><span>entre as duas</span><div class="pac-caras">${pontes[i].map(cara).join("")}</div></div>`:"";
-    return `<section class="pac-o ${b.t.z}" style="--d:${D}px"><h3>${esc(b.t.n)}</h3><p>${esc(b.t.s)}</p><small class="pac-reg">${esc(b.t.e||"")}</small><div class="pac-caras">${m.map(cara).join("")}</div></section>${pt}`};
-  const corpo=["v","a","r"].map(z=>{const bs=blocos.map((b,i)=>[b,i]).filter(([b])=>b.t.z===z);if(!bs.length)return "";const n=bs.reduce((q,[b])=>q+b.m.length,0);
-    return `<div class="pac-sec ${z}"><header><b>${SEC[z][0]}</b><span>${SEC[z][1]}</span><i>${n} jogador${n>1?"es":""}</i></header><div class="pac-zonas">${bs.map(([b,i])=>zona(b,i)).join("")}</div></div>`}).join("");
+  const curto={INV:"invejável",PICA:"pica demais",SELL:"sell high",REAL:"é real",SOLID:"solid",BUY:"buy low",DESESP:"desespero",STREAM:"stream",CARO:"caro dimai",RUI:"rui dimai",HOSP:"hospital"};
+  const cara=x=>{const i=fs.indexOf(x.p.t);return `<button type="button" class="pac-c${fs.length?(i>=0?" sel":" apag"):""}" data-pj="${x.p.id}" style="--cor:${i>=0?(fs.length>1?CAB[i]:"#ffd400"):PAC_TAG[x.g].c}" title="${esc(x.p.n)} · ${esc(T(x.p.t)[0])} · ${x.pk?"pick "+x.pk:"waiver"} ➜ #${x.rk>=300?"300+":x.rk}"><span class="pac-cf">${pacFoto(x.p)}<i>${x.rk>=300?"–":x.rk}</i><img class="pac-ct" src="img/l/${T(x.p.t)[1]}.webp" alt=""></span><em>${esc(sobre(x.p.n))}</em>${x.g2?`<u>quase ${curto[x.g2]}</u>`:""}</button>`};
+  const SEC={v:["INTOCÁVEIS","Não troca, não dropa, não deixa nem olhar.","022"],a:["SÓ MAIS UM JOGO","Mais uma bomba e eu ouço proposta.","021"],r:["DROPA HOJE OU TENTA TROCAR","Available to trade. Aceita-se qualquer coisa.","020"]};
+  const corpo=["v","a","r"].map(z=>{const bs=Object.keys(PAC_TAG).filter(g=>PAC_TAG[g].z===z&&grp[g]);if(!bs.length)return "";const n=bs.reduce((q,g)=>q+grp[g].length,0);
+    return `<div class="pac-sec ${z}"><header style="background-image:linear-gradient(90deg,rgba(13,11,11,.92) 0,rgba(13,11,11,.62) 55%,rgba(13,11,11,.25) 100%),url(img/revista/${SEC[z][2]}.jpg)"><b>${SEC[z][0]}</b><span>${SEC[z][1]}</span><i>${n} jogador${n>1?"es":""}</i></header>
+    <div class="pac-mural">${bs.map((g,i)=>{const t=PAC_TAG[g];return `<article class="pac-rec ${z} g${i%3}"><h3><span>${esc(t.n)}</span></h3><div class="pac-fala"><img src="img/app/apple-180.png" alt=""><p>${esc(t.s)}</p></div><small class="pac-reg"><b>QUEM ENTRA:</b> ${esc(t.e)}</small><div class="pac-caras">${grp[g].map(cara).join("")}</div></article>`}).join("")}</div></div>`}).join("");
   const vis2=fs.length?L.filter(x=>fs.includes(x.p.t)):L;
   const sub=`<div class="pilulas pac-sub" role="group" aria-label="Rodadas">${PAC_PAINEIS.map(x=>`<button class="pil" type="button" data-pac="${x.k}" aria-pressed="${k===x.k}">${x.n}</button>`).join("")}</div>`;
   const filtro=`<div class="pac-filtro" role="group" aria-label="Destacar ou comparar times"><div class="pac-filtro-tit"><b>DESTACAR OU COMPARAR</b> toque num escudo pra ver só aquele time; toque em outro pra comparar os dois${fs.length?` · <button type="button" class="pac-limpa" data-pact="0">limpar</button>`:""}</div>${d.teams.map(t=>{const i=fs.indexOf(t.id);return `<button type="button" class="pac-tb" data-pact="${t.id}" aria-pressed="${i>=0}" style="${i>=0?`--sel:${fs.length>1?CAB[i]:"#ffd400"}`:""}"><img src="img/l/${T(t.id)[1]}.webp" alt="${esc(T(t.id)[0])}" title="${esc(T(t.id)[0])}"></button>`}).join("")}</div>`;
@@ -4757,7 +4758,7 @@ function vPaciencia(d,pills,cab){
     ${lin("Intocáveis",r=>r.v,"maior")}${lin("Só mais um jogo",r=>r.a,"maior")}${lin("Dropa hoje ou tenta trocar",r=>r.r,"menor")}${lin("Saldo do draft (posições)",r=>r.saldo,"maior")}${lin("Rank médio dos 8 melhores",r=>r.med,"menor")}${lin("No departamento médico",r=>r.fora,"menor")}
     ${txt("Melhor negócio do draft",r=>nomeC(r.best))}${txt("Pior negócio do draft",r=>nomeC(r.pior))}${txt("Melhor achado da waiver",r=>nomeC(r.wv))}</div>`}
   const lista=vis2.slice().sort((a,b)=>W?a.rk-b.rk:b.dl-a.dl);
-  return h+sub+`<p class="pac-como">São <b>três prateleiras</b>: intocáveis, só mais um jogo e dropa ou troca. Dentro de cada uma, os círculos são tipos de jogador, com o nome, o critério e quem se encaixa. Dentro da prateleira não há ordem: nenhum círculo vale mais que o outro. Quem aparece <b>entre duas zonas</b> está na fronteira: mais uma semana boa ou ruim e ele muda de lado. O número é o rank de hoje e o escudo é o dono. Toque na carinha pra abrir a ficha.</p>${filtro}${duelo}
+  return h+sub+`<p class="pac-como">São <b>três prateleiras</b>: intocáveis, só mais um jogo e dropa ou troca. Em cada uma, os recortes são as zonas: o bordão, quem entra nela e os jogadores. A etiqueta <b>“quase…”</b> embaixo do nome marca quem está na fronteira: mais uma semana boa ou ruim e ele muda de zona. O número é o rank de hoje e o escudo é o dono. Toque na carinha pra abrir a ficha.</p>${filtro}${duelo}
   <div class="pac-mapa2"><div class="pac-tit2">${W?"WAIVER E AGENTE LIVRE":pn.k==="t"?"DRAFT INTEIRO":esc(pn.n).toUpperCase()}</div>${corpo||'<div class="vazio">Ninguém neste painel.</div>'}</div>
   <div class="card"><div class="bloco-tit">${W?"DA WAIVER, DO MELHOR PRO PIOR":"DESTE PAINEL, DO MAIOR LUCRO AO MAIOR PREJUÍZO"}${fs.length?` <small>só ${fs.map(i=>esc(T(i)[0])).join(" e ")}</small>`:""}</div>${lista.map(pacLinha).join("")||'<div class="vazio">Ninguém desse time neste painel.</div>'}</div>`;
 }
