@@ -2339,6 +2339,8 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 .ods-vivo{color:#d4121c;font-style:normal;font-weight:800;font-size:11px;letter-spacing:.02em;white-space:nowrap}
 .ods-duelo .ods-vivo{display:block;text-align:center;margin:2px 0}
+
+.ods-zo b{font-size:13px;line-height:1.05;color:#d4121c;white-space:normal;text-align:center}
 .pac-sub{margin:8px 0}
 .pac-como{font:15px/1.4 var(--ui);color:var(--texto);margin:6px 2px 10px;max-width:70ch}
 .pac-card{padding:10px 10px 12px}
@@ -2541,11 +2543,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261121194818"></script>
+<script src="bbm.js?v=20261121195014"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261121194818";
+const VERSAO_PAINEL="20261121195014";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2641,6 +2643,9 @@ function momento(a,b){const d=DADOS;const rem=(EST.rem[a]||[]).length+(EST.rem[b
 function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];const _o=casa0(a,b,sm);
   // pedido do Lucas (21/11): Necks x Iguana da semana 5 = Necks 🔒, Iguana ∞ (zica)
   if(DADOS.wk===5&&((a===6&&b===10)||(a===10&&b===6))&&!_o.every(x=>x==="✓"||x==="✗")){const r=_o.slice();r[a===6?0:2]="🔒";r[a===10?0:2]="∞";return sm[k]=r}
+  // zoeira (Lucas, 21/11): favorito 🔒 e o azarão com odd de 50+ = no lugar da odd vai uma zoeira (sem aposta)
+  const ZO=["HAHAHA","F no chat","Perdeu, irmão","RIP 🪦","∞","Já era","Chama o VAR"];
+  if(_o.includes("🔒")){const r=_o.slice();let m=false;[0,2].forEach(i=>{if(r[i]!=="🔒"&&(r[i]==="999+"||+r[i]>=50)){r[i]=ZO[(a*7+b*13+(DADOS.wk||0))%ZO.length];m=true}});if(m)return sm[k]=r}
   return _o}
 function casa0(a,b,sm){const k="c"+a+"-"+b;const M=momento(a,b);
   if(!M.rem)return [sm.pa,sm.pe,sm.pb].map(p=>p>0.5?"✓":"✗"); // acabou: mercado liquidado
@@ -4434,7 +4439,7 @@ function odsFmt(v){return (Math.round(v*100)/100).toFixed(2)}
 // botão de odd que vai pro bilhete. mk = mercado (uma seleção por mercado)
 function odsBtn(key,mk,rot,desc,o,p,red,spec){
   if(o==="🔒")return `<span class="ods-b off"><small>${esc(rot)}</small><b>${oddS("",0,"🔒")}</b></span>`;
-  if(o==="∞")return `<span class="ods-b off"><small>${esc(rot)}</small><b>∞</b></span>`;
+  if(o!=null&&o!=="—"&&o!=="✓"&&o!=="✗"&&isNaN(+o))return `<span class="ods-b off ods-zo"><small>${esc(rot)}</small><b>${esc(o)}</b></span>`;
   if(o==null||o==="—"||o==="✓"||o==="✗")return `<span class="ods-b off"><small>${esc(rot)}</small><b>${o==="✓"?"✓":o==="✗"?"✗":"—"}</b></span>`;
   const on=odsBil().some(x=>x.k===key);
   return `<button type="button" class="ods-b${on?" on":""}" data-odsb="${esc(key)}" data-mk="${esc(mk)}" data-desc="${esc(desc)}" data-o="${o}"${spec?` data-spec="${esc(JSON.stringify(spec))}"`:""}><small>${esc(rot)}</small><b>${red?o:oddS("ods:"+key,0,o)}</b>${p!=null?`<em>${pct(p)}</em>`:""}</button>`}
