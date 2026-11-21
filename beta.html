@@ -2541,11 +2541,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261120213833"></script>
+<script src="bbm.js?v=20261121194818"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261120213833";
+const VERSAO_PAINEL="20261121194818";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2638,13 +2638,17 @@ function momento(a,b){const d=DADOS;const rem=(EST.rem[a]||[]).length+(EST.rem[b
   const pre=d.cur===d.s0&&!d.P.some(p=>p.dl&&p.dl[d.cur]);
   // pré-semana: margem menor (mercado principal); durante a semana 7%; com jogo rolando 8% (ao vivo as casas cobram mais)
   return {rem,vivo,pre,margem:pre?1.06:vivo?1.08:1.07,T:rem>=20?0.9:rem>=8?0.93:0.95,mx:1000,mn:1.01}}
-function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];const M=momento(a,b);
-  if(!M.rem)return sm[k]=[sm.pa,sm.pe,sm.pb].map(p=>p>0.5?"✓":"✗"); // acabou: mercado liquidado
+function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];const _o=casa0(a,b,sm);
+  // pedido do Lucas (21/11): Necks x Iguana da semana 5 = Necks 🔒, Iguana ∞ (zica)
+  if(DADOS.wk===5&&((a===6&&b===10)||(a===10&&b===6))&&!_o.every(x=>x==="✓"||x==="✗")){const r=_o.slice();r[a===6?0:2]="🔒";r[a===10?0:2]="∞";return sm[k]=r}
+  return _o}
+function casa0(a,b,sm){const k="c"+a+"-"+b;const M=momento(a,b);
+  if(!M.rem)return [sm.pa,sm.pe,sm.pb].map(p=>p>0.5?"✓":"✗"); // acabou: mercado liquidado
   // como as casas: mercado praticamente decidido (favorito com 98,5%+) é suspenso, em vez de ficar oferecendo 1.01
   const o=precifica([sm.pa,sm.pe,sm.pb],M.margem,M.T,M.mx,M.mn);
   if(!o.susp&&+o[1]>1.01)o[1]=degrau(Math.max(1.01,+o[1]/MARGEM_EMPATE)).toFixed(2); // o X saía barato no backtest (+3,9% pro apostador)
-  if(o.susp){const P=[sm.pa,sm.pe,sm.pb];const i=P.indexOf(Math.max(...P));const r=o.slice();r[i]="🔒";return sm[k]=r}
-  return sm[k]=o}
+  if(o.susp){const P=[sm.pa,sm.pe,sm.pb];const i=P.indexOf(Math.max(...P));const r=o.slice();r[i]="🔒";return r}
+  return o}
 function suspenso(a,b,s){return false}
 function maisMercados(a,b,s){const A=T(a),B=T(b);const M=momento(a,b);if(!M.rem)return "";const a3=A[3]||A[0],b3=B[3]||B[0];
   const R=Object.entries(s.res).map(([k,p])=>{const [w,l,t]=k.split("-").map(Number);return {w,l,t,p}});
@@ -4430,6 +4434,7 @@ function odsFmt(v){return (Math.round(v*100)/100).toFixed(2)}
 // botão de odd que vai pro bilhete. mk = mercado (uma seleção por mercado)
 function odsBtn(key,mk,rot,desc,o,p,red,spec){
   if(o==="🔒")return `<span class="ods-b off"><small>${esc(rot)}</small><b>${oddS("",0,"🔒")}</b></span>`;
+  if(o==="∞")return `<span class="ods-b off"><small>${esc(rot)}</small><b>∞</b></span>`;
   if(o==null||o==="—"||o==="✓"||o==="✗")return `<span class="ods-b off"><small>${esc(rot)}</small><b>${o==="✓"?"✓":o==="✗"?"✗":"—"}</b></span>`;
   const on=odsBil().some(x=>x.k===key);
   return `<button type="button" class="ods-b${on?" on":""}" data-odsb="${esc(key)}" data-mk="${esc(mk)}" data-desc="${esc(desc)}" data-o="${o}"${spec?` data-spec="${esc(JSON.stringify(spec))}"`:""}><small>${esc(rot)}</small><b>${red?o:oddS("ods:"+key,0,o)}</b>${p!=null?`<em>${pct(p)}</em>`:""}</button>`}
