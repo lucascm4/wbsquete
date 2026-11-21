@@ -2541,11 +2541,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261120213659"></script>
+<script src="bbm.js?v=20261120213833"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261120213659";
+const VERSAO_PAINEL="20261120213833";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -4520,7 +4520,7 @@ function odsRedacao(){
 const LULA_INI=1000,LULA_BONUS=100,LULA_AUX=300;
 function lulas(){if(UI._lu)return UI._lu;let w=null;try{w=JSON.parse(localStorage.getItem("wbs.lulas")||"null")}catch(e){}
   const novo=!w;w=w||{saldo:LULA_INI,ap:[],aux:0,dia:"",novo:[]};w.ap=w.ap||[];w.novo=w.novo||[];
-  const hoje=new Date().toLocaleDateString("sv-SE",{timeZone:"America/Sao_Paulo"});let mudou=novo;if(w.dia!==hoje){if(w.dia)w.bonus=LULA_BONUS,w.saldo+=LULA_BONUS;w.dia=hoje;mudou=true}
+  const hoje=new Date().toLocaleDateString("sv-SE",{timeZone:"America/Sao_Paulo"});let mudou=novo;if(w.dia!==hoje){if(w.dia&&w.dia<hoje)w.bonus=LULA_BONUS,w.saldo+=LULA_BONUS;w.dia=hoje;mudou=true}
   UI._lu=w;if(mudou)lulaSalva();return w}
 function lulaSalva(){const w=UI._lu;if(!w)return;w.ap=w.ap.slice(-80);w.ts=Date.now();try{localStorage.setItem("wbs.lulas",JSON.stringify(w))}catch(e){}lulaSobe()}
 const fmtL=v=>Math.round(v).toLocaleString("pt-BR");
