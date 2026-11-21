@@ -2219,7 +2219,7 @@ table.lj tr.pend td:not(.jg){opacity:.55;font-style:italic}
 .lado .nm{font-family:var(--display);font-size:20px;line-height:1.05;overflow-wrap:anywhere}
 @media (max-width:520px){.jogo .lado,.jogo .lado.dir{flex-direction:column;text-align:center;gap:4px}.lado .nm{font-size:18px}}
 [hidden]{display:none!important}img{max-width:100%}
-.zo{font-family:var(--display);color:#ff5a5a!important;line-height:1;text-align:center;display:block;white-space:nowrap}.bq b:has(.zo){flex:1;display:flex;justify-content:center;align-items:center}.bq:has(.zo){justify-content:flex-start}
+.zo{font-family:var(--display);color:#ff5a5a!important;line-height:1;white-space:nowrap;position:absolute;left:50%;top:50%;transform:translate(-40%,-50%)}.bq:has(.zo){position:relative}
 /* ---------- aba ODDS (BETLOYDE) ---------- */
 .ods-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:14px;align-items:start;margin-top:10px}
 .ods-pil{margin-top:8px}
@@ -2543,11 +2543,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261121195625"></script>
+<script src="bbm.js?v=20261121195742"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261121195625";
+const VERSAO_PAINEL="20261121195742";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
