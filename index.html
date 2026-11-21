@@ -2219,7 +2219,7 @@ table.lj tr.pend td:not(.jg){opacity:.55;font-style:italic}
 .lado .nm{font-family:var(--display);font-size:20px;line-height:1.05;overflow-wrap:anywhere}
 @media (max-width:520px){.jogo .lado,.jogo .lado.dir{flex-direction:column;text-align:center;gap:4px}.lado .nm{font-size:18px}}
 [hidden]{display:none!important}img{max-width:100%}
-.zo{font-family:var(--display);color:#ff5a5a!important;line-height:1;white-space:nowrap;position:absolute;left:50%;top:50%;transform:translate(-40%,-50%)}.bq:has(.zo){position:relative}
+.zo{color:#ff6b6b!important;letter-spacing:.02em}
 /* ---------- aba ODDS (BETLOYDE) ---------- */
 .ods-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:14px;align-items:start;margin-top:10px}
 .ods-pil{margin-top:8px}
@@ -2543,11 +2543,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261121195742"></script>
+<script src="bbm.js?v=20261121195850"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261121195742";
+const VERSAO_PAINEL="20261121195850";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2645,7 +2645,7 @@ function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];const _o=casa0(a
   if(DADOS.wk===5&&((a===6&&b===10)||(a===10&&b===6))&&!_o.every(x=>x==="✓"||x==="✗")){const r=_o.slice();r[a===6?0:2]="🔒";r[a===10?0:2]="∞";return sm[k]=r}
   // zoeira (Lucas, 21/11): favorito 🔒 e o azarão com odd de 50+ = no lugar da odd vai uma zoeira (sem aposta)
   const ZO=["HAHA","F","RIP","∞","KKKK","🪦","🤡"];
-  if(_o.includes("🔒")){const r=_o.slice();let m=false;[0,1,2].forEach(i=>{if(r[i]!=="🔒"&&(r[i]==="999+"||+r[i]>=50)){r[i]=i===1?"😂":ZO[(a*7+b*13+(DADOS.wk||0))%ZO.length];m=true}});if(m)return sm[k]=r}
+  if(_o.includes("🔒")){const r=_o.slice();let m=false;[0,2].forEach(i=>{if(r[i]!=="🔒"&&r[i]!=="✓"&&r[i]!=="✗"&&(r[2-i]==="🔒")){const t=i===0?a:b;r[i]=ZO[t%ZO.length];m=true}});if(r[1]!=="🔒"&&(r[1]==="999+"||+r[1]>=50)){r[1]="😂";m=true}if(m)return sm[k]=r}
   return _o}
 function casa0(a,b,sm){const k="c"+a+"-"+b;const M=momento(a,b);
   if(!M.rem)return [sm.pa,sm.pe,sm.pb].map(p=>p>0.5?"✓":"✗"); // acabou: mercado liquidado
