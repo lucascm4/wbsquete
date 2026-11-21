@@ -2219,8 +2219,7 @@ table.lj tr.pend td:not(.jg){opacity:.55;font-style:italic}
 .lado .nm{font-family:var(--display);font-size:20px;line-height:1.05;overflow-wrap:anywhere}
 @media (max-width:520px){.jogo .lado,.jogo .lado.dir{flex-direction:column;text-align:center;gap:4px}.lado .nm{font-size:18px}}
 [hidden]{display:none!important}img{max-width:100%}
-.zo{font-family:var(--display);color:#ff5a5a!important;line-height:.95;text-align:right;display:inline-block;white-space:nowrap}.zo2{font-size:.62em;letter-spacing:.02em}
-
+.zo{font-family:var(--display);color:#ff5a5a!important;line-height:.95;text-align:right;display:inline-block;white-space:nowrap}
 /* ---------- aba ODDS (BETLOYDE) ---------- */
 .ods-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:14px;align-items:start;margin-top:10px}
 .ods-pil{margin-top:8px}
@@ -2544,11 +2543,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261121195252"></script>
+<script src="bbm.js?v=20261121195426"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261121195252";
+const VERSAO_PAINEL="20261121195426";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2645,8 +2644,8 @@ function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];const _o=casa0(a
   // pedido do Lucas (21/11): Necks x Iguana da semana 5 = Necks 🔒, Iguana ∞ (zica)
   if(DADOS.wk===5&&((a===6&&b===10)||(a===10&&b===6))&&!_o.every(x=>x==="✓"||x==="✗")){const r=_o.slice();r[a===6?0:2]="🔒";r[a===10?0:2]="∞";return sm[k]=r}
   // zoeira (Lucas, 21/11): favorito 🔒 e o azarão com odd de 50+ = no lugar da odd vai uma zoeira (sem aposta)
-  const ZO=["HAHAHA","F no chat","Perdeu irmão","RIP","∞","Já era","Chama o VAR"];
-  if(_o.includes("🔒")){const r=_o.slice();let m=false;[0,1,2].forEach(i=>{if(r[i]!=="🔒"&&(r[i]==="999+"||+r[i]>=50)){r[i]=i===1?"Nem sonha":ZO[(a*7+b*13+(DADOS.wk||0))%ZO.length];m=true}});if(m)return sm[k]=r}
+  const ZO=["HAHA","F","RIP","∞","KKKK","🪦","🤡"];
+  if(_o.includes("🔒")){const r=_o.slice();let m=false;[0,1,2].forEach(i=>{if(r[i]!=="🔒"&&(r[i]==="999+"||+r[i]>=50)){r[i]=i===1?"😂":ZO[(a*7+b*13+(DADOS.wk||0))%ZO.length];m=true}});if(m)return sm[k]=r}
   return _o}
 function casa0(a,b,sm){const k="c"+a+"-"+b;const M=momento(a,b);
   if(!M.rem)return [sm.pa,sm.pe,sm.pb].map(p=>p>0.5?"✓":"✗"); // acabou: mercado liquidado
@@ -2676,7 +2675,7 @@ function maisMercados(a,b,s){const A=T(a),B=T(b);const M=momento(a,b);if(!M.rem)
    <div class="mk-sec">CATEGORIA A CATEGORIA</div>${cats}
    <div class="mk-sec">PLACAR EXATO <small>(${esc(a3)} primeiro · margem de 20%, como nas casas)</small></div>${exato}
    <p class="mk-nota">Margem da casa: até ${Math.round((M.margem+0.01-1)*100)}% nos mercados equilibrados, menos quando um lado é muito favorito${M.vivo?" · jogo rolando, ao vivo a casa cobra mais":M.pre?" · pré-semana":""}. Linha decidida some da escada, como na Sportingbet.</p></details>`}
-let _ODM=null;function oddS(k,p,pronto){const v=pronto!=null?pronto:odd(p);if(v==="🔒")return '<svg class="cad" viewBox="0 0 16 16" aria-label="fechado"><rect x="3" y="7" width="10" height="7.5" rx="1.5" fill="#c9a227"/><path d="M5.2 7V5.2a2.8 2.8 0 0 1 5.6 0V7" fill="none" stroke="#c9a227" stroke-width="1.7"/><circle cx="8" cy="10.6" r="1.1" fill="#1a1205"/></svg>';if(v==="—"||v==="✓"||v==="✗")return v;if(typeof v==="string"&&isNaN(+v))return `<span class="zo${v.length>5?" zo2":""}">${v.replace(/, /," ").replace(/ no /," no<br>").replace(/^Nem /,"Nem<br>").replace(/^Já /,"Já<br>").replace(/^Chama o /,"Chama<br>o ")}</span>`;const dk="wbs.odds."+(DADOS?DADOS.cur:0);
+let _ODM=null;function oddS(k,p,pronto){const v=pronto!=null?pronto:odd(p);if(v==="🔒")return '<svg class="cad" viewBox="0 0 16 16" aria-label="fechado"><rect x="3" y="7" width="10" height="7.5" rx="1.5" fill="#c9a227"/><path d="M5.2 7V5.2a2.8 2.8 0 0 1 5.6 0V7" fill="none" stroke="#c9a227" stroke-width="1.7"/><circle cx="8" cy="10.6" r="1.1" fill="#1a1205"/></svg>';if(v==="—"||v==="✓"||v==="✗")return v;if(typeof v==="string"&&isNaN(+v))return `<span class="zo">${v}</span>`;const dk="wbs.odds."+(DADOS?DADOS.cur:0);
   if(!_ODM||_ODM._k!==dk){_ODM=null;try{_ODM=JSON.parse(localStorage.getItem(dk)||"null")}catch(e){}_ODM=_ODM||{};_ODM._k=dk}
   let m=_ODM[k];if(!m){m=_ODM[k]={v,prev:v}}else if(m.v!==v){m.prev=m.v;m.v=v}try{localStorage.setItem(dk,JSON.stringify(_ODM))}catch(e){}
   const a=+m.v,b=+m.prev;return v+(a>b?'<i class="od-up">▲</i>':a<b?'<i class="od-dn">▼</i>':"")}
