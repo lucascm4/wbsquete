@@ -2543,11 +2543,11 @@ span.ods-ft{display:grid;place-items:center;font-size:11px}
 
 <script src="fotos.js"></script>
 <script src="hist.js?v=1794766217"></script>
-<script src="bbm.js?v=20261121195014"></script>
+<script src="bbm.js?v=20261121195132"></script>
 <script src="radar.js?v=1794766217"></script>
 <script src="midia.js?v=1794766217"></script>
 <script>
-const VERSAO_PAINEL="20261121195014";
+const VERSAO_PAINEL="20261121195132";
 "use strict";
 /* ---------- constantes da liga ---------- */
 // id: [nome, slug, manager, sigla, cor]
@@ -2645,7 +2645,7 @@ function casa(a,b,sm){const k="c"+a+"-"+b;if(sm[k])return sm[k];const _o=casa0(a
   if(DADOS.wk===5&&((a===6&&b===10)||(a===10&&b===6))&&!_o.every(x=>x==="✓"||x==="✗")){const r=_o.slice();r[a===6?0:2]="🔒";r[a===10?0:2]="∞";return sm[k]=r}
   // zoeira (Lucas, 21/11): favorito 🔒 e o azarão com odd de 50+ = no lugar da odd vai uma zoeira (sem aposta)
   const ZO=["HAHAHA","F no chat","Perdeu, irmão","RIP 🪦","∞","Já era","Chama o VAR"];
-  if(_o.includes("🔒")){const r=_o.slice();let m=false;[0,2].forEach(i=>{if(r[i]!=="🔒"&&(r[i]==="999+"||+r[i]>=50)){r[i]=ZO[(a*7+b*13+(DADOS.wk||0))%ZO.length];m=true}});if(m)return sm[k]=r}
+  if(_o.includes("🔒")){const r=_o.slice();let m=false;[0,1,2].forEach(i=>{if(r[i]!=="🔒"&&(r[i]==="999+"||+r[i]>=50)){r[i]=i===1?"Nem sonha":ZO[(a*7+b*13+(DADOS.wk||0))%ZO.length];m=true}});if(m)return sm[k]=r}
   return _o}
 function casa0(a,b,sm){const k="c"+a+"-"+b;const M=momento(a,b);
   if(!M.rem)return [sm.pa,sm.pe,sm.pb].map(p=>p>0.5?"✓":"✗"); // acabou: mercado liquidado
